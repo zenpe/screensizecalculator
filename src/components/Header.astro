@@ -7,9 +7,15 @@
     <div class="flex justify-between items-center h-16">
       <!-- Logo -->
       <a href="/" class="flex items-center gap-2 group">
-        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <div class="w-8 h-8 bg-primary-600 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-5 h-5">
+            <rect width="100" height="100" fill="transparent"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#FFFFFF">SC</text>
+            <style>
+              @media (prefers-color-scheme: dark) {
+                text { fill: #E5E7EB; }
+              }
+            </style>
           </svg>
         </div>
         <span class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
