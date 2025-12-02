@@ -1,12 +1,10 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
-
-const title = '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It in 2024?';
-const description = 'Detailed comparison of 4K and 8K resolution TVs with optimal viewing distances, PPI analysis, and whether 8K is worth the investment. Based on visual acuity science.';
-const pubDate = '2024-12-02';
+title: '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It in 2024?'
+description: 'Detailed comparison of 4K and 8K resolution TVs with optimal viewing distances, PPI analysis, and whether 8K is worth the investment. Based on visual acuity science.'
+pubDate: '2024-12-02'
+category: 'Display Technology'
+author: 'Screen Size Calculator Team'
 ---
-
-<BlogPost title={title} description={description} pubDate={pubDate} category="Display Technology">
 
 ## Introduction
 
@@ -155,7 +153,7 @@ Distance = (Screen Height × 3438) ÷ Vertical Resolution
 - Vimeo: Limited 8K content
 - No 8K streaming services (Netflix, Disney+, etc. max at 4K)
 - No 8K Blu-ray standard
-- No 8K gaming consoles (PS5/Xbox max at 4K 120Hz)
+- No 8K gaming consoles (PS5/Xbox max at 4K)
 
 **4K Content** (Abundant):
 - Netflix, Disney+, Apple TV+, Amazon Prime (all have 4K)
@@ -339,7 +337,7 @@ Want to know your ideal TV specs? Use our **[TV Size Calculator](/#calculator)**
 5. **HDMI 2.1**: 4K @ 120Hz support
 6. **Processor**: Good upscaling engine
 7. **Color accuracy**: DCI-P3 coverage
-8. **Input lag**: <10ms for gaming
+8. **Input lag**: &lt;10ms for gaming
 
 ## Conclusion
 
@@ -361,5 +359,3 @@ Want to know your ideal TV specs? Use our **[TV Size Calculator](/#calculator)**
 ---
 
 **Calculate your ideal TV size and resolution**: Use our free [TV Size Calculator](/#calculator) with viewing distance recommendations and PPI analysis.
-
-</BlogPost>

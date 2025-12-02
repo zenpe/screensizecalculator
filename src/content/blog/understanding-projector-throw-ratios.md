@@ -1,12 +1,10 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
-
-const title = 'Understanding Projector Throw Ratios - Complete Guide to Throw Distance 2024';
-const description = 'Master projector throw ratios and calculate the perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw projector guides.';
-const pubDate = '2024-12-02';
+title: 'Understanding Projector Throw Ratios - Complete Guide to Throw Distance 2024'
+description: 'Master projector throw ratios and calculate the perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw projector guides.'
+pubDate: '2024-12-02'
+category: 'Projector Guide'
+author: 'Screen Size Calculator Team'
 ---
-
-<BlogPost title={title} description={description} pubDate={pubDate} category="Projector Guide">
 
 ## Introduction
 
@@ -343,7 +341,7 @@ Before purchasing a projector:
 Understanding throw ratio is essential for projector success. The formula is simple: **Throw Distance = Screen Width × Throw Ratio**.
 
 **Quick Rules**:
-- Small rooms (< 12 ft): Ultra short throw (0.25-0.5)
+- Small rooms (&lt; 12 ft): Ultra short throw (0.25-0.5)
 - Medium rooms (12-18 ft): Short throw (0.8-1.2)
 - Large rooms (18+ ft): Standard throw (1.5-2.0)
 
@@ -352,5 +350,3 @@ Understanding throw ratio is essential for projector success. The formula is sim
 ---
 
 **Ready to calculate your exact throw distance?** Use our free [Projector Throw Calculator](/#calculator) with instant distance calculations and wall width requirements.
-
-</BlogPost>

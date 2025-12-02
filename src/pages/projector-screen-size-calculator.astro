@@ -4,9 +4,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 
-const title = 'Projector Throw Distance Calculator - Calculate Throw Ratio & Screen Size 2024';
-const description = 'Free projector throw distance calculator. Calculate exact projector placement distance, throw ratio, and minimum wall width for any screen size. Includes ultra short throw, standard, and long throw projectors.';
-const keywords = 'projector throw distance calculator, projector throw ratio, projector placement calculator, throw distance formula, projector screen size calculator, ultra short throw projector, projector room calculator';
+const title = 'Projector Screen Size Calculator - Throw Distance & Ratio';
+const description = 'Calculate the perfect projector screen size for your room. Get throw distance, throw ratio, screen dimensions, and wall width requirements for any projector setup. Compare ultra short throw, standard, and long throw projectors.';
+const keywords = 'projector screen size calculator, projector throw distance calculator, projector throw ratio, projector placement calculator, throw distance formula, ultra short throw projector, projector room calculator';
 
 // FAQ Schema
 const faqData = {
@@ -57,7 +57,7 @@ const faqData = {
     <section class="bg-gradient-to-b from-indigo-50 to-white py-12 lg:py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Projector Throw Distance Calculator
+          Projector Screen Size Calculator
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
           Calculate exact projector placement distance and throw ratio for your home theater. Get instant throw distance, minimum wall width, and screen size recommendations for any projector.
@@ -340,7 +340,7 @@ const faqData = {
             </div>
           </a>
 
-          <a href="/tv-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+          <a href="/tv-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
             <div class="p-6">
               <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium mb-3">
                 Calculator Tool
@@ -355,7 +355,7 @@ const faqData = {
             </div>
           </a>
 
-          <a href="/monitor-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+          <a href="/monitor-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
             <div class="p-6">
               <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium mb-3">
                 Calculator Tool
@@ -403,8 +403,9 @@ const faqData = {
 <script>
   // Auto-switch to Projector mode when page loads
   document.addEventListener('DOMContentLoaded', () => {
+    // Find and click the Projector tab button after a brief delay to ensure React has mounted
     setTimeout(() => {
-      const projectorButton = document.querySelector('[aria-label="Projector mode"]') as HTMLButtonElement;
+      const projectorButton = document.querySelector('[aria-label="Projector mode"]');
       if (projectorButton && projectorButton.getAttribute('aria-selected') !== 'true') {
         projectorButton.click();
       }

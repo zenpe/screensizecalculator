@@ -1,12 +1,10 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
-
-const title = 'How to Choose the Right TV Size for Your Room - Complete 2024 Guide';
-const description = 'Expert guide to selecting the perfect TV size based on room dimensions, viewing distance, resolution, and seating arrangement. Includes THX and SMPTE recommendations.';
-const pubDate = '2024-12-02';
+title: 'How to Choose the Right TV Size for Your Room - Complete 2024 Guide'
+description: 'Expert guide to selecting the perfect TV size based on room dimensions, viewing distance, resolution, and seating arrangement. Includes THX and SMPTE recommendations.'
+pubDate: '2024-12-02'
+category: 'TV Buying Guide'
+author: 'Screen Size Calculator Team'
 ---
-
-<BlogPost title={title} description={description} pubDate={pubDate} category="TV Buying Guide">
 
 ## Introduction
 
@@ -195,5 +193,3 @@ The perfect TV size balances **room dimensions**, **viewing distance**, and **re
 ---
 
 **Ready to calculate your perfect TV size?** Use our free [TV Size Calculator](/#calculator) with personalized viewing distance recommendations based on THX and SMPTE standards.
-
-</BlogPost>

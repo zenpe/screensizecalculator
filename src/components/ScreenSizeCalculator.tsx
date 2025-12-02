@@ -500,7 +500,7 @@ export default function ScreenSizeCalculator() {
   const amazonInfo = getAmazonInfo();
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden" role="application" aria-label="Screen size calculator with TV viewing distance and projector throw distance">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden" role="application" aria-label="Screen size calculator with TV viewing distance and projector throw distance">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
         <h2 className="text-xl font-semibold text-white">Screen Size Calculator</h2>
@@ -510,8 +510,8 @@ export default function ScreenSizeCalculator() {
       </div>
 
       {/* Device Mode Tabs - Segmented Control */}
-      <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-        <div className="flex bg-gray-200 rounded-lg p-1 gap-1" role="tablist" aria-label="Device type selection">
+      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+        <div className="flex bg-gray-200 dark:bg-gray-600 rounded-lg p-1 gap-1" role="tablist" aria-label="Device type selection">
           {(Object.keys(DEVICE_CONFIGS) as DeviceMode[]).map((mode) => (
             <button
               key={mode}
@@ -521,8 +521,8 @@ export default function ScreenSizeCalculator() {
               aria-label={`${DEVICE_CONFIGS[mode].label} mode`}
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 deviceMode === mode
-                  ? 'bg-white text-primary-700 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-white dark:bg-gray-800 text-primary-700 dark:text-primary-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-500'
               }`}
             >
               <span className="text-base" aria-hidden="true">{DEVICE_CONFIGS[mode].icon}</span>
@@ -535,12 +535,12 @@ export default function ScreenSizeCalculator() {
       {/* Main Layout */}
       <div className="lg:flex lg:flex-row">
         {/* Left Panel: Fixed width on desktop */}
-        <div className="w-full lg:w-[340px] lg:min-w-[340px] lg:max-w-[340px] p-4 border-b lg:border-b-0 lg:border-r border-gray-200 bg-white">
+        <div className="w-full lg:w-[340px] lg:min-w-[340px] lg:max-w-[340px] p-4 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           {/* Input Section */}
           <div className="space-y-3">
             {/* Screen Size Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Screen Size
               </label>
               <div className="flex">
@@ -548,7 +548,7 @@ export default function ScreenSizeCalculator() {
                   type="number"
                   value={diagonal}
                   onChange={(e) => setDiagonal(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-lg font-semibold"
+                  className="flex-1 min-w-0 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-lg font-semibold bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="55"
                   min="1"
                   step="0.1"
@@ -556,7 +556,7 @@ export default function ScreenSizeCalculator() {
                 <select
                   value={unit}
                   onChange={(e) => setUnit(e.target.value as 'inches' | 'cm')}
-                  className="px-3 py-2 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-sm font-medium text-gray-600 focus:ring-2 focus:ring-primary-500"
+                  className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-lg bg-gray-50 dark:bg-gray-600 text-sm font-medium text-gray-600 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="inches">inches</option>
                   <option value="cm">cm</option>
@@ -566,13 +566,13 @@ export default function ScreenSizeCalculator() {
 
             {/* Aspect Ratio */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                 Aspect Ratio
               </label>
               <select
                 value={aspectRatioSelect}
                 onChange={(e) => setAspectRatioSelect(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
               >
                 {currentAspectRatios.map((ar) => (
                   <option key={ar.value} value={ar.value}>
@@ -586,7 +586,7 @@ export default function ScreenSizeCalculator() {
                     type="number"
                     value={customRatioW}
                     onChange={(e) => setCustomRatioW(e.target.value)}
-                    className="w-20 px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                    className="w-20 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="16"
                     min="1"
                   />
@@ -595,7 +595,7 @@ export default function ScreenSizeCalculator() {
                     type="number"
                     value={customRatioH}
                     onChange={(e) => setCustomRatioH(e.target.value)}
-                    className="w-20 px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                    className="w-20 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="9"
                     min="1"
                   />
@@ -605,13 +605,13 @@ export default function ScreenSizeCalculator() {
 
             {/* Resolution */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                 Resolution
               </label>
               <select
                 value={resolutionSelect}
                 onChange={(e) => setResolutionSelect(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
               >
                 {currentResolutions.map((res) => (
                   <option key={res.label} value={res.label}>
@@ -625,7 +625,7 @@ export default function ScreenSizeCalculator() {
                     type="number"
                     value={customResW}
                     onChange={(e) => setCustomResW(e.target.value)}
-                    className="w-20 px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                    className="w-20 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="1920"
                     min="1"
                   />
@@ -634,7 +634,7 @@ export default function ScreenSizeCalculator() {
                     type="number"
                     value={customResH}
                     onChange={(e) => setCustomResH(e.target.value)}
-                    className="w-20 px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                    className="w-20 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="1080"
                     min="1"
                   />
@@ -645,15 +645,15 @@ export default function ScreenSizeCalculator() {
             {/* Throw Ratio - Projector Mode Only */}
             {deviceMode === 'projector' && (
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                   Throw Ratio
-                  <span className="ml-1 text-gray-400 font-normal">(distance ÷ width)</span>
+                  <span className="ml-1 text-gray-400 dark:text-gray-500 font-normal">(distance ÷ width)</span>
                 </label>
                 <div className="flex gap-2">
                   <select
                     value={throwRatio}
                     onChange={(e) => setThrowRatio(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
+                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
                   >
                     <option value="0.5">0.5 (Ultra Short Throw)</option>
                     <option value="0.8">0.8 (Short Throw)</option>
@@ -670,7 +670,7 @@ export default function ScreenSizeCalculator() {
                     type="number"
                     value={throwRatio}
                     onChange={(e) => setThrowRatio(e.target.value)}
-                    className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="mt-2 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="1.5"
                     min="0.1"
                     max="5"
@@ -682,7 +682,7 @@ export default function ScreenSizeCalculator() {
           </div>
 
           {/* Results Section */}
-          <div className="mt-3 bg-gray-50 rounded-lg p-3">
+          <div className="mt-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
             {results ? (
               <div className="space-y-2">
                 {/* PPI Highlight for Phone Mode */}
@@ -697,44 +697,44 @@ export default function ScreenSizeCalculator() {
                 )}
                 {/* Stats Grid - 2x3 */}
                 <div className="grid grid-cols-3 gap-1.5">
-                  <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                    <p className="text-[9px] text-gray-500 uppercase">Width</p>
-                    <p className="text-sm font-bold text-primary-600">{displayValue(results.width)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">{unitLabel}</span></p>
+                  <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                    <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Width</p>
+                    <p className="text-sm font-bold text-primary-600 dark:text-primary-400">{displayValue(results.width)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">{unitLabel}</span></p>
                   </div>
-                  <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                    <p className="text-[9px] text-gray-500 uppercase">Height</p>
-                    <p className="text-sm font-bold text-primary-600">{displayValue(results.height)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">{unitLabel}</span></p>
+                  <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                    <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Height</p>
+                    <p className="text-sm font-bold text-primary-600 dark:text-primary-400">{displayValue(results.height)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">{unitLabel}</span></p>
                   </div>
                   {!deviceConfig.highlightPPI && (
-                    <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded p-2 border border-accent-200 text-center">
-                      <p className="text-[9px] text-accent-700 uppercase">PPI</p>
-                      <p className="text-sm font-bold text-accent-600">{formatNum(results.ppi, 0)}</p>
+                    <div className="bg-gradient-to-br from-accent-50 to-accent-100 dark:from-accent-900/30 dark:to-accent-800/30 rounded p-2 border border-accent-200 dark:border-accent-700 text-center">
+                      <p className="text-[9px] text-accent-700 dark:text-accent-300 uppercase">PPI</p>
+                      <p className="text-sm font-bold text-accent-600 dark:text-accent-400">{formatNum(results.ppi, 0)}</p>
                     </div>
                   )}
                   {deviceConfig.highlightPPI && (
-                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                      <p className="text-[9px] text-gray-500 uppercase">Pitch</p>
-                      <p className="text-xs font-semibold text-gray-700">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">mm</span></p>
+                    <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                      <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Pitch</p>
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">mm</span></p>
                     </div>
                   )}
-                  <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                    <p className="text-[9px] text-gray-500 uppercase">Area</p>
-                    <p className="text-xs font-semibold text-gray-700">{unit === 'cm' ? formatNum(results.area * 6.4516, 0) : formatNum(results.area, 0)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">{unit === 'cm' ? 'cm²' : 'in²'}</span></p>
+                  <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                    <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Area</p>
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{unit === 'cm' ? formatNum(results.area * 6.4516, 0) : formatNum(results.area, 0)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">{unit === 'cm' ? 'cm²' : 'in²'}</span></p>
                   </div>
-                  <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                    <p className="text-[9px] text-gray-500 uppercase">Pixels</p>
-                    <p className="text-xs font-semibold text-gray-700">{(results.totalPixels / 1000000).toFixed(1)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">MP</span></p>
+                  <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                    <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Pixels</p>
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{(results.totalPixels / 1000000).toFixed(1)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">MP</span></p>
                   </div>
                   {!deviceConfig.highlightPPI && (
-                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                      <p className="text-[9px] text-gray-500 uppercase">Pitch</p>
-                      <p className="text-xs font-semibold text-gray-700">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">mm</span></p>
+                    <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                      <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Pitch</p>
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">mm</span></p>
                     </div>
                   )}
                   {deviceConfig.highlightPPI && (
-                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                      <p className="text-[9px] text-gray-500 uppercase">Diagonal</p>
-                      <p className="text-xs font-semibold text-gray-700">{formatNum(diagonalInInches, 1)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">in</span></p>
+                    <div className="bg-white dark:bg-gray-800 rounded p-2 border border-gray-200 dark:border-gray-600 text-center">
+                      <p className="text-[9px] text-gray-500 dark:text-gray-400 uppercase">Diagonal</p>
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{formatNum(diagonalInInches, 1)}<span className="text-[9px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">in</span></p>
                     </div>
                   )}
                 </div>

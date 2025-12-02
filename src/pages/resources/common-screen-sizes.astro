@@ -1,0 +1,390 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'Common Screen Sizes - Guide to TV, Monitor, and Phone Screen Dimensions';
+const description = 'Complete guide to common screen sizes for TVs, monitors, and phones. Find standard dimensions, aspect ratios, and resolution recommendations for each device category.';
+const keywords = 'common screen sizes, standard tv sizes, monitor screen sizes, phone screen sizes, screen dimensions guide, display sizes comparison';
+
+// FAQ Schema
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the most common TV screen sizes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The most common TV screen sizes are 43\", 55\", 65\", and 75\" for living rooms. Smaller sizes like 32\" and 40\" are popular for bedrooms, while larger sizes like 85\"+ are for dedicated home theaters. The 55\"-65\" range represents the sweet spot for most living rooms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the standard laptop screen sizes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standard laptop screen sizes range from 13\" (ultraportable) to 17\" (desktop replacement). Common sizes include 13.3\", 14\", 15.6\", and 17.3\". The 14\"-15\" range is most popular for general use, offering a good balance of portability and screen real estate."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are typical phone screen sizes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Typical phone screen sizes range from 5.4\" (iPhone SE) to 6.8\"+ (large Android flagships and foldables). The most popular sizes are 6.1\"-6.7\" for flagship phones, with 6.1\" being a common sweet spot for single-handed use and 6.7\"+ for media consumption."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What monitor size is best for productivity?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For productivity, 24\"-27\" monitors are ideal for general office work. For more screen real estate and multitasking, 32\"+ monitors provide more workspace. Ultrawide monitors (21:9 aspect ratio) like 34\" or 38\" offer exceptional productivity for managing multiple windows and applications."
+      }
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-gray-50 to-white py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Common Screen Sizes Guide
+        </h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          Complete reference to standard screen sizes across all device categories. Find the most popular dimensions for TVs, monitors, laptops, and phones with practical recommendations.
+        </p>
+      </div>
+    </section>
+
+    <!-- Common TV Sizes -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Common TV Screen Sizes
+        </h2>
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Size Range</th>
+                <th class="px-6 py-4 text-left font-semibold">Common Sizes</th>
+                <th class="px-6 py-4 text-left font-semibold">Best For</th>
+                <th class="px-6 py-4 text-left font-semibold">Resolution</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Small TVs</td>
+                <td class="px-6 py-4 text-gray-700">32\", 40\", 43\"</td>
+                <td class="px-6 py-4 text-gray-600">Bedrooms, small rooms</td>
+                <td class="px-6 py-4 text-gray-600">1080p (32\") - 4K (40\"+)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Popular Sizes</td>
+                <td class="px-6 py-4 text-gray-700">55\", 65\", 75\"</td>
+                <td class="px-6 py-4 text-gray-600">Main living room</td>
+                <td class="px-6 py-4 text-gray-600">4K (recommended)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Large TVs</td>
+                <td class="px-6 py-4 text-gray-700">85\", 98\", 100\"+</td>
+                <td class="px-6 py-4 text-gray-600">Home theater</td>
+                <td class="px-6 py-4 text-gray-600">4K to 8K</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-6 text-gray-600 text-center">
+          The 55\"-65\" range is the most popular for standard living rooms, offering an optimal balance of immersion and practical screen size.
+        </p>
+      </div>
+    </section>
+
+    <!-- Common Monitor Sizes -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Common Monitor Screen Sizes
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Standard Monitors</h3>
+            <ul class="space-y-3">
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">21.5\" - 24\"</span>
+                <span class="text-gray-600">General office use</span>
+              </li>
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">27\"</span>
+                <span class="text-gray-600">Productivity sweet spot</span>
+              </li>
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">32\"</span>
+                <span class="text-gray-600">Gaming and creative work</span>
+              </li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Specialized Monitors</h3>
+            <ul class="space-y-3">
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">34\" - 38\"</span>
+                <span class="text-gray-600">Ultrawide productivity</span>
+              </li>
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">49\"</span>
+                <span class="text-gray-600">Super ultrawide</span>
+              </li>
+              <li class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="font-medium">24\" - 27\"</span>
+                <span class="text-gray-600">4K resolution</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="mt-6 text-gray-600 text-center">
+          For productivity, 24\"-27\" monitors at 1440p or 4K resolution offer the best balance of screen space and detail.
+        </p>
+      </div>
+    </section>
+
+    <!-- Common Laptop Sizes -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Common Laptop Screen Sizes
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Category</th>
+                <th class="px-6 py-4 text-left font-semibold">Typical Sizes</th>
+                <th class="px-6 py-4 text-left font-semibold">Best For</th>
+                <th class="px-6 py-4 text-left font-semibold">Characteristics</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Ultrabooks</td>
+                <td class="px-6 py-4 text-gray-700">13.3\", 14\"</td>
+                <td class="px-6 py-4 text-gray-600">Business, travel</td>
+                <td class="px-6 py-4 text-gray-600">Lightweight, portable</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Standard</td>
+                <td class="px-6 py-4 text-gray-700">15.6\"</td>
+                <td class="px-6 py-4 text-gray-600">General use</td>
+                <td class="px-6 py-4 text-gray-600">Good balance</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Desktop Replacements</td>
+                <td class="px-6 py-4 text-gray-700">17.3\"</td>
+                <td class="px-6 py-4 text-gray-600">Gaming, editing</td>
+                <td class="px-6 py-4 text-gray-600">Larger screen, less portable</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-100">
+          <p class="text-blue-800 text-center">
+            The 14\"-15\" range offers the best balance of portability and screen space for most users. 
+            14\" laptops are increasingly popular for their excellent portability while providing adequate screen real estate.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Common Phone Sizes -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Common Phone Screen Sizes
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Compact Phones</h3>
+            <ul class="space-y-2">
+              <li class="flex justify-between">
+                <span class="font-medium">5.4\"</span>
+                <span class="text-gray-600">iPhone SE</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">5.7\"</span>
+                <span class="text-gray-600">Samsung Galaxy S21 FE</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">5.8\"</span>
+                <span class="text-gray-600">iPhone 13</span>
+              </li>
+            </ul>
+            <p class="mt-3 text-sm text-gray-600">
+              Best for small hands and one-handed use
+            </p>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Standard Phones</h3>
+            <ul class="space-y-2">
+              <li class="flex justify-between">
+                <span class="font-medium">6.1\"</span>
+                <span class="text-gray-600">iPhone 14, Galaxy S23</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">6.3\"</span>
+                <span class="text-gray-600">Pixel 7</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">6.4\"</span>
+                <span class="text-gray-600">Galaxy S22</span>
+              </li>
+            </ul>
+            <p class="mt-3 text-sm text-gray-600">
+              Good balance of size and usability
+            </p>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Large Phones</h3>
+            <ul class="space-y-2">
+              <li class="flex justify-between">
+                <span class="font-medium">6.7\"</span>
+                <span class="text-gray-600">iPhone 14 Pro Max</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">6.8\"</span>
+                <span class="text-gray-600">Galaxy S23 Ultra</span>
+              </li>
+              <li class="flex justify-between">
+                <span class="font-medium">6.9\"+</span>
+                <span class="text-gray-600">Foldable phones</span>
+              </li>
+            </ul>
+            <p class="mt-3 text-sm text-gray-600">
+              Best for media and multitasking
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+          Choosing the Right Size for Your Needs
+        </h2>
+        <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-8 text-white">
+          <p class="text-lg mb-4">
+            When selecting a screen size, consider your usage patterns, available space, and viewing distance. 
+            The most important factor is choosing a size that fits your specific needs and environment.
+          </p>
+          <div class="mt-6 grid md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h3 class="font-semibold mb-2">TVs</h3>
+              <p>Match to room size and viewing distance</p>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h3 class="font-semibold mb-2">Monitors</h3>
+              <p>Consider desk space and productivity needs</p>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h3 class="font-semibold mb-2">Phones</h3>
+              <p>Balance portability with usability</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Tools -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Related Screen Size Tools
+        </h2>
+        <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <a href="/tv-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-600">
+                TV Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Find the perfect TV size for your room with viewing distance recommendations.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-emerald-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/monitor-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600">
+                Monitor Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate the ideal monitor size for your desk setup and resolution.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-blue-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/projector-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-purple-600">
+                Projector Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate throw distance and ratio for your projector setup.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-purple-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/phone-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-amber-600">
+                Phone Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Find the perfect phone screen size with detailed screen analysis.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-amber-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>

@@ -1,0 +1,353 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
+
+const title = 'Monitor Screen Size Calculator - Perfect Size & Resolution';
+const description = 'Calculate the perfect monitor size for your desk based on viewing distance. Get optimal resolution recommendations, screen dimensions, and PPI analysis for 1440p, 4K, and 5K monitors.';
+const keywords = 'monitor size calculator, monitor viewing distance calculator, optimal monitor size, best monitor size for desk, 1440p monitor size, 4k monitor size calculator, monitor resolution calculator';
+
+// FAQ Schema
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How far should I sit from a 27 inch monitor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a 27 inch 1440p monitor, the ideal viewing distance is 2.5-3.5 feet based on your screen setup and preferences. For 4K monitors, you can sit closer (2-2.5 feet) without seeing pixels. The 3-5 times diagonal rule is a good starting point: 27 inches × 3 ÷ 12 = 6.75 feet maximum distance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What size monitor for 1080p vs 1440p vs 4K?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For 1080p: Up to 24 inches is ideal to avoid seeing pixels. For 1440p: 24-32 inches recommended. For 4K: 27 inches and up, with larger sizes (32+ inches) offering better value. At 32 inches, 1440p is sharp but 4K provides more crispness and workspace."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is bigger monitor always better?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not always. A monitor that's too large for close desk work can cause neck strain as you turn your head to view content. Consider your desk space, viewing distance, and intended use. For general productivity, 24-27 inches is ideal. For immersive gaming or design work, 32+ inches may be better."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between 1440p and 4K for monitor size?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "4K monitors can be viewed 41% closer than 1080p without seeing pixels, allowing larger monitors in the same space. For 27 inches: 1440p PPI ≈ 109, 4K PPI ≈ 163. For 32 inches: 1440p PPI ≈ 92, 4K PPI ≈ 138. Higher PPI means sharper text and images."
+      }
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-blue-50 to-white py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Monitor Screen Size Calculator & Resolution Tool
+        </h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          Find the perfect monitor size for your desk with optimal resolution recommendations. Calculate screen dimensions, PPI, and workspace area for any monitor size. Perfect for productivity, gaming, and creative work.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 text-sm text-gray-600">
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Resolution Comparison
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            PPI & Workspace Area
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Desk Space Planning
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-12 lg:py-16" id="calculator">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScreenSizeCalculator client:load />
+      </div>
+    </section>
+
+    <!-- How to Use Guide -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          How to Find Your Perfect Monitor Size
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-blue-100 rounded-lg p-3 text-blue-600 font-bold text-xl">1</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Measure Your Desk Space</h3>
+                <p class="text-gray-600 text-sm">Measure how much desk space you have available for your monitor. Consider bezels and any stand dimensions.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-blue-100 rounded-lg p-3 text-blue-600 font-bold text-xl">2</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Enter Monitor Size</h3>
+                <p class="text-gray-600 text-sm">Input your desired monitor diagonal size in inches or cm. The calculator shows dimensions and resolution quality.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-blue-100 rounded-lg p-3 text-blue-600 font-bold text-xl">3</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Select Resolution</h3>
+                <p class="text-gray-600 text-sm">Choose your monitor's resolution (1080p, 1440p, 4K) to see the optimal size range and PPI.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-blue-100 rounded-lg p-3 text-blue-600 font-bold text-xl">4</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Review Specifications</h3>
+                <p class="text-gray-600 text-sm">Get exact width, height, area, PPI, and pixel density. Perfect for comparing different monitor sizes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Reference Guide -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Monitor Size Quick Reference Guide
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Monitor Size</th>
+                <th class="px-6 py-4 text-left font-semibold">Best Resolution</th>
+                <th class="px-6 py-4 text-left font-semibold">Screen Width × Height</th>
+                <th class="px-6 py-4 text-left font-semibold">PPI (Sharpness)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">21-24 inches</td>
+                <td class="px-6 py-4 text-gray-700">1080p (Ideal for 21-22")</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">18" × 10" - 21" × 12"</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">81-92 PPI (Standard)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">24-27 inches</td>
+                <td class="px-6 py-4 text-gray-700">1440p (Sweet Spot)</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">21" × 12" - 24" × 13"</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">109-124 PPI (Sharp)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">27-32 inches</td>
+                <td class="px-6 py-4 text-gray-700">4K (Recommended)</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">24" × 13" - 28" × 16"</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">138-147 PPI (Very Sharp)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">32+ inches</td>
+                <td class="px-6 py-4 text-gray-700">4K or 5K (Best)</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">28" × 16" or larger</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">138+ PPI (Crisp)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              How far should I sit from a 27 inch monitor?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">For a <strong>27 inch 1440p monitor</strong>, the ideal viewing distance is <strong>2.5-3.5 feet</strong> based on your screen setup and preferences.</p>
+              <p>For 4K monitors, you can sit closer (2-2.5 feet) without seeing pixels. The general rule is 3-5 times the diagonal for a comfortable distance, though personal preference varies.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              What size monitor for 1080p vs 1440p vs 4K?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">The ideal size depends on your resolution:</p>
+              <ul class="space-y-2">
+                <li>• <strong>For 1080p:</strong> Up to 24 inches is ideal to avoid seeing pixels. 21-22" is perfect.</li>
+                <li>• <strong>For 1440p:</strong> 24-32 inches recommended. 27" is the sweet spot.</li>
+                <li>• <strong>For 4K:</strong> 27 inches and up, with larger sizes (32+ inches) offering better value.</li>
+              </ul>
+              <p>At 32 inches, 1440p is sharp but 4K provides more crispness and workspace.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              Is bigger monitor always better?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">Not always. A monitor that's too large for close desk work can cause <strong>neck strain</strong> as you turn your head to view content.</p>
+              <p>Consider your desk space, viewing distance, and intended use. For general productivity, 24-27 inches is ideal. For immersive gaming or design work, 32+ inches may be better.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              What's the difference between 1440p and 4K for monitor size?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">4K monitors can be viewed <strong>41% closer</strong> than 1080p without seeing pixels, allowing larger monitors in the same space.</p>
+              <ul class="space-y-2">
+                <li>• <strong>For 27 inches:</strong> 1440p PPI ≈ 109, 4K PPI ≈ 163</li>
+                <li>• <strong>For 32 inches:</strong> 1440p PPI ≈ 92, 4K PPI ≈ 138</li>
+              </ul>
+              <p>Higher PPI means sharper text and images, which is especially important for detailed design work.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Guides -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Related Guides
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <a href="/blog/choosing-right-monitor-size/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium mb-3">
+                Monitor Buying Guide
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600">
+                How to Choose the Right Monitor Size
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Complete guide to selecting the perfect monitor size based on desk space and usage scenarios.
+              </p>
+              <span class="text-blue-600 text-sm font-medium">Read Guide →</span>
+            </div>
+          </a>
+
+          <a href="/tv-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium mb-3">
+                Calculator Tool
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600">
+                TV Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate optimal TV size and viewing distance based on THX and SMPTE standards.
+              </p>
+              <span class="text-blue-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/projector-throw-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium mb-3">
+                Calculator Tool
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600">
+                Projector Throw Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate exact projector placement distance and throw ratio for your setup.
+              </p>
+              <span class="text-blue-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-indigo-600 py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+          Ready to Find Your Perfect Monitor?
+        </h2>
+        <p class="text-blue-100 mb-8 max-w-2xl mx-auto">
+          Use our calculator above to get instant resolution and PPI recommendations for your ideal monitor size.
+        </p>
+        <a
+          href="#calculator"
+          class="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors"
+        >
+          Use Calculator Now
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>
+
+<script>
+  // Auto-switch to Monitor mode when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    // Find and click the Monitor tab button after a brief delay to ensure React has mounted
+    setTimeout(() => {
+      const monitorButton = document.querySelector('[aria-label="Monitor mode"]');
+      if (monitorButton && monitorButton.getAttribute('aria-selected') !== 'true') {
+        monitorButton.click();
+      }
+    }, 100);
+  });
+</script>

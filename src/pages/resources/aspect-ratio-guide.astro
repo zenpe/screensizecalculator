@@ -1,0 +1,485 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'Aspect Ratio Guide - Understanding Screen Dimensions & Proportions';
+const description = 'Complete guide to aspect ratios including 16:9, 21:9, 4:3, and more. Learn how aspect ratios affect viewing experience and choose the right one for your display.';
+const keywords = 'aspect ratio guide, screen aspect ratios, 16:9 aspect ratio, ultrawide aspect ratio, 4:3 ratio, display proportions, screen dimensions guide';
+
+// FAQ Schema
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the most common aspect ratio for TVs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The most common aspect ratio for TVs is 16:9 (1.78:1), which is the standard for HDTV and UHDTV content. This ratio provides a good balance between letterboxing movies and maintaining compatibility with most content. It's also the native aspect ratio for most streaming services and broadcast content."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between 16:9 and 21:9 aspect ratios?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "16:9 (1.78:1) is the standard HDTV ratio and works well for most content including TV shows, movies, and games. 21:9 (2.37:1) is an ultrawide format popular for gaming and productivity, offering more horizontal screen space. However, native 21:9 content is limited, and most content will have black bars on the sides or be stretched."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do movies have black bars on TV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Movies often have black bars (letterboxing) on TV because they're shot in different aspect ratios than the TV screen. Common cinema ratios include 1.85:1 (widescreen) and 2.39:1 (anamorphic). When these don't match your TV's 16:9 ratio, bars appear to preserve the original artistic composition."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What aspect ratio should I use for productivity?",
+      "@type": "Answer",
+      "text": "For productivity, 16:9 is the most versatile aspect ratio as it's compatible with most software and content. For multitasking, ultrawide ratios like 21:9 (32:9 for super ultrawide) are excellent as they provide more horizontal space for multiple applications. However, ensure your software is compatible with ultrawide resolutions."
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-gray-50 to-white py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Aspect Ratio Guide
+        </h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          Complete reference to common aspect ratios used in displays. Understand 16:9, ultrawide, cinema formats, and how to choose the right ratio for your needs.
+        </p>
+      </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl shadow-sm p-8">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+            What is Aspect Ratio?
+          </h2>
+          <p class="text-gray-600 mb-6">
+            Aspect ratio is the proportional relationship between the width and height of a screen or image. 
+            It's expressed as two numbers separated by a colon (e.g., 16:9) and describes the shape of the display area.
+          </p>
+          
+          <div class="grid md:grid-cols-2 gap-6 mt-8">
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h3 class="font-bold text-gray-900 mb-3">Aspect Ratio Formula</h3>
+              <p class="text-gray-600 mb-4">
+                Aspect ratio = Width ÷ Height
+              </p>
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <span class="inline-block w-10 h-10 bg-emerald-100 rounded text-emerald-800 text-center mr-3">1</span>
+                  <p class="text-gray-700">For 16:9 ratio: 16 ÷ 9 = 1.78</p>
+                </div>
+                <div class="flex items-center">
+                  <span class="inline-block w-10 h-10 bg-blue-100 rounded text-blue-800 text-center mr-3">2</span>
+                  <p class="text-gray-700">For 4:3 ratio: 4 ÷ 3 = 1.33</p>
+                </div>
+                <div class="flex items-center">
+                  <span class="inline-block w-10 h-10 bg-purple-100 rounded text-purple-800 text-center mr-3">3</span>
+                  <p class="text-gray-700">For 21:9 ratio: 21 ÷ 9 = 2.33</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h3 class="font-bold text-gray-900 mb-3">Visual Comparison</h3>
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm font-medium text-gray-700 mb-1">4:3 (1.33:1)</p>
+                  <div class="w-full bg-gray-200 h-12 flex items-center justify-center">
+                    <div class="bg-emerald-500 h-8" style="width: 60%;"></div>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700 mb-1">16:9 (1.78:1)</p>
+                  <div class="w-full bg-gray-200 h-12 flex items-center justify-center">
+                    <div class="bg-blue-500 h-8" style="width: 80%;"></div>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700 mb-1">21:9 (2.33:1)</p>
+                  <div class="w-full bg-gray-200 h-12 flex items-center justify-center">
+                    <div class="bg-purple-500 h-8" style="width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Common Aspect Ratios -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Common Aspect Ratios
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">16:9 (HDTV)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 1.78:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              The most common aspect ratio for TVs, monitors, laptops, and mobile devices. 
+              Standard for HDTV and modern content.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Native for most streaming content</li>
+              <li>• Good compatibility with movies</li>
+              <li>• Balanced for gaming and productivity</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">4:3 (Standard)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 1.33:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              Traditional aspect ratio for older TVs and computer monitors. 
+              Still used in some applications and educational content.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Common in educational settings</li>
+              <li>• Good for presentations</li>
+              <li>• Less common in consumer TVs</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">21:9 (Ultrawide)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 2.33:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              Popular for gaming and productivity. Provides extra horizontal screen space.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Excellent for multitasking</li>
+              <li>• Immersive gaming experience</li>
+              <li>• Limited native content</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">2.39:1 (Cinema)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 2.39:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              Anamorphic cinema format used in many Hollywood films for an epic, immersive experience.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Used in epic films</li>
+              <li>• Creates cinematic feel</li>
+              <li>• Requires letterboxing on 16:9 TVs</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">1.85:1 (Widescreen)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 1.85:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              Common cinema aspect ratio, slightly wider than 16:9 but less extreme than 2.39:1.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Flat (non-anamorphic) cinema</li>
+              <li>• Good for narrative films</li>
+              <li>• Moderate letterboxing on 16:9</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">1:1 (Square)</h3>
+            <p class="text-gray-600 mb-3">
+              <strong>Ratio:</strong> 1:1
+            </p>
+            <p class="text-gray-600 mb-4">
+              Equal width and height, commonly used in social media and specific applications.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Social media content</li>
+              <li>• Profile pictures</li>
+              <li>• Specific applications</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aspect Ratios for Different Uses -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Aspect Ratios for Different Uses
+        </h2>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-xl shadow-sm">
+            <thead class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Use Case</th>
+                <th class="px-6 py-4 text-left font-semibold">Recommended Ratio</th>
+                <th class="px-6 py-4 text-left font-semibold">Pros</th>
+                <th class="px-6 py-4 text-left font-semibold">Cons</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">TV Shows & Streaming</td>
+                <td class="px-6 py-4 text-gray-700">16:9</td>
+                <td class="px-6 py-4 text-gray-600">Native content format, good compatibility</td>
+                <td class="px-6 py-4 text-gray-600">Some movies have black bars</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Movie Watching</td>
+                <td class="px-6 py-4 text-gray-700">2.39:1 or 16:9</td>
+                <td class="px-6 py-4 text-gray-600">Cinematic experience with 2.39:1</td>
+                <td class="px-6 py-4 text-gray-600">16:9 requires letterboxing for wide films</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Gaming</td>
+                <td class="px-6 py-4 text-gray-700">16:9 or 21:9</td>
+                <td class="px-6 py-4 text-gray-600">Wider field of view with 21:9</td>
+                <td class="px-6 py-4 text-gray-600">Limited 21:9 game support</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Productivity</td>
+                <td class="px-6 py-4 text-gray-700">16:9 or 21:9</td>
+                <td class="px-6 py-4 text-gray-600">More space with 21:9 for multitasking</td>
+                <td class="px-6 py-4 text-gray-600">21:9 may not fit all software well</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Photo/Video Editing</td>
+                <td class="px-6 py-4 text-gray-700">16:9 or 32:9</td>
+                <td class="px-6 py-4 text-gray-600">16:9 fits most content</td>
+                <td class="px-6 py-4 text-gray-600">32:9 very wide, expensive</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aspect Ratio Effects -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Effects of Aspect Ratios on Content
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Letterboxing</h3>
+            <p class="text-gray-600 mb-4">
+              Black bars added to preserve the original aspect ratio of content when displayed on screens with different ratios.
+            </p>
+            
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Movie: 2.39:1 on 16:9 TV</p>
+                <div class="bg-gray-800 h-24 rounded flex items-center justify-center">
+                  <div class="bg-gray-700 w-full h-4 text-xs text-center text-gray-300 flex items-center justify-center">
+                    Black Bars Added (Letterboxing)
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Movie: 4:3 on 16:9 TV</p>
+                <div class="bg-gray-800 h-24 rounded flex items-center justify-center">
+                  <div class="bg-gray-700 w-32 h-20 text-xs text-center text-gray-300 flex items-center justify-center">
+                    Black Bars Added (Pillarboxing)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Stretching & Cropping</h3>
+            <p class="text-gray-600 mb-4">
+              Alternative methods to fill the screen, but they alter the original content composition.
+            </p>
+            
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Stretching: 4:3 content on 16:9</p>
+                <div class="bg-gray-800 h-24 rounded flex items-center justify-center">
+                  <div class="bg-blue-500 w-full h-20 text-xs text-center text-white flex items-center justify-center">
+                    Content Stretched Horizontally
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Zoom: Cropping to fit screen</p>
+                <div class="bg-gray-800 h-24 rounded flex items-center justify-center">
+                  <div class="bg-purple-500 w-4/5 h-4/5 text-xs text-center text-white flex items-center justify-center">
+                    Edges Cropped
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Choose -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          How to Choose the Right Aspect Ratio
+        </h2>
+        
+        <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-8 text-white">
+          <h3 class="text-xl font-bold mb-6 text-center">Selection Guide</h3>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h4 class="font-semibold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                For General Use
+              </h4>
+              <p>16:9 is your safest choice. Compatible with virtually all content and provides a good balance for all usage types.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h4 class="font-semibold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                For Productivity
+              </h4>
+              <p>21:9 ultrawide monitors offer more horizontal space, great for multitasking with multiple windows.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h4 class="font-semibold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                For Gaming
+              </h4>
+              <p>16:9 for compatibility with most games. 21:9 for immersive experiences in supported games.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h4 class="font-semibold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                For Cinema
+              </h4>
+              <p>Consider 2.39:1 screens to avoid black bars on ultra-wide cinema content, though 16:9 remains practical.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Tools -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Related Screen Tools
+        </h2>
+        <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <a href="/tv-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-600">
+                TV Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate perfect TV size based on viewing distance and aspect ratio.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-emerald-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/monitor-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600">
+                Monitor Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Find ideal monitor size for your desk setup and aspect ratio.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-blue-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/projector-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-purple-600">
+                Projector Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate throw distance and ratio for your projector setup.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-purple-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/phone-screen-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group h-full flex flex-col">
+            <div class="p-6 flex-grow flex flex-col items-center text-center">
+              <span class="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium mb-3">
+                Calculator
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-amber-600">
+                Phone Screen Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Determine perfect phone screen size and aspect ratio for your needs.
+              </p>
+            </div>
+            <div class="px-6 pb-6 flex justify-center">
+              <span class="text-amber-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>

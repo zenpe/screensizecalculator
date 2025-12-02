@@ -1,37 +1,23 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
 
 const title = 'Screen Size Guide & Blog - TV, Monitor & Projector Buying Tips';
 const description = 'Expert guides on choosing the right screen size for your room, understanding viewing distances, projector throw ratios, and display technology comparisons.';
 
-const blogPosts = [
-  {
-    slug: 'how-to-choose-tv-size-for-room',
-    title: 'How to Choose the Right TV Size for Your Room',
-    description: 'Complete guide to selecting the perfect TV size based on room dimensions, viewing distance, and resolution.',
-    date: '2024-12-02',
-    category: 'TV Buying Guide',
-    readTime: '8 min read'
-  },
-  {
-    slug: 'understanding-projector-throw-ratios',
-    title: 'Understanding Projector Throw Ratios',
-    description: 'Learn how projector throw ratios work and calculate the perfect distance for your home theater setup.',
-    date: '2024-12-02',
-    category: 'Projector Guide',
-    readTime: '6 min read'
-  },
-  {
-    slug: '4k-vs-8k-viewing-distance',
-    title: '4K vs 8K: Viewing Distance Comparison',
-    description: 'Detailed comparison of 4K and 8K resolution TVs, optimal viewing distances, and whether 8K is worth it.',
-    date: '2024-12-02',
-    category: 'Display Technology',
-    readTime: '10 min read'
-  }
-];
+const blogs = await getCollection('blog');
+// Sort blogs by date (newest first)
+const sortedBlogs = blogs.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Calculate read time estimate
+function estimateReadTime(content: string) {
+  const wordsPerMinute = 200;
+  const wordCount = content.split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / wordsPerMinute);
+  return `${minutes} min read`;
+}
 ---
 
 <Layout title={title} description={description}>
@@ -54,24 +40,24 @@ const blogPosts = [
     <section class="py-12 lg:py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
+          {sortedBlogs.map((post) => (
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
               <div class="p-6">
                 <div class="flex items-center justify-between mb-3">
                   <span class="text-xs font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
-                    {post.category}
+                    {post.data.category}
                   </span>
-                  <span class="text-xs text-gray-500">{post.readTime}</span>
+                  <span class="text-xs text-gray-500">{estimateReadTime(post.body)}</span>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600">
-                  <a href={`/blog/${post.slug}/`}>{post.title}</a>
+                  <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
                 </h2>
                 <p class="text-gray-600 text-sm mb-4">
-                  {post.description}
+                  {post.data.description}
                 </p>
                 <div class="flex items-center justify-between">
-                  <time class="text-xs text-gray-500" datetime={post.date}>
-                    {new Date(post.date).toLocaleDateString('en-US', {
+                  <time class="text-xs text-gray-500" datetime={post.data.pubDate}>
+                    {new Date(post.data.pubDate).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric'
