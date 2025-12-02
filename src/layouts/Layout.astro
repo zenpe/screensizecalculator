@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 
 const siteUrl = 'https://screensizecalculator.net';
-const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+import Footer from '../components/Footer.astro';
 ---
 
 <!doctype html>
@@ -60,5 +60,6 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
   </head>
   <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <slot />
+    <Footer />
   </body>
 </html>
