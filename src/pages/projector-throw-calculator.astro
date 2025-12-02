@@ -1,0 +1,413 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
+
+const title = 'Projector Throw Distance Calculator - Calculate Throw Ratio & Screen Size 2024';
+const description = 'Free projector throw distance calculator. Calculate exact projector placement distance, throw ratio, and minimum wall width for any screen size. Includes ultra short throw, standard, and long throw projectors.';
+const keywords = 'projector throw distance calculator, projector throw ratio, projector placement calculator, throw distance formula, projector screen size calculator, ultra short throw projector, projector room calculator';
+
+// FAQ Schema
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I calculate projector throw distance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the formula: Throw Distance = Screen Width × Throw Ratio. For example, a 100-inch diagonal 16:9 screen (87 inches wide) with a 1.5 throw ratio projector needs: 87 × 1.5 = 130.5 inches (10.9 feet) throw distance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a good throw ratio for a projector?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standard throw ratio (1.5-1.8) is most versatile for home theaters. Ultra short throw (0.25-0.5) is best for small rooms. Short throw (0.8-1.2) balances flexibility and price. Long throw (2.0+) is for large venues."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How far should a projector be from a 120 inch screen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a 120 inch screen (105 inches wide), placement distance depends on throw ratio: Ultra short throw (0.4): 3.5 feet, Short throw (0.8): 7.0 feet, Standard (1.5): 13.1 feet, Long throw (2.0): 17.5 feet."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between short throw and ultra short throw projectors?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ultra short throw (UST) projectors have 0.25-0.5 throw ratio and sit 8-20 inches from screen, ideal for tight spaces. Short throw projectors have 0.8-1.2 ratio and need 3-8 feet distance, offering better value than UST with good flexibility."
+      }
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-indigo-50 to-white py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Projector Throw Distance Calculator
+        </h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          Calculate exact projector placement distance and throw ratio for your home theater. Get instant throw distance, minimum wall width, and screen size recommendations for any projector.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 text-sm text-gray-600">
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Throw Ratio Calculator
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Wall Width Requirements
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            All Projector Types
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-12 lg:py-16" id="calculator">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScreenSizeCalculator client:load />
+      </div>
+    </section>
+
+    <!-- How to Use Guide -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          How to Calculate Throw Distance
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-indigo-100 rounded-lg p-3 text-indigo-600 font-bold text-xl">1</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Enter Screen Size</h3>
+                <p class="text-gray-600 text-sm">Input your desired projection screen size (diagonal measurement in inches or cm). The calculator will show the screen width.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-indigo-100 rounded-lg p-3 text-indigo-600 font-bold text-xl">2</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Select Throw Ratio</h3>
+                <p class="text-gray-600 text-sm">Choose your projector's throw ratio from the dropdown (0.5 for ultra short throw, 1.5 for standard, 2.0+ for long throw).</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-indigo-100 rounded-lg p-3 text-indigo-600 font-bold text-xl">3</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Get Throw Distance</h3>
+                <p class="text-gray-600 text-sm">The calculator instantly shows the exact distance to place your projector from the screen or wall.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="bg-indigo-100 rounded-lg p-3 text-indigo-600 font-bold text-xl">4</div>
+              <div>
+                <h3 class="font-semibold text-gray-900 mb-2">Check Wall Width</h3>
+                <p class="text-gray-600 text-sm">See minimum wall width required (includes 10% margin) to ensure the projection fits your space.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Throw Ratio Guide -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Projector Throw Ratio Guide
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Projector Type</th>
+                <th class="px-6 py-4 text-left font-semibold">Throw Ratio</th>
+                <th class="px-6 py-4 text-left font-semibold">100" Screen Distance</th>
+                <th class="px-6 py-4 text-left font-semibold">Best For</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Ultra Short Throw</td>
+                <td class="px-6 py-4 text-gray-700">0.25 - 0.5</td>
+                <td class="px-6 py-4 text-gray-600">8" - 20"</td>
+                <td class="px-6 py-4 text-sm text-gray-600">Small rooms, living rooms</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Short Throw</td>
+                <td class="px-6 py-4 text-gray-700">0.5 - 1.2</td>
+                <td class="px-6 py-4 text-gray-600">3' - 8'</td>
+                <td class="px-6 py-4 text-sm text-gray-600">Apartments, medium rooms</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Standard Throw</td>
+                <td class="px-6 py-4 text-gray-700">1.2 - 2.0</td>
+                <td class="px-6 py-4 text-gray-600">8' - 16'</td>
+                <td class="px-6 py-4 text-sm text-gray-600">Home theaters, large rooms</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">Long Throw</td>
+                <td class="px-6 py-4 text-gray-700">2.0 - 5.0+</td>
+                <td class="px-6 py-4 text-gray-600">16' - 40'+</td>
+                <td class="px-6 py-4 text-sm text-gray-600">Auditoriums, large venues</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Reference Table -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Throw Distance Quick Reference
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold text-gray-900">Screen Size</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-900">Ultra Short (0.4)</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-900">Short (0.8)</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-900">Standard (1.5)</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-900">Long (2.0)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">80" (70" wide)</td>
+                <td class="px-6 py-4 text-gray-700">2.3 ft</td>
+                <td class="px-6 py-4 text-gray-700">4.7 ft</td>
+                <td class="px-6 py-4 text-gray-700">8.8 ft</td>
+                <td class="px-6 py-4 text-gray-700">11.7 ft</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">100" (87" wide)</td>
+                <td class="px-6 py-4 text-gray-700">2.9 ft</td>
+                <td class="px-6 py-4 text-gray-700">5.8 ft</td>
+                <td class="px-6 py-4 text-gray-700">10.9 ft</td>
+                <td class="px-6 py-4 text-gray-700">14.5 ft</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">120" (105" wide)</td>
+                <td class="px-6 py-4 text-gray-700">3.5 ft</td>
+                <td class="px-6 py-4 text-gray-700">7.0 ft</td>
+                <td class="px-6 py-4 text-gray-700">13.1 ft</td>
+                <td class="px-6 py-4 text-gray-700">17.5 ft</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">150" (131" wide)</td>
+                <td class="px-6 py-4 text-gray-700">4.4 ft</td>
+                <td class="px-6 py-4 text-gray-700">8.7 ft</td>
+                <td class="px-6 py-4 text-gray-700">16.4 ft</td>
+                <td class="px-6 py-4 text-gray-700">21.8 ft</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900">200" (174" wide)</td>
+                <td class="px-6 py-4 text-gray-700">5.8 ft</td>
+                <td class="px-6 py-4 text-gray-700">11.6 ft</td>
+                <td class="px-6 py-4 text-gray-700">21.8 ft</td>
+                <td class="px-6 py-4 text-gray-700">29.0 ft</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              How do I calculate projector throw distance?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">Use the formula: <strong>Throw Distance = Screen Width × Throw Ratio</strong></p>
+              <p class="mb-3">For example, a 100-inch diagonal 16:9 screen (87 inches wide) with a 1.5 throw ratio projector needs:</p>
+              <p class="font-mono bg-gray-100 p-2 rounded">87 × 1.5 = 130.5 inches (10.9 feet)</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              What is a good throw ratio for a projector?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-2"><strong>Standard throw ratio (1.5-1.8)</strong> is most versatile for home theaters:</p>
+              <ul class="list-disc ml-6 space-y-1 mb-3">
+                <li>Best image quality per dollar</li>
+                <li>Widest selection of models</li>
+                <li>Good for 12-20 ft rooms</li>
+              </ul>
+              <p><strong>Ultra short throw (0.25-0.5)</strong> is best for small rooms. <strong>Short throw (0.8-1.2)</strong> balances flexibility and price. <strong>Long throw (2.0+)</strong> is for large venues.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              How far should a projector be from a 120 inch screen?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3">For a <strong>120 inch screen</strong> (105 inches wide), placement distance depends on throw ratio:</p>
+              <ul class="space-y-2">
+                <li>• <strong>Ultra short throw (0.4):</strong> 3.5 feet</li>
+                <li>• <strong>Short throw (0.8):</strong> 7.0 feet</li>
+                <li>• <strong>Standard (1.5):</strong> 13.1 feet</li>
+                <li>• <strong>Long throw (2.0):</strong> 17.5 feet</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-lg shadow-sm overflow-hidden group">
+            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50">
+              What's the difference between short throw and ultra short throw projectors?
+              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700">
+              <p class="mb-3"><strong>Ultra short throw (UST)</strong> projectors have 0.25-0.5 throw ratio and sit <strong>8-20 inches</strong> from screen, ideal for tight spaces. Can sit on TV stand below screen.</p>
+              <p><strong>Short throw</strong> projectors have 0.8-1.2 ratio and need <strong>3-8 feet</strong> distance, offering better value than UST with good flexibility. Better for medium-sized rooms.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Guides -->
+    <section class="py-12 lg:py-16 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+          Related Guides
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <a href="/blog/understanding-projector-throw-ratios/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium mb-3">
+                Projector Guide
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600">
+                Understanding Projector Throw Ratios
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Complete guide to throw ratios with formulas, projector categories, and room planning tips.
+              </p>
+              <span class="text-indigo-600 text-sm font-medium">Read Guide →</span>
+            </div>
+          </a>
+
+          <a href="/tv-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium mb-3">
+                Calculator Tool
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600">
+                TV Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Calculate optimal TV size and viewing distance based on THX and SMPTE standards.
+              </p>
+              <span class="text-indigo-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+
+          <a href="/monitor-size-calculator/" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
+            <div class="p-6">
+              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium mb-3">
+                Calculator Tool
+              </span>
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600">
+                Monitor Size Calculator
+              </h3>
+              <p class="text-gray-600 text-sm mb-3">
+                Find the perfect monitor size and resolution for your desk setup and viewing distance.
+              </p>
+              <span class="text-indigo-600 text-sm font-medium">Try Calculator →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+          Ready to Set Up Your Projector?
+        </h2>
+        <p class="text-indigo-100 mb-8 max-w-2xl mx-auto">
+          Use our calculator above to get instant throw distance and wall width requirements for any screen size and projector type.
+        </p>
+        <a
+          href="#calculator"
+          class="inline-flex items-center gap-2 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg hover:bg-indigo-50 transition-colors"
+        >
+          Use Calculator Now
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>
+
+<script>
+  // Auto-switch to Projector mode when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const projectorButton = document.querySelector('[aria-label="Projector mode"]') as HTMLButtonElement;
+      if (projectorButton && projectorButton.getAttribute('aria-selected') !== 'true') {
+        projectorButton.click();
+      }
+    }, 100);
+  });
+</script>
