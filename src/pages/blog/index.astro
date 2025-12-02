@@ -25,12 +25,12 @@ function estimateReadTime(content: string) {
 
   <main class="flex-1">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-b from-primary-50 to-white py-12 lg:py-16">
+    <section class="bg-gradient-to-b from-primary-50 to-white py-12 lg:py-16 dark:from-gray-800 dark:to-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Screen Size Guides & Blog
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Expert advice on choosing the perfect TV, monitor, or projector for your space.
         </p>
       </div>
@@ -41,22 +41,22 @@ function estimateReadTime(content: string) {
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {sortedBlogs.map((post) => (
-            <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+            <article class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
               <div class="p-6">
                 <div class="flex items-center justify-between mb-3">
-                  <span class="text-xs font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                  <span class="text-xs font-medium text-primary-600 bg-primary-50 dark:text-primary-400 dark:bg-gray-700 px-3 py-1 rounded-full">
                     {post.data.category}
                   </span>
-                  <span class="text-xs text-gray-500">{estimateReadTime(post.body)}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{estimateReadTime(post.body)}</span>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 hover:text-primary-600 dark:hover:text-primary-400">
                   <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
                 </h2>
-                <p class="text-gray-600 text-sm mb-4">
+                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   {post.data.description}
                 </p>
                 <div class="flex items-center justify-between">
-                  <time class="text-xs text-gray-500" datetime={post.data.pubDate}>
+                  <time class="text-xs text-gray-500 dark:text-gray-400" datetime={post.data.pubDate}>
                     {new Date(post.data.pubDate).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
@@ -65,7 +65,7 @@ function estimateReadTime(content: string) {
                   </time>
                   <a
                     href={`/blog/${post.slug}/`}
-                    class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1"
+                    class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 font-medium text-sm flex items-center gap-1"
                   >
                     Read More
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
