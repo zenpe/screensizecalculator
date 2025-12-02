@@ -1,7 +1,69 @@
 import { useState, useMemo } from 'react';
 
-// Common aspect ratios
-const ASPECT_RATIOS = [
+// Device modes
+type DeviceMode = 'phone' | 'monitor' | 'tv' | 'projector';
+
+interface DeviceModeConfig {
+  label: string;
+  icon: string;
+  defaultDiagonal: string;
+  defaultResolution: string;
+  referenceType: 'creditCard' | 'hand' | 'human';
+  highlightPPI: boolean;
+  showWallWidth: boolean;
+  shopLabel: string;
+  shopKeyword: string;
+}
+
+const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
+  phone: {
+    label: 'Phone',
+    icon: '📱',
+    defaultDiagonal: '6.1',
+    defaultResolution: '1170 x 2532 (iPhone 14)',
+    referenceType: 'hand',
+    highlightPPI: true,
+    showWallWidth: false,
+    shopLabel: 'Shop Phones',
+    shopKeyword: 'smartphone',
+  },
+  monitor: {
+    label: 'Monitor',
+    icon: '🖥️',
+    defaultDiagonal: '27',
+    defaultResolution: '2560 x 1440 (QHD)',
+    referenceType: 'creditCard',
+    highlightPPI: false,
+    showWallWidth: false,
+    shopLabel: 'Shop Monitors',
+    shopKeyword: 'monitor',
+  },
+  tv: {
+    label: 'TV',
+    icon: '📺',
+    defaultDiagonal: '55',
+    defaultResolution: '3840 x 2160 (4K UHD)',
+    referenceType: 'human',
+    highlightPPI: false,
+    showWallWidth: false,
+    shopLabel: 'Shop TVs',
+    shopKeyword: 'tv 4k',
+  },
+  projector: {
+    label: 'Projector',
+    icon: '📽️',
+    defaultDiagonal: '100',
+    defaultResolution: '3840 x 2160 (4K UHD)',
+    referenceType: 'human',
+    highlightPPI: false,
+    showWallWidth: true,
+    shopLabel: 'Shop Projectors & Screens',
+    shopKeyword: 'projector 4k',
+  },
+};
+
+// Common aspect ratios for monitors/TVs
+const ASPECT_RATIOS_DISPLAY = [
   { label: '16:9 (Widescreen)', value: '16:9', ratio: 16 / 9 },
   { label: '16:10 (Desktop)', value: '16:10', ratio: 16 / 10 },
   { label: '4:3 (Standard)', value: '4:3', ratio: 4 / 3 },
@@ -12,8 +74,26 @@ const ASPECT_RATIOS = [
   { label: 'Custom', value: 'custom', ratio: null },
 ];
 
-// Common resolutions
-const RESOLUTIONS = [
+// Common aspect ratios for phones (tall/portrait orientation)
+const ASPECT_RATIOS_PHONE = [
+  { label: '19.5:9 (iPhone 14/15)', value: '19.5:9', ratio: 9 / 19.5 },
+  { label: '20:9 (Android Standard)', value: '20:9', ratio: 9 / 20 },
+  { label: '21:9 (Sony Xperia)', value: '21:9-phone', ratio: 9 / 21 },
+  { label: '19:9 (Older iPhones)', value: '19:9', ratio: 9 / 19 },
+  { label: '18.5:9 (Samsung Galaxy)', value: '18.5:9', ratio: 9 / 18.5 },
+  { label: '16:9 (Older Phones)', value: '16:9-phone', ratio: 9 / 16 },
+  { label: 'Custom', value: 'custom', ratio: null },
+];
+
+const ASPECT_RATIOS_BY_MODE: Record<DeviceMode, typeof ASPECT_RATIOS_DISPLAY> = {
+  phone: ASPECT_RATIOS_PHONE,
+  monitor: ASPECT_RATIOS_DISPLAY,
+  tv: ASPECT_RATIOS_DISPLAY,
+  projector: ASPECT_RATIOS_DISPLAY,
+};
+
+// Common resolutions by device type
+const RESOLUTIONS_MONITOR = [
   { label: '1920 x 1080 (Full HD)', width: 1920, height: 1080 },
   { label: '2560 x 1440 (QHD)', width: 2560, height: 1440 },
   { label: '3840 x 2160 (4K UHD)', width: 3840, height: 2160 },
@@ -25,6 +105,40 @@ const RESOLUTIONS = [
   { label: 'Custom', width: 0, height: 0 },
 ];
 
+const RESOLUTIONS_PHONE = [
+  { label: '1170 x 2532 (iPhone 14)', width: 1170, height: 2532 },
+  { label: '1179 x 2556 (iPhone 15 Pro)', width: 1179, height: 2556 },
+  { label: '1290 x 2796 (iPhone 15 Pro Max)', width: 1290, height: 2796 },
+  { label: '1080 x 2400 (Android FHD+)', width: 1080, height: 2400 },
+  { label: '1440 x 3200 (Android QHD+)', width: 1440, height: 3200 },
+  { label: '1080 x 2340 (Pixel 7)', width: 1080, height: 2340 },
+  { label: '1440 x 3120 (Pixel 7 Pro)', width: 1440, height: 3120 },
+  { label: 'Custom', width: 0, height: 0 },
+];
+
+const RESOLUTIONS_TV = [
+  { label: '3840 x 2160 (4K UHD)', width: 3840, height: 2160 },
+  { label: '1920 x 1080 (Full HD)', width: 1920, height: 1080 },
+  { label: '7680 x 4320 (8K)', width: 7680, height: 4320 },
+  { label: '1280 x 720 (720p)', width: 1280, height: 720 },
+  { label: 'Custom', width: 0, height: 0 },
+];
+
+const RESOLUTIONS_PROJECTOR = [
+  { label: '3840 x 2160 (4K UHD)', width: 3840, height: 2160 },
+  { label: '1920 x 1080 (Full HD)', width: 1920, height: 1080 },
+  { label: '1280 x 720 (720p)', width: 1280, height: 720 },
+  { label: '1920 x 1200 (WUXGA)', width: 1920, height: 1200 },
+  { label: 'Custom', width: 0, height: 0 },
+];
+
+const RESOLUTIONS_BY_MODE: Record<DeviceMode, typeof RESOLUTIONS_MONITOR> = {
+  phone: RESOLUTIONS_PHONE,
+  monitor: RESOLUTIONS_MONITOR,
+  tv: RESOLUTIONS_TV,
+  projector: RESOLUTIONS_PROJECTOR,
+};
+
 interface CalculationResults {
   width: number;
   height: number;
@@ -34,15 +148,119 @@ interface CalculationResults {
   pixelPitch: number;
 }
 
+// Reference SVG Components
+const CreditCardSVG = ({ width }: { width: number }) => (
+  <svg
+    width={width}
+    height={width * 0.63}
+    viewBox="0 0 68 43"
+    className="drop-shadow transition-all duration-300"
+  >
+    <rect x="0" y="0" width="68" height="43" rx="4" fill="url(#cardGradient)" stroke="#4B5563" strokeWidth="1" />
+    <rect x="8" y="12" width="12" height="10" rx="2" fill="#D4AF37" opacity="0.9" />
+    <line x1="10" y1="15" x2="18" y2="15" stroke="#B8860B" strokeWidth="0.5" />
+    <line x1="10" y1="17" x2="18" y2="17" stroke="#B8860B" strokeWidth="0.5" />
+    <line x1="10" y1="19" x2="18" y2="19" stroke="#B8860B" strokeWidth="0.5" />
+    <rect x="0" y="28" width="68" height="6" fill="#1F2937" opacity="0.8" />
+    <circle cx="56" cy="14" r="6" fill="#EB001B" opacity="0.9" />
+    <circle cx="62" cy="14" r="6" fill="#F79E1B" opacity="0.7" />
+    <defs>
+      <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#374151" />
+        <stop offset="50%" stopColor="#4B5563" />
+        <stop offset="100%" stopColor="#374151" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const HandHoldingPhoneSVG = ({ width }: { width: number }) => (
+  <svg
+    width={width}
+    height={width * 1.8}
+    viewBox="0 0 60 108"
+    className="drop-shadow transition-all duration-300"
+  >
+    {/* Hand */}
+    <ellipse cx="30" cy="85" rx="22" ry="18" fill="#E5C4A8" />
+    <ellipse cx="30" cy="95" rx="18" ry="10" fill="#D4A574" />
+    {/* Thumb */}
+    <ellipse cx="8" cy="65" rx="6" ry="14" fill="#E5C4A8" transform="rotate(-15 8 65)" />
+    {/* Fingers wrapped around */}
+    <rect x="48" y="40" width="8" height="35" rx="4" fill="#E5C4A8" />
+    <rect x="50" y="50" width="6" height="30" rx="3" fill="#D4A574" opacity="0.5" />
+    {/* Phone body */}
+    <rect x="12" y="5" width="36" height="70" rx="6" fill="#1F2937" stroke="#374151" strokeWidth="1.5" />
+    {/* Phone screen */}
+    <rect x="14" y="10" width="32" height="60" rx="3" fill="url(#phoneScreen)" />
+    {/* Notch */}
+    <rect x="22" y="12" width="16" height="4" rx="2" fill="#111827" />
+    {/* Home indicator */}
+    <rect x="22" y="64" width="16" height="3" rx="1.5" fill="#374151" />
+    <defs>
+      <linearGradient id="phoneScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#3B82F6" />
+        <stop offset="50%" stopColor="#1D4ED8" />
+        <stop offset="100%" stopColor="#1E40AF" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const HumanSilhouetteSVG = ({ height }: { height: number }) => (
+  <svg
+    width={height * 0.35}
+    height={height}
+    viewBox="0 0 35 100"
+    className="drop-shadow transition-all duration-300"
+  >
+    {/* Head */}
+    <circle cx="17.5" cy="10" r="8" fill="#6B7280" />
+    {/* Neck */}
+    <rect x="14" y="17" width="7" height="5" fill="#6B7280" />
+    {/* Body/Torso */}
+    <path d="M7 22 L28 22 L25 55 L10 55 Z" fill="#6B7280" />
+    {/* Left arm */}
+    <path d="M7 22 Q2 35 4 48" stroke="#6B7280" strokeWidth="5" fill="none" strokeLinecap="round" />
+    {/* Right arm */}
+    <path d="M28 22 Q33 35 31 48" stroke="#6B7280" strokeWidth="5" fill="none" strokeLinecap="round" />
+    {/* Left leg */}
+    <path d="M10 55 L8 100" stroke="#6B7280" strokeWidth="6" strokeLinecap="round" />
+    {/* Right leg */}
+    <path d="M25 55 L27 100" stroke="#6B7280" strokeWidth="6" strokeLinecap="round" />
+  </svg>
+);
+
 export default function ScreenSizeCalculator() {
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>('monitor');
   const [diagonal, setDiagonal] = useState<string>('27');
   const [aspectRatioSelect, setAspectRatioSelect] = useState<string>('16:9');
   const [customRatioW, setCustomRatioW] = useState<string>('16');
   const [customRatioH, setCustomRatioH] = useState<string>('9');
-  const [resolutionSelect, setResolutionSelect] = useState<string>('1920 x 1080 (Full HD)');
+  const [resolutionSelect, setResolutionSelect] = useState<string>('2560 x 1440 (QHD)');
   const [customResW, setCustomResW] = useState<string>('1920');
   const [customResH, setCustomResH] = useState<string>('1080');
   const [unit, setUnit] = useState<'inches' | 'cm'>('inches');
+  const [throwRatio, setThrowRatio] = useState<string>('1.5'); // Projector throw ratio
+
+  // Get current device config
+  const deviceConfig = DEVICE_CONFIGS[deviceMode];
+  const currentResolutions = RESOLUTIONS_BY_MODE[deviceMode];
+  const currentAspectRatios = ASPECT_RATIOS_BY_MODE[deviceMode];
+
+  // Handle device mode change
+  const handleDeviceModeChange = (newMode: DeviceMode) => {
+    setDeviceMode(newMode);
+    const config = DEVICE_CONFIGS[newMode];
+    setDiagonal(config.defaultDiagonal);
+    setResolutionSelect(config.defaultResolution);
+    // Reset aspect ratio based on device
+    if (newMode === 'phone') {
+      setAspectRatioSelect('19.5:9'); // iPhone 14/15 default
+    } else {
+      setAspectRatioSelect('16:9');
+    }
+  };
 
   // Get current aspect ratio
   const aspectRatio = useMemo(() => {
@@ -51,8 +269,8 @@ export default function ScreenSizeCalculator() {
       const h = parseFloat(customRatioH) || 9;
       return w / h;
     }
-    return ASPECT_RATIOS.find(ar => ar.value === aspectRatioSelect)?.ratio || 16 / 9;
-  }, [aspectRatioSelect, customRatioW, customRatioH]);
+    return currentAspectRatios.find(ar => ar.value === aspectRatioSelect)?.ratio || 16 / 9;
+  }, [aspectRatioSelect, customRatioW, customRatioH, currentAspectRatios]);
 
   // Get current resolution
   const resolution = useMemo(() => {
@@ -62,9 +280,9 @@ export default function ScreenSizeCalculator() {
         height: parseInt(customResH) || 1080,
       };
     }
-    const res = RESOLUTIONS.find(r => r.label === resolutionSelect);
+    const res = currentResolutions.find(r => r.label === resolutionSelect);
     return res || { width: 1920, height: 1080 };
-  }, [resolutionSelect, customResW, customResH]);
+  }, [resolutionSelect, customResW, customResH, currentResolutions]);
 
   // Convert input diagonal to inches for internal calculations
   const diagonalInInches = useMemo(() => {
@@ -112,22 +330,105 @@ export default function ScreenSizeCalculator() {
     };
   }, [diagonalInInches, aspectRatio, resolution]);
 
-  // Screen always fills ~70% of container, credit card scales relative to screen
-  // Credit card is 3.375" x 2.125" (standard ISO/IEC 7810 ID-1), diagonal ≈ 3.98"
+  // Reference object sizes based on device mode
+  // Credit card: 3.375" x 2.125" (diagonal ≈ 3.98")
+  // Average phone: ~6.1" diagonal
+  // Average human height: 5'7" (67") - we use this for scale
   const creditCardDiagonal = 3.98; // inches
-  const screenToCreditCardRatio = diagonalInInches / creditCardDiagonal;
+  const phoneDiagonal = 6.1; // inches
+  const humanHeight = 67; // inches (5'7")
 
-  // Credit card visual size: scales inversely with screen size
-  // At 27" screen, card is ~50px wide; at 85" screen, card is ~16px wide
-  const creditCardWidth = useMemo(() => {
-    if (!diagonalInInches) return 50;
-    // Base size at 27" = 50px, scale down as screen gets larger
-    const baseSize = 50;
-    const baseScreenSize = 27;
-    const scaledSize = baseSize * (baseScreenSize / diagonalInInches);
-    // Clamp between 12px and 68px
-    return Math.max(12, Math.min(68, scaledSize));
-  }, [diagonalInInches]);
+  const screenToCreditCardRatio = diagonalInInches / creditCardDiagonal;
+  const screenToPhoneRatio = diagonalInInches / phoneDiagonal;
+  const screenToHumanRatio = diagonalInInches / humanHeight;
+
+  // Reference visual sizes based on device mode
+  const referenceSize = useMemo(() => {
+    if (!diagonalInInches) return { width: 50, height: 80, ratio: 1 };
+
+    const refType = deviceConfig.referenceType;
+
+    switch (refType) {
+      case 'creditCard': {
+        // Credit card: Base size at 27" = 50px wide
+        const baseSize = 50;
+        const baseScreenSize = 27;
+        const scaledWidth = baseSize * (baseScreenSize / diagonalInInches);
+        return {
+          width: Math.max(12, Math.min(68, scaledWidth)),
+          height: Math.max(12, Math.min(68, scaledWidth)) * 0.63,
+          ratio: screenToCreditCardRatio
+        };
+      }
+      case 'hand': {
+        // Hand with phone: Base size at 6.1" = 45px wide
+        const baseSize = 45;
+        const baseScreenSize = 6.1;
+        const scaledWidth = baseSize * (baseScreenSize / diagonalInInches);
+        return {
+          width: Math.max(20, Math.min(60, scaledWidth)),
+          height: Math.max(20, Math.min(60, scaledWidth)) * 1.8,
+          ratio: screenToPhoneRatio
+        };
+      }
+      case 'human': {
+        // Human silhouette: Base height at 55" TV = 120px
+        const baseHeight = 120;
+        const baseScreenSize = 55;
+        const scaledHeight = baseHeight * (baseScreenSize / diagonalInInches);
+        return {
+          width: Math.max(25, Math.min(150, scaledHeight)) * 0.35,
+          height: Math.max(25, Math.min(150, scaledHeight)),
+          ratio: screenToHumanRatio
+        };
+      }
+      default:
+        return { width: 50, height: 80, ratio: 1 };
+    }
+  }, [diagonalInInches, deviceConfig.referenceType, screenToCreditCardRatio, screenToPhoneRatio, screenToHumanRatio]);
+
+  // For projector mode: calculate throw distance and wall width
+  const projectorCalcs = useMemo(() => {
+    if (!results || deviceMode !== 'projector') return null;
+
+    const ratio = parseFloat(throwRatio) || 1.5;
+    // Throw Distance = Screen Width × Throw Ratio
+    const throwDistance = results.width * ratio;
+    // Minimum wall width (add 10% margin on each side)
+    const minWallWidth = results.width * 1.2;
+
+    return {
+      throwDistance,
+      minWallWidth,
+      throwRatio: ratio,
+    };
+  }, [results, deviceMode, throwRatio]);
+
+  // For TV mode: calculate recommended viewing distance
+  // Based on THX and SMPTE standards for optimal viewing
+  const tvViewingCalcs = useMemo(() => {
+    if (!results || deviceMode !== 'tv') return null;
+
+    // Different standards for viewing distance:
+    // THX recommends 40° viewing angle (closer): ~1.2x screen diagonal
+    // SMPTE recommends 30° viewing angle: ~1.6x screen diagonal
+    // General comfortable range: 1.5x - 2.5x screen diagonal
+
+    const minDistance = diagonalInInches * 1.2; // THX (immersive)
+    const maxDistance = diagonalInInches * 2.5; // Comfortable max
+    const optimalDistance = diagonalInInches * 1.6; // SMPTE sweet spot
+
+    // For 4K resolution, you can sit closer
+    const is4K = resolution.width >= 3840;
+    const adjustedMin = is4K ? diagonalInInches * 1.0 : minDistance;
+
+    return {
+      minDistance: adjustedMin,
+      optimalDistance,
+      maxDistance,
+      is4K,
+    };
+  }, [results, deviceMode, diagonalInInches, resolution.width]);
 
   // Format number
   const formatNum = (num: number, decimals: number = 2) => {
@@ -147,36 +448,52 @@ export default function ScreenSizeCalculator() {
 
   const unitLabel = unit === 'inches' ? 'in' : 'cm';
 
-  // Generate Amazon search URL and label based on screen size
+  // Generate Amazon search URL and label based on device mode and screen size
   const getAmazonInfo = () => {
-    if (!diagonalInInches) return { url: 'https://www.amazon.com/s?k=monitor', label: 'Shop Monitors' };
+    const config = deviceConfig;
 
-    if (diagonalInInches < 32) {
-      // Small screens -> Monitors
-      const sizes = [24, 27, 32];
-      const nearest = sizes.reduce((prev, curr) =>
-        Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
-      );
+    if (!diagonalInInches) {
       return {
-        url: `https://www.amazon.com/s?k=${nearest}+inch+monitor+4k`,
-        label: `Shop ${nearest}" Monitors`
+        url: `https://www.amazon.com/s?k=${config.shopKeyword}`,
+        label: config.shopLabel
       };
-    } else if (diagonalInInches <= 85) {
-      // Medium to large -> TVs
-      const sizes = [32, 40, 43, 50, 55, 65, 75, 85];
-      const nearest = sizes.reduce((prev, curr) =>
-        Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
-      );
-      return {
-        url: `https://www.amazon.com/s?k=${nearest}+inch+tv+4k`,
-        label: `Shop ${nearest}" TVs`
-      };
-    } else {
-      // Very large -> Projectors
-      return {
-        url: 'https://www.amazon.com/s?k=4k+projector+home+theater',
-        label: 'Shop 4K Projectors'
-      };
+    }
+
+    switch (deviceMode) {
+      case 'phone': {
+        return {
+          url: 'https://www.amazon.com/s?k=smartphone+unlocked',
+          label: 'Shop Smartphones'
+        };
+      }
+      case 'monitor': {
+        const sizes = [24, 27, 32, 34];
+        const nearest = sizes.reduce((prev, curr) =>
+          Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
+        );
+        return {
+          url: `https://www.amazon.com/s?k=${nearest}+inch+monitor+4k`,
+          label: `Shop ${nearest}" Monitors`
+        };
+      }
+      case 'tv': {
+        const sizes = [32, 40, 43, 50, 55, 65, 75, 85];
+        const nearest = sizes.reduce((prev, curr) =>
+          Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
+        );
+        return {
+          url: `https://www.amazon.com/s?k=${nearest}+inch+tv+4k`,
+          label: `Shop ${nearest}" TVs`
+        };
+      }
+      case 'projector': {
+        return {
+          url: 'https://www.amazon.com/s?k=4k+projector+home+theater',
+          label: 'Shop Projectors & Screens'
+        };
+      }
+      default:
+        return { url: 'https://www.amazon.com', label: 'Shop on Amazon' };
     }
   };
 
@@ -190,6 +507,26 @@ export default function ScreenSizeCalculator() {
         <p className="text-primary-100 text-sm mt-1">
           Calculate display dimensions, PPI, and more
         </p>
+      </div>
+
+      {/* Device Mode Tabs - Segmented Control */}
+      <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="flex bg-gray-200 rounded-lg p-1 gap-1">
+          {(Object.keys(DEVICE_CONFIGS) as DeviceMode[]).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => handleDeviceModeChange(mode)}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                deviceMode === mode
+                  ? 'bg-white text-primary-700 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              <span className="text-base">{DEVICE_CONFIGS[mode].icon}</span>
+              <span className="hidden sm:inline">{DEVICE_CONFIGS[mode].label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Main Layout */}
@@ -234,7 +571,7 @@ export default function ScreenSizeCalculator() {
                 onChange={(e) => setAspectRatioSelect(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
               >
-                {ASPECT_RATIOS.map((ar) => (
+                {currentAspectRatios.map((ar) => (
                   <option key={ar.value} value={ar.value}>
                     {ar.label}
                   </option>
@@ -273,7 +610,7 @@ export default function ScreenSizeCalculator() {
                 onChange={(e) => setResolutionSelect(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
               >
-                {RESOLUTIONS.map((res) => (
+                {currentResolutions.map((res) => (
                   <option key={res.label} value={res.label}>
                     {res.label}
                   </option>
@@ -301,12 +638,60 @@ export default function ScreenSizeCalculator() {
                 </div>
               )}
             </div>
+
+            {/* Throw Ratio - Projector Mode Only */}
+            {deviceMode === 'projector' && (
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Throw Ratio
+                  <span className="ml-1 text-gray-400 font-normal">(distance ÷ width)</span>
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    value={throwRatio}
+                    onChange={(e) => setThrowRatio(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm"
+                  >
+                    <option value="0.5">0.5 (Ultra Short Throw)</option>
+                    <option value="0.8">0.8 (Short Throw)</option>
+                    <option value="1.2">1.2 (Short Throw)</option>
+                    <option value="1.5">1.5 (Standard)</option>
+                    <option value="1.8">1.8 (Standard)</option>
+                    <option value="2.0">2.0 (Long Throw)</option>
+                    <option value="2.5">2.5 (Long Throw)</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                {throwRatio === 'custom' && (
+                  <input
+                    type="number"
+                    value={throwRatio}
+                    onChange={(e) => setThrowRatio(e.target.value)}
+                    className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    placeholder="1.5"
+                    min="0.1"
+                    max="5"
+                    step="0.1"
+                  />
+                )}
+              </div>
+            )}
           </div>
 
           {/* Results Section */}
           <div className="mt-3 bg-gray-50 rounded-lg p-3">
             {results ? (
               <div className="space-y-2">
+                {/* PPI Highlight for Phone Mode */}
+                {deviceConfig.highlightPPI && (
+                  <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg p-3 text-center shadow-md mb-2">
+                    <p className="text-[10px] text-white/80 uppercase font-medium tracking-wide">Pixel Density</p>
+                    <p className="text-2xl font-bold text-white">{formatNum(results.ppi, 0)} <span className="text-lg">PPI</span></p>
+                    <p className="text-[10px] text-white/70 mt-1">
+                      {results.ppi >= 400 ? 'Retina-class display' : results.ppi >= 300 ? 'Sharp display' : 'Standard display'}
+                    </p>
+                  </div>
+                )}
                 {/* Stats Grid - 2x3 */}
                 <div className="grid grid-cols-3 gap-1.5">
                   <div className="bg-white rounded p-2 border border-gray-200 text-center">
@@ -317,10 +702,18 @@ export default function ScreenSizeCalculator() {
                     <p className="text-[9px] text-gray-500 uppercase">Height</p>
                     <p className="text-sm font-bold text-primary-600">{displayValue(results.height)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">{unitLabel}</span></p>
                   </div>
-                  <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded p-2 border border-accent-200 text-center">
-                    <p className="text-[9px] text-accent-700 uppercase">PPI</p>
-                    <p className="text-sm font-bold text-accent-600">{formatNum(results.ppi, 0)}</p>
-                  </div>
+                  {!deviceConfig.highlightPPI && (
+                    <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded p-2 border border-accent-200 text-center">
+                      <p className="text-[9px] text-accent-700 uppercase">PPI</p>
+                      <p className="text-sm font-bold text-accent-600">{formatNum(results.ppi, 0)}</p>
+                    </div>
+                  )}
+                  {deviceConfig.highlightPPI && (
+                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
+                      <p className="text-[9px] text-gray-500 uppercase">Pitch</p>
+                      <p className="text-xs font-semibold text-gray-700">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">mm</span></p>
+                    </div>
+                  )}
                   <div className="bg-white rounded p-2 border border-gray-200 text-center">
                     <p className="text-[9px] text-gray-500 uppercase">Area</p>
                     <p className="text-xs font-semibold text-gray-700">{unit === 'cm' ? formatNum(results.area * 6.4516, 0) : formatNum(results.area, 0)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">{unit === 'cm' ? 'cm²' : 'in²'}</span></p>
@@ -329,11 +722,91 @@ export default function ScreenSizeCalculator() {
                     <p className="text-[9px] text-gray-500 uppercase">Pixels</p>
                     <p className="text-xs font-semibold text-gray-700">{(results.totalPixels / 1000000).toFixed(1)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">MP</span></p>
                   </div>
-                  <div className="bg-white rounded p-2 border border-gray-200 text-center">
-                    <p className="text-[9px] text-gray-500 uppercase">Pitch</p>
-                    <p className="text-xs font-semibold text-gray-700">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">mm</span></p>
-                  </div>
+                  {!deviceConfig.highlightPPI && (
+                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
+                      <p className="text-[9px] text-gray-500 uppercase">Pitch</p>
+                      <p className="text-xs font-semibold text-gray-700">{formatNum(results.pixelPitch, 2)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">mm</span></p>
+                    </div>
+                  )}
+                  {deviceConfig.highlightPPI && (
+                    <div className="bg-white rounded p-2 border border-gray-200 text-center">
+                      <p className="text-[9px] text-gray-500 uppercase">Diagonal</p>
+                      <p className="text-xs font-semibold text-gray-700">{formatNum(diagonalInInches, 1)}<span className="text-[9px] font-normal text-gray-400 ml-0.5">in</span></p>
+                    </div>
+                  )}
                 </div>
+
+                {/* Projector Mode - Throw Distance Card */}
+                {projectorCalcs && (
+                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-3 shadow-md">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="text-[10px] text-white/80 uppercase font-medium tracking-wide">Throw Distance</p>
+                        <p className="text-xl font-bold text-white">
+                          {displayValue(projectorCalcs.throwDistance)} <span className="text-sm">{unitLabel}</span>
+                        </p>
+                        <p className="text-[10px] text-white/60 mt-0.5">
+                          {unit === 'inches'
+                            ? `≈ ${formatNum(projectorCalcs.throwDistance / 12, 1)} ft`
+                            : `≈ ${formatNum(projectorCalcs.throwDistance / 100, 1)} m`
+                          }
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-white/80 uppercase font-medium tracking-wide">Min Wall Width</p>
+                        <p className="text-lg font-bold text-white">
+                          {displayValue(projectorCalcs.minWallWidth)} <span className="text-xs">{unitLabel}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-white/20">
+                      <p className="text-[9px] text-white/60">
+                        Projector should be placed {displayValue(projectorCalcs.throwDistance)} {unitLabel} from the screen
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* TV Mode - Viewing Distance Card */}
+                {tvViewingCalcs && (
+                  <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg p-3 shadow-md">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="text-[10px] text-white/80 uppercase font-medium tracking-wide">
+                          Optimal Viewing Distance
+                        </p>
+                        <p className="text-xl font-bold text-white">
+                          {unit === 'inches'
+                            ? `${formatNum(tvViewingCalcs.optimalDistance / 12, 1)} ft`
+                            : `${formatNum(tvViewingCalcs.optimalDistance * 2.54 / 100, 1)} m`
+                          }
+                        </p>
+                        <p className="text-[10px] text-white/60 mt-0.5">
+                          ({displayValue(tvViewingCalcs.optimalDistance)} {unitLabel})
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-white/80 uppercase font-medium tracking-wide">Range</p>
+                        <p className="text-sm font-bold text-white">
+                          {unit === 'inches'
+                            ? `${formatNum(tvViewingCalcs.minDistance / 12, 1)} - ${formatNum(tvViewingCalcs.maxDistance / 12, 1)} ft`
+                            : `${formatNum(tvViewingCalcs.minDistance * 2.54 / 100, 1)} - ${formatNum(tvViewingCalcs.maxDistance * 2.54 / 100, 1)} m`
+                          }
+                        </p>
+                        {tvViewingCalcs.is4K && (
+                          <span className="inline-block mt-1 px-1.5 py-0.5 bg-white/20 rounded text-[8px] text-white/90">
+                            4K: Sit Closer OK
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-white/20">
+                      <p className="text-[9px] text-white/60">
+                        Based on THX & SMPTE standards for {tvViewingCalcs.is4K ? '4K' : 'HD'} content
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Amazon CTA */}
                 <a
@@ -367,29 +840,55 @@ export default function ScreenSizeCalculator() {
                 }}
                 preserveAspectRatio="xMidYMid meet"
               >
-                {/* Screen Bezel */}
+                {/* Screen Bezel - larger radius for phones */}
                 <rect
                   x="0"
                   y="0"
                   width={aspectRatio * 100}
                   height="100"
-                  rx="3"
-                  fill="#4B5563"
+                  rx={deviceMode === 'phone' ? 12 : 3}
+                  fill={deviceMode === 'phone' ? '#1F2937' : '#4B5563'}
                 />
-                {/* Screen Display Area */}
+                {/* Screen Display Area - larger radius for phones */}
                 <rect
-                  x="2.5"
-                  y="2.5"
-                  width={aspectRatio * 100 - 5}
-                  height="95"
-                  rx="1.5"
+                  x={deviceMode === 'phone' ? 1.5 : 2.5}
+                  y={deviceMode === 'phone' ? 1.5 : 2.5}
+                  width={aspectRatio * 100 - (deviceMode === 'phone' ? 3 : 5)}
+                  height={deviceMode === 'phone' ? 97 : 95}
+                  rx={deviceMode === 'phone' ? 10 : 1.5}
                   fill="url(#screenGradient)"
                 />
-                {/* Corner dots */}
-                <circle cx="6" cy="6" r="1" fill="#6B7280" opacity="0.4" />
-                <circle cx={aspectRatio * 100 - 6} cy="6" r="1" fill="#6B7280" opacity="0.4" />
-                <circle cx="6" cy="94" r="1" fill="#6B7280" opacity="0.4" />
-                <circle cx={aspectRatio * 100 - 6} cy="94" r="1" fill="#6B7280" opacity="0.4" />
+                {/* Dynamic Island / Notch for phones */}
+                {deviceMode === 'phone' && (
+                  <rect
+                    x={aspectRatio * 50 - 8}
+                    y="4"
+                    width="16"
+                    height="5"
+                    rx="2.5"
+                    fill="#000"
+                  />
+                )}
+                {/* Corner dots - only for non-phone */}
+                {deviceMode !== 'phone' && (
+                  <>
+                    <circle cx="6" cy="6" r="1" fill="#6B7280" opacity="0.4" />
+                    <circle cx={aspectRatio * 100 - 6} cy="6" r="1" fill="#6B7280" opacity="0.4" />
+                    <circle cx="6" cy="94" r="1" fill="#6B7280" opacity="0.4" />
+                    <circle cx={aspectRatio * 100 - 6} cy="94" r="1" fill="#6B7280" opacity="0.4" />
+                  </>
+                )}
+                {/* Home indicator for phones */}
+                {deviceMode === 'phone' && (
+                  <rect
+                    x={aspectRatio * 50 - 10}
+                    y="94"
+                    width="20"
+                    height="2.5"
+                    rx="1.25"
+                    fill="#4B5563"
+                  />
+                )}
 
                 {/* Text Content */}
                 <text
@@ -449,41 +948,84 @@ export default function ScreenSizeCalculator() {
                 </defs>
               </svg>
 
-              {/* Credit Card Reference - Scales with screen size */}
+              {/* Dynamic Reference Object - Changes based on device mode */}
               <div className="absolute bottom-3 right-3 flex flex-col items-end">
                 <div className="relative group">
-                  <svg
-                    width={creditCardWidth}
-                    height={creditCardWidth * 0.63}
-                    viewBox="0 0 68 43"
-                    className="drop-shadow transition-all duration-300"
-                  >
-                    <rect x="0" y="0" width="68" height="43" rx="4" fill="url(#cardGradient)" stroke="#4B5563" strokeWidth="1" />
-                    <rect x="8" y="12" width="12" height="10" rx="2" fill="#D4AF37" opacity="0.9" />
-                    <line x1="10" y1="15" x2="18" y2="15" stroke="#B8860B" strokeWidth="0.5" />
-                    <line x1="10" y1="17" x2="18" y2="17" stroke="#B8860B" strokeWidth="0.5" />
-                    <line x1="10" y1="19" x2="18" y2="19" stroke="#B8860B" strokeWidth="0.5" />
-                    <rect x="0" y="28" width="68" height="6" fill="#1F2937" opacity="0.8" />
-                    <circle cx="56" cy="14" r="6" fill="#EB001B" opacity="0.9" />
-                    <circle cx="62" cy="14" r="6" fill="#F79E1B" opacity="0.7" />
-                    <defs>
-                      <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#374151" />
-                        <stop offset="50%" stopColor="#4B5563" />
-                        <stop offset="100%" stopColor="#374151" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                  {deviceConfig.referenceType === 'creditCard' && (
+                    <CreditCardSVG width={referenceSize.width} />
+                  )}
+                  {deviceConfig.referenceType === 'hand' && (
+                    <HandHoldingPhoneSVG width={referenceSize.width} />
+                  )}
+                  {deviceConfig.referenceType === 'human' && (
+                    <HumanSilhouetteSVG height={referenceSize.height} />
+                  )}
                   {/* Tooltip */}
                   <div className="absolute bottom-full right-0 mb-1 px-2 py-1 bg-gray-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Credit Card (3.4" x 2.1")
+                    {deviceConfig.referenceType === 'creditCard' && 'Credit Card (3.4" x 2.1")'}
+                    {deviceConfig.referenceType === 'hand' && 'Average Phone (6.1")'}
+                    {deviceConfig.referenceType === 'human' && 'Average Person (5\'7")'}
                   </div>
                 </div>
                 {/* Scale Label */}
                 <p className="mt-1 text-[10px] text-gray-500">
-                  Screen = <span className="text-accent-400 font-medium">{formatNum(screenToCreditCardRatio, 0)}x</span> card
+                  {deviceConfig.referenceType === 'creditCard' && (
+                    <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> card</>
+                  )}
+                  {deviceConfig.referenceType === 'hand' && (
+                    <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> phone</>
+                  )}
+                  {deviceConfig.referenceType === 'human' && (
+                    <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> person height</>
+                  )}
                 </p>
               </div>
+
+              {/* Projector Info Overlay */}
+              {projectorCalcs && (
+                <div className="absolute bottom-3 left-3 bg-gray-800/90 rounded-lg px-3 py-2 border border-gray-600 backdrop-blur-sm">
+                  <div className="flex gap-4">
+                    <div>
+                      <p className="text-[8px] text-gray-400 uppercase">Throw Distance</p>
+                      <p className="text-sm font-bold text-indigo-400">
+                        {displayValue(projectorCalcs.throwDistance)} {unitLabel}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[8px] text-gray-400 uppercase">Wall Width</p>
+                      <p className="text-sm font-bold text-amber-400">
+                        {displayValue(projectorCalcs.minWallWidth)} {unitLabel}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TV Viewing Distance Overlay */}
+              {tvViewingCalcs && (
+                <div className="absolute bottom-3 left-3 bg-gray-800/90 rounded-lg px-3 py-2 border border-gray-600 backdrop-blur-sm">
+                  <div className="flex gap-4">
+                    <div>
+                      <p className="text-[8px] text-gray-400 uppercase">Best Distance</p>
+                      <p className="text-sm font-bold text-emerald-400">
+                        {unit === 'inches'
+                          ? `${formatNum(tvViewingCalcs.optimalDistance / 12, 1)} ft`
+                          : `${formatNum(tvViewingCalcs.optimalDistance * 2.54 / 100, 1)} m`
+                        }
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[8px] text-gray-400 uppercase">Range</p>
+                      <p className="text-sm font-bold text-teal-400">
+                        {unit === 'inches'
+                          ? `${formatNum(tvViewingCalcs.minDistance / 12, 1)}-${formatNum(tvViewingCalcs.maxDistance / 12, 1)} ft`
+                          : `${formatNum(tvViewingCalcs.minDistance * 2.54 / 100, 1)}-${formatNum(tvViewingCalcs.maxDistance * 2.54 / 100, 1)} m`
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center relative">
