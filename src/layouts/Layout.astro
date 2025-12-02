@@ -6,13 +6,15 @@ interface Props {
   description: string;
   canonical?: string;
   ogImage?: string;
+  keywords?: string;
 }
 
 const {
   title,
   description,
   canonical = Astro.url.href,
-  ogImage = '/og-image.png'
+  ogImage = '/og-image.png',
+  keywords = 'screen size calculator, tv size calculator, monitor dimensions, ppi calculator, aspect ratio calculator, viewing distance calculator, projector throw distance, 4k tv size, phone screen size, iphone screen size, android screen size'
 } = Astro.props;
 
 const siteUrl = 'https://screensizecalculator.net';
@@ -31,6 +33,7 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonical} />
 
@@ -49,9 +52,10 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={fullOgImage} />
 
-    <!-- Preconnect to Google Fonts -->
+    <!-- Preconnect and Preload for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen flex flex-col">

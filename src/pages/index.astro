@@ -4,8 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 
-const title = 'Screen Size Calculator - Calculate Display Dimensions, PPI & Aspect Ratio';
-const description = 'Free online screen size calculator. Calculate your TV, monitor, or laptop display dimensions, PPI (pixels per inch), and aspect ratio instantly. Enter diagonal size and get accurate measurements.';
+const title = 'Screen Size Calculator - TV, Monitor, Phone Display Dimensions | Free PPI Tool';
+const description = 'Free screen size calculator for TV, monitor, phone & projector. Calculate dimensions, viewing distance, PPI, throw distance & aspect ratio. Supports 4K, iPhone, Android & all display types.';
 
 // Structured data for SEO
 const structuredData = {
@@ -22,11 +22,16 @@ const structuredData = {
     "priceCurrency": "USD"
   },
   "featureList": [
-    "Calculate screen width and height from diagonal",
-    "PPI (Pixels Per Inch) calculation",
-    "Support for multiple aspect ratios",
-    "Custom resolution input",
-    "Metric and imperial units"
+    "Phone mode with iPhone & Android aspect ratios (19.5:9, 20:9, 21:9)",
+    "TV mode with optimal viewing distance calculator (THX & SMPTE standards)",
+    "Projector mode with throw distance and wall width calculator",
+    "Monitor mode with standard display ratios (16:9, 16:10, 21:9, 32:9)",
+    "4K vs HD viewing distance recommendations",
+    "PPI (Pixels Per Inch) calculation and retina display detection",
+    "Support for multiple aspect ratios and custom ratios",
+    "Metric and imperial units (inches, cm, feet, meters)",
+    "Real-time visual screen size comparison",
+    "Amazon shopping links for recommended screen sizes"
   ]
 };
 
@@ -57,6 +62,58 @@ const faqData = {
         "@type": "Answer",
         "text": "16:9 is the most common aspect ratio for monitors and TVs, used for HD, Full HD, and 4K content."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "What size TV should I buy for my living room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a living room with 8-12 feet viewing distance, a 55-65 inch 4K TV is ideal. Use our TV mode calculator to determine the optimal viewing distance based on your room size."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How far should I sit from a 55 inch TV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a 55 inch 4K TV, the optimal viewing distance is 7.3 feet (2.2m). The comfortable range is 4.6-11.5 feet. HD TVs require slightly more distance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is projector throw distance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Throw distance is how far the projector must be from the screen. It's calculated by multiplying screen width by the projector's throw ratio (typically 1.5 for standard projectors)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between 4K and 1080p viewing distance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "With 4K TVs, you can sit closer without seeing pixels - about 1.0x the screen diagonal. 1080p TVs need 1.5-2.0x the diagonal for comfortable viewing."
+      }
+    }
+  ]
+};
+
+// Breadcrumb structured data
+const breadcrumbData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://screensizecalculator.net"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Screen Size Calculator",
+      "item": "https://screensizecalculator.net/#calculator"
     }
   ]
 };
@@ -70,11 +127,11 @@ const faqData = {
     <section class="bg-gradient-to-b from-primary-50 to-white py-12 lg:py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Screen Size Calculator
+          Free Screen Size Calculator - TV, Monitor, Phone & Projector
         </h1>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Calculate your display's exact dimensions, pixel density (PPI), and more.
-          Perfect for choosing TVs, monitors, laptops, and phones.
+          Calculate display dimensions, viewing distance, PPI, and throw distance instantly.
+          Perfect for choosing the right TV, monitor, laptop, phone, or projector.
         </p>
       </div>
     </section>
@@ -265,6 +322,54 @@ const faqData = {
               </ul>
             </div>
           </details>
+
+          <details class="group bg-gray-50 rounded-xl">
+            <summary class="flex justify-between items-center cursor-pointer p-6">
+              <span class="font-medium text-gray-900">What size TV should I buy for my living room?</span>
+              <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-gray-600">
+              <p>For a living room with 8-12 feet viewing distance, a <strong>55-65 inch 4K TV</strong> is ideal. Use our <strong>TV mode</strong> calculator above to determine the optimal viewing distance based on your specific room size and seating arrangement.</p>
+            </div>
+          </details>
+
+          <details class="group bg-gray-50 rounded-xl">
+            <summary class="flex justify-between items-center cursor-pointer p-6">
+              <span class="font-medium text-gray-900">How far should I sit from a 55 inch TV?</span>
+              <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-gray-600">
+              <p>For a <strong>55 inch 4K TV</strong>, the optimal viewing distance is <strong>7.3 feet (2.2m)</strong> based on SMPTE standards. The comfortable range is <strong>4.6-11.5 feet</strong>. For HD (1080p) TVs, you should sit slightly farther. Switch to TV mode in our calculator for personalized recommendations.</p>
+            </div>
+          </details>
+
+          <details class="group bg-gray-50 rounded-xl">
+            <summary class="flex justify-between items-center cursor-pointer p-6">
+              <span class="font-medium text-gray-900">What is projector throw distance?</span>
+              <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-gray-600">
+              <p><strong>Throw distance</strong> is how far the projector must be placed from the screen to achieve your desired screen size. It's calculated by multiplying screen width by the projector's <strong>throw ratio</strong> (typically 1.5 for standard projectors, 0.5 for short-throw). Our <strong>Projector mode</strong> calculates this automatically.</p>
+            </div>
+          </details>
+
+          <details class="group bg-gray-50 rounded-xl">
+            <summary class="flex justify-between items-center cursor-pointer p-6">
+              <span class="font-medium text-gray-900">What's the difference between 4K and 1080p viewing distance?</span>
+              <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-gray-600">
+              <p>With <strong>4K (UHD) TVs</strong>, you can sit closer without seeing individual pixels - about <strong>1.0x the screen diagonal</strong>. For <strong>1080p (Full HD) TVs</strong>, you need <strong>1.5-2.0x the diagonal</strong> for comfortable viewing. This is why 4K is better for larger screens in smaller rooms.</p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
@@ -280,9 +385,10 @@ const faqData = {
         </p>
         <a
           href="#calculator"
+          title="Use our free TV, monitor, and phone size calculator with viewing distance recommendations"
           class="inline-flex items-center gap-2 bg-white text-primary-600 font-semibold px-6 py-3 rounded-lg hover:bg-primary-50 transition-colors"
         >
-          Try the Calculator
+          Calculate Your Screen Size Now
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
           </svg>
@@ -295,4 +401,5 @@ const faqData = {
 
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />
 </Layout>

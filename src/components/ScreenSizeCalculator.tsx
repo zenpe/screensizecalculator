@@ -500,7 +500,7 @@ export default function ScreenSizeCalculator() {
   const amazonInfo = getAmazonInfo();
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden" role="application" aria-label="Screen size calculator with TV viewing distance and projector throw distance">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
         <h2 className="text-xl font-semibold text-white">Screen Size Calculator</h2>
@@ -511,18 +511,21 @@ export default function ScreenSizeCalculator() {
 
       {/* Device Mode Tabs - Segmented Control */}
       <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-        <div className="flex bg-gray-200 rounded-lg p-1 gap-1">
+        <div className="flex bg-gray-200 rounded-lg p-1 gap-1" role="tablist" aria-label="Device type selection">
           {(Object.keys(DEVICE_CONFIGS) as DeviceMode[]).map((mode) => (
             <button
               key={mode}
               onClick={() => handleDeviceModeChange(mode)}
+              role="tab"
+              aria-selected={deviceMode === mode}
+              aria-label={`${DEVICE_CONFIGS[mode].label} mode`}
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 deviceMode === mode
                   ? 'bg-white text-primary-700 shadow-sm'
                   : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
               }`}
             >
-              <span className="text-base">{DEVICE_CONFIGS[mode].icon}</span>
+              <span className="text-base" aria-hidden="true">{DEVICE_CONFIGS[mode].icon}</span>
               <span className="hidden sm:inline">{DEVICE_CONFIGS[mode].label}</span>
             </button>
           ))}
@@ -829,7 +832,7 @@ export default function ScreenSizeCalculator() {
           <h3 className="text-sm font-medium text-gray-400 mb-4">Screen Visualization</h3>
 
           {results ? (
-            <div className="flex-1 flex items-center justify-center relative overflow-hidden pb-12">
+            <div className="flex-1 flex items-center justify-center relative overflow-hidden pb-12" role="img" aria-label={`Visual representation of ${formatNum(diagonalInInches, 1)} inch screen with ${resolution.width}x${resolution.height} resolution`}>
               {/* Screen Frame - Always fills ~70% of container width */}
               <svg
                 viewBox={`0 0 ${aspectRatio * 100} 100`}
@@ -839,6 +842,7 @@ export default function ScreenSizeCalculator() {
                   maxHeight: '80%',
                 }}
                 preserveAspectRatio="xMidYMid meet"
+                aria-hidden="true"
               >
                 {/* Screen Bezel - larger radius for phones */}
                 <rect
