@@ -1,0 +1,61 @@
+---
+// Static Header component - no JavaScript needed
+---
+
+<header class="bg-white border-b border-gray-200">
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <span class="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
+          ScreenSizeCalc
+        </span>
+      </a>
+
+      <!-- Navigation Links -->
+      <div class="hidden sm:flex items-center gap-6">
+        <a href="/#calculator" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
+          Calculator
+        </a>
+        <a href="/#how-it-works" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
+          How It Works
+        </a>
+        <a href="/#faq" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
+          FAQ
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="sm:hidden p-2 text-gray-600 hover:text-primary-600 transition-colors"
+        aria-label="Toggle menu"
+        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden sm:hidden pb-4">
+      <div class="flex flex-col gap-2">
+        <a href="/#calculator" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-lg transition-colors">
+          Calculator
+        </a>
+        <a href="/#how-it-works" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-lg transition-colors">
+          How It Works
+        </a>
+        <a href="/#faq" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-lg transition-colors">
+          FAQ
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,84 @@
+---
+// Static Footer component - no JavaScript needed
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-gray-900 text-gray-300 mt-auto">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Brand -->
+      <div>
+        <a href="/" class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <span class="font-semibold text-white">ScreenSizeCalc</span>
+        </a>
+        <p class="text-sm text-gray-400 max-w-xs">
+          Free online screen size calculator. Calculate display dimensions, aspect ratios, PPI, and more for TVs, monitors, laptops, and phones.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="font-semibold text-white mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="/#calculator" class="text-sm hover:text-primary-400 transition-colors">
+              Screen Size Calculator
+            </a>
+          </li>
+          <li>
+            <a href="/#how-it-works" class="text-sm hover:text-primary-400 transition-colors">
+              How It Works
+            </a>
+          </li>
+          <li>
+            <a href="/#faq" class="text-sm hover:text-primary-400 transition-colors">
+              FAQ
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <h3 class="font-semibold text-white mb-4">Resources</h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="/common-screen-sizes" class="text-sm hover:text-primary-400 transition-colors">
+              Common Screen Sizes
+            </a>
+          </li>
+          <li>
+            <a href="/aspect-ratio-guide" class="text-sm hover:text-primary-400 transition-colors">
+              Aspect Ratio Guide
+            </a>
+          </li>
+          <li>
+            <a href="/ppi-explained" class="text-sm hover:text-primary-400 transition-colors">
+              PPI Explained
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-gray-400">
+        &copy; {currentYear} ScreenSizeCalculator.net. All rights reserved.
+      </p>
+      <div class="flex gap-6">
+        <a href="/privacy" class="text-sm text-gray-400 hover:text-primary-400 transition-colors">
+          Privacy Policy
+        </a>
+        <a href="/terms" class="text-sm text-gray-400 hover:text-primary-400 transition-colors">
+          Terms of Use
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
