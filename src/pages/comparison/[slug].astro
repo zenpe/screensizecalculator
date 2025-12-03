@@ -12,7 +12,7 @@ import {
 } from '../../data/devices';
 import { getAmazonSearchUrl } from '../../site.config';
 
-// Generate all valid comparison pairs
+// Generate all valid comparison pairs in both directions
 export function getStaticPaths() {
   const paths = [];
 
@@ -23,12 +23,18 @@ export function getStaticPaths() {
 
       // Check if this comparison is valid based on category rules
       if (isValidComparison(deviceA.category, deviceB.category)) {
-        // Create slug: id1-vs-id2
-        const slug = `${deviceA.id}-vs-${deviceB.id}`;
-
+        // Forward direction: deviceA vs deviceB
+        const forwardSlug = `${deviceA.id}-vs-${deviceB.id}`;
         paths.push({
-          params: { slug },
+          params: { slug: forwardSlug },
           props: { deviceA, deviceB },
+        });
+
+        // Reverse direction: deviceB vs deviceA
+        const reverseSlug = `${deviceB.id}-vs-${deviceA.id}`;
+        paths.push({
+          params: { slug: reverseSlug },
+          props: { deviceA: deviceB, deviceB: deviceA }, // Swap deviceA and deviceB for reverse comparison
         });
       }
     }
