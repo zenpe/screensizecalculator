@@ -455,7 +455,7 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
 
     if (!diagonalInInches) {
       return {
-        url: `https://www.amazon.com/s?k=${config.shopKeyword}`,
+        url: getAmazonSearchUrl(config.shopKeyword),
         label: config.shopLabel
       };
     }
@@ -463,7 +463,7 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
     switch (deviceMode) {
       case 'phone': {
         return {
-          url: 'https://www.amazon.com/s?k=smartphone+unlocked',
+          url: getAmazonSearchUrl('smartphone unlocked'),
           label: 'Shop Smartphones'
         };
       }
@@ -473,7 +473,7 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
           Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
         );
         return {
-          url: `https://www.amazon.com/s?k=${nearest}+inch+monitor+4k`,
+          url: getAmazonSearchUrl(`${nearest} inch monitor 4k`),
           label: `Shop ${nearest}" Monitors`
         };
       }
@@ -483,13 +483,13 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
           Math.abs(curr - diagonalInInches) < Math.abs(prev - diagonalInInches) ? curr : prev
         );
         return {
-          url: `https://www.amazon.com/s?k=${nearest}+inch+tv+4k`,
+          url: getAmazonSearchUrl(`${nearest} inch tv 4k`),
           label: `Shop ${nearest}" TVs`
         };
       }
       case 'projector': {
         return {
-          url: 'https://www.amazon.com/s?k=4k+projector+home+theater',
+          url: getAmazonSearchUrl('4k projector home theater'),
           label: 'Shop Projectors & Screens'
         };
       }
