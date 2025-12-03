@@ -11,7 +11,7 @@ export default defineConfig({
   site: 'https://screensizecalculators.com',
   trailingSlash: 'never', // Remove trailing slashes
   build: {
-    format: 'directory' // Use directory-based routing instead of file-based
+    format: 'file' // Use file-based routing instead of directory-based
   },
   integrations: [react(), mdx(), sitemap()],
 
