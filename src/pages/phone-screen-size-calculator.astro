@@ -87,7 +87,7 @@ const faqData = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load />
+        <ScreenSizeCalculator client:load initialDeviceMode="phone" />
       </div>
     </section>
 
@@ -392,16 +392,3 @@ const faqData = {
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>
-
-<script>
-  // Auto-switch to Phone mode when page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    // Find and click the Phone tab button after a brief delay to ensure React has mounted
-    setTimeout(() => {
-      const phoneButton = document.querySelector('[aria-label="Phone mode"]');
-      if (phoneButton && phoneButton.getAttribute('aria-selected') !== 'true') {
-        phoneButton.click();
-      }
-    }, 100);
-  });
-</script>

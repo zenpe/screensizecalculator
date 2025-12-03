@@ -87,7 +87,7 @@ const faqData = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load />
+        <ScreenSizeCalculator client:load initialDeviceMode="monitor" />
       </div>
     </section>
 
@@ -335,16 +335,3 @@ const faqData = {
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>
-
-<script>
-  // Auto-switch to Monitor mode when page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    // Find and click the Monitor tab button after a brief delay to ensure React has mounted
-    setTimeout(() => {
-      const monitorButton = document.querySelector('[aria-label="Monitor mode"]');
-      if (monitorButton && monitorButton.getAttribute('aria-selected') !== 'true') {
-        monitorButton.click();
-      }
-    }, 100);
-  });
-</script>

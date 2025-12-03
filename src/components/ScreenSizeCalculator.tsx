@@ -231,13 +231,13 @@ const HumanSilhouetteSVG = ({ height }: { height: number }) => (
   </svg>
 );
 
-export default function ScreenSizeCalculator() {
-  const [deviceMode, setDeviceMode] = useState<DeviceMode>('monitor');
-  const [diagonal, setDiagonal] = useState<string>('27');
-  const [aspectRatioSelect, setAspectRatioSelect] = useState<string>('16:9');
+export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: { initialDeviceMode?: DeviceMode }) {
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>(initialDeviceMode);
+  const [diagonal, setDiagonal] = useState<string>(DEVICE_CONFIGS[initialDeviceMode].defaultDiagonal);
+  const [aspectRatioSelect, setAspectRatioSelect] = useState<string>(initialDeviceMode === 'phone' ? '19.5:9' : '16:9');
   const [customRatioW, setCustomRatioW] = useState<string>('16');
   const [customRatioH, setCustomRatioH] = useState<string>('9');
-  const [resolutionSelect, setResolutionSelect] = useState<string>('2560 x 1440 (QHD)');
+  const [resolutionSelect, setResolutionSelect] = useState<string>(DEVICE_CONFIGS[initialDeviceMode].defaultResolution);
   const [customResW, setCustomResW] = useState<string>('1920');
   const [customResH, setCustomResH] = useState<string>('1080');
   const [unit, setUnit] = useState<'inches' | 'cm'>('inches');
