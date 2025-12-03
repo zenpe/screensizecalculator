@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { getAmazonSearchUrl, getAmazonUrl } from '../site.config';
 
 // Device modes
 type DeviceMode = 'phone' | 'monitor' | 'tv' | 'projector';

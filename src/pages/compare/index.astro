@@ -1,0 +1,309 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import CompareSearch from '../../components/CompareSearch.tsx';
+import { devices, isValidComparison } from '../../data/devices';
+
+// SEO metadata - Optimized title
+const title = 'Compare Screen Sizes - Visual Phone, TV & Monitor Comparison Tool';
+const description = 'Visual screen size comparisons for phones, monitors, TVs, and projectors. Compare iPhone, Samsung Galaxy, and popular display sizes side by side.';
+const keywords = 'screen size comparison, phone size comparison, TV size comparison, monitor comparison, iPhone vs Samsung, display size compare';
+
+// Count comparisons per category
+const phoneDevices = devices.filter(d => d.category === 'phone');
+const monitorDevices = devices.filter(d => d.category === 'monitor');
+const tvDevices = devices.filter(d => d.category === 'tv');
+const projectorDevices = devices.filter(d => d.category === 'projector');
+
+const countPairs = (arr: typeof devices) => (arr.length * (arr.length - 1)) / 2;
+
+const phonePairsCount = countPairs(phoneDevices);
+const monitorPairsCount = countPairs(monitorDevices);
+const tvPairsCount = countPairs(tvDevices);
+const projectorPairsCount = countPairs(projectorDevices);
+const tvProjectorPairsCount = tvDevices.length * projectorDevices.length;
+
+const totalComparisons = phonePairsCount + monitorPairsCount + tvPairsCount + projectorPairsCount + tvProjectorPairsCount;
+
+// Generate ALL comparison pairs for search (passed to client component)
+const allComparisons: Array<{
+  a: typeof devices[0];
+  b: typeof devices[0];
+  slug: string;
+  searchText: string;
+}> = [];
+
+for (let i = 0; i < devices.length; i++) {
+  for (let j = i + 1; j < devices.length; j++) {
+    const a = devices[i];
+    const b = devices[j];
+    if (isValidComparison(a.category, b.category)) {
+      allComparisons.push({
+        a,
+        b,
+        slug: `${a.id}-vs-${b.id}`,
+        searchText: `${a.name} ${b.name} ${a.id} ${b.id} ${a.category} ${b.category}`.toLowerCase(),
+      });
+    }
+  }
+}
+
+// Popular comparisons (limited selection for this overview page)
+const popularComparisons = [
+  { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max' },
+  { a: 'iphone-16', b: 'samsung-galaxy-s24' },
+  { a: '65-inch-tv', b: '55-inch-tv' },
+  { a: '27-inch-monitor', b: '24-inch-monitor' },
+  { a: '120-inch-projector-screen', b: '85-inch-tv' },
+  { a: 'iphone-16-pro', b: 'iphone-16' },
+].map(({ a, b }) => {
+  const deviceA = devices.find(d => d.id === a);
+  const deviceB = devices.find(d => d.id === b);
+  if (!deviceA || !deviceB) return null;
+  return { a: deviceA, b: deviceB, slug: `${a}-vs-${b}` };
+}).filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
+
+// Category cards data
+const categories = [
+  {
+    name: 'Phones',
+    icon: '📱',
+    href: '/compare/phones',
+    count: phonePairsCount,
+    description: 'iPhone 16, 15, 14, 13 series, Samsung Galaxy S24',
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    name: 'Monitors',
+    icon: '🖥️',
+    href: '/compare/monitors',
+    count: monitorPairsCount,
+    description: '24", 27", 32" and ultrawide displays',
+    color: 'from-purple-500 to-pink-500',
+  },
+  {
+    name: 'TVs',
+    icon: '📺',
+    href: '/compare/tvs',
+    count: tvPairsCount,
+    description: '43", 55", 65", 75", 85" televisions',
+    color: 'from-green-500 to-emerald-500',
+  },
+  {
+    name: 'Projectors',
+    icon: '📽️',
+    href: '/compare/projectors',
+    count: projectorPairsCount + tvProjectorPairsCount,
+    description: '100", 120", 150" screens + TV comparisons',
+    color: 'from-orange-500 to-amber-500',
+  },
+];
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Breadcrumb Navigation -->
+    <nav class="mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-400">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">Compare</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        Screen Size Comparisons
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Compare screen sizes visually. See how different phones, monitors, TVs, and projector screens
+        stack up against each other with our interactive overlay comparison tool.
+      </p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
+        {totalComparisons} comparisons available
+      </p>
+    </div>
+
+    <!-- Search Box -->
+    <section class="mb-12">
+      <CompareSearch
+        client:load
+        devices={devices}
+        comparisons={allComparisons}
+      />
+    </section>
+
+    <!-- Category Cards -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Browse by Category
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {categories.map(cat => (
+          <a
+            href={cat.href}
+            class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all overflow-hidden"
+          >
+            <div class={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity`}></div>
+            <div class="relative">
+              <span class="text-3xl mb-3 block">{cat.icon}</span>
+              <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                {cat.name}
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                {cat.description}
+              </p>
+              <span class="text-xs font-medium text-primary-600 dark:text-primary-400">
+                {cat.count} comparisons →
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Popular Comparisons -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+        <span class="text-amber-500">★</span> Popular Comparisons
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {popularComparisons.map(({ a, b, slug }) => (
+          <a
+            href={`/compare/${slug}`}
+            class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+                {a.category}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                {a.diagonal}" vs {b.diagonal}"
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+              {a.name} vs {b.name}
+            </h3>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Quick Links by Category (limited for SEO crawlability) -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Quick Links
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Phone Quick Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <span>📱</span> Phone Comparisons
+          </h3>
+          <div class="space-y-2">
+            <a href="/compare/iphone-16-pro-max-vs-iphone-15-pro-max" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              iPhone 16 Pro Max vs 15 Pro Max
+            </a>
+            <a href="/compare/iphone-16-vs-iphone-15" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              iPhone 16 vs iPhone 15
+            </a>
+            <a href="/compare/iphone-16-pro-vs-samsung-galaxy-s24-ultra" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              iPhone 16 Pro vs Galaxy S24 Ultra
+            </a>
+          </div>
+          <a href="/compare/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+            View all phone comparisons →
+          </a>
+        </div>
+
+        <!-- TV Quick Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <span>📺</span> TV Comparisons
+          </h3>
+          <div class="space-y-2">
+            <a href="/compare/65-inch-tv-vs-55-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              65" TV vs 55" TV
+            </a>
+            <a href="/compare/75-inch-tv-vs-65-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              75" TV vs 65" TV
+            </a>
+            <a href="/compare/85-inch-tv-vs-75-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              85" TV vs 75" TV
+            </a>
+          </div>
+          <a href="/compare/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+            View all TV comparisons →
+          </a>
+        </div>
+
+        <!-- Monitor Quick Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <span>🖥️</span> Monitor Comparisons
+          </h3>
+          <div class="space-y-2">
+            <a href="/compare/27-inch-monitor-vs-24-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              27" Monitor vs 24" Monitor
+            </a>
+            <a href="/compare/32-inch-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              32" Monitor vs 27" Monitor
+            </a>
+            <a href="/compare/34-inch-ultrawide-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              34" Ultrawide vs 27" Monitor
+            </a>
+          </div>
+          <a href="/compare/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+            View all monitor comparisons →
+          </a>
+        </div>
+
+        <!-- Projector Quick Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <span>📽️</span> Projector Comparisons
+          </h3>
+          <div class="space-y-2">
+            <a href="/compare/120-inch-projector-screen-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              120" vs 100" Projector Screen
+            </a>
+            <a href="/compare/85-inch-tv-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              85" TV vs 100" Projector
+            </a>
+            <a href="/compare/150-inch-projector-screen-vs-120-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+              150" vs 120" Projector Screen
+            </a>
+          </div>
+          <a href="/compare/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+            View all projector comparisons →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to Calculator -->
+    <div class="text-center">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Screen Size Calculator
+      </a>
+    </div>
+  </main>
+</Layout>

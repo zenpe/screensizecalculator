@@ -1,0 +1,122 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import { devices, type Device } from '../../../data/devices';
+
+// SEO metadata
+const title = 'TV Screen Size Comparisons - 55" vs 65" vs 75" & More';
+const description = 'Compare TV screen sizes: 43", 55", 65", 75", and 85" televisions. Visual size comparison to help you choose the right TV for your room.';
+const keywords = 'TV size comparison, 55 vs 65 inch TV, 65 vs 75 inch TV, television size compare, TV screen size';
+
+// Get all TV devices
+const tvDevices = devices.filter(d => d.category === 'tv');
+
+// Generate comparison pairs
+interface ComparisonPair {
+  a: Device;
+  b: Device;
+  slug: string;
+}
+
+const pairs: ComparisonPair[] = [];
+for (let i = 0; i < tvDevices.length; i++) {
+  for (let j = i + 1; j < tvDevices.length; j++) {
+    pairs.push({
+      a: tvDevices[i],
+      b: tvDevices[j],
+      slug: `${tvDevices[i].id}-vs-${tvDevices[j].id}`,
+    });
+  }
+}
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+      <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a></li>
+        <li>/</li>
+        <li><a href="/compare" class="hover:text-primary-600 dark:hover:text-primary-400">Compare</a></li>
+        <li>/</li>
+        <li class="text-gray-900 dark:text-gray-100">TVs</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        TV Screen Size Comparisons
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
+        Compare television screen sizes visually. See the actual difference between 55", 65", 75",
+        and other popular TV sizes to make the right choice for your living room.
+      </p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
+        {pairs.length} TV comparisons available
+      </p>
+    </div>
+
+    <!-- All TV Comparisons -->
+    <section class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+        All TV Size Comparisons
+        <span class="text-sm font-normal text-gray-500">({pairs.length})</span>
+      </h2>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {pairs.map(({ a, b, slug }, index) => (
+            <a
+              href={`/compare/${slug}`}
+              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < pairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
+              `}
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300">
+                {a.name} vs {b.name}
+              </span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Helpful Tips -->
+    <section class="mb-10 bg-primary-50 dark:bg-primary-900/20 rounded-xl p-6">
+      <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Choosing the Right TV Size</h3>
+      <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+        <li><strong>6-8 ft viewing distance:</strong> 55" - 65" recommended</li>
+        <li><strong>8-10 ft viewing distance:</strong> 65" - 75" recommended</li>
+        <li><strong>10-12 ft viewing distance:</strong> 75" - 85" recommended</li>
+        <li><strong>4K TVs:</strong> Allow closer viewing without visible pixels</li>
+      </ul>
+    </section>
+
+    <!-- Back Navigation -->
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
+      <a
+        href="/compare/monitors"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Monitor Comparisons
+      </a>
+      <a
+        href="/compare/projectors"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        Projector Comparisons
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </div>
+  </main>
+</Layout>

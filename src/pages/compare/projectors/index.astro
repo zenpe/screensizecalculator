@@ -1,0 +1,166 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import { devices, type Device } from '../../../data/devices';
+
+// SEO metadata
+const title = 'Projector Screen Size Comparisons - 100" vs 120" vs 150"';
+const description = 'Compare projector screen sizes: 100", 120", and 150" projection screens. Visual comparison including TV vs projector size comparisons.';
+const keywords = 'projector screen size comparison, 100 vs 120 inch projector, projector vs TV size, projection screen comparison';
+
+// Get all projector and TV devices
+const projectorDevices = devices.filter(d => d.category === 'projector');
+const tvDevices = devices.filter(d => d.category === 'tv');
+
+// Generate projector vs projector pairs
+interface ComparisonPair {
+  a: Device;
+  b: Device;
+  slug: string;
+}
+
+const projectorPairs: ComparisonPair[] = [];
+for (let i = 0; i < projectorDevices.length; i++) {
+  for (let j = i + 1; j < projectorDevices.length; j++) {
+    projectorPairs.push({
+      a: projectorDevices[i],
+      b: projectorDevices[j],
+      slug: `${projectorDevices[i].id}-vs-${projectorDevices[j].id}`,
+    });
+  }
+}
+
+// Generate TV vs projector pairs (cross-category)
+const tvVsProjectorPairs: ComparisonPair[] = [];
+for (const tv of tvDevices) {
+  for (const projector of projectorDevices) {
+    tvVsProjectorPairs.push({
+      a: tv,
+      b: projector,
+      slug: `${tv.id}-vs-${projector.id}`,
+    });
+  }
+}
+
+const totalPairs = projectorPairs.length + tvVsProjectorPairs.length;
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+      <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a></li>
+        <li>/</li>
+        <li><a href="/compare" class="hover:text-primary-600 dark:hover:text-primary-400">Compare</a></li>
+        <li>/</li>
+        <li class="text-gray-900 dark:text-gray-100">Projectors</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        Projector Screen Size Comparisons
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
+        Compare projector screen sizes visually. See how different projection screen sizes compare,
+        and whether a projector or large TV is right for your home theater setup.
+      </p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
+        {totalPairs} comparisons available
+      </p>
+    </div>
+
+    <!-- Projector vs Projector -->
+    <section class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+        Projector Screen Comparisons
+        <span class="text-sm font-normal text-gray-500">({projectorPairs.length})</span>
+      </h2>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {projectorPairs.map(({ a, b, slug }, index) => (
+            <a
+              href={`/compare/${slug}`}
+              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
+              `}
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300">
+                {a.name} vs {b.name}
+              </span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- TV vs Projector -->
+    <section class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+        TV vs Projector
+        <span class="text-sm font-normal text-gray-500">({tvVsProjectorPairs.length})</span>
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-4 text-sm">
+        Deciding between a large TV and a projector? Compare sizes directly to see the difference.
+      </p>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {tvVsProjectorPairs.map(({ a, b, slug }, index) => (
+            <a
+              href={`/compare/${slug}`}
+              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
+              `}
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300">
+                {a.name} vs {b.name}
+              </span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Helpful Tips -->
+    <section class="mb-10 bg-primary-50 dark:bg-primary-900/20 rounded-xl p-6">
+      <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Projector vs TV: Key Considerations</h3>
+      <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+        <li><strong>Projectors:</strong> Larger screen sizes (100"+), require dark room, lower upfront cost per inch</li>
+        <li><strong>TVs:</strong> Better in bright rooms, higher contrast, easier setup, more consistent quality</li>
+        <li><strong>85" TV ≈ 100" Projector:</strong> Similar viewing experience, different trade-offs</li>
+      </ul>
+    </section>
+
+    <!-- Back Navigation -->
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
+      <a
+        href="/compare/tvs"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        TV Comparisons
+      </a>
+      <a
+        href="/compare"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        All Comparisons
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </div>
+  </main>
+</Layout>
