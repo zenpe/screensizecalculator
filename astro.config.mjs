@@ -10,6 +10,9 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   site: 'https://screensizecalculators.com',
   trailingSlash: 'never', // Remove trailing slashes
+  build: {
+    format: 'file' // Use file-based routing instead of directory-based
+  },
   integrations: [react(), mdx(), sitemap()],
 
   vite: {
