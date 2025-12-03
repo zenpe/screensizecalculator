@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-import CompareVisualizer from '../../components/CompareVisualizer.tsx';
+import ComparisonVisualizer from '../../components/ComparisonVisualizer.tsx';
 import {
   devices,
   getDeviceById,
@@ -87,7 +87,7 @@ const getAmazonUrl = (device: typeof deviceA) => {
 
     <!-- Visualizer Component -->
     <div class="mb-8">
-      <CompareVisualizer
+      <ComparisonVisualizer
         client:load
         deviceA={deviceA}
         deviceB={deviceB}
@@ -218,7 +218,7 @@ const getAmazonUrl = (device: typeof deviceA) => {
           .slice(0, 6)
           .map(d => (
             <a
-              href={`/compare/${deviceA.id}-vs-${d.id}`}
+              href={`/comparison/${deviceA.id}-vs-${d.id}`}
               class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
             >
               {deviceA.name} vs {d.name}
@@ -230,7 +230,7 @@ const getAmazonUrl = (device: typeof deviceA) => {
           .slice(0, 6)
           .map(d => (
             <a
-              href={`/compare/${deviceB.id}-vs-${d.id}`}
+              href={`/comparison/${deviceB.id}-vs-${d.id}`}
               class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
             >
               {deviceB.name} vs {d.name}

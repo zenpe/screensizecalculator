@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-import CompareSearch from '../../components/CompareSearch.tsx';
+import ComparisonSearch from '../../components/ComparisonSearch.tsx';
 import { devices, isValidComparison } from '../../data/devices';
 
 // SEO metadata - Optimized title
@@ -68,7 +68,7 @@ const categories = [
   {
     name: 'Phones',
     icon: '📱',
-    href: '/compare/phones',
+    href: '/comparison/phones',
     count: phonePairsCount,
     description: 'iPhone 16, 15, 14, 13 series, Samsung Galaxy S24',
     color: 'from-blue-500 to-cyan-500',
@@ -76,7 +76,7 @@ const categories = [
   {
     name: 'Monitors',
     icon: '🖥️',
-    href: '/compare/monitors',
+    href: '/comparison/monitors',
     count: monitorPairsCount,
     description: '24", 27", 32" and ultrawide displays',
     color: 'from-purple-500 to-pink-500',
@@ -84,7 +84,7 @@ const categories = [
   {
     name: 'TVs',
     icon: '📺',
-    href: '/compare/tvs',
+    href: '/comparison/tvs',
     count: tvPairsCount,
     description: '43", 55", 65", 75", 85" televisions',
     color: 'from-green-500 to-emerald-500',
@@ -92,7 +92,7 @@ const categories = [
   {
     name: 'Projectors',
     icon: '📽️',
-    href: '/compare/projectors',
+    href: '/comparison/projectors',
     count: projectorPairsCount + tvProjectorPairsCount,
     description: '100", 120", 150" screens + TV comparisons',
     color: 'from-orange-500 to-amber-500',
@@ -115,7 +115,7 @@ const categories = [
         </li>
         <li class="text-gray-400">/</li>
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">Compare</span>
+          <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">Comparison</span>
           <meta itemprop="position" content="2" />
         </li>
       </ol>
@@ -137,7 +137,7 @@ const categories = [
 
     <!-- Search Box -->
     <section class="mb-12">
-      <CompareSearch
+      <ComparisonSearch
         client:load
         devices={devices}
         comparisons={allComparisons}
@@ -181,7 +181,7 @@ const categories = [
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {popularComparisons.map(({ a, b, slug }) => (
           <a
-            href={`/compare/${slug}`}
+            href={`/comparison/${slug}`}
             class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
           >
             <div class="flex items-center justify-between mb-2">
@@ -213,17 +213,17 @@ const categories = [
             <span>📱</span> Phone Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/compare/iphone-16-pro-max-vs-iphone-15-pro-max" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/iphone-16-pro-max-vs-iphone-15-pro-max" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               iPhone 16 Pro Max vs 15 Pro Max
             </a>
-            <a href="/compare/iphone-16-vs-iphone-15" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/iphone-16-vs-iphone-15" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               iPhone 16 vs iPhone 15
             </a>
-            <a href="/compare/iphone-16-pro-vs-samsung-galaxy-s24-ultra" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/iphone-16-pro-vs-samsung-galaxy-s24-ultra" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               iPhone 16 Pro vs Galaxy S24 Ultra
             </a>
           </div>
-          <a href="/compare/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a href="/comparison/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all phone comparisons →
           </a>
         </div>
@@ -234,17 +234,17 @@ const categories = [
             <span>📺</span> TV Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/compare/65-inch-tv-vs-55-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/65-inch-tv-vs-55-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               65" TV vs 55" TV
             </a>
-            <a href="/compare/75-inch-tv-vs-65-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/75-inch-tv-vs-65-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               75" TV vs 65" TV
             </a>
-            <a href="/compare/85-inch-tv-vs-75-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/85-inch-tv-vs-75-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               85" TV vs 75" TV
             </a>
           </div>
-          <a href="/compare/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a href="/comparison/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all TV comparisons →
           </a>
         </div>
@@ -255,17 +255,17 @@ const categories = [
             <span>🖥️</span> Monitor Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/compare/27-inch-monitor-vs-24-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/27-inch-monitor-vs-24-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               27" Monitor vs 24" Monitor
             </a>
-            <a href="/compare/32-inch-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/32-inch-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               32" Monitor vs 27" Monitor
             </a>
-            <a href="/compare/34-inch-ultrawide-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/34-inch-ultrawide-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               34" Ultrawide vs 27" Monitor
             </a>
           </div>
-          <a href="/compare/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a href="/comparison/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all monitor comparisons →
           </a>
         </div>
@@ -276,17 +276,17 @@ const categories = [
             <span>📽️</span> Projector Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/compare/120-inch-projector-screen-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/120-inch-projector-screen-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               120" vs 100" Projector Screen
             </a>
-            <a href="/compare/85-inch-tv-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/85-inch-tv-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               85" TV vs 100" Projector
             </a>
-            <a href="/compare/150-inch-projector-screen-vs-120-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+            <a href="/comparison/150-inch-projector-screen-vs-120-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
               150" vs 120" Projector Screen
             </a>
           </div>
-          <a href="/compare/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a href="/comparison/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all projector comparisons →
           </a>
         </div>

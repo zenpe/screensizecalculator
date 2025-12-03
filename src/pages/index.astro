@@ -172,7 +172,7 @@ const breadcrumbData = {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {popularComparisons.map(({ slug, label, deviceA, deviceB }) => (
             <a
-              href={`/compare/${slug}`}
+              href={`/comparison/${slug}`}
               class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
             >
               <div class="flex items-center justify-between mb-2">
@@ -192,7 +192,7 @@ const breadcrumbData = {
 
         <div class="text-center">
           <a
-            href="/compare"
+            href="/comparison"
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             View All Comparisons

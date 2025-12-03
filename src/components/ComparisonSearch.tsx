@@ -8,12 +8,12 @@ interface ComparisonPair {
   searchText: string; // Pre-computed for faster search
 }
 
-interface CompareSearchProps {
+interface ComparisonSearchProps {
   devices: Device[];
   comparisons: ComparisonPair[];
 }
 
-export default function CompareSearch({ devices, comparisons }: CompareSearchProps) {
+export default function ComparisonSearch({ devices, comparisons }: ComparisonSearchProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -57,7 +57,7 @@ export default function CompareSearch({ devices, comparisons }: CompareSearchPro
       case 'Enter':
         e.preventDefault();
         if (filteredResults[selectedIndex]) {
-          window.location.href = `/compare/${filteredResults[selectedIndex].slug}`;
+          window.location.href = `/comparison/${filteredResults[selectedIndex].slug}`;
         }
         break;
       case 'Escape':
@@ -160,7 +160,7 @@ export default function CompareSearch({ devices, comparisons }: CompareSearchPro
               {filteredResults.map((result, index) => (
                 <li key={result.slug}>
                   <a
-                    href={`/compare/${result.slug}`}
+                    href={`/comparison/${result.slug}`}
                     className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                       index === selectedIndex
                         ? 'bg-primary-50 dark:bg-primary-900/30'

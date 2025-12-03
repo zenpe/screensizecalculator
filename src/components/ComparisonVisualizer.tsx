@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { Device } from '../data/devices';
 
 /**
- * CompareVisualizer - Visual overlay comparison of two screen sizes
+ * ComparisonVisualizer - Visual overlay comparison of two screen sizes
  *
  * Shows the smaller device overlaid on top of the larger device
  * to visualize the size difference between two screens.
@@ -19,7 +19,7 @@ interface DeviceWithDimensions {
   area: number;
 }
 
-interface CompareVisualizerProps {
+interface ComparisonVisualizerProps {
   deviceA: Device;
   deviceB: Device;
 }
@@ -33,7 +33,7 @@ function calculateDimensions(diagonal: number, ratio: number): Dimensions {
   return { width, height };
 }
 
-export default function CompareVisualizer({ deviceA, deviceB }: CompareVisualizerProps) {
+export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVisualizerProps) {
   // Calculate physical dimensions for both devices
   const dimensions = useMemo(() => {
     const dimsA = calculateDimensions(deviceA.diagonal, deviceA.ratio);
