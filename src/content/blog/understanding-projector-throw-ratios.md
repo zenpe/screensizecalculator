@@ -1,7 +1,7 @@
 ---
-title: 'Understanding Projector Throw Ratios - Complete Guide to Throw Distance 2024'
+title: 'Projector Throw Ratios Guide - Distance Calculations'
 description: 'Master projector throw ratios and calculate the perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw projector guides.'
-pubDate: '2024-12-02'
+pubDate: '2025-12-02'
 category: 'Projector Guide'
 author: 'Screen Size Calculator Team'
 ---
