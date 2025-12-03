@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 
 const title = 'Aspect Ratio Guide - Understanding Screen Dimensions & Proportions';
 const description = 'Complete guide to aspect ratios including 16:9, 21:9, 4:3, and more. Learn how aspect ratios affect viewing experience and choose the right one for your display.';
@@ -479,4 +478,5 @@ const faqData = {
     </section>
   </main>
 
-  <Footer />
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>

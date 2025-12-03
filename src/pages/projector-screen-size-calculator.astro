@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 
 const title = 'Projector Screen Size Calculator - Throw Distance & Ratio';
@@ -394,8 +393,6 @@ const faqData = {
       </div>
     </section>
   </main>
-
-  <Footer />
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>

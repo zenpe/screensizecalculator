@@ -42,7 +42,7 @@ import Footer from '../components/Footer.astro';
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:image" content={siteUrl + ogImage} />
     <meta property="og:site_name" content="Screen Size Calculator" />
 
     <!-- Twitter -->
@@ -50,7 +50,7 @@ import Footer from '../components/Footer.astro';
     <meta property="twitter:url" content={canonical} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={fullOgImage} />
+    <meta property="twitter:image" content={siteUrl + ogImage} />
 
     <!-- Preconnect and Preload for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
