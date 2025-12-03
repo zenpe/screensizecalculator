@@ -12,10 +12,21 @@ interface Props {
 const {
   title,
   description,
-  canonical = Astro.url.href,
+  canonical,
   ogImage = '/og-image.png',
   keywords = 'screen size calculator, tv size calculator, monitor dimensions, ppi calculator, aspect ratio calculator, viewing distance calculator, projector throw distance, 4k tv size, phone screen size, iphone screen size, android screen size'
 } = Astro.props;
+
+// Generate the canonical URL without .html extension
+let canonicalUrl = canonical || Astro.url.href;
+if (canonicalUrl.endsWith('.html')) {
+  canonicalUrl = canonicalUrl.replace(/\.html$/, '');
+  // Ensure it still starts with the site URL
+  if (!canonicalUrl.startsWith('http')) {
+    const siteUrl = 'https://screensizecalculators.com';
+    canonicalUrl = siteUrl + canonicalUrl;
+  }
+}
 
 const siteUrl = 'https://screensizecalculators.com';
 import Footer from '../components/Footer.astro';
@@ -35,11 +46,11 @@ import Footer from '../components/Footer.astro';
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="canonical" href={canonical} />
+    <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonical} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={siteUrl + ogImage} />
@@ -47,7 +58,7 @@ import Footer from '../components/Footer.astro';
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonical} />
+    <meta property="twitter:url" content={canonicalUrl} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={siteUrl + ogImage} />
