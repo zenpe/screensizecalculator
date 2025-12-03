@@ -19,16 +19,30 @@ const {
 
 // Generate the canonical URL without .html extension
 let canonicalUrl = canonical || Astro.url.href;
+const siteUrl = 'https://screensizecalculators.com';
+
+// Handle .html extension removal
 if (canonicalUrl.endsWith('.html')) {
   canonicalUrl = canonicalUrl.replace(/\.html$/, '');
-  // Ensure it still starts with the site URL
-  if (!canonicalUrl.startsWith('http')) {
-    const siteUrl = 'https://screensizecalculators.com';
-    canonicalUrl = siteUrl + canonicalUrl;
-  }
 }
 
-const siteUrl = 'https://screensizecalculators.com';
+// Handle index.html removal for homepage
+if (canonicalUrl.endsWith('/index')) {
+  canonicalUrl = canonicalUrl.replace(/\/index$/, '/');
+} else if (canonicalUrl.endsWith('/index.html')) {
+  canonicalUrl = canonicalUrl.replace(/\/index\.html$/, '/');
+}
+
+// Ensure it's a full URL
+if (!canonicalUrl.startsWith('http')) {
+  canonicalUrl = siteUrl + canonicalUrl;
+}
+
+// Remove trailing slash from all URLs, including homepage
+if (canonicalUrl.endsWith('/')) {
+  canonicalUrl = canonicalUrl.slice(0, -1);
+}
+
 import Footer from '../components/Footer.astro';
 ---
 
