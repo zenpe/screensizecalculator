@@ -3,11 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 import { devices } from '../data/devices';
+import { getComparisonSlug } from '../utils/url';
 
 const title = 'Screen Size Calculator - TV, Monitor, Phone & Projector Sizes';
 const description = 'Free screen size calculator for TV, monitor, phone & projector. Calculate dimensions, viewing distance, PPI, throw distance & aspect ratio.';
 
-// Popular comparisons for homepage (hand-picked for SEO value)
+// Popular comparisons for homepage with canonical slugs
 const popularComparisons = [
   { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max', label: 'iPhone 16 Pro Max vs 15 Pro Max' },
   { a: 'iphone-16', b: 'samsung-galaxy-s24', label: 'iPhone 16 vs Galaxy S24' },
@@ -18,7 +19,7 @@ const popularComparisons = [
 ].map(({ a, b, label }) => {
   const deviceA = devices.find(d => d.id === a);
   const deviceB = devices.find(d => d.id === b);
-  return { slug: `${a}-vs-${b}`, label, deviceA, deviceB };
+  return { slug: getComparisonSlug(a, b), label, deviceA, deviceB };
 }).filter(p => p.deviceA && p.deviceB);
 
 // Structured data for SEO

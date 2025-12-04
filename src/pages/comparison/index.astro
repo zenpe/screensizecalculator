@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import ComparisonSearch from '../../components/ComparisonSearch.tsx';
 import { devices, isValidComparison } from '../../data/devices';
+import { getComparisonSlug, getComparisonUrl } from '../../utils/url';
 
 // SEO metadata - Optimized title
 const title = 'Compare Screen Sizes - Visual Phone, TV & Monitor Comparison Tool';
@@ -25,7 +26,7 @@ const tvProjectorPairsCount = tvDevices.length * projectorDevices.length;
 
 const totalComparisons = phonePairsCount + monitorPairsCount + tvPairsCount + projectorPairsCount + tvProjectorPairsCount;
 
-// Generate ALL comparison pairs for search (passed to client component)
+// Generate ALL comparison pairs for search with canonical slugs
 const allComparisons: Array<{
   a: typeof devices[0];
   b: typeof devices[0];
@@ -41,14 +42,14 @@ for (let i = 0; i < devices.length; i++) {
       allComparisons.push({
         a,
         b,
-        slug: `${a.id}-vs-${b.id}`,
+        slug: getComparisonSlug(a.id, b.id),
         searchText: `${a.name} ${b.name} ${a.id} ${b.id} ${a.category} ${b.category}`.toLowerCase(),
       });
     }
   }
 }
 
-// Popular comparisons (limited selection for this overview page)
+// Popular comparisons with canonical slugs
 const popularComparisons = [
   { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max' },
   { a: 'iphone-16', b: 'samsung-galaxy-s24' },
@@ -60,7 +61,7 @@ const popularComparisons = [
   const deviceA = devices.find(d => d.id === a);
   const deviceB = devices.find(d => d.id === b);
   if (!deviceA || !deviceB) return null;
-  return { a: deviceA, b: deviceB, slug: `${a}-vs-${b}` };
+  return { a: deviceA, b: deviceB, slug: getComparisonSlug(a, b) };
 }).filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
 
 // Category cards data

@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import { devices, type Device } from '../../../data/devices';
+import { getComparisonSlug, getComparisonUrl } from '../../../utils/url';
 
 // SEO metadata
 const title = 'Monitor Screen Size Comparisons - 24" vs 27" vs 32" & Ultrawide';
@@ -11,7 +12,7 @@ const keywords = 'monitor size comparison, 27 vs 24 inch monitor, 32 inch monito
 // Get all monitor devices
 const monitorDevices = devices.filter(d => d.category === 'monitor');
 
-// Generate comparison pairs
+// Generate comparison pairs with canonical slugs (alphabetically sorted)
 interface ComparisonPair {
   a: Device;
   b: Device;
@@ -24,7 +25,7 @@ for (let i = 0; i < monitorDevices.length; i++) {
     pairs.push({
       a: monitorDevices[i],
       b: monitorDevices[j],
-      slug: `${monitorDevices[i].id}-vs-${monitorDevices[j].id}`,
+      slug: getComparisonSlug(monitorDevices[i].id, monitorDevices[j].id),
     });
   }
 }

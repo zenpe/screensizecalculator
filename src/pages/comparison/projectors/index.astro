@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import { devices, type Device } from '../../../data/devices';
+import { getComparisonSlug, getComparisonUrl } from '../../../utils/url';
 
 // SEO metadata
 const title = 'Projector Screen Size Comparisons - 100" vs 120" vs 150"';
@@ -12,7 +13,7 @@ const keywords = 'projector screen size comparison, 100 vs 120 inch projector, p
 const projectorDevices = devices.filter(d => d.category === 'projector');
 const tvDevices = devices.filter(d => d.category === 'tv');
 
-// Generate projector vs projector pairs
+// Generate projector vs projector pairs with canonical slugs
 interface ComparisonPair {
   a: Device;
   b: Device;
@@ -25,19 +26,19 @@ for (let i = 0; i < projectorDevices.length; i++) {
     projectorPairs.push({
       a: projectorDevices[i],
       b: projectorDevices[j],
-      slug: `${projectorDevices[i].id}-vs-${projectorDevices[j].id}`,
+      slug: getComparisonSlug(projectorDevices[i].id, projectorDevices[j].id),
     });
   }
 }
 
-// Generate TV vs projector pairs (cross-category)
+// Generate TV vs projector pairs (cross-category) with canonical slugs
 const tvVsProjectorPairs: ComparisonPair[] = [];
 for (const tv of tvDevices) {
   for (const projector of projectorDevices) {
     tvVsProjectorPairs.push({
       a: tv,
       b: projector,
-      slug: `${tv.id}-vs-${projector.id}`,
+      slug: getComparisonSlug(tv.id, projector.id),
     });
   }
 }

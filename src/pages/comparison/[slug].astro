@@ -11,8 +11,9 @@ import {
   calculatePercentageDifference
 } from '../../data/devices';
 import { getAmazonSearchUrl } from '../../site.config';
+import { getComparisonUrl } from '../../utils/url';
 
-// Generate all valid comparison pairs in both directions
+// Generate valid comparison pairs with alphabetical deduplication (SEO: single canonical URL)
 export function getStaticPaths() {
   const paths = [];
 
@@ -23,18 +24,15 @@ export function getStaticPaths() {
 
       // Check if this comparison is valid based on category rules
       if (isValidComparison(deviceA.category, deviceB.category)) {
-        // Forward direction: deviceA vs deviceB
-        const forwardSlug = `${deviceA.id}-vs-${deviceB.id}`;
-        paths.push({
-          params: { slug: forwardSlug },
-          props: { deviceA, deviceB },
-        });
+        // Enforce alphabetical order for URL slug to prevent duplicates
+        const [first, second] = deviceA.id < deviceB.id
+          ? [deviceA, deviceB]
+          : [deviceB, deviceA];
 
-        // Reverse direction: deviceB vs deviceA
-        const reverseSlug = `${deviceB.id}-vs-${deviceA.id}`;
+        const slug = `${first.id}-vs-${second.id}`;
         paths.push({
-          params: { slug: reverseSlug },
-          props: { deviceA: deviceB, deviceB: deviceA }, // Swap deviceA and deviceB for reverse comparison
+          params: { slug },
+          props: { deviceA: first, deviceB: second },
         });
       }
     }
@@ -43,7 +41,7 @@ export function getStaticPaths() {
   return paths;
 }
 
-// Get props from static paths
+// Get props from static paths (alphabetically ordered)
 const { deviceA, deviceB } = Astro.props;
 
 // Calculate comparison data
@@ -52,22 +50,25 @@ const areaB = calculateArea(deviceB.diagonal, deviceB.ratio);
 const dimsA = calculateDimensions(deviceA.diagonal, deviceA.ratio);
 const dimsB = calculateDimensions(deviceB.diagonal, deviceB.ratio);
 
-// Determine which is larger
-const largerDevice = areaA >= areaB ? deviceA : deviceB;
-const smallerDevice = areaA < areaB ? deviceA : deviceB;
-const largerArea = Math.max(areaA, areaB);
-const smallerArea = Math.min(areaA, areaB);
+// Smart Display Logic: Sort by screen size for better UX
+// Primary device = larger screen, Secondary device = smaller screen
+const primaryDevice = areaA >= areaB ? deviceA : deviceB;
+const secondaryDevice = areaA < areaB ? deviceA : deviceB;
+const primaryArea = Math.max(areaA, areaB);
+const secondaryArea = Math.min(areaA, areaB);
+const primaryDims = primaryDevice === deviceA ? dimsA : dimsB;
+const secondaryDims = secondaryDevice === deviceA ? dimsA : dimsB;
 
 // Calculate percentage difference
-const percentLarger = ((largerArea - smallerArea) / smallerArea) * 100;
+const percentLarger = ((primaryArea - secondaryArea) / secondaryArea) * 100;
 
 // Format number helper
 const formatNum = (num: number, decimals = 1) => num.toFixed(decimals);
 
-// SEO metadata
-const title = `Visual Size Comparison: ${deviceA.name} vs ${deviceB.name}`;
-const description = `Compare screen sizes between ${deviceA.name} (${deviceA.diagonal}") and ${deviceB.name} (${deviceB.diagonal}"). See visual overlay comparison and exact dimensions.`;
-const keywords = `${deviceA.name} vs ${deviceB.name}, screen size comparison, ${deviceA.name} screen size, ${deviceB.name} screen size, display comparison`;
+// SEO metadata (primary device first for better readability)
+const title = `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`;
+const description = `Compare screen sizes between ${primaryDevice.name} (${primaryDevice.diagonal}") and ${secondaryDevice.name} (${secondaryDevice.diagonal}"). See visual overlay comparison and exact dimensions.`;
+const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size comparison, ${primaryDevice.name} screen size, ${secondaryDevice.name} screen size, display comparison`;
 
 // Amazon search URLs (generic searches)
 const getAmazonUrl = (device: typeof deviceA) => {
@@ -83,11 +84,11 @@ const getAmazonUrl = (device: typeof deviceA) => {
     <!-- Page Header -->
     <div class="text-center mb-8">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-        {deviceA.name} vs {deviceB.name} Screen Size Comparison
+        {primaryDevice.name} vs {secondaryDevice.name} Screen Size Comparison
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Visual comparison showing how the {deviceA.name} ({deviceA.diagonal}") and
-        {deviceB.name} ({deviceB.diagonal}") screens compare in actual size.
+        Visual comparison showing how the {primaryDevice.name} ({primaryDevice.diagonal}") and
+        {secondaryDevice.name} ({secondaryDevice.diagonal}") screens compare in actual size.
       </p>
     </div>
 
@@ -95,8 +96,8 @@ const getAmazonUrl = (device: typeof deviceA) => {
     <div class="mb-8">
       <ComparisonVisualizer
         client:load
-        deviceA={deviceA}
-        deviceB={deviceB}
+        deviceA={primaryDevice}
+        deviceB={secondaryDevice}
       />
     </div>
 
@@ -106,8 +107,8 @@ const getAmazonUrl = (device: typeof deviceA) => {
       <p class="text-lg">
         {percentLarger > 0 ? (
           <>
-            The <strong>{largerDevice.name}</strong> is <strong class="text-accent-300">{formatNum(percentLarger)}% larger</strong> than
-            the <strong>{smallerDevice.name}</strong> in screen area.
+            The <strong>{primaryDevice.name}</strong> is <strong class="text-accent-300">{formatNum(percentLarger)}% larger</strong> than
+            the <strong>{secondaryDevice.name}</strong> in screen area.
           </>
         ) : (
           <>
@@ -117,12 +118,12 @@ const getAmazonUrl = (device: typeof deviceA) => {
       </p>
       <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
         <div class="bg-white/10 rounded-lg p-3">
-          <p class="text-white/70 text-xs uppercase tracking-wide mb-1">{largerDevice.name}</p>
-          <p class="font-bold">{formatNum(largerArea)} sq inches</p>
+          <p class="text-white/70 text-xs uppercase tracking-wide mb-1">{primaryDevice.name}</p>
+          <p class="font-bold">{formatNum(primaryArea)} sq inches</p>
         </div>
         <div class="bg-white/10 rounded-lg p-3">
-          <p class="text-white/70 text-xs uppercase tracking-wide mb-1">{smallerDevice.name}</p>
-          <p class="font-bold">{formatNum(smallerArea)} sq inches</p>
+          <p class="text-white/70 text-xs uppercase tracking-wide mb-1">{secondaryDevice.name}</p>
+          <p class="font-bold">{formatNum(secondaryArea)} sq inches</p>
         </div>
       </div>
     </div>
@@ -139,47 +140,47 @@ const getAmazonUrl = (device: typeof deviceA) => {
             <thead>
               <tr class="border-b border-gray-200 dark:border-gray-700">
                 <th class="py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Specification</th>
-                <th class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceA.name}</th>
-                <th class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceB.name}</th>
+                <th class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.name}</th>
+                <th class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.name}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Diagonal</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceA.diagonal}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceB.diagonal}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.diagonal}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.diagonal}"</td>
               </tr>
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Width</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(dimsA.width, 2)}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(dimsB.width, 2)}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDims.width, 2)}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDims.width, 2)}"</td>
               </tr>
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Height</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(dimsA.height, 2)}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(dimsB.height, 2)}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDims.height, 2)}"</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDims.height, 2)}"</td>
               </tr>
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Screen Area</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(areaA, 1)} sq in</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(areaB, 1)} sq in</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryArea, 1)} sq in</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryArea, 1)} sq in</td>
               </tr>
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Aspect Ratio</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(deviceA.ratio, 2)}:1</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(deviceB.ratio, 2)}:1</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDevice.ratio, 2)}:1</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDevice.ratio, 2)}:1</td>
               </tr>
-              {(deviceA.resolution || deviceB.resolution) && (
+              {(primaryDevice.resolution || secondaryDevice.resolution) && (
                 <tr>
                   <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Resolution</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceA.resolution || 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{deviceB.resolution || 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.resolution || 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.resolution || 'N/A'}</td>
                 </tr>
               )}
               <tr>
                 <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Category</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{deviceA.category}</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{deviceB.category}</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{primaryDevice.category}</td>
+                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{secondaryDevice.category}</td>
               </tr>
             </tbody>
           </table>
@@ -190,7 +191,7 @@ const getAmazonUrl = (device: typeof deviceA) => {
     <!-- Affiliate Buttons -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
       <a
-        href={getAmazonUrl(deviceA)}
+        href={getAmazonUrl(primaryDevice)}
         target="_blank"
         rel="noopener noreferrer nofollow"
         class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
@@ -198,10 +199,10 @@ const getAmazonUrl = (device: typeof deviceA) => {
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
         </svg>
-        Shop {deviceA.name} on Amazon
+        Shop {primaryDevice.name} on Amazon
       </a>
       <a
-        href={getAmazonUrl(deviceB)}
+        href={getAmazonUrl(secondaryDevice)}
         target="_blank"
         rel="noopener noreferrer nofollow"
         class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
@@ -209,7 +210,7 @@ const getAmazonUrl = (device: typeof deviceA) => {
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
         </svg>
-        Shop {deviceB.name} on Amazon
+        Shop {secondaryDevice.name} on Amazon
       </a>
     </div>
 
@@ -220,26 +221,26 @@ const getAmazonUrl = (device: typeof deviceA) => {
       </h2>
       <div class="flex flex-wrap gap-2">
         {devices
-          .filter(d => d.id !== deviceA.id && d.id !== deviceB.id && isValidComparison(deviceA.category, d.category))
+          .filter(d => d.id !== primaryDevice.id && d.id !== secondaryDevice.id && isValidComparison(primaryDevice.category, d.category))
           .slice(0, 6)
           .map(d => (
             <a
-              href={`/comparison/${deviceA.id}-vs-${d.id}`}
+              href={getComparisonUrl(primaryDevice.id, d.id)}
               class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
             >
-              {deviceA.name} vs {d.name}
+              {primaryDevice.name} vs {d.name}
             </a>
           ))
         }
         {devices
-          .filter(d => d.id !== deviceA.id && d.id !== deviceB.id && isValidComparison(deviceB.category, d.category))
+          .filter(d => d.id !== primaryDevice.id && d.id !== secondaryDevice.id && isValidComparison(secondaryDevice.category, d.category))
           .slice(0, 6)
           .map(d => (
             <a
-              href={`/comparison/${deviceB.id}-vs-${d.id}`}
+              href={getComparisonUrl(secondaryDevice.id, d.id)}
               class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
             >
-              {deviceB.name} vs {d.name}
+              {secondaryDevice.name} vs {d.name}
             </a>
           ))
         }
