@@ -82,28 +82,47 @@ function HumanSilhouette({ height, className = '' }: { height: number; className
   );
 }
 
-// Sofa SVG component (top-down view)
-function SofaOutline({ width, className = '' }: { width: number; className?: string }) {
+// Sofa hint - minimal visual cue for first person perspective
+// Just subtle armrest edges to suggest "you're sitting here"
+function SofaHint({ width }: { width: number }) {
+  const armWidth = width * 0.06;
+  const armHeight = width * 0.12;
+
   return (
-    <svg
-      viewBox="0 0 200 60"
-      style={{ width: `${width}px` }}
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeDasharray="6 4"
-    >
-      {/* Main seat */}
-      <rect x="10" y="15" width="180" height="35" rx="8" />
-      {/* Back cushions */}
-      <rect x="15" y="5" width="50" height="15" rx="4" />
-      <rect x="75" y="5" width="50" height="15" rx="4" />
-      <rect x="135" y="5" width="50" height="15" rx="4" />
-      {/* Arms */}
-      <rect x="2" y="20" width="12" height="25" rx="4" />
-      <rect x="186" y="20" width="12" height="25" rx="4" />
-    </svg>
+    <div className="relative" style={{ width: `${width}px`, height: `${armHeight}px` }}>
+      {/* Left armrest edge */}
+      <div
+        className="absolute left-0 bottom-0 rounded-t-lg"
+        style={{
+          width: `${armWidth}px`,
+          height: `${armHeight}px`,
+          background: 'linear-gradient(to right, rgba(63, 63, 70, 0.6) 0%, rgba(63, 63, 70, 0.2) 100%)',
+          boxShadow: 'inset 1px 1px 4px rgba(255,255,255,0.08)',
+        }}
+      />
+
+      {/* Right armrest edge */}
+      <div
+        className="absolute right-0 bottom-0 rounded-t-lg"
+        style={{
+          width: `${armWidth}px`,
+          height: `${armHeight}px`,
+          background: 'linear-gradient(to left, rgba(63, 63, 70, 0.6) 0%, rgba(63, 63, 70, 0.2) 100%)',
+          boxShadow: 'inset -1px 1px 4px rgba(255,255,255,0.08)',
+        }}
+      />
+
+      {/* Subtle center arc hint - very faint sofa back top edge */}
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2"
+        style={{
+          width: `${width * 0.7}px`,
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(82, 82, 91, 0.3) 30%, rgba(82, 82, 91, 0.4) 50%, rgba(82, 82, 91, 0.3) 70%, transparent 100%)',
+          borderRadius: '50% 50% 0 0',
+        }}
+      />
+    </div>
   );
 }
 
@@ -285,7 +304,7 @@ function TVFrame({
   );
 }
 
-// Projector screen frame with mounting bar
+// Projector screen frame with mounting bar and soft glow effect
 function ProjectorFrame({
   width,
   height,
@@ -308,9 +327,6 @@ function ProjectorFrame({
   dims: Dimensions;
 }) {
   const useDashed = isOverlayMode && isLarger;
-  const borderColor = isLarger ? 'border-slate-500' : 'border-cyan-400';
-  const bgColor = isLarger ? 'bg-slate-200/90' : 'bg-white/95'; // Projector screens are usually white/light
-  const mountColor = isLarger ? 'bg-slate-600' : 'bg-slate-500';
   const textColor = isLarger ? 'text-slate-400' : 'text-cyan-300';
   const fontSize = Math.max(Math.min(width * 0.05, 16), 10);
 
@@ -319,37 +335,88 @@ function ProjectorFrame({
   const mountWidth = width * 1.02;
   const borderWidth = Math.max(width * 0.008, 2);
 
+  // Glow intensity based on size (larger screens = more glow spread)
+  const glowSpread = Math.min(width * 0.15, 40);
+  const glowOpacity = isLarger ? 0.4 : 0.6;
+
   return (
     <div className="flex flex-col items-center">
-      {/* Mounting bar */}
+      {/* Mounting bar / roller case */}
       <div
-        className={`${mountColor} rounded-t-sm`}
+        className="rounded-t-sm"
         style={{
           width: `${mountWidth}px`,
           height: `${mountHeight}px`,
+          background: 'linear-gradient(180deg, #52525b 0%, #3f3f46 50%, #27272a 100%)',
+          boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2)',
         }}
       ></div>
 
-      {/* Screen with black border (like real projector screens) */}
+      {/* Screen with black border and projection glow */}
       <div
-        className="bg-slate-900 relative"
+        className="relative"
         style={{
           padding: `${borderWidth}px`,
-          boxShadow: isLarger && isOverlayMode ? 'none' : '0 8px 30px rgba(0, 0, 0, 0.3)',
+          background: '#0f0f0f',
+          // Soft ambient glow around the screen (light spill effect)
+          boxShadow: isLarger && isOverlayMode
+            ? 'none'
+            : `0 0 ${glowSpread * 2}px ${glowSpread}px rgba(200, 200, 180, ${glowOpacity * 0.3}),
+               0 8px 30px rgba(0, 0, 0, 0.4)`,
         }}
       >
+        {/* The projection surface with diffuse reflection effect */}
         <div
-          className={`relative ${bgColor} flex items-center justify-center`}
+          className="relative flex items-center justify-center overflow-hidden"
           style={{
             width: `${width}px`,
             height: `${height}px`,
             border: useDashed ? `2px dashed ${isLarger ? '#64748b' : '#22d3ee'}` : 'none',
+            // Base matte white with subtle texture feel
+            background: isLarger
+              ? 'linear-gradient(135deg, #d4d4d8 0%, #e4e4e7 25%, #d4d4d8 50%, #e4e4e7 75%, #d4d4d8 100%)'
+              : 'linear-gradient(135deg, #e5e5e5 0%, #f5f5f5 25%, #e5e5e5 50%, #f5f5f5 75%, #e5e5e5 100%)',
           }}
         >
+          {/* Projection light effect - soft center hotspot */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(ellipse 80% 70% at 50% 45%,
+                rgba(255, 253, 245, ${isLarger ? 0.5 : 0.7}) 0%,
+                rgba(255, 250, 235, ${isLarger ? 0.3 : 0.45}) 30%,
+                rgba(245, 240, 225, ${isLarger ? 0.15 : 0.2}) 60%,
+                transparent 100%)`,
+            }}
+          />
+
+          {/* Subtle vignette - projectors have slightly darker edges */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(ellipse 100% 100% at 50% 50%,
+                transparent 40%,
+                rgba(0, 0, 0, 0.08) 80%,
+                rgba(0, 0, 0, 0.15) 100%)`,
+            }}
+          />
+
+          {/* Screen texture - very subtle grain for matte screen feel */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            }}
+          />
+
+          {/* Diagonal size text */}
           {showDiagonal && (
             <div
-              className={`font-bold ${isLarger ? 'text-slate-400' : 'text-cyan-600'}`}
-              style={{ fontSize: `${fontSize}px` }}
+              className={`relative z-10 font-bold ${isLarger ? 'text-slate-500' : 'text-slate-600'}`}
+              style={{
+                fontSize: `${fontSize}px`,
+                textShadow: '0 1px 2px rgba(255,255,255,0.5)',
+              }}
             >
               {diagonal}"
             </div>
@@ -669,12 +736,12 @@ function RoomView({
           </div>
         </div>
 
-        {/* Sofa outline - on the floor area */}
+        {/* Sofa hint - subtle armrest edges for first person perspective */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 text-slate-600/30"
-          style={{ bottom: `${floorFromBottom - 30}px` }}
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{ bottom: 0 }}
         >
-          <SofaOutline width={isMobile ? 120 : 180} />
+          <SofaHint width={isMobile ? 300 : 550} />
         </div>
 
         {/* Scale indicator */}
