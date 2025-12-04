@@ -1,6 +1,24 @@
 ---
 // Footer component with comprehensive navigation
+import { getComparisonSlug } from '../utils/url';
+import { devices } from '../data/devices';
+
 const currentYear = new Date().getFullYear();
+
+// Get devices by ID for popular comparisons
+const popularComparisons = [
+  { id1: 'iphone-16-pro-max', id2: 'iphone-15-pro-max', text: 'iPhone 16 Pro Max vs 15 Pro Max' },
+  { id1: '65-inch-tv', id2: '55-inch-tv', text: '65" vs 55" TV' },
+  { id1: '27-inch-monitor', id2: '24-inch-monitor', text: '27" vs 24" Monitor' },
+  { id1: 'iphone-16', id2: 'samsung-galaxy-s24', text: 'iPhone 16 vs Galaxy S24' },
+  { id1: '120-inch-projector-screen', id2: '85-inch-tv', text: '120" Projector vs 85" TV' },
+  { id1: '75-inch-tv', id2: '65-inch-tv', text: '75" vs 65" TV' },
+].map(({ id1, id2, text }) => {
+  return {
+    url: `/comparison/${getComparisonSlug(id1, id2)}`,
+    text
+  };
+});
 ---
 
 <footer class="bg-gray-900 text-gray-300 mt-auto">
@@ -147,24 +165,11 @@ const currentYear = new Date().getFullYear();
     <div class="mt-10 pt-8 border-t border-gray-800">
       <h3 class="text-sm font-semibold text-white mb-4">Popular Comparisons</h3>
       <div class="flex flex-wrap gap-2">
-        <a href="/comparison/iphone-16-pro-max-vs-iphone-15-pro-max" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          iPhone 16 Pro Max vs 15 Pro Max
-        </a>
-        <a href="/comparison/65-inch-tv-vs-55-inch-tv" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          65" vs 55" TV
-        </a>
-        <a href="/comparison/27-inch-monitor-vs-24-inch-monitor" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          27" vs 24" Monitor
-        </a>
-        <a href="/comparison/iphone-16-vs-samsung-galaxy-s24" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          iPhone 16 vs Galaxy S24
-        </a>
-        <a href="/comparison/120-inch-projector-screen-vs-85-inch-tv" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          120" Projector vs 85" TV
-        </a>
-        <a href="/comparison/75-inch-tv-vs-65-inch-tv" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
-          75" vs 65" TV
-        </a>
+        {popularComparisons.map(({ url, text }) => (
+          <a href={url} class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
+            {text}
+          </a>
+        ))}
       </div>
     </div>
 
