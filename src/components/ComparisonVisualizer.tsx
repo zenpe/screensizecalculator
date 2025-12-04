@@ -192,6 +192,7 @@ function TVFrame({
   isOverlayMode,
   showLabel = true,
   showDiagonal = true,
+  showStand = true,
   dims,
 }: {
   width: number;
@@ -202,6 +203,7 @@ function TVFrame({
   isOverlayMode: boolean;
   showLabel?: boolean;
   showDiagonal?: boolean;
+  showStand?: boolean;
   dims: Dimensions;
 }) {
   const useDashed = isOverlayMode && isLarger;
@@ -217,6 +219,9 @@ function TVFrame({
   const standHeight = Math.max(height * 0.06, 8);
   const standNeckWidth = Math.max(width * 0.08, 15);
   const standNeckHeight = Math.max(height * 0.08, 10);
+
+  // In overlay mode, hide stand to focus on screen comparison
+  const displayStand = showStand && !isOverlayMode;
 
   return (
     <div className="flex flex-col items-center">
@@ -250,18 +255,22 @@ function TVFrame({
         </div>
       </div>
 
-      {/* Stand neck */}
-      <div className={`${bezelColor}`} style={{ width: `${standNeckWidth}px`, height: `${standNeckHeight}px` }}></div>
+      {/* Stand neck - only show if displayStand is true */}
+      {displayStand && (
+        <div className={`${bezelColor}`} style={{ width: `${standNeckWidth}px`, height: `${standNeckHeight}px` }}></div>
+      )}
 
-      {/* Stand base */}
-      <div
-        className={`${bezelColor} rounded-sm`}
-        style={{
-          width: `${standWidth}px`,
-          height: `${standHeight}px`,
-          borderRadius: '2px 2px 4px 4px',
-        }}
-      ></div>
+      {/* Stand base - only show if displayStand is true */}
+      {displayStand && (
+        <div
+          className={`${bezelColor} rounded-sm`}
+          style={{
+            width: `${standWidth}px`,
+            height: `${standHeight}px`,
+            borderRadius: '2px 2px 4px 4px',
+          }}
+        ></div>
+      )}
 
       {/* Label */}
       {showLabel && (
@@ -371,6 +380,7 @@ function MonitorFrame({
   isOverlayMode,
   showLabel = true,
   showDiagonal = true,
+  showStand = true,
   dims,
 }: {
   width: number;
@@ -381,6 +391,7 @@ function MonitorFrame({
   isOverlayMode: boolean;
   showLabel?: boolean;
   showDiagonal?: boolean;
+  showStand?: boolean;
   dims: Dimensions;
 }) {
   const useDashed = isOverlayMode && isLarger;
@@ -396,6 +407,9 @@ function MonitorFrame({
   const standHeight = Math.max(height * 0.04, 6);
   const standNeckWidth = Math.max(width * 0.06, 10);
   const standNeckHeight = Math.max(height * 0.12, 15);
+
+  // In overlay mode, hide stand to focus on screen comparison
+  const displayStand = showStand && !isOverlayMode;
 
   return (
     <div className="flex flex-col items-center">
@@ -424,18 +438,22 @@ function MonitorFrame({
         </div>
       </div>
 
-      {/* Stand neck */}
-      <div className={`${bezelColor}`} style={{ width: `${standNeckWidth}px`, height: `${standNeckHeight}px` }}></div>
+      {/* Stand neck - only show if displayStand is true */}
+      {displayStand && (
+        <div className={`${bezelColor}`} style={{ width: `${standNeckWidth}px`, height: `${standNeckHeight}px` }}></div>
+      )}
 
-      {/* Stand base - oval shaped */}
-      <div
-        className={`${bezelColor}`}
-        style={{
-          width: `${standWidth}px`,
-          height: `${standHeight}px`,
-          borderRadius: '50%',
-        }}
-      ></div>
+      {/* Stand base - oval shaped - only show if displayStand is true */}
+      {displayStand && (
+        <div
+          className={`${bezelColor}`}
+          style={{
+            width: `${standWidth}px`,
+            height: `${standHeight}px`,
+            borderRadius: '50%',
+          }}
+        ></div>
+      )}
 
       {/* Label */}
       {showLabel && (
@@ -519,28 +537,37 @@ function RoomView({
   // Human height reference: ~170cm = 67 inches
   const humanHeightInches = 67;
 
-  // Calculate scale factor for room view
-  // We need to fit: human (67") + both screens side by side with gap
   // Container dimensions
   const containerWidth = isMobile ? 320 : 700;
-  const containerHeight = isMobile ? 350 : 320;
+  const containerHeight = isMobile ? 420 : 400;
 
-  // Total width needed: human width (~15") + gap + larger screen + gap + smaller screen
-  const humanWidthInches = 15; // approximate human shoulder width
-  const gapInches = 10;
+  // TV cabinet height from floor (typical: ~20-24 inches / 50-60cm)
+  const cabinetHeightInches = 22;
+
+  // Wall space above cabinet (where screens are mounted/placed)
+  // Calculate based on largest screen + some padding
+  const maxScreenHeightInches = Math.max(larger.dims.height, smaller.dims.height);
+  const wallSpaceInches = maxScreenHeightInches + 15; // 15" padding above screens
+
+  // Total height needed: floor to human head top
+  const totalHeightInches = Math.max(humanHeightInches, cabinetHeightInches + wallSpaceInches);
+
+  // Human width
+  const humanWidthInches = 15;
+  const gapInches = 8;
+
+  // Total width: human + gap + screens side by side
   const totalWidthInches = humanWidthInches + gapInches + larger.dims.width + gapInches + smaller.dims.width;
 
-  // Max height needed: human height or screen height (whichever is taller)
-  const maxHeightInches = Math.max(humanHeightInches, larger.dims.height, smaller.dims.height);
-
   // Calculate scale to fit everything
-  const scaleByWidth = (containerWidth * 0.95) / totalWidthInches;
-  const scaleByHeight = (containerHeight * 0.85) / maxHeightInches;
+  const scaleByWidth = (containerWidth * 0.92) / totalWidthInches;
+  const scaleByHeight = (containerHeight * 0.88) / totalHeightInches;
   const roomScaleFactor = Math.min(scaleByWidth, scaleByHeight);
 
   // Apply scale
   const humanHeightPx = humanHeightInches * roomScaleFactor;
-  const humanWidthPx = humanWidthInches * roomScaleFactor;
+  const cabinetHeightPx = cabinetHeightInches * roomScaleFactor;
+  const gapPx = gapInches * roomScaleFactor;
 
   const largerScaled = {
     width: larger.dims.width * roomScaleFactor,
@@ -555,8 +582,14 @@ function RoomView({
   const largerDistance = getViewingDistance(larger.device.diagonal);
   const smallerDistance = getViewingDistance(smaller.device.diagonal);
 
-  // Wall/room height
-  const roomHeight = Math.max(humanHeightPx + 60, largerScaled.height + 100);
+  // Room total height
+  const roomHeight = containerHeight;
+
+  // Floor position from bottom of container
+  const floorFromBottom = 40;
+
+  // Cabinet line position (distance from floor)
+  const cabinetLineFromFloor = cabinetHeightPx;
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -570,22 +603,46 @@ function RoomView({
           <div className="w-full h-full" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #fff 0px, #fff 1px, transparent 1px, transparent 50px)' }}></div>
         </div>
 
-        {/* Floor line */}
-        <div className="absolute bottom-12 left-0 right-0 h-px bg-slate-600"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-950 to-slate-900"></div>
-
-        {/* Content container - flex row with human on left, screens on right */}
+        {/* Virtual TV cabinet line - dashed line showing where devices bottom aligns */}
         <div
-          className="absolute inset-0 flex items-end justify-center pb-12 px-4"
-          style={{ gap: `${gapInches * roomScaleFactor}px` }}
+          className="absolute left-0 right-0 border-t border-dashed border-slate-600/50"
+          style={{ bottom: `${floorFromBottom + cabinetLineFromFloor}px` }}
         >
-          {/* Human silhouette for scale reference */}
-          <div className="flex flex-col items-center text-slate-500/70">
+          <span className="absolute right-2 -top-4 text-xs text-slate-600">TV Cabinet</span>
+        </div>
+
+        {/* Floor line */}
+        <div
+          className="absolute left-0 right-0 h-px bg-slate-500"
+          style={{ bottom: `${floorFromBottom}px` }}
+        ></div>
+
+        {/* Floor area */}
+        <div
+          className="absolute left-0 right-0 bg-gradient-to-t from-slate-950 to-slate-900/80"
+          style={{ bottom: 0, height: `${floorFromBottom}px` }}
+        ></div>
+
+        {/* Content container */}
+        <div
+          className="absolute inset-x-0 flex items-end justify-center px-4"
+          style={{
+            bottom: `${floorFromBottom + cabinetLineFromFloor}px`,
+            gap: `${gapPx}px`
+          }}
+        >
+          {/* Human silhouette - standing on the floor, not on cabinet */}
+          <div
+            className="flex flex-col items-center text-slate-500/70"
+            style={{
+              marginBottom: `-${cabinetLineFromFloor}px` // Push human down to floor level
+            }}
+          >
             <HumanSilhouette height={humanHeightPx} />
             <div className="text-xs text-center mt-1 text-slate-500">5'7"</div>
           </div>
 
-          {/* Larger screen */}
+          {/* Larger screen - bottom aligned to cabinet line */}
           <div className="flex flex-col items-center">
             <DeviceFrame
               device={larger.device}
@@ -598,7 +655,7 @@ function RoomView({
             />
           </div>
 
-          {/* Smaller screen */}
+          {/* Smaller screen - bottom aligned to cabinet line */}
           <div className="flex flex-col items-center">
             <DeviceFrame
               device={smaller.device}
@@ -612,9 +669,12 @@ function RoomView({
           </div>
         </div>
 
-        {/* Sofa outline - positioned below */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-slate-600/30">
-          <SofaOutline width={isMobile ? 100 : 160} />
+        {/* Sofa outline - on the floor area */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 text-slate-600/30"
+          style={{ bottom: `${floorFromBottom - 30}px` }}
+        >
+          <SofaOutline width={isMobile ? 120 : 180} />
         </div>
 
         {/* Scale indicator */}
@@ -750,15 +810,17 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
     height: smaller.dims.height * scaleFactor,
   };
 
-  // Calculate extra height for TV/projector stands
-  const getExtraHeight = (category: string, height: number) => {
+  // Calculate extra height for TV/projector stands (only in side-by-side mode)
+  const getExtraHeight = (category: string, height: number, mode: DisplayMode) => {
+    // In overlay mode, TV/Monitor don't show stands, so no extra height
+    if (mode === 'overlay') return 0;
     if (category === 'tv' || category === 'monitor') return height * 0.18;
     if (category === 'projector') return height * 0.05;
     return 0;
   };
 
-  const largerExtraHeight = getExtraHeight(larger.device.category, largerScaled.height);
-  const smallerExtraHeight = getExtraHeight(smaller.device.category, smallerScaled.height);
+  const largerExtraHeight = getExtraHeight(larger.device.category, largerScaled.height, displayMode);
+  const smallerExtraHeight = getExtraHeight(smaller.device.category, smallerScaled.height, displayMode);
 
   const containerHeight = displayMode === 'room-view'
     ? (isMobile ? 520 : 480)
