@@ -1,6 +1,6 @@
 ---
 title: 'Projector Throw Ratios Guide - Distance Calculations'
-description: 'Master projector throw ratios and calculate the perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw projector guides.'
+description: 'Master projector throw ratios and calculate perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw guides.'
 pubDate: '2025-12-02'
 category: 'Projector Guide'
 author: 'Screen Size Calculator Team'
