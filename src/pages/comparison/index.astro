@@ -64,6 +64,30 @@ const popularComparisons = [
   return { a: deviceA, b: deviceB, slug: getComparisonSlug(a, b) };
 }).filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
 
+// Quick links data - using getComparisonSlug for canonical URLs
+const quickLinks = {
+  phones: [
+    { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max', label: 'iPhone 16 Pro Max vs 15 Pro Max' },
+    { a: 'iphone-16', b: 'iphone-15', label: 'iPhone 16 vs iPhone 15' },
+    { a: 'iphone-16-pro', b: 'samsung-galaxy-s24-ultra', label: 'iPhone 16 Pro vs Galaxy S24 Ultra' },
+  ],
+  tvs: [
+    { a: '65-inch-tv', b: '55-inch-tv', label: '65" TV vs 55" TV' },
+    { a: '75-inch-tv', b: '65-inch-tv', label: '75" TV vs 65" TV' },
+    { a: '85-inch-tv', b: '75-inch-tv', label: '85" TV vs 75" TV' },
+  ],
+  monitors: [
+    { a: '27-inch-monitor', b: '24-inch-monitor', label: '27" Monitor vs 24" Monitor' },
+    { a: '32-inch-monitor', b: '27-inch-monitor', label: '32" Monitor vs 27" Monitor' },
+    { a: '34-inch-ultrawide-monitor', b: '27-inch-monitor', label: '34" Ultrawide vs 27" Monitor' },
+  ],
+  projectors: [
+    { a: '120-inch-projector-screen', b: '100-inch-projector-screen', label: '120" vs 100" Projector Screen' },
+    { a: '85-inch-tv', b: '100-inch-projector-screen', label: '85" TV vs 100" Projector' },
+    { a: '150-inch-projector-screen', b: '120-inch-projector-screen', label: '150" vs 120" Projector Screen' },
+  ],
+};
+
 // Category cards data
 const categories = [
   {
@@ -214,15 +238,11 @@ const categories = [
             <span>📱</span> Phone Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/comparison/iphone-16-pro-max-vs-iphone-15-pro-max" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              iPhone 16 Pro Max vs 15 Pro Max
-            </a>
-            <a href="/comparison/iphone-16-vs-iphone-15" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              iPhone 16 vs iPhone 15
-            </a>
-            <a href="/comparison/iphone-16-pro-vs-samsung-galaxy-s24-ultra" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              iPhone 16 Pro vs Galaxy S24 Ultra
-            </a>
+            {quickLinks.phones.map(link => (
+              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                {link.label}
+              </a>
+            ))}
           </div>
           <a href="/comparison/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all phone comparisons →
@@ -235,15 +255,11 @@ const categories = [
             <span>📺</span> TV Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/comparison/65-inch-tv-vs-55-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              65" TV vs 55" TV
-            </a>
-            <a href="/comparison/75-inch-tv-vs-65-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              75" TV vs 65" TV
-            </a>
-            <a href="/comparison/85-inch-tv-vs-75-inch-tv" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              85" TV vs 75" TV
-            </a>
+            {quickLinks.tvs.map(link => (
+              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                {link.label}
+              </a>
+            ))}
           </div>
           <a href="/comparison/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all TV comparisons →
@@ -256,15 +272,11 @@ const categories = [
             <span>🖥️</span> Monitor Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/comparison/27-inch-monitor-vs-24-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              27" Monitor vs 24" Monitor
-            </a>
-            <a href="/comparison/32-inch-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              32" Monitor vs 27" Monitor
-            </a>
-            <a href="/comparison/34-inch-ultrawide-monitor-vs-27-inch-monitor" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              34" Ultrawide vs 27" Monitor
-            </a>
+            {quickLinks.monitors.map(link => (
+              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                {link.label}
+              </a>
+            ))}
           </div>
           <a href="/comparison/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all monitor comparisons →
@@ -277,15 +289,11 @@ const categories = [
             <span>📽️</span> Projector Comparisons
           </h3>
           <div class="space-y-2">
-            <a href="/comparison/120-inch-projector-screen-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              120" vs 100" Projector Screen
-            </a>
-            <a href="/comparison/85-inch-tv-vs-100-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              85" TV vs 100" Projector
-            </a>
-            <a href="/comparison/150-inch-projector-screen-vs-120-inch-projector-screen" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-              150" vs 120" Projector Screen
-            </a>
+            {quickLinks.projectors.map(link => (
+              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                {link.label}
+              </a>
+            ))}
           </div>
           <a href="/comparison/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all projector comparisons →
