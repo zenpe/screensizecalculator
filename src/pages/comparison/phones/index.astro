@@ -15,6 +15,14 @@ const keywords =
 // Get all phone devices
 const phoneDevices = devices.filter(d => d.category === 'phone');
 
+// --- Dynamic placeholder and search hint ---
+const latestIphone = phoneDevices.find(p => p.id.includes('iphone') && !p.id.includes('pro') && !p.id.includes('plus') && !p.id.includes('mini'));
+const latestSamsung = phoneDevices.find(p => p.id.includes('samsung-galaxy-s') && p.id.includes('ultra'));
+
+const placeholder = `Search phone comparisons (e.g. ${latestIphone?.name}, ${latestSamsung?.name})...`;
+const searchHint = `Try '${latestIphone?.name}' or '${latestSamsung?.name.replace('Samsung Galaxy ', '')}'`;
+
+
 // Generate comparison pairs with pre-computed search text for the search component
 const comparisonPairs = [];
 for (let i = 0; i < phoneDevices.length; i++) {
@@ -76,7 +84,8 @@ const crossBrand = comparisonPairs.filter(
         client:load
         devices={phoneDevices}
         comparisons={comparisonPairs}
-        placeholder="Search phone comparisons (e.g. iPhone 16, S24 Ultra)..."
+        placeholder={placeholder}
+        searchHint={searchHint}
       />
     </div>
 

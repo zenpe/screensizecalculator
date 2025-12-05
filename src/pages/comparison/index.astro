@@ -49,28 +49,63 @@ for (let i = 0; i < devices.length; i++) {
   }
 }
 
-// Popular comparisons with canonical slugs
-const popularComparisons = [
-  { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max' },
-  { a: 'iphone-16', b: 'samsung-galaxy-s24' },
-  { a: '65-inch-tv', b: '55-inch-tv' },
-  { a: '27-inch-monitor', b: '24-inch-monitor' },
-  { a: '120-inch-projector-screen', b: '85-inch-tv' },
-  { a: 'iphone-16-pro', b: 'iphone-16' },
-].map(({ a, b }) => {
-  const deviceA = devices.find(d => d.id === a);
-  const deviceB = devices.find(d => d.id === b);
-  if (!deviceA || !deviceB) return null;
-  return { a: deviceA, b: deviceB, slug: getComparisonSlug(a, b) };
-}).filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
+// Helper function to find the latest devices by a name filter.
+// It assumes the `devices` array is sorted with the newest devices first.
+function getLatestDevices(filter: (id: string) => boolean, count: number) {
+  return devices.filter(d => filter(d.id)).slice(0, count);
+}
 
-// Quick links data - using getComparisonSlug for canonical URLs
+// --- Dynamic Popular Comparisons ---
+const latestIphoneProMax = getLatestDevices(id => id.includes('iphone') && id.includes('pro-max'), 2);
+const latestIphoneStandard = getLatestDevices(id => id.includes('iphone') && !id.includes('pro') && !id.includes('plus') && !id.includes('mini'), 2);
+const latestSamsungStandard = getLatestDevices(id => id.includes('samsung-galaxy-s') && !id.includes('ultra') && !id.includes('plus'), 1);
+const latestIphonePro = getLatestDevices(id => id.includes('iphone') && id.includes('pro') && !id.includes('max'), 1);
+
+const dynamicPhoneComparisons = [];
+if (latestIphoneProMax.length === 2) {
+  dynamicPhoneComparisons.push({ a: latestIphoneProMax[0], b: latestIphoneProMax[1] });
+}
+if (latestIphoneStandard.length > 0 && latestSamsungStandard.length > 0) {
+  dynamicPhoneComparisons.push({ a: latestIphoneStandard[0], b: latestSamsungStandard[0] });
+}
+if (latestIphonePro.length > 0 && latestIphoneStandard.length > 0) {
+    dynamicPhoneComparisons.push({ a: latestIphonePro[0], b: latestIphoneStandard[0] });
+}
+
+const popularComparisons = [
+  ...dynamicPhoneComparisons,
+  { aId: '65-inch-tv', bId: '55-inch-tv' },
+  { aId: '27-inch-monitor', bId: '24-inch-monitor' },
+  { aId: '120-inch-projector-screen', bId: '85-inch-tv' },
+]
+  .map(comp => {
+    // Handle both object shapes (dynamic and hardcoded)
+    const deviceA = comp.a || devices.find(d => d.id === comp.aId);
+    const deviceB = comp.b || devices.find(d => d.id === comp.bId);
+
+    if (!deviceA || !deviceB) return null;
+    return { a: deviceA, b: deviceB, slug: getComparisonSlug(deviceA.id, deviceB.id) };
+  })
+  .filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
+
+
+// --- Dynamic Quick Links ---
+const latestSamsungUltra = getLatestDevices(id => id.includes('samsung-galaxy-s') && id.includes('ultra'), 1);
+
+const dynamicQuickLinks = [];
+if (latestIphoneProMax.length === 2) {
+    dynamicQuickLinks.push({ a: latestIphoneProMax[0], b: latestIphoneProMax[1], label: `${latestIphoneProMax[0].name} vs ${latestIphoneProMax[1].name}` });
+}
+if (latestIphoneStandard.length === 2) {
+    dynamicQuickLinks.push({ a: latestIphoneStandard[0], b: latestIphoneStandard[1], label: `${latestIphoneStandard[0].name} vs ${latestIphoneStandard[1].name}` });
+}
+if (latestIphonePro.length > 0 && latestSamsungUltra.length > 0) {
+    dynamicQuickLinks.push({ a: latestIphonePro[0], b: latestSamsungUltra[0], label: `${latestIphonePro[0].name} vs ${latestSamsungUltra[0].name}` });
+}
+
+
 const quickLinks = {
-  phones: [
-    { a: 'iphone-16-pro-max', b: 'iphone-15-pro-max', label: 'iPhone 16 Pro Max vs 15 Pro Max' },
-    { a: 'iphone-16', b: 'iphone-15', label: 'iPhone 16 vs iPhone 15' },
-    { a: 'iphone-16-pro', b: 'samsung-galaxy-s24-ultra', label: 'iPhone 16 Pro vs Galaxy S24 Ultra' },
-  ],
+  phones: dynamicQuickLinks,
   tvs: [
     { a: '65-inch-tv', b: '55-inch-tv', label: '65" TV vs 55" TV' },
     { a: '75-inch-tv', b: '65-inch-tv', label: '75" TV vs 65" TV' },
@@ -88,6 +123,14 @@ const quickLinks = {
   ],
 };
 
+// --- Dynamic Category Description ---
+const latestIphoneName = latestIphoneStandard.length > 0 ? latestIphoneStandard[0].name.replace('iPhone ', '') : '';
+const latestSamsungName = latestSamsungStandard.length > 0 ? latestSamsungStandard[0].name.replace('Samsung Galaxy ', '') : '';
+const phoneDescription = `iPhone ${latestIphoneName}, ${parseInt(latestIphoneName)-1} series, Samsung ${latestSamsungName}, Google Pixel`;
+
+
+const searchHint = `Try "${latestIphoneStandard[0]?.name}", "${latestSamsungStandard[0]?.name.replace('Samsung Galaxy ', '')}", "TV", or "Monitor"`;
+
 // Category cards data
 const categories = [
   {
@@ -95,7 +138,7 @@ const categories = [
     icon: '📱',
     href: '/comparison/phones',
     count: phonePairsCount,
-    description: 'iPhone 16, 15, 14, 13 series, Samsung Galaxy S24',
+    description: phoneDescription,
     color: 'from-blue-500 to-cyan-500',
   },
   {
@@ -166,7 +209,8 @@ const categories = [
         client:load
         devices={devices}
         comparisons={allComparisons}
-        placeholder="Search any comparison (e.g. iPhone 16, 65-inch TV)..."
+        placeholder={`Search any comparison (e.g. ${latestIphoneProMax[0]?.name}, 65-inch TV)...`}
+        searchHint={searchHint}
       />
     </section>
 

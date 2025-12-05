@@ -12,9 +12,15 @@ interface ComparisonSearchProps {
   devices: Device[];
   comparisons: ComparisonPair[];
   placeholder?: string;
+  searchHint?: string;
 }
 
-export default function ComparisonSearch({ devices, comparisons, placeholder }: ComparisonSearchProps) {
+export default function ComparisonSearch({
+  devices,
+  comparisons,
+  placeholder,
+  searchHint,
+}: ComparisonSearchProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -199,7 +205,7 @@ export default function ComparisonSearch({ devices, comparisons, placeholder }: 
                 No comparisons found for "{query}"
               </p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                Try searching for "iPhone", "Samsung", "TV", or "Monitor"
+                {searchHint || 'Try searching for "iPhone", "Samsung", "TV", or "Monitor"'}
               </p>
             </div>
           )}
