@@ -1,7 +1,6 @@
 ---
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -9,14 +8,17 @@ interface Props {
   pubDate: string;
   author?: string;
   category?: string;
+  readingTime?: number;
 }
 
-const { title, description, pubDate, author = "Screen Size Calculator Team", category = "Guide" } = Astro.props;
+const { title, description, pubDate, author = "Screen Size Calculator Team", category = "Guide", readingTime } = Astro.props;
 const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
+
+const estimatedReadingTime = readingTime || 5;
 
 // Article structured data
 const articleData = {
@@ -41,96 +43,353 @@ const articleData = {
 ---
 
 <Layout title={title} description={description}>
+  <!-- Reading Progress Bar -->
+  <div id="reading-progress" class="fixed top-0 left-0 h-0.5 bg-primary-500 z-50 transition-all duration-100" style="width: 0%"></div>
+
   <Header />
 
   <main class="flex-1">
-    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-      <!-- Breadcrumb -->
-      <nav class="mb-8 text-sm" aria-label="Breadcrumb">
-        <ol class="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-          <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a></li>
-          <li><span class="mx-2">/</span></li>
-          <li><a href="/blog" class="hover:text-primary-600 dark:hover:text-primary-400">Blog</a></li>
-          <li><span class="mx-2">/</span></li>
-          <li class="text-gray-900 dark:text-gray-200" aria-current="page">{title}</li>
-        </ol>
-      </nav>
+    <article class="relative">
+      <!-- Hero Section - Simplified -->
+      <header class="relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 pt-8 pb-12 lg:pt-12 lg:pb-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Breadcrumb -->
+          <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+              <li>
+                <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a>
+              </li>
+              <li class="text-gray-400">/</li>
+              <li>
+                <a href="/blog" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</a>
+              </li>
+              <li class="text-gray-400">/</li>
+              <li class="text-gray-700 dark:text-gray-300 truncate max-w-[180px]">{category}</li>
+            </ol>
+          </nav>
 
-      <!-- Article Header -->
-      <header class="mb-8">
-        <div class="mb-4">
-          <span class="inline-block px-3 py-1 bg-primary-100 text-primary-700 dark:bg-gray-700 dark:text-primary-400 rounded-full text-sm font-medium">
-            {category}
-          </span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          {title}
-        </h1>
-        <div class="flex items-center text-gray-600 dark:text-gray-300 text-sm">
-          <time datetime={pubDate}>{formattedDate}</time>
-          <span class="mx-3">•</span>
-          <span>{author}</span>
+          <!-- Category & Meta -->
+          <div class="flex flex-wrap items-center gap-3 mb-4 text-sm">
+            <span class="px-2.5 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 rounded-md font-medium">
+              {category}
+            </span>
+            <span class="text-gray-500 dark:text-gray-400">
+              <time datetime={pubDate}>{formattedDate}</time>
+            </span>
+            <span class="text-gray-300 dark:text-gray-600">·</span>
+            <span class="text-gray-500 dark:text-gray-400">{estimatedReadingTime} min read</span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white leading-snug">
+            {title}
+          </h1>
         </div>
       </header>
 
-      <!-- Article Content -->
-      <div class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 dark:prose-invert dark:prose-strong:text-gray-100 prose-ul:list-disc prose-ol:list-decimal">
-        <slot />
-      </div>
+      <!-- Article Content with TOC -->
+      <div class="bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-10 xl:gap-16">
+            <!-- Main Content -->
+            <div class="min-w-0">
+              <div class="prose prose-gray max-w-none" id="article-content">
+                <slot />
+              </div>
+            </div>
 
-      <!-- CTA Box -->
-      <div class="mt-12 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-8 text-center">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          Try Our Screen Size Calculator
-        </h2>
-        <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-          Calculate your perfect screen size with viewing distance recommendations, PPI analysis, and more.
-        </p>
-        <a
-          href="/#calculator"
-          class="inline-flex items-center gap-2 bg-primary-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          Use Calculator Now
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </a>
+            <!-- Sidebar -->
+            <aside class="hidden lg:block">
+              <div class="sticky top-20 space-y-6">
+                <!-- TOC -->
+                <nav id="toc" class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg" aria-label="Table of contents">
+                  <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                    On This Page
+                  </h2>
+                  <ul id="toc-list" class="space-y-1.5 text-sm"></ul>
+                </nav>
+
+                <!-- Share -->
+                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                  <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                    Share
+                  </h2>
+                  <div class="flex gap-2">
+                    <a
+                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://screensizecalculators.com/blog/${Astro.params.slug}`)}&text=${encodeURIComponent(title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      aria-label="Share on Twitter"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                    <a
+                      href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://screensizecalculators.com/blog/${Astro.params.slug}`)}&title=${encodeURIComponent(title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      aria-label="Share on LinkedIn"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <button
+                      id="copy-link"
+                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      aria-label="Copy link"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- CTA Mini -->
+                <a href="/#calculator" class="block p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-100 dark:border-primary-800 hover:border-primary-300 dark:hover:border-primary-600 transition-colors group">
+                  <div class="flex items-center gap-3">
+                    <div class="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
+                      <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        Screen Calculator
+                      </div>
+                      <div class="text-xs text-gray-500 dark:text-gray-400">
+                        Try it free
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
     </article>
   </main>
 
-  <Footer />
+  <!-- Back to Top Button -->
+  <button
+    id="back-to-top"
+    class="fixed bottom-6 right-6 w-10 h-10 bg-gray-800 dark:bg-gray-700 text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-200 flex items-center justify-center z-40 hover:bg-gray-700 dark:hover:bg-gray-600"
+    aria-label="Back to top"
+  >
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
 
   <script type="application/ld+json" set:html={JSON.stringify(articleData)} />
 </Layout>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const progressBar = document.getElementById('reading-progress');
+    const backToTop = document.getElementById('back-to-top');
+    const article = document.querySelector('article');
+    const tocList = document.getElementById('toc-list');
+    const articleContent = document.getElementById('article-content');
+    const copyLinkBtn = document.getElementById('copy-link');
+
+    if (!progressBar || !article) return;
+
+    // Generate TOC from headings
+    if (tocList && articleContent) {
+      const headings = articleContent.querySelectorAll('h2, h3');
+
+      headings.forEach((heading, index) => {
+        if (!heading.id) {
+          heading.id = `heading-${index}`;
+        }
+
+        const level = heading.tagName === 'H2' ? 2 : 3;
+        const li = document.createElement('li');
+        li.className = level === 3 ? 'pl-3' : '';
+
+        const a = document.createElement('a');
+        a.href = `#${heading.id}`;
+        a.textContent = heading.textContent;
+        a.className = `block py-1 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors truncate ${level === 3 ? 'text-xs' : 'text-sm'}`;
+        a.dataset.tocId = heading.id;
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+
+      // Highlight current section
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            tocList.querySelectorAll('a').forEach(a => {
+              a.classList.remove('text-primary-600', 'dark:text-primary-400', 'font-medium');
+              a.classList.add('text-gray-600', 'dark:text-gray-400');
+            });
+            const activeLink = tocList.querySelector(`a[data-toc-id="${id}"]`);
+            if (activeLink) {
+              activeLink.classList.remove('text-gray-600', 'dark:text-gray-400');
+              activeLink.classList.add('text-primary-600', 'dark:text-primary-400', 'font-medium');
+            }
+          }
+        });
+      }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+      headings.forEach(heading => observer.observe(heading));
+    }
+
+    // Copy link
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          copyLinkBtn.innerHTML = '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+          setTimeout(() => {
+            copyLinkBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    }
+
+    // Progress & Back to top
+    const updateProgress = () => {
+      const articleRect = article.getBoundingClientRect();
+      const articleTop = articleRect.top + window.scrollY;
+      const articleHeight = articleRect.height;
+      const windowHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      const start = articleTop;
+      const end = articleTop + articleHeight - windowHeight;
+      let progress = 0;
+      if (scrollY >= start && scrollY <= end) {
+        progress = ((scrollY - start) / (end - start)) * 100;
+      } else if (scrollY > end) {
+        progress = 100;
+      }
+      progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+
+      if (backToTop) {
+        if (scrollY > 400) {
+          backToTop.classList.remove('opacity-0', 'invisible');
+          backToTop.classList.add('opacity-100', 'visible');
+        } else {
+          backToTop.classList.add('opacity-0', 'invisible');
+          backToTop.classList.remove('opacity-100', 'visible');
+        }
+      }
+    };
+
+    backToTop?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  });
+</script>
+
 <style>
   @reference "../styles/global.css";
+
+  /* Prose Styles */
   .prose {
-    @apply text-gray-600 dark:text-gray-300;
+    @apply text-gray-600 dark:text-gray-300 leading-relaxed;
   }
-  .prose h2 {
-    @apply text-2xl mt-8 mb-4 text-gray-900 dark:text-white;
+
+  .prose > * + * {
+    @apply mt-5;
   }
-  .prose h3 {
-    @apply text-xl mt-6 mb-3 text-gray-900 dark:text-white;
-  }
+
   .prose p {
-    @apply mb-4 leading-relaxed;
+    @apply text-base leading-7;
   }
-  .prose ul, .prose ol {
-    @apply mb-4 ml-6;
+
+  .prose h2 {
+    @apply text-xl font-bold text-gray-900 dark:text-white mt-10 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 scroll-mt-20;
   }
-  .prose li {
-    @apply mb-2;
+
+  .prose h3 {
+    @apply text-lg font-semibold text-gray-900 dark:text-white mt-8 mb-3 scroll-mt-20;
   }
+
+  .prose h4 {
+    @apply text-base font-semibold text-gray-900 dark:text-white mt-6 mb-2 scroll-mt-20;
+  }
+
+  .prose ul {
+    @apply my-4 space-y-2;
+  }
+
+  .prose ul li {
+    @apply relative pl-5 text-base;
+  }
+
+  .prose ul li::before {
+    content: "";
+    @apply absolute left-0 top-2.5 w-1.5 h-1.5 bg-primary-500 rounded-full;
+  }
+
+  .prose ol {
+    @apply my-4 space-y-2 list-decimal list-inside;
+  }
+
+  .prose ol li {
+    @apply text-base;
+  }
+
+  .prose strong {
+    @apply font-semibold text-gray-900 dark:text-white;
+  }
+
+  .prose a {
+    @apply text-primary-600 dark:text-primary-400 underline underline-offset-2 decoration-primary-300 dark:decoration-primary-700 hover:decoration-primary-500 dark:hover:decoration-primary-400 transition-colors;
+  }
+
+  .prose blockquote {
+    @apply my-6 pl-4 border-l-2 border-primary-400 text-gray-600 dark:text-gray-400 italic;
+  }
+
+  .prose code:not(pre code) {
+    @apply bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 dark:text-gray-200;
+  }
+
+  .prose pre {
+    @apply my-6 p-4 bg-gray-900 dark:bg-gray-950 rounded-lg overflow-x-auto;
+  }
+
+  .prose pre code {
+    @apply text-sm text-gray-100;
+  }
+
   .prose table {
-    @apply w-full border-collapse mb-6;
+    @apply my-6 w-full text-sm;
   }
+
   .prose th {
-    @apply bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-4 py-2 text-left font-semibold;
+    @apply bg-gray-50 dark:bg-gray-800 px-3 py-2 text-left font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700;
   }
+
   .prose td {
-    @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+    @apply px-3 py-2 border-b border-gray-100 dark:border-gray-800;
+  }
+
+  .prose tr:hover td {
+    @apply bg-gray-50 dark:bg-gray-800/50;
+  }
+
+  .prose img {
+    @apply my-6 rounded-lg;
+  }
+
+  .prose hr {
+    @apply my-8 border-gray-200 dark:border-gray-700;
+  }
+
+  /* Not prose reset */
+  .not-prose h2 {
+    @apply mt-0 mb-0 border-0 pb-0;
   }
 </style>
