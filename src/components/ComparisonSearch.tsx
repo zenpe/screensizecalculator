@@ -11,9 +11,10 @@ interface ComparisonPair {
 interface ComparisonSearchProps {
   devices: Device[];
   comparisons: ComparisonPair[];
+  placeholder?: string;
 }
 
-export default function ComparisonSearch({ devices, comparisons }: ComparisonSearchProps) {
+export default function ComparisonSearch({ devices, comparisons, placeholder }: ComparisonSearchProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -31,7 +32,6 @@ export default function ComparisonSearch({ devices, comparisons }: ComparisonSea
         const text = comp.searchText;
         return searchTerms.every(term => text.includes(term));
       })
-      .slice(0, 8); // Limit to 8 results for performance
   }, [query, comparisons]);
 
   // Reset selected index when results change
@@ -123,7 +123,7 @@ export default function ComparisonSearch({ devices, comparisons }: ComparisonSea
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search for a device (e.g. iPhone 16, Samsung S24)..."
+          placeholder={placeholder || "Search for a device (e.g. iPhone 16, Samsung S24)..."}
           className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
           aria-label="Search device comparisons"
           aria-expanded={isOpen && filteredResults.length > 0}

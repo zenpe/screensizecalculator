@@ -1,49 +1,52 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
+import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug, getComparisonUrl } from '../../../utils/url';
+import { getComparisonSlug } from '../../../utils/url';
 
 // SEO metadata
 const title = 'Projector Screen Size Comparisons - 100" vs 120" vs 150"';
-const description = 'Compare projector screen sizes: 100", 120", and 150" projection screens. Visual comparison including TV vs projector size comparisons.';
-const keywords = 'projector screen size comparison, 100 vs 120 inch projector, projector vs TV size, projection screen comparison';
+const description =
+  'Compare projector screen sizes: 100", 120", and 150" projection screens. Visual comparison including TV vs projector size comparisons.';
+const keywords =
+  'projector screen size comparison, 100 vs 120 inch projector, projector vs TV size, projection screen comparison';
 
 // Get all projector and TV devices
 const projectorDevices = devices.filter(d => d.category === 'projector');
 const tvDevices = devices.filter(d => d.category === 'tv');
+const searchDevices = [...projectorDevices, ...tvDevices];
 
-// Generate projector vs projector pairs with canonical slugs
-interface ComparisonPair {
-  a: Device;
-  b: Device;
-  slug: string;
-}
-
-const projectorPairs: ComparisonPair[] = [];
+// Generate projector vs projector pairs
+const projectorPairsRaw = [];
 for (let i = 0; i < projectorDevices.length; i++) {
   for (let j = i + 1; j < projectorDevices.length; j++) {
-    projectorPairs.push({
-      a: projectorDevices[i],
-      b: projectorDevices[j],
-      slug: getComparisonSlug(projectorDevices[i].id, projectorDevices[j].id),
-    });
+    projectorPairsRaw.push({ a: projectorDevices[i], b: projectorDevices[j] });
   }
 }
 
-// Generate TV vs projector pairs (cross-category) with canonical slugs
-const tvVsProjectorPairs: ComparisonPair[] = [];
+// Generate TV vs projector pairs (cross-category)
+const tvVsProjectorPairsRaw = [];
 for (const tv of tvDevices) {
   for (const projector of projectorDevices) {
-    tvVsProjectorPairs.push({
-      a: tv,
-      b: projector,
-      slug: getComparisonSlug(tv.id, projector.id),
-    });
+    tvVsProjectorPairsRaw.push({ a: tv, b: projector });
   }
 }
 
-const totalPairs = projectorPairs.length + tvVsProjectorPairs.length;
+// Combine all pairs and add searchText for the search component
+const allPairsRaw = [...projectorPairsRaw, ...tvVsProjectorPairsRaw];
+const comparisonPairs = allPairsRaw.map(({ a, b }) => ({
+  a,
+  b,
+  slug: getComparisonSlug(a.id, b.id),
+  searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
+}));
+
+// For display, separate them again
+const projectorPairs = comparisonPairs.filter(p => p.a.category === 'projector' && p.b.category === 'projector');
+const tvVsProjectorPairs = comparisonPairs.filter(p => p.a.category !== p.b.category);
+
+const totalPairs = comparisonPairs.length;
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -67,12 +70,20 @@ const totalPairs = projectorPairs.length + tvVsProjectorPairs.length;
         Projector Screen Size Comparisons
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
-        Compare projector screen sizes visually. See how different projection screen sizes compare,
-        and whether a projector or large TV is right for your home theater setup.
+        Compare projector screen sizes visually. See how different projection screen sizes compare, and whether a
+        projector or large TV is right for your home theater setup.
       </p>
-      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {totalPairs} comparisons available
-      </p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">{totalPairs} comparisons available</p>
+    </div>
+
+    <!-- Search Component -->
+    <div class="mb-12">
+      <ComparisonSearch
+        client:load
+        devices={searchDevices}
+        comparisons={comparisonPairs}
+        placeholder="Search projector vs TV (e.g. 120-inch, 85-inch TV)..."
+      />
     </div>
 
     <!-- Projector vs Projector -->
@@ -83,21 +94,27 @@ const totalPairs = projectorPairs.length + tvVsProjectorPairs.length;
       </h2>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {projectorPairs.map(({ a, b, slug }, index) => (
-            <a
-              href={`/comparison/${slug}`}
-              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-              `}
-            >
-              <span class="text-sm text-gray-700 dark:text-gray-300">
-                {a.name} vs {b.name}
-              </span>
-              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          ))}
+          {
+            projectorPairs.map(({ a, b, slug }, index) => (
+              <a
+                href={`/comparison/${slug}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+              >
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {a.name} vs {b.name}
+                </span>
+                <svg
+                  class="w-4 h-4 text-gray-400 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -113,21 +130,27 @@ const totalPairs = projectorPairs.length + tvVsProjectorPairs.length;
       </p>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {tvVsProjectorPairs.map(({ a, b, slug }, index) => (
-            <a
-              href={`/comparison/${slug}`}
-              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-              `}
-            >
-              <span class="text-sm text-gray-700 dark:text-gray-300">
-                {a.name} vs {b.name}
-              </span>
-              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          ))}
+          {
+            tvVsProjectorPairs.map(({ a, b, slug }, index) => (
+              <a
+                href={`/comparison/${slug}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+              >
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {a.name} vs {b.name}
+                </span>
+                <svg
+                  class="w-4 h-4 text-gray-400 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>

@@ -1,31 +1,30 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
+import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug, getComparisonUrl } from '../../../utils/url';
+import { getComparisonSlug } from '../../../utils/url';
 
 // SEO metadata
 const title = 'TV Screen Size Comparisons - 55" vs 65" vs 75" & More';
-const description = 'Compare TV screen sizes: 43", 55", 65", 75", and 85" televisions. Visual size comparison to help you choose the right TV for your room.';
+const description =
+  'Compare TV screen sizes: 43", 55", 65", 75", and 85" televisions. Visual size comparison to help you choose the right TV for your room.';
 const keywords = 'TV size comparison, 55 vs 65 inch TV, 65 vs 75 inch TV, television size compare, TV screen size';
 
 // Get all TV devices
 const tvDevices = devices.filter(d => d.category === 'tv');
 
-// Generate comparison pairs with canonical slugs (alphabetically sorted)
-interface ComparisonPair {
-  a: Device;
-  b: Device;
-  slug: string;
-}
-
-const pairs: ComparisonPair[] = [];
+// Generate comparison pairs with pre-computed search text
+const comparisonPairs = [];
 for (let i = 0; i < tvDevices.length; i++) {
   for (let j = i + 1; j < tvDevices.length; j++) {
-    pairs.push({
-      a: tvDevices[i],
-      b: tvDevices[j],
-      slug: getComparisonSlug(tvDevices[i].id, tvDevices[j].id),
+    const a = tvDevices[i];
+    const b = tvDevices[j];
+    comparisonPairs.push({
+      a,
+      b,
+      slug: getComparisonSlug(a.id, b.id),
+      searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
     });
   }
 }
@@ -52,37 +51,53 @@ for (let i = 0; i < tvDevices.length; i++) {
         TV Screen Size Comparisons
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
-        Compare television screen sizes visually. See the actual difference between 55", 65", 75",
-        and other popular TV sizes to make the right choice for your living room.
+        Compare television screen sizes visually. See the actual difference between 55", 65", 75", and other popular
+        TV sizes to make the right choice for your living room.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {pairs.length} TV comparisons available
+        {comparisonPairs.length} TV comparisons available
       </p>
+    </div>
+
+    <!-- Search Component -->
+    <div class="mb-12">
+      <ComparisonSearch
+        client:load
+        devices={tvDevices}
+        comparisons={comparisonPairs}
+        placeholder="Search TV comparisons (e.g. 65-inch, 75-inch OLED)..."
+      />
     </div>
 
     <!-- All TV Comparisons -->
     <section class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
         All TV Size Comparisons
-        <span class="text-sm font-normal text-gray-500">({pairs.length})</span>
+        <span class="text-sm font-normal text-gray-500">({comparisonPairs.length})</span>
       </h2>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {pairs.map(({ a, b, slug }, index) => (
-            <a
-              href={`/comparison/${slug}`}
-              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < pairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-              `}
-            >
-              <span class="text-sm text-gray-700 dark:text-gray-300">
-                {a.name} vs {b.name}
-              </span>
-              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          ))}
+          {
+            comparisonPairs.map(({ a, b, slug }, index) => (
+              <a
+                href={`/comparison/${slug}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < comparisonPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+              >
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {a.name} vs {b.name}
+                </span>
+                <svg
+                  class="w-4 h-4 text-gray-400 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>

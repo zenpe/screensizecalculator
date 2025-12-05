@@ -1,44 +1,44 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
+import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug, getComparisonUrl } from '../../../utils/url';
+import { getComparisonSlug } from '../../../utils/url';
 
 // SEO metadata
 const title = 'Monitor Screen Size Comparisons - 24" vs 27" vs 32" & Ultrawide';
-const description = 'Compare monitor screen sizes: 24", 27", 32", 34" ultrawide, and super ultrawide displays. Visual size comparison for desktop monitors.';
-const keywords = 'monitor size comparison, 27 vs 24 inch monitor, 32 inch monitor size, ultrawide monitor comparison, monitor screen size';
+const description =
+  'Compare monitor screen sizes: 24", 27", 32", 34" ultrawide, and super ultrawide displays. Visual size comparison for desktop monitors.';
+const keywords =
+  'monitor size comparison, 27 vs 24 inch monitor, 32 inch monitor size, ultrawide monitor comparison, monitor screen size';
 
 // Get all monitor devices
 const monitorDevices = devices.filter(d => d.category === 'monitor');
 
-// Generate comparison pairs with canonical slugs (alphabetically sorted)
-interface ComparisonPair {
-  a: Device;
-  b: Device;
-  slug: string;
-}
-
-const pairs: ComparisonPair[] = [];
+// Generate comparison pairs with pre-computed search text
+const comparisonPairs = [];
 for (let i = 0; i < monitorDevices.length; i++) {
   for (let j = i + 1; j < monitorDevices.length; j++) {
-    pairs.push({
-      a: monitorDevices[i],
-      b: monitorDevices[j],
-      slug: getComparisonSlug(monitorDevices[i].id, monitorDevices[j].id),
+    const a = monitorDevices[i];
+    const b = monitorDevices[j];
+    comparisonPairs.push({
+      a,
+      b,
+      slug: getComparisonSlug(a.id, b.id),
+      searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
     });
   }
 }
 
 // Group: Standard (16:9) vs Standard
-const standardMonitors = monitorDevices.filter(d => d.ratio === 16/9);
-const ultrawideMonitors = monitorDevices.filter(d => d.ratio !== 16/9);
+const standardMonitors = monitorDevices.filter(d => d.ratio === 16 / 9);
+const ultrawideMonitors = monitorDevices.filter(d => d.ratio !== 16 / 9);
 
-const standardVsStandard = pairs.filter(p =>
-  standardMonitors.some(m => m.id === p.a.id) && standardMonitors.some(m => m.id === p.b.id)
+const standardVsStandard = comparisonPairs.filter(
+  p => standardMonitors.some(m => m.id === p.a.id) && standardMonitors.some(m => m.id === p.b.id),
 );
-const ultrawideComparisons = pairs.filter(p =>
-  ultrawideMonitors.some(m => m.id === p.a.id) || ultrawideMonitors.some(m => m.id === p.b.id)
+const ultrawideComparisons = comparisonPairs.filter(
+  p => ultrawideMonitors.some(m => m.id === p.a.id) || ultrawideMonitors.some(m => m.id === p.b.id),
 );
 ---
 
@@ -63,12 +63,22 @@ const ultrawideComparisons = pairs.filter(p =>
         Monitor Screen Size Comparisons
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
-        Compare desktop monitor sizes visually. From standard 24" displays to massive 49" super ultrawides,
-        see exactly how different monitor sizes compare.
+        Compare desktop monitor sizes visually. From standard 24" displays to massive 49" super ultrawides, see
+        exactly how different monitor sizes compare.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {pairs.length} monitor comparisons available
+        {comparisonPairs.length} monitor comparisons available
       </p>
+    </div>
+
+    <!-- Search Component -->
+    <div class="mb-12">
+      <ComparisonSearch
+        client:load
+        devices={monitorDevices}
+        comparisons={comparisonPairs}
+        placeholder="Search monitor comparisons (e.g. 27-inch, 34-inch ultrawide)..."
+      />
     </div>
 
     <!-- Standard Monitors (16:9) -->
@@ -79,53 +89,65 @@ const ultrawideComparisons = pairs.filter(p =>
       </h2>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {standardVsStandard.map(({ a, b, slug }, index) => (
-            <a
-              href={`/comparison/${slug}`}
-              class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < standardVsStandard.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-              `}
-            >
-              <span class="text-sm text-gray-700 dark:text-gray-300">
-                {a.name} vs {b.name}
-              </span>
-              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          ))}
+          {
+            standardVsStandard.map(({ a, b, slug }, index) => (
+              <a
+                href={`/comparison/${slug}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                ${index < standardVsStandard.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+              >
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {a.name} vs {b.name}
+                </span>
+                <svg
+                  class="w-4 h-4 text-gray-400 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>
 
     <!-- Ultrawide Comparisons -->
-    {ultrawideComparisons.length > 0 && (
-      <section class="mb-10">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          Ultrawide & Super Ultrawide
-          <span class="text-sm font-normal text-gray-500">({ultrawideComparisons.length})</span>
-        </h2>
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {ultrawideComparisons.map(({ a, b, slug }, index) => (
-              <a
-                href={`/comparison/${slug}`}
-                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                  ${index < ultrawideComparisons.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-                `}
-              >
-                <span class="text-sm text-gray-700 dark:text-gray-300">
-                  {a.name} vs {b.name}
-                </span>
-                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            ))}
+    {
+      ultrawideComparisons.length > 0 && (
+        <section class="mb-10">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            Ultrawide & Super Ultrawide
+            <span class="text-sm font-normal text-gray-500">({ultrawideComparisons.length})</span>
+          </h2>
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {ultrawideComparisons.map(({ a, b, slug }, index) => (
+                <a
+                  href={`/comparison/${slug}`}
+                  class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
+                  ${index < ultrawideComparisons.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+                >
+                  <span class="text-sm text-gray-700 dark:text-gray-300">
+                    {a.name} vs {b.name}
+                  </span>
+                  <svg
+                    class="w-4 h-4 text-gray-400 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-    )}
+        </section>
+      )
+    }
 
     <!-- Back Navigation -->
     <div class="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
