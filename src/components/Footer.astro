@@ -5,15 +5,43 @@ import { devices } from '../data/devices';
 
 const currentYear = new Date().getFullYear();
 
-// Get devices by ID for popular comparisons
+// --- Dynamic Popular Comparisons ---
+const phoneComparisons = [];
+
+// 1. Latest iPhone Pro Max vs Previous iPhone Pro Max
+const allIphoneProMax = devices.filter(d => d.category === 'phone' && d.id.includes('iphone-') && d.id.includes('-pro-max'));
+if (allIphoneProMax.length >= 2) {
+  const latest = allIphoneProMax[0];
+  const previous = allIphoneProMax[1];
+  phoneComparisons.push({
+    id1: latest.id,
+    id2: previous.id,
+    text: `${latest.name} vs ${previous.name}`
+  });
+}
+
+// 2. Latest standard iPhone vs Latest Samsung Galaxy S Ultra
+const latestIphone = devices.find(d => d.category === 'phone' && d.id.includes('iphone-') && !d.id.includes('-pro') && !d.id.includes('-plus') && !d.id.includes('-mini') && !d.id.includes('-air'));
+const latestSamsungUltra = devices.find(d => d.category === 'phone' && d.id.includes('samsung-galaxy-s') && d.id.includes('-ultra'));
+
+if (latestIphone && latestSamsungUltra) {
+  phoneComparisons.push({
+    id1: latestIphone.id,
+    id2: latestSamsungUltra.id,
+    text: `${latestIphone.name} vs ${latestSamsungUltra.name}`
+  });
+}
+
+// Combine and map to final structure
 const popularComparisons = [
-  { id1: 'iphone-16-pro-max', id2: 'iphone-15-pro-max', text: 'iPhone 16 Pro Max vs 15 Pro Max' },
+  phoneComparisons[0], // Latest vs Previous Pro Max
   { id1: '65-inch-tv', id2: '55-inch-tv', text: '65" vs 55" TV' },
   { id1: '27-inch-monitor', id2: '24-inch-monitor', text: '27" vs 24" Monitor' },
-  { id1: 'iphone-16', id2: 'samsung-galaxy-s24', text: 'iPhone 16 vs Galaxy S24' },
+  phoneComparisons[1], // Latest iPhone vs Latest Samsung
   { id1: '120-inch-projector-screen', id2: '85-inch-tv', text: '120" Projector vs 85" TV' },
   { id1: '75-inch-tv', id2: '65-inch-tv', text: '75" vs 65" TV' },
-].map(({ id1, id2, text }) => {
+].filter(Boolean) // Filter out undefined in case phone lookups fail
+.map(({ id1, id2, text }) => {
   return {
     url: `/comparison/${getComparisonSlug(id1, id2)}`,
     text
