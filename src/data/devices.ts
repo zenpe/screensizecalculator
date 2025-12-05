@@ -211,6 +211,32 @@ export const devices: Device[] = [
     resolution: '2778 x 1284',
   },
 
+  // Samsung Galaxy S25 Series
+  {
+    id: 'samsung-galaxy-s25-ultra',
+    name: 'Samsung Galaxy S25 Ultra',
+    category: 'phone',
+    diagonal: 6.8,
+    ratio: 19.5 / 9,
+    resolution: '3120 x 1440',
+  },
+  {
+    id: 'samsung-galaxy-s25-plus',
+    name: 'Samsung Galaxy S25+',
+    category: 'phone',
+    diagonal: 6.7,
+    ratio: 19.5 / 9,
+    resolution: '3120 x 1440',
+  },
+  {
+    id: 'samsung-galaxy-s25',
+    name: 'Samsung Galaxy S25',
+    category: 'phone',
+    diagonal: 6.2,
+    ratio: 19.5 / 9,
+    resolution: '2340 x 1080',
+  },
+
   // Samsung Galaxy S24 Series
   {
     id: 'samsung-galaxy-s24-ultra',
@@ -235,6 +261,58 @@ export const devices: Device[] = [
     diagonal: 6.2,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+  },
+
+  // Google Pixel 10 Series
+  {
+    id: 'google-pixel-10',
+    name: 'Google Pixel 10',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 20 / 9,
+    resolution: '1080 x 2424',
+  },
+  {
+    id: 'google-pixel-10-pro',
+    name: 'Google Pixel 10 Pro',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 20 / 9,
+    resolution: '1280 x 2856',
+  },
+  {
+    id: 'google-pixel-10-pro-xl',
+    name: 'Google Pixel 10 Pro XL',
+    category: 'phone',
+    diagonal: 6.8,
+    ratio: 20 / 9,
+    resolution: '1344 x 2992',
+  },
+
+  // Google Pixel 9 Series
+  {
+    id: 'google-pixel-9',
+    name: 'Google Pixel 9',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 20 / 9,
+    resolution: '2400 x 1080',
+  },
+  {
+    id: 'google-pixel-9-pro',
+    name: 'Google Pixel 9 Pro',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 20 / 9,
+    resolution: '1280 x 2856',
+  },
+  {
+    id: 'google-pixel-9-pro-xl',
+    name: 'Google Pixel 9 Pro XL',
+    category: 'phone',
+    diagonal: 6.8,
+    ratio: 20 / 9,
+    resolution: '1344 x 2992',
   },
 
   // ============================================
