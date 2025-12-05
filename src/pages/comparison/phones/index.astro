@@ -8,22 +8,13 @@ import { getComparisonSlug } from '../../../utils/url';
 // SEO metadata
 const title = 'Phone Screen Size Comparisons - iPhone vs Samsung & More';
 const description =
-  'Compare phone screen sizes: iPhone 16, 15, 14, 13 series, Samsung Galaxy S24, and more. Visual size comparison tool for smartphone displays.';
+  'Compare phone screen sizes: iPhone, Samsung Galaxy, Google Pixel, and more. Visual size comparison tool for smartphone displays.';
 const keywords =
-  'phone screen size comparison, iPhone vs Samsung, iPhone 16 vs 15, smartphone display comparison, phone size compare';
+  'phone screen size comparison, iPhone vs Samsung, iPhone vs Pixel, smartphone display comparison, phone size compare';
 
-// Get all phone devices
+// --- Data Fetching and Processing ---
+
 const phoneDevices = devices.filter(d => d.category === 'phone');
-
-// --- Dynamic placeholder and search hint ---
-const latestIphone = phoneDevices.find(p => p.id.includes('iphone') && !p.id.includes('pro') && !p.id.includes('plus') && !p.id.includes('mini'));
-const latestSamsung = phoneDevices.find(p => p.id.includes('samsung-galaxy-s') && p.id.includes('ultra'));
-
-const placeholder = `Search phone comparisons (e.g. ${latestIphone?.name}, ${latestSamsung?.name})...`;
-const searchHint = `Try '${latestIphone?.name}' or '${latestSamsung?.name.replace('Samsung Galaxy ', '')}'`;
-
-
-// Generate comparison pairs with pre-computed search text for the search component
 const comparisonPairs = [];
 for (let i = 0; i < phoneDevices.length; i++) {
   for (let j = i + 1; j < phoneDevices.length; j++) {
@@ -33,20 +24,59 @@ for (let i = 0; i < phoneDevices.length; i++) {
       a,
       b,
       slug: getComparisonSlug(a.id, b.id),
-      // Pre-computed search text for faster filtering
       searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
     });
   }
 }
 
-// Group by brand/series for better organization
-const iphoneVsIphone = comparisonPairs.filter(p => p.a.id.includes('iphone') && p.b.id.includes('iphone'));
-const samsungVsSamsung = comparisonPairs.filter(p => p.a.id.includes('samsung') && p.b.id.includes('samsung'));
-const crossBrand = comparisonPairs.filter(
-  p =>
-    (p.a.id.includes('iphone') && p.b.id.includes('samsung')) ||
-    (p.a.id.includes('samsung') && p.b.id.includes('iphone')),
-);
+// --- Dynamic Search Placeholders ---
+const latestIphone = phoneDevices.find(p => p.id.includes('iphone') && !p.id.includes('pro') && !p.id.includes('plus') && !p.id.includes('mini'));
+const latestSamsung = phoneDevices.find(p => p.id.includes('samsung-galaxy-s') && p.id.includes('ultra'));
+const placeholder = `Search comparisons (e.g. ${latestIphone?.name}, ${latestSamsung?.name})...`;
+const searchHint = `Try '${latestIphone?.name}' or '${latestSamsung?.name.replace('Samsung Galaxy ', '')}'`;
+
+// --- Comparison Grouping Logic ---
+const isIphone = (id: string) => id.includes('iphone');
+const isSamsung = (id: string) => id.includes('samsung');
+const isGoogle = (id: string) => id.includes('google-pixel');
+
+const groupFilters = {
+  iphoneVsIphone: (p: any) => isIphone(p.a.id) && isIphone(p.b.id),
+  samsungVsSamsung: (p: any) => isSamsung(p.a.id) && isSamsung(p.b.id),
+  googleVsGoogle: (p: any) => isGoogle(p.a.id) && isGoogle(p.b.id),
+  iphoneVsSamsung: (p: any) => (isIphone(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIphone(p.b.id)),
+  iphoneVsGoogle: (p: any) => (isIphone(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isIphone(p.b.id)),
+  samsungVsGoogle: (p: any) => (isSamsung(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isSamsung(p.b.id)),
+};
+
+const iphoneVsIphonePairs = comparisonPairs.filter(groupFilters.iphoneVsIphone);
+const samsungVsSamsungPairs = comparisonPairs.filter(groupFilters.samsungVsSamsung);
+const googleVsGooglePairs = comparisonPairs.filter(groupFilters.googleVsGoogle);
+const iphoneVsSamsungPairs = comparisonPairs.filter(groupFilters.iphoneVsSamsung);
+const iphoneVsGooglePairs = comparisonPairs.filter(groupFilters.iphoneVsGoogle);
+const samsungVsGooglePairs = comparisonPairs.filter(groupFilters.samsungVsGoogle);
+
+const allGroupedPairs = new Set([
+    ...iphoneVsIphonePairs,
+    ...samsungVsSamsungPairs,
+    ...googleVsGooglePairs,
+    ...iphoneVsSamsungPairs,
+    ...iphoneVsGooglePairs,
+    ...samsungVsGooglePairs
+]);
+const otherPairs = comparisonPairs.filter(p => !allGroupedPairs.has(p));
+
+const comparisonSections = [
+  { title: 'iPhone vs iPhone', pairs: iphoneVsIphonePairs, id: 'iphone-v-iphone' },
+  { title: 'Samsung vs Samsung', pairs: samsungVsSamsungPairs, id: 'samsung-v-samsung' },
+  { title: 'Google vs Google', pairs: googleVsGooglePairs, id: 'google-v-google' },
+  { title: 'iPhone vs Samsung', pairs: iphoneVsSamsungPairs, id: 'iphone-v-samsung' },
+  { title: 'iPhone vs Google', pairs: iphoneVsGooglePairs, id: 'iphone-v-google' },
+  { title: 'Samsung vs Google', pairs: samsungVsGooglePairs, id: 'samsung-v-google' },
+  { title: 'Other Comparisons', pairs: otherPairs, id: 'other' },
+].filter(section => section.pairs.length > 0);
+
+const DISPLAY_LIMIT = 15;
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -89,130 +119,83 @@ const crossBrand = comparisonPairs.filter(
       />
     </div>
 
-    <!-- iPhone vs iPhone -->
-    <section class="mb-10">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-        iPhone vs iPhone
-        <span class="text-sm font-normal text-gray-500">({iphoneVsIphone.length})</span>
-      </h2>
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            iphoneVsIphone.map(({ a, b, slug }, index) => (
+    <!-- Comparison Sections -->
+    {comparisonSections.map(section => (
+      <section class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          {section.title}
+          <span class="text-sm font-normal text-gray-500">({section.pairs.length})</span>
+        </h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Initially visible items */}
+            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
               <a
                 href={`/comparison/${slug}`}
-                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < iphoneVsIphone.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}
-                ${index % 3 === 2 ? 'lg:border-r-0' : ''}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
+                  ${index < section.pairs.slice(0, DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
+                `}
               >
-                <span class="text-sm text-gray-700 dark:text-gray-300">
-                  {a.name} vs {b.name}
-                </span>
-                <svg
-                  class="w-4 h-4 text-gray-400 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{a.name} vs {b.name}</span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
               </a>
-            ))
-          }
+            ))}
+          </div>
+          {/* Hidden items */}
+          {section.pairs.length > DISPLAY_LIMIT && (
+            <div id={`hidden-${section.id}`} class="hidden">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 dark:border-gray-700">
+                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+                  <a
+                    href={`/comparison/${slug}`}
+                    class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
+                      ${index < section.pairs.slice(DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
+                    `}
+                  >
+                    <span class="text-sm text-gray-700 dark:text-gray-300">{a.name} vs {b.name}</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    </section>
-
-    <!-- Samsung vs Samsung -->
-    {
-      samsungVsSamsung.length > 0 && (
-        <section class="mb-10">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-            Samsung vs Samsung
-            <span class="text-sm font-normal text-gray-500">({samsungVsSamsung.length})</span>
-          </h2>
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {samsungVsSamsung.map(({ a, b, slug }, index) => (
-                <a
-                  href={`/comparison/${slug}`}
-                  class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                  ${index < samsungVsSamsung.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
-                >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">
-                    {a.name} vs {b.name}
-                  </span>
-                  <svg
-                    class="w-4 h-4 text-gray-400 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              ))}
-            </div>
+        {/* Show All Button */}
+        {section.pairs.length > DISPLAY_LIMIT && (
+          <div class="pt-2 text-center">
+            <button
+              class="show-all-button w-full text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline p-3 rounded-b-lg"
+              data-target={`#hidden-${section.id}`}
+            >
+              Show all {section.pairs.length} comparisons
+            </button>
           </div>
-        </section>
-      )
-    }
-
-    <!-- Cross-Brand: iPhone vs Samsung -->
-    {
-      crossBrand.length > 0 && (
-        <section class="mb-10">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-            iPhone vs Samsung
-            <span class="text-sm font-normal text-gray-500">({crossBrand.length})</span>
-          </h2>
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {crossBrand.map(({ a, b, slug }, index) => (
-                <a
-                  href={`/comparison/${slug}`}
-                  class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                  ${index < crossBrand.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
-                >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">
-                    {a.name} vs {b.name}
-                  </span>
-                  <svg
-                    class="w-4 h-4 text-gray-400 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )
-    }
+        )}
+      </section>
+    ))}
 
     <!-- Back Navigation -->
     <div class="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
-      <a
-        href="/comparison"
-        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        All Comparisons
-      </a>
-      <a
-        href="/comparison/monitors"
-        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
-      >
-        Monitor Comparisons
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </a>
+      <a href="/comparison" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700">All Comparisons</a>
+      <a href="/comparison/monitors" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700">Monitor Comparisons →</a>
     </div>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.show-all-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-target');
+          if (targetId) {
+            const targetElement = document.querySelector(targetId) as HTMLElement;
+            if (targetElement) {
+              targetElement.classList.remove('hidden');
+              button.parentElement?.remove(); // Remove the button's container after click
+            }
+          }
+        });
+      });
+    });
+  </script>
 </Layout>
