@@ -247,6 +247,6 @@ For casual gaming, larger screens offer more immersion. But for competitive play
 
 ### Sources
 
-- [RTINGS.com - Why Do Pros Use 24 Inch Monitors?](https://www.rtings.com/monitor/reviews/by-usage/esports-gaming)
+- [PCWorld - The Wrong Monitor Can Ruin Your Gaming PC](https://www.pcworld.com/article/2937175/the-wrong-monitor-can-ruin-your-gaming-pc-heres-how-to-pick-the-perfect-size.html)
 - [RTINGS.com - 1080p vs 1440p vs 4K](https://www.rtings.com/monitor/learn/1080p-vs-1440p-vs-4k)
 - [Blur Busters - Refresh Rate Research](https://blurbusters.com/)

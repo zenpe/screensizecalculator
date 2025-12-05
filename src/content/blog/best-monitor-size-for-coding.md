@@ -108,7 +108,7 @@ Ultimately, the best monitor size for coding depends on your personal workflow, 
 
 ### Sources
 
-- [The New Stack - How to Pick a Great Monitor for Software Development](https://thenewstack.io/how-to-pick-a-great-monitor-for-software-development/)
-- [DevOps.com - The Best Monitors for Programming](https://devops.com/the-best-monitors-for-programming/)
-- [DevClass - What is the Best Monitor Size for Coding?](https://devclass.com/2023/10/26/what-is-the-best-monitor-size-for-coding-and-does-it-really-matter/)
+- [RTINGS - The 5 Best Monitors For Programming of 2025](https://www.rtings.com/monitor/reviews/best/by-usage/programming-and-coding)
+- [TechRadar - Best Monitor for Programming](https://www.techradar.com/best/best-monitor-for-programming)
+- [BenQ - 7 Key Points for Choosing the Best Monitor for Programming](https://www.benq.com/en-us/knowledge-center/knowledge/7-key-points-for-choosing-the-best-monitor-for-programming.html)
 - [JetBrains - The State of Developer Ecosystem 2022](https://www.jetbrains.com/lp/devecosystem-2022/)
