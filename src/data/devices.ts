@@ -41,6 +41,40 @@ export const devices: Device[] = [
   // PHONES
   // ============================================
 
+  // iPhone 17 Series
+  {
+    id: 'iphone-17',
+    name: 'iPhone 17',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 19.5 / 9,
+    resolution: '2622 x 1206',
+  },
+  {
+    id: 'iphone-17-air',
+    name: 'iPhone 17 Air',
+    category: 'phone',
+    diagonal: 6.5,
+    ratio: 19.6 / 9,
+    resolution: '2736 x 1260',
+  },
+  {
+    id: 'iphone-17-pro',
+    name: 'iPhone 17 Pro',
+    category: 'phone',
+    diagonal: 6.3,
+    ratio: 19.5 / 9,
+    resolution: '2622 x 1206',
+  },
+  {
+    id: 'iphone-17-pro-max',
+    name: 'iPhone 17 Pro Max',
+    category: 'phone',
+    diagonal: 6.9,
+    ratio: 19.5 / 9,
+    resolution: '2868 x 1320',
+  },
+
   // iPhone 16 Series
   {
     id: 'iphone-16',
