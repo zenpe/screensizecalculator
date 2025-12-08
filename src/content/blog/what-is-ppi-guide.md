@@ -75,7 +75,7 @@ PPI = √(Horizontal Pixels² + Vertical Pixels²) ÷ Diagonal Inches
 
 ### Quick Reference Calculator
 
-Use our **[Screen Size Calculator](/#calculator)** to instantly calculate PPI for any monitor configuration.
+Use our **[PPI Calculator](/ppi-calculator)** to instantly calculate PPI for any monitor configuration.
 
 ## PPI Standards for Different Screen Sizes
 
@@ -362,11 +362,10 @@ Distance = (Screen Height × 3438) ÷ Vertical Resolution
 
 ### Method 2: Online Calculator
 
-Use our **[Screen Size Calculator](/#calculator)**:
-1. Select "Monitor" mode
-2. Enter screen size
-3. Enter resolution
-4. Get instant PPI calculation
+Use our **[PPI Calculator](/ppi-calculator)**:
+1. Enter screen diagonal size
+2. Enter resolution (width × height)
+3. Get instant PPI calculation with quality rating
 
 ### Method 3: System Information
 
@@ -471,4 +470,4 @@ Use our **[Screen Size Calculator](/#calculator)**:
 - **Gaming**: 27" 1440p (109 PPI) with high refresh
 - **Professional**: 27-32" 4K (138-163 PPI)
 
-**Calculate your ideal PPI**: Use our free [Screen Size Calculator](/#calculator) to find the perfect monitor configuration for your setup.
+**Calculate your ideal PPI**: Use our free [PPI Calculator](/ppi-calculator) to find the perfect monitor configuration for your setup.

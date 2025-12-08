@@ -1,0 +1,260 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PPICalculator from '../components/calculators/PPICalculator';
+import { getLatestIphoneWithPPI, getLatestSamsungWithPPI } from '../data/devices';
+
+const title = 'PPI Calculator - Calculate Pixel Density & Screen Sharpness';
+const description = 'Free PPI calculator. Calculate pixels per inch, find required resolution for target PPI, and compare screen sharpness across devices.';
+const keywords = 'ppi calculator, pixel density calculator, pixels per inch, screen sharpness, retina display, dpi calculator, screen resolution calculator';
+
+// Get latest phone PPI data
+const latestIphone = getLatestIphoneWithPPI();
+const latestSamsung = getLatestSamsungWithPPI();
+
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is PPI (Pixels Per Inch)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PPI (Pixels Per Inch) measures pixel density - how many pixels are packed into one inch of screen. Higher PPI means sharper images and text. It's calculated by dividing the diagonal pixel count by the screen's diagonal size in inches."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What PPI is considered Retina display?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Apple defines Retina as a display where pixels are not individually distinguishable at typical viewing distance. For phones (held at ~10-12 inches), this is around 300+ PPI. For laptops (~18 inches), it's around 220 PPI. For desktop monitors (~24 inches), about 110 PPI may suffice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate PPI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PPI = √(width² + height²) / diagonal. For example, a 27-inch 2560×1440 monitor: √(2560² + 1440²) / 27 = 2940 / 27 ≈ 109 PPI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between PPI and DPI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PPI (Pixels Per Inch) refers to screen display density. DPI (Dots Per Inch) traditionally refers to print resolution. For screens, PPI is the correct term, though they're often used interchangeably."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does higher PPI mean better quality?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Higher PPI generally means sharper images, but the optimal PPI depends on viewing distance. A 55-inch 4K TV at 80 PPI looks sharp from a couch, while a phone at the same PPI would look pixelated. Match PPI to your typical viewing distance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a good PPI for a monitor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For desktop monitors at typical viewing distance (24-30 inches), 100-110 PPI is acceptable, 140-160 PPI is good for sharp text, and 200+ PPI is excellent. A 27-inch 4K monitor at 163 PPI offers a great balance of sharpness and usability."
+      }
+    }
+  ]
+};
+
+// SoftwareApplication Schema for the calculator tool
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PPI Calculator",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free online PPI calculator to calculate pixel density, find required resolution for target PPI, and compare screen sharpness across devices.",
+  "featureList": [
+    "Calculate PPI from resolution and screen size",
+    "Find required resolution for target PPI",
+    "Compare with popular device pixel densities",
+    "Visual text clarity simulation",
+    "Pixel size comparison"
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          PPI Calculator
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Calculate pixel density and screen sharpness. Find the perfect resolution for your display.
+        </p>
+      </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PPICalculator client:load />
+      </div>
+    </section>
+
+    <!-- PPI Reference Guide -->
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+          PPI Reference Guide
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <!-- PPI Ratings -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">PPI Quality Ratings</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">300+ PPI</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Retina/Excellent - No visible pixels</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">200-300 PPI</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Very Good - Minimal visible pixels</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">150-200 PPI</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Good - Sharp for desktop use</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">100-150 PPI</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Average - Standard desktop monitors</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">&lt;100 PPI</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Low - Visible pixels (TVs, projectors)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typical Device PPI -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Typical Device PPI</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">{latestIphone?.device.name || 'iPhone'}</span>
+                <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{latestIphone?.ppi || 460} PPI</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">{latestSamsung?.device.name || 'Samsung Galaxy'}</span>
+                <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{latestSamsung?.ppi || 416} PPI</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">MacBook Pro 14"</span>
+                <span class="text-sm font-semibold text-green-600 dark:text-green-400">254 PPI</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">27" 4K Monitor</span>
+                <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">163 PPI</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">27" QHD Monitor</span>
+                <span class="text-sm font-semibold text-yellow-600 dark:text-yellow-400">109 PPI</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">55" 4K TV</span>
+                <span class="text-sm font-semibold text-red-600 dark:text-red-400">80 PPI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Common Resolutions Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-primary-600 text-white">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Screen Size</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">1080p PPI</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">1440p PPI</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">4K PPI</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">24"</td>
+                <td class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">92 PPI</td>
+                <td class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">122 PPI</td>
+                <td class="px-4 py-3 text-sm text-blue-600 dark:text-blue-400">184 PPI</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">27"</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">82 PPI</td>
+                <td class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">109 PPI</td>
+                <td class="px-4 py-3 text-sm text-blue-600 dark:text-blue-400">163 PPI</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">32"</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">69 PPI</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">92 PPI</td>
+                <td class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">138 PPI</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">55" TV</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">40 PPI</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">53 PPI</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">80 PPI</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">65" TV</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">34 PPI</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">45 PPI</td>
+                <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">68 PPI</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-6">
+          {faqData.mainEntity.map((faq) => (
+            <details class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-sm">
+              <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
+                {faq.name}
+              </summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">
+                {faq.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+</Layout>

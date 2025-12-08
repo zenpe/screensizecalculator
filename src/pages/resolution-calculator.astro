@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import ResolutionCalculator from '../components/calculators/ResolutionCalculator';
+
+const title = 'Resolution Calculator - Scale & Compare Screen Resolutions';
+const description = 'Free resolution calculator. Scale image and video resolutions, compare pixel counts between displays, and calculate dimension changes.';
+const keywords = 'resolution calculator, scale resolution, compare resolutions, pixel calculator, 4k resolution, 1080p to 4k, image resize calculator, video resolution';
+
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I scale a resolution while keeping the aspect ratio?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Enter your original resolution, select a scale method (percentage, target width, or target height), and ensure 'Lock aspect ratio' is checked. The calculator will automatically calculate the other dimension to maintain proportions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between 1080p and 4K resolution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "1080p (1920×1080) has about 2.07 million pixels, while 4K (3840×2160) has about 8.29 million pixels. 4K has exactly 4 times the pixel count of 1080p, with double the width and height."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many megapixels is 4K resolution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "4K UHD resolution (3840×2160) equals approximately 8.29 megapixels (3840 × 2160 = 8,294,400 pixels)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What resolution should I use for YouTube videos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For YouTube, 1080p (1920×1080) is the standard HD quality. 4K (3840×2160) is recommended for higher quality content. Both use a 16:9 aspect ratio."
+      }
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Resolution Calculator
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Scale resolutions proportionally and compare pixel counts between different displays.
+        </p>
+      </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ResolutionCalculator client:load />
+      </div>
+    </section>
+
+    <!-- Common Resolutions Reference -->
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+          Common Resolution Reference
+        </h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <thead class="bg-primary-600 text-white">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Resolution</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Aspect Ratio</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Megapixels</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold">Common Use</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">HD (720p)</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">1280 × 720</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">0.92 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">Web video, older TVs</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">Full HD (1080p)</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">1920 × 1080</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">2.07 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">Standard monitors, TV</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">QHD (1440p)</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">2560 × 1440</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">3.69 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">Gaming monitors</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">4K UHD</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">3840 × 2160</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">8.29 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">4K TVs, Pro monitors</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">5K</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">5120 × 2880</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">14.75 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">iMac, Studio Display</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">8K UHD</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">7680 × 4320</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">16:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">33.18 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">8K TVs, Pro video</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">Ultrawide QHD</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">3440 × 1440</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">21:9</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">4.95 MP</td>
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">Ultrawide monitors</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-6">
+          {faqData.mainEntity.map((faq) => (
+            <details class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-sm">
+              <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
+                {faq.name}
+              </summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">
+                {faq.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+</Layout>

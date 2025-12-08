@@ -9,6 +9,21 @@ export interface Device {
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
 }
 
+// Parse resolution string "2556 x 1179" to { w, h }
+export function parseResolution(resolution?: string): { w: number; h: number } | null {
+  if (!resolution) return null;
+  const match = resolution.match(/(\d+)\s*[x×]\s*(\d+)/i);
+  if (!match) return null;
+  return { w: parseInt(match[1], 10), h: parseInt(match[2], 10) };
+}
+
+// Calculate PPI from resolution and diagonal
+export function calculateDevicePPI(device: Device): number | null {
+  const res = parseResolution(device.resolution);
+  if (!res) return null;
+  return Math.sqrt(res.w * res.w + res.h * res.h) / device.diagonal;
+}
+
 // Helper to calculate physical dimensions from diagonal and aspect ratio
 // Using Pythagorean theorem: diagonal² = width² + height²
 // With width = height × ratio, we get:
@@ -464,4 +479,32 @@ export function isValidComparison(categoryA: Device['category'], categoryB: Devi
 
   // All other cross-category comparisons are blocked
   return false;
+}
+
+// Get latest iPhone (first iPhone in the list with resolution)
+export function getLatestIphone(): Device | undefined {
+  return devices.find(d => d.category === 'phone' && d.id.includes('iphone') && d.resolution);
+}
+
+// Get latest Samsung (first Samsung in the list with resolution)
+export function getLatestSamsung(): Device | undefined {
+  return devices.find(d => d.category === 'phone' && d.id.includes('samsung') && d.resolution);
+}
+
+// Get latest iPhone with PPI info
+export function getLatestIphoneWithPPI(): { device: Device; ppi: number } | null {
+  const device = getLatestIphone();
+  if (!device) return null;
+  const ppi = calculateDevicePPI(device);
+  if (!ppi) return null;
+  return { device, ppi: Math.round(ppi) };
+}
+
+// Get latest Samsung with PPI info
+export function getLatestSamsungWithPPI(): { device: Device; ppi: number } | null {
+  const device = getLatestSamsung();
+  if (!device) return null;
+  const ppi = calculateDevicePPI(device);
+  if (!ppi) return null;
+  return { device, ppi: Math.round(ppi) };
 }
