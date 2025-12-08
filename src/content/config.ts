@@ -7,6 +7,7 @@ const blogCollection = defineCollection({
     pubDate: z.string(),
     category: z.string().optional().default('Guide'),
     author: z.string().optional().default('Screen Size Calculator Team'),
+    keywords: z.string().optional(),
   }),
 });
 

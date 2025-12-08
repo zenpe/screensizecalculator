@@ -9,9 +9,10 @@ interface Props {
   author?: string;
   category?: string;
   readingTime?: number;
+  keywords?: string;
 }
 
-const { title, description, pubDate, author = "Screen Size Calculator Team", category = "Guide", readingTime } = Astro.props;
+const { title, description, pubDate, author = "Screen Size Calculator Team", category = "Guide", readingTime, keywords: customKeywords } = Astro.props;
 const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
@@ -19,6 +20,19 @@ const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
 });
 
 const estimatedReadingTime = readingTime || 5;
+
+// Use custom keywords if provided, otherwise generate dynamic keywords
+const keywords = customKeywords || (() => {
+  const categoryKeywords = {
+    'TV': 'tv guide, television buying guide, tv size guide, best tv size',
+    'Monitor': 'monitor guide, display guide, monitor buying tips, best monitor size',
+    'Phone': 'phone guide, smartphone guide, phone buying tips, best phone size',
+    'Projector': 'projector guide, projector buying guide, home theater guide',
+    'Guide': 'screen size guide, display guide, buying guide'
+  };
+  const baseKeywords = categoryKeywords[category] || categoryKeywords['Guide'];
+  return `${title.toLowerCase()}, ${baseKeywords}, screen size calculator, display comparison`;
+})();
 
 // Article structured data
 const articleData = {
@@ -42,7 +56,7 @@ const articleData = {
 };
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <!-- Reading Progress Bar -->
   <div id="reading-progress" class="fixed top-0 left-0 h-0.5 bg-primary-500 z-50 transition-all duration-100" style="width: 0%"></div>
 

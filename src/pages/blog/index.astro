@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 
 const title = 'Screen Size Guide & Blog - TV, Monitor & Projector Buying Tips';
 const description = 'Expert guides on choosing the right screen size for your room, understanding viewing distances, projector throw ratios, and display technology comparisons.';
+const keywords = 'screen size guide, tv buying guide, monitor buying guide, projector guide, viewing distance guide, display technology, screen size tips, tv size recommendations, monitor setup guide';
 
 const blogs = await getCollection('blog');
 // Sort blogs by date (newest first)
@@ -19,7 +20,7 @@ function estimateReadTime(content: string) {
 }
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <Header />
 
   <main class="flex-1">
