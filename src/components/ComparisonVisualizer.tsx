@@ -568,6 +568,9 @@ function DeviceFrame({
   switch (device.category) {
     case 'phone':
       return <PhoneFrame {...commonProps} physicalDims={physicalDims} />;
+    case 'tablet':
+      // Tablet: similar to monitor but without stand
+      return <MonitorFrame {...commonProps} showStand={false} />;
     case 'tv':
       return <TVFrame {...commonProps} />;
     case 'projector':

@@ -6,14 +6,15 @@ import { devices } from '../../data/devices';
 // Group devices by category
 const devicesByCategory = {
   phone: devices.filter(d => d.category === 'phone'),
+  tablet: devices.filter(d => d.category === 'tablet'),
   tv: devices.filter(d => d.category === 'tv'),
   monitor: devices.filter(d => d.category === 'monitor'),
   projector: devices.filter(d => d.category === 'projector'),
 };
 
 // SEO metadata
-const title = 'All Screen Sizes - Phones, TVs, Monitors & Projectors';
-const description = 'Complete database of screen sizes for phones, TVs, monitors, and projectors. Find detailed dimensions, resolutions, and specifications for all devices.';
+const title = 'All Screen Sizes - Phones, Tablets, TVs, Monitors & Projectors';
+const description = 'Complete database of screen sizes for phones, tablets, TVs, monitors, and projectors. Find detailed dimensions, resolutions, and specifications for all devices.';
 
 // Get latest/popular devices
 const latestPhones = devicesByCategory.phone.slice(0, 6);
@@ -33,6 +34,14 @@ const categories = [
     count: devicesByCategory.phone.length,
     description: 'iPhone, Samsung, Google Pixel',
     color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    name: 'Tablets',
+    icon: '📱',
+    href: '/devices/tablets',
+    count: devicesByCategory.tablet.length,
+    description: 'iPad, Galaxy Tab, Surface Pro',
+    color: 'from-indigo-500 to-purple-500',
   },
   {
     name: 'Monitors',
@@ -177,6 +186,23 @@ const collectionSchema = {
           </div>
           <a href="/devices/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
             View all phones →
+          </a>
+        </div>
+
+        <!-- Tablet Quick Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <span>📱</span> Tablets
+          </h3>
+          <div class="space-y-2">
+            {devicesByCategory.tablet.slice(0, 5).map(device => (
+              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                {device.name}
+              </a>
+            ))}
+          </div>
+          <a href="/devices/tablets" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+            View all tablets →
           </a>
         </div>
 

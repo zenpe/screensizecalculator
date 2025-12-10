@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { getAmazonSearchUrl, getAmazonUrl } from '../site.config';
 
 // Device modes
-type DeviceMode = 'phone' | 'monitor' | 'tv' | 'projector';
+type DeviceMode = 'phone' | 'monitor' | 'tv' | 'projector' | 'tablet';
 
 interface DeviceModeConfig {
   label: string;
@@ -61,6 +61,17 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     shopLabel: 'Shop Projectors & Screens',
     shopKeyword: 'projector 4k',
   },
+  tablet: {
+    label: 'Tablet',
+    icon: '📱',
+    defaultDiagonal: '11',
+    defaultResolution: '2360 x 1640 (iPad Air)',
+    referenceType: 'creditCard',
+    highlightPPI: true,
+    showWallWidth: false,
+    shopLabel: 'Shop Tablets',
+    shopKeyword: 'tablet',
+  },
 };
 
 // Common aspect ratios for monitors/TVs
@@ -86,11 +97,21 @@ const ASPECT_RATIOS_PHONE = [
   { label: 'Custom', value: 'custom', ratio: null },
 ];
 
+// Common aspect ratios for tablets
+const ASPECT_RATIOS_TABLET = [
+  { label: '4:3 (iPad)', value: '4:3', ratio: 4 / 3 },
+  { label: '16:10 (Samsung/Android)', value: '16:10', ratio: 16 / 10 },
+  { label: '3:2 (Surface Pro)', value: '3:2', ratio: 3 / 2 },
+  { label: '16:9 (Widescreen)', value: '16:9', ratio: 16 / 9 },
+  { label: 'Custom', value: 'custom', ratio: null },
+];
+
 const ASPECT_RATIOS_BY_MODE: Record<DeviceMode, typeof ASPECT_RATIOS_DISPLAY> = {
   phone: ASPECT_RATIOS_PHONE,
   monitor: ASPECT_RATIOS_DISPLAY,
   tv: ASPECT_RATIOS_DISPLAY,
   projector: ASPECT_RATIOS_DISPLAY,
+  tablet: ASPECT_RATIOS_TABLET,
 };
 
 // Common resolutions by device type
@@ -133,11 +154,22 @@ const RESOLUTIONS_PROJECTOR = [
   { label: 'Custom', width: 0, height: 0 },
 ];
 
+const RESOLUTIONS_TABLET = [
+  { label: '2752 x 2064 (iPad Pro 13")', width: 2752, height: 2064 },
+  { label: '2360 x 1640 (iPad Air)', width: 2360, height: 1640 },
+  { label: '2266 x 1488 (iPad mini)', width: 2266, height: 1488 },
+  { label: '2160 x 1620 (iPad 10.2")', width: 2160, height: 1620 },
+  { label: '2560 x 1600 (Galaxy Tab)', width: 2560, height: 1600 },
+  { label: '2880 x 1920 (Surface Pro)', width: 2880, height: 1920 },
+  { label: 'Custom', width: 0, height: 0 },
+];
+
 const RESOLUTIONS_BY_MODE: Record<DeviceMode, typeof RESOLUTIONS_MONITOR> = {
   phone: RESOLUTIONS_PHONE,
   monitor: RESOLUTIONS_MONITOR,
   tv: RESOLUTIONS_TV,
   projector: RESOLUTIONS_PROJECTOR,
+  tablet: RESOLUTIONS_TABLET,
 };
 
 interface CalculationResults {
@@ -833,18 +865,26 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
         </div>
 
         {/* Right Panel: Fills remaining space */}
-        <div className="w-full lg:flex-1 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 p-6 min-h-[400px] lg:min-h-[500px] flex flex-col relative overflow-hidden">
+        <div className={`w-full lg:flex-1 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 p-6 flex flex-col relative overflow-hidden ${
+          deviceMode === 'phone' ? 'min-h-[300px] lg:min-h-[380px]' : 'min-h-[400px] lg:min-h-[500px]'
+        }`}>
           <h3 className="text-sm font-medium text-gray-400 mb-4">Screen Visualization</h3>
 
           {results ? (
             <div className="flex-1 flex items-center justify-center relative overflow-hidden pb-12" role="img" aria-label={`Visual representation of ${formatNum(diagonalInInches, 1)} inch screen with ${resolution.width}x${resolution.height} resolution`}>
-              {/* Screen Frame - Always fills ~70% of container width */}
+              {/* Screen Frame */}
               <svg
                 viewBox={`0 0 ${aspectRatio * 100} 100`}
                 className="transition-all duration-300 ease-out drop-shadow-2xl"
                 style={{
-                  width: '75%',
-                  maxHeight: '80%',
+                  // For portrait devices (phone), use fixed height for compact display
+                  // For landscape devices, use width-based sizing
+                  ...(deviceMode === 'phone'
+                    ? { height: '400px', maxWidth: '50%' }
+                    : deviceMode === 'tablet'
+                    ? { width: '55%', maxHeight: '75%' }
+                    : { width: '75%', maxHeight: '80%' }
+                  ),
                 }}
                 preserveAspectRatio="xMidYMid meet"
                 aria-hidden="true"
@@ -982,7 +1022,7 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
                     <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> card</>
                   )}
                   {deviceConfig.referenceType === 'hand' && (
-                    <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> phone</>
+                    <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> 6.1" phone</>
                   )}
                   {deviceConfig.referenceType === 'human' && (
                     <>Screen = <span className="text-accent-400 font-medium">{formatNum(referenceSize.ratio, 1)}x</span> person height</>

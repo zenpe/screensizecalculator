@@ -3,7 +3,7 @@
 export interface Device {
   id: string;           // Slug-friendly identifier (e.g., "iphone-15")
   name: string;         // Display name (e.g., "iPhone 15")
-  category: 'phone' | 'monitor' | 'tv' | 'projector';
+  category: 'phone' | 'monitor' | 'tv' | 'projector' | 'tablet';
   diagonal: number;     // Screen diagonal in inches
   ratio: number;        // Aspect ratio as decimal (e.g., 16/9 = 1.777...)
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
@@ -452,6 +452,144 @@ export const devices: Device[] = [
     diagonal: 150,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+  },
+
+  // ============================================
+  // TABLETS
+  // ============================================
+
+  // iPad Pro Series
+  {
+    id: 'ipad-pro-13',
+    name: 'iPad Pro 13"',
+    category: 'tablet',
+    diagonal: 13,
+    ratio: 4 / 3,
+    resolution: '2752 x 2064',
+  },
+  {
+    id: 'ipad-pro-11',
+    name: 'iPad Pro 11"',
+    category: 'tablet',
+    diagonal: 11,
+    ratio: 4 / 3,
+    resolution: '2420 x 1668',
+  },
+
+  // iPad Air
+  {
+    id: 'ipad-air-13',
+    name: 'iPad Air 13"',
+    category: 'tablet',
+    diagonal: 13,
+    ratio: 4 / 3,
+    resolution: '2732 x 2048',
+  },
+  {
+    id: 'ipad-air-11',
+    name: 'iPad Air 11"',
+    category: 'tablet',
+    diagonal: 11,
+    ratio: 4 / 3,
+    resolution: '2360 x 1640',
+  },
+
+  // iPad
+  {
+    id: 'ipad-10',
+    name: 'iPad 10.9"',
+    category: 'tablet',
+    diagonal: 10.9,
+    ratio: 4 / 3,
+    resolution: '2360 x 1640',
+  },
+  {
+    id: 'ipad-9',
+    name: 'iPad 10.2"',
+    category: 'tablet',
+    diagonal: 10.2,
+    ratio: 4 / 3,
+    resolution: '2160 x 1620',
+  },
+
+  // iPad mini
+  {
+    id: 'ipad-mini-7',
+    name: 'iPad mini 8.3"',
+    category: 'tablet',
+    diagonal: 8.3,
+    ratio: 4 / 3,
+    resolution: '2266 x 1488',
+  },
+
+  // Samsung Galaxy Tab S11 Series
+  {
+    id: 'samsung-galaxy-tab-s11-ultra',
+    name: 'Samsung Galaxy Tab S11 Ultra',
+    category: 'tablet',
+    diagonal: 14.6,
+    ratio: 16 / 10,
+    resolution: '2960 x 1848',
+  },
+  {
+    id: 'samsung-galaxy-tab-s11-plus',
+    name: 'Samsung Galaxy Tab S11+',
+    category: 'tablet',
+    diagonal: 12.4,
+    ratio: 16 / 10,
+    resolution: '2800 x 1752',
+  },
+  {
+    id: 'samsung-galaxy-tab-s11',
+    name: 'Samsung Galaxy Tab S11',
+    category: 'tablet',
+    diagonal: 11,
+    ratio: 16 / 10,
+    resolution: '2560 x 1600',
+  },
+
+  // Samsung Galaxy Tab S10 Series
+  {
+    id: 'samsung-galaxy-tab-s10-ultra',
+    name: 'Samsung Galaxy Tab S10 Ultra',
+    category: 'tablet',
+    diagonal: 14.6,
+    ratio: 16 / 10,
+    resolution: '2960 x 1848',
+  },
+  {
+    id: 'samsung-galaxy-tab-s10-plus',
+    name: 'Samsung Galaxy Tab S10+',
+    category: 'tablet',
+    diagonal: 12.4,
+    ratio: 16 / 10,
+    resolution: '2800 x 1752',
+  },
+  {
+    id: 'samsung-galaxy-tab-s10-fe-plus',
+    name: 'Samsung Galaxy Tab S10 FE+',
+    category: 'tablet',
+    diagonal: 13.1,
+    ratio: 16 / 10,
+    resolution: '2880 x 1800',
+  },
+  {
+    id: 'samsung-galaxy-tab-s10-fe',
+    name: 'Samsung Galaxy Tab S10 FE',
+    category: 'tablet',
+    diagonal: 10.9,
+    ratio: 16 / 10,
+    resolution: '2880 x 1800',
+  },
+
+  // Microsoft Surface
+  {
+    id: 'surface-pro-11',
+    name: 'Surface Pro 13"',
+    category: 'tablet',
+    diagonal: 13,
+    ratio: 3 / 2,
+    resolution: '2880 x 1920',
   },
 ];
 

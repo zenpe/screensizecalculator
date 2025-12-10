@@ -1,0 +1,172 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import ComparisonSearch from '../../../components/ComparisonSearch';
+import { devices } from '../../../data/devices';
+import { getComparisonSlug } from '../../../utils/url';
+
+const title = 'Tablet Screen Size Comparisons - iPad vs Samsung Galaxy Tab & More';
+const description = 'Compare tablet screen sizes: iPad Pro, iPad Air, Samsung Galaxy Tab, Surface Pro and more. Visual size comparison tool for tablet displays.';
+const keywords = 'tablet screen size comparison, iPad vs Samsung, iPad Pro vs iPad Air, tablet display comparison, tablet size compare';
+
+const tabletDevices = devices.filter(d => d.category === 'tablet');
+const comparisonPairs: { a: typeof tabletDevices[0]; b: typeof tabletDevices[0]; slug: string; searchText: string }[] = [];
+for (let i = 0; i < tabletDevices.length; i++) {
+  for (let j = i + 1; j < tabletDevices.length; j++) {
+    const a = tabletDevices[i];
+    const b = tabletDevices[j];
+    comparisonPairs.push({
+      a,
+      b,
+      slug: getComparisonSlug(a.id, b.id),
+      searchText: `${a.name} ${b.name}`.toLowerCase(),
+    });
+  }
+}
+
+const isIpad = (id: string) => id.includes('ipad');
+const isSamsung = (id: string) => id.includes('samsung');
+const isSurface = (id: string) => id.includes('surface');
+
+const groupFilters = {
+  ipadVsIpad: (p: any) => isIpad(p.a.id) && isIpad(p.b.id),
+  samsungVsSamsung: (p: any) => isSamsung(p.a.id) && isSamsung(p.b.id),
+  ipadVsSamsung: (p: any) => (isIpad(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIpad(p.b.id)),
+  ipadVsSurface: (p: any) => (isIpad(p.a.id) && isSurface(p.b.id)) || (isSurface(p.a.id) && isIpad(p.b.id)),
+};
+
+const ipadVsIpadPairs = comparisonPairs.filter(groupFilters.ipadVsIpad);
+const samsungVsSamsungPairs = comparisonPairs.filter(groupFilters.samsungVsSamsung);
+const ipadVsSamsungPairs = comparisonPairs.filter(groupFilters.ipadVsSamsung);
+const ipadVsSurfacePairs = comparisonPairs.filter(groupFilters.ipadVsSurface);
+
+const allGroupedPairs = new Set([
+  ...ipadVsIpadPairs,
+  ...samsungVsSamsungPairs,
+  ...ipadVsSamsungPairs,
+  ...ipadVsSurfacePairs,
+]);
+const otherPairs = comparisonPairs.filter(p => !allGroupedPairs.has(p));
+
+const comparisonSections = [
+  { title: 'iPad vs iPad', pairs: ipadVsIpadPairs, id: 'ipad-v-ipad' },
+  { title: 'Samsung vs Samsung', pairs: samsungVsSamsungPairs, id: 'samsung-v-samsung' },
+  { title: 'iPad vs Samsung', pairs: ipadVsSamsungPairs, id: 'ipad-v-samsung' },
+  { title: 'iPad vs Surface', pairs: ipadVsSurfacePairs, id: 'ipad-v-surface' },
+  { title: 'Other Comparisons', pairs: otherPairs, id: 'other' },
+].filter(section => section.pairs.length > 0);
+
+const DISPLAY_LIMIT = 15;
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <nav class="mb-6 text-sm">
+      <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a></li>
+        <li>/</li>
+        <li><a href="/comparison" class="hover:text-primary-600 dark:hover:text-primary-400">Comparison</a></li>
+        <li>/</li>
+        <li class="text-gray-900 dark:text-gray-100">Tablets</li>
+      </ol>
+    </nav>
+
+    <div class="mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        Tablet Screen Size Comparisons
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
+        Compare tablet screen sizes visually. See how iPad, Samsung Galaxy Tab, and Surface Pro tablets compare in actual screen area.
+      </p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
+        {comparisonPairs.length} tablet comparisons available
+      </p>
+    </div>
+
+    <div class="mb-12">
+      <ComparisonSearch
+        client:load
+        devices={tabletDevices}
+        comparisons={comparisonPairs}
+        placeholder="Search comparisons (e.g. iPad Pro, Galaxy Tab)..."
+        searchHint="Try 'iPad Pro' or 'Galaxy Tab'"
+      />
+    </div>
+
+    {comparisonSections.map(section => (
+      <section class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          {section.title}
+          <span class="text-sm font-normal text-gray-500">({section.pairs.length})</span>
+        </h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+              <a
+                href={`/comparison/${slug}`}
+                class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
+                  ${index < section.pairs.slice(0, DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
+                `}
+              >
+                <span class="text-sm text-gray-700 dark:text-gray-300">{a.name} vs {b.name}</span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </a>
+            ))}
+          </div>
+          {section.pairs.length > DISPLAY_LIMIT && (
+            <div id={`hidden-${section.id}`} class="hidden">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 dark:border-gray-700">
+                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+                  <a
+                    href={`/comparison/${slug}`}
+                    class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
+                      ${index < section.pairs.slice(DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
+                    `}
+                  >
+                    <span class="text-sm text-gray-700 dark:text-gray-300">{a.name} vs {b.name}</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        {section.pairs.length > DISPLAY_LIMIT && (
+          <div class="pt-2 text-center">
+            <button
+              class="show-all-button w-full text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline p-3 rounded-b-lg"
+              data-target={`#hidden-${section.id}`}
+            >
+              Show all {section.pairs.length} comparisons
+            </button>
+          </div>
+        )}
+      </section>
+    ))}
+
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
+      <a href="/comparison" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700">All Comparisons</a>
+      <a href="/comparison/phones" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700">Phone Comparisons →</a>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.show-all-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-target');
+          if (targetId) {
+            const targetElement = document.querySelector(targetId) as HTMLElement;
+            if (targetElement) {
+              targetElement.classList.remove('hidden');
+              button.parentElement?.remove();
+            }
+          }
+        });
+      });
+    });
+  </script>
+</Layout>
