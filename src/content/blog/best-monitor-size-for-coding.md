@@ -102,7 +102,7 @@ There is no single "best" size, but based on developer consensus, here's our rec
 - **For Maximum Productivity:** A **34-inch ultrawide monitor** or a **32-inch 4K monitor** provides the ultimate workspace for complex projects.
 - **For Flexible Setups:** A **dual-monitor setup** with at least one monitor that can pivot to a vertical orientation remains a highly effective and ergonomic choice.
 
-Ultimately, the best monitor size for coding depends on your personal workflow, desk space, and budget. Use our [screen size calculator](/monitor-screen-size-calculator/) to compare dimensions and find the perfect fit for your development environment.
+Ultimately, the best monitor size for coding depends on your personal workflow, desk space, and budget. Use our [screen size calculator](/monitor-screen-size-calculator) to compare dimensions and find the perfect fit for your development environment.
 
 ---
 

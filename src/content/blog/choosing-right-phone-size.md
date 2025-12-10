@@ -271,4 +271,4 @@ What matters most to you?
 
 ---
 
-**Compare phone sizes visually:** Use our [Phone Size Comparison Calculator](/comparison/phones/) to see exactly how different phones stack up against each other.
+**Compare phone sizes visually:** Use our [Phone Size Comparison Calculator](/comparison/phones) to see exactly how different phones stack up against each other.
