@@ -1,10 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import CategoryIcon from '../components/icons/CategoryIcon.astro';
+import { devices } from '../data/devices';
 
 const title = 'Screen Calculators - Free Online Display Tools | PPI, Resolution, Aspect Ratio';
-const description = 'Free online screen calculators: PPI calculator, resolution scaler, aspect ratio converter, and screen size comparators for TVs, monitors, phones, and projectors.';
-const keywords = 'screen calculator, ppi calculator, resolution calculator, aspect ratio calculator, screen size calculator, display tools, pixel density, tv size calculator, monitor calculator';
+const description = 'Free online screen calculators: PPI calculator, resolution scaler, aspect ratio converter, and screen size comparators for TVs, monitors, phones, tablets, and projectors.';
+const keywords = 'screen calculator, ppi calculator, resolution calculator, aspect ratio calculator, screen size calculator, display tools, pixel density, tv size calculator, monitor calculator, tablet screen size';
+
+// Stats for hero section
+const totalDevices = devices.length;
+const phoneCount = devices.filter(d => d.category === 'phone').length;
+const tabletCount = devices.filter(d => d.category === 'tablet').length;
+const tvCount = devices.filter(d => d.category === 'tv').length;
+const monitorCount = devices.filter(d => d.category === 'monitor').length;
 
 // Calculator categories
 const screenCalculators = [
@@ -12,7 +21,7 @@ const screenCalculators = [
     title: 'TV Screen Size Calculator',
     description: 'Calculate optimal viewing distance, compare TV sizes, and find the perfect screen for your room.',
     href: '/tv-screen-size-calculator',
-    icon: 'tv',
+    icon: 'tv' as const,
     color: 'blue',
     features: ['Viewing distance', 'Size comparison', 'Room optimization'],
   },
@@ -20,7 +29,7 @@ const screenCalculators = [
     title: 'Monitor Screen Size Calculator',
     description: 'Compare monitor sizes for gaming, productivity, and professional work. Find your ideal desktop display.',
     href: '/monitor-screen-size-calculator',
-    icon: 'monitor',
+    icon: 'monitor' as const,
     color: 'purple',
     features: ['Gaming setups', 'Multi-monitor', 'Desk space planning'],
   },
@@ -28,15 +37,23 @@ const screenCalculators = [
     title: 'Phone Screen Size Calculator',
     description: 'Compare iPhone, Samsung, Pixel and other smartphone screen sizes side by side.',
     href: '/phone-screen-size-calculator',
-    icon: 'phone',
+    icon: 'phone' as const,
     color: 'green',
     features: ['iPhone vs Android', 'Hand comfort', 'Display comparison'],
+  },
+  {
+    title: 'Tablet Screen Size Calculator',
+    description: 'Compare iPad, Galaxy Tab, Surface and other tablet screen sizes. Find the perfect tablet for your needs.',
+    href: '/tablet-screen-size-calculator',
+    icon: 'tablet' as const,
+    color: 'indigo',
+    features: ['iPad comparisons', 'Productivity', 'Portability check'],
   },
   {
     title: 'Projector Screen Size Calculator',
     description: 'Calculate throw distance, screen size, and optimal projector placement for home theater.',
     href: '/projector-screen-size-calculator',
-    icon: 'projector',
+    icon: 'projector' as const,
     color: 'amber',
     features: ['Throw distance', 'Screen sizing', 'Room setup'],
   },
@@ -47,23 +64,23 @@ const toolCalculators = [
     title: 'PPI Calculator',
     description: 'Calculate pixel density (PPI) for any display. Find if your screen is Retina-quality and compare sharpness.',
     href: '/ppi-calculator',
-    icon: 'ppi',
-    color: 'indigo',
+    icon: 'ppi' as const,
+    color: 'rose',
     features: ['Pixel density', 'Retina check', 'Sharpness comparison'],
   },
   {
     title: 'Resolution Calculator',
     description: 'Scale resolutions, compare pixel counts, and calculate megapixels for any display.',
     href: '/resolution-calculator',
-    icon: 'resolution',
-    color: 'rose',
+    icon: 'resolution' as const,
+    color: 'orange',
     features: ['Resolution scaling', 'Pixel comparison', 'Format conversion'],
   },
   {
     title: 'Aspect Ratio Calculator',
     description: 'Calculate and convert aspect ratios. Find dimensions for 16:9, 21:9, 4:3 and custom ratios.',
     href: '/aspect-ratio-calculator',
-    icon: 'ratio',
+    icon: 'ratio' as const,
     color: 'cyan',
     features: ['Ratio conversion', 'Dimension finder', 'Format matching'],
   },
@@ -98,7 +115,7 @@ const faqSchema = {
       "name": "What calculators are available on this site?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "We offer 7 free calculators: TV, Monitor, Phone, and Projector screen size calculators for comparing displays, plus PPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions."
+        "text": "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions."
       }
     },
     {
@@ -114,24 +131,22 @@ const faqSchema = {
       "name": "Which calculator should I use to compare screen sizes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Use the device-specific calculators: TV Calculator for televisions, Monitor Calculator for computer displays, Phone Calculator for smartphones, or Projector Calculator for projection screens. Each is optimized for its device category."
+        "text": "Use the device-specific calculators: TV Calculator for televisions, Monitor Calculator for computer displays, Phone Calculator for smartphones, Tablet Calculator for iPads and tablets, or Projector Calculator for projection screens. Each is optimized for its device category."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate are the screen size calculations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our calculations use manufacturer specifications and industry-standard formulas. Screen dimensions are calculated from diagonal size and aspect ratio using the Pythagorean theorem, ensuring high accuracy for all supported devices."
       }
     }
   ]
 };
 
-// Icon components
-const icons = {
-  tv: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
-  monitor: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
-  phone: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />`,
-  projector: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />`,
-  ppi: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />`,
-  resolution: `<rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/><path d="M21 3l-9 9M14 3h7v7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-  ratio: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />`,
-};
-
-const colorClasses = {
+// Color classes for icon backgrounds and text
+const colorClasses: Record<string, { bg: string; text: string; border: string }> = {
   blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', border: 'hover:border-blue-300 dark:hover:border-blue-700' },
   purple: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400', border: 'hover:border-purple-300 dark:hover:border-purple-700' },
   green: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-400', border: 'hover:border-green-300 dark:hover:border-green-700' },
@@ -139,6 +154,7 @@ const colorClasses = {
   indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-600 dark:text-indigo-400', border: 'hover:border-indigo-300 dark:hover:border-indigo-700' },
   rose: { bg: 'bg-rose-100 dark:bg-rose-900/30', text: 'text-rose-600 dark:text-rose-400', border: 'hover:border-rose-300 dark:hover:border-rose-700' },
   cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-600 dark:text-cyan-400', border: 'hover:border-cyan-300 dark:hover:border-cyan-700' },
+  orange: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400', border: 'hover:border-orange-300 dark:hover:border-orange-700' },
 };
 ---
 
@@ -147,14 +163,48 @@ const colorClasses = {
 
   <main class="flex-1">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-          Screen Calculators
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Free online tools to calculate screen sizes, pixel density, resolution, and aspect ratios for any display.
-        </p>
+    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 pt-6 pb-12 lg:pb-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+                <span itemprop="name">Home</span>
+              </a>
+              <meta itemprop="position" content="1" />
+            </li>
+            <li class="text-gray-400">/</li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">Calculators</span>
+              <meta itemprop="position" content="2" />
+            </li>
+          </ol>
+        </nav>
+
+        <div class="text-center">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Screen Calculators
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+            Free online tools to calculate screen sizes, pixel density, resolution, and aspect ratios for any display.
+          </p>
+          <!-- Stats -->
+          <div class="flex flex-wrap justify-center gap-6 text-sm">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-primary-600 dark:text-primary-400">{allCalculators.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">Calculators</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-primary-600 dark:text-primary-400">{totalDevices}+</span>
+              <span class="text-gray-600 dark:text-gray-400">Devices</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-green-600 dark:text-green-400">100%</span>
+              <span class="text-gray-600 dark:text-gray-400">Free</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -178,7 +228,7 @@ const colorClasses = {
             >
               <div class="flex items-start gap-4">
                 <div class={`w-12 h-12 rounded-xl ${colorClasses[calc.color].bg} flex items-center justify-center flex-shrink-0`}>
-                  <svg class={`w-6 h-6 ${colorClasses[calc.color].text}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" set:html={icons[calc.icon]} />
+                  <CategoryIcon icon={calc.icon} size="xl" color={colorClasses[calc.color].text} useSvg />
                 </div>
                 <div class="flex-1 min-w-0">
                   <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
@@ -224,7 +274,7 @@ const colorClasses = {
               class={`group block bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-all ${colorClasses[calc.color].border}`}
             >
               <div class={`w-12 h-12 rounded-xl ${colorClasses[calc.color].bg} flex items-center justify-center mb-4`}>
-                <svg class={`w-6 h-6 ${colorClasses[calc.color].text}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" set:html={icons[calc.icon]} />
+                <CategoryIcon icon={calc.icon} size="xl" color={colorClasses[calc.color].text} useSvg />
               </div>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                 {calc.title}
@@ -248,27 +298,41 @@ const colorClasses = {
     <!-- Quick Links -->
     <section class="py-12 lg:py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-center">
+        <div class="bg-gray-900 dark:bg-gray-800 rounded-2xl p-8 text-center">
           <h2 class="text-2xl font-bold text-white mb-4">
             Compare Screen Sizes
           </h2>
-          <p class="text-primary-100 mb-6 max-w-xl mx-auto">
+          <p class="text-gray-300 mb-6 max-w-xl mx-auto">
             Use our comparison tools to see how different screens stack up against each other
           </p>
           <div class="flex flex-wrap justify-center gap-3">
-            <a href="/comparison/phones" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+            <a href="/comparison/phones" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+              <CategoryIcon icon="phone" size="sm" color="text-white" />
               Compare Phones
             </a>
-            <a href="/comparison/monitors" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+            <a href="/comparison/tablets" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+              <CategoryIcon icon="tablet" size="sm" color="text-white" />
+              Compare Tablets
+            </a>
+            <a href="/comparison/monitors" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+              <CategoryIcon icon="monitor" size="sm" color="text-white" />
               Compare Monitors
             </a>
-            <a href="/comparison/tvs" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+            <a href="/comparison/tvs" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+              <CategoryIcon icon="tv" size="sm" color="text-white" />
               Compare TVs
             </a>
-            <a href="/comparison/projectors" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+            <a href="/comparison/projectors" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+              <CategoryIcon icon="projector" size="sm" color="text-white" />
               Compare Projectors
             </a>
           </div>
+          <a href="/comparison" class="inline-flex items-center gap-2 mt-6 text-gray-400 hover:text-white text-sm transition-colors">
+            View all comparisons
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
         </div>
       </div>
     </section>

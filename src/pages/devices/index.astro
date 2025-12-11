@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import CategoryIcon from '../../components/icons/CategoryIcon.astro';
+import DeviceSearch from '../../components/DeviceSearch';
 import { devices } from '../../data/devices';
 
 // Group devices by category
@@ -15,59 +17,75 @@ const devicesByCategory = {
 // SEO metadata
 const title = 'All Screen Sizes - Phones, Tablets, TVs, Monitors & Projectors';
 const description = 'Complete database of screen sizes for phones, tablets, TVs, monitors, and projectors. Find detailed dimensions, resolutions, and specifications for all devices.';
+const keywords = 'screen sizes, phone screen size, tablet screen size, tv screen size, monitor screen size, projector screen size, display dimensions, screen database, device specifications';
 
-// Get latest/popular devices
-const latestPhones = devicesByCategory.phone.slice(0, 6);
+// Get latest/popular devices - dynamically select from each category
 const popularDevices = [
-  ...latestPhones.slice(0, 3),
-  devices.find(d => d.id === '65-inch-tv'),
-  devices.find(d => d.id === '27-inch-monitor'),
-  devices.find(d => d.id === '100-inch-projector-screen'),
+  devicesByCategory.phone[0],  // Latest phone
+  devicesByCategory.phone[1],  // Second latest phone
+  devicesByCategory.tablet[0], // Latest tablet
+  devicesByCategory.tv.find(d => d.id === '65-inch-tv') || devicesByCategory.tv[0],
+  devicesByCategory.monitor.find(d => d.id === '27-inch-monitor') || devicesByCategory.monitor[0],
+  devicesByCategory.projector[0],
 ].filter(Boolean);
 
 // Category cards data
 const categories = [
-  {
-    name: 'Phones',
-    icon: '📱',
-    href: '/devices/phones',
-    count: devicesByCategory.phone.length,
-    description: 'iPhone, Samsung, Google Pixel',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    name: 'Tablets',
-    icon: '📱',
-    href: '/devices/tablets',
-    count: devicesByCategory.tablet.length,
-    description: 'iPad, Galaxy Tab, Surface Pro',
-    color: 'from-indigo-500 to-purple-500',
-  },
-  {
-    name: 'Monitors',
-    icon: '🖥️',
-    href: '/devices/monitors',
-    count: devicesByCategory.monitor.length,
-    description: '24", 27", 32" and ultrawide displays',
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
-    name: 'TVs',
-    icon: '📺',
-    href: '/devices/tvs',
-    count: devicesByCategory.tv.length,
-    description: '43", 55", 65", 75", 85" televisions',
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    name: 'Projectors',
-    icon: '📽️',
-    href: '/devices/projectors',
-    count: devicesByCategory.projector.length,
-    description: '100", 120", 150" screens',
-    color: 'from-orange-500 to-amber-500',
-  },
+  { name: 'Phones', category: 'phone' as const, href: '/devices/phones', count: devicesByCategory.phone.length, description: 'iPhone, Samsung, Google Pixel', color: 'green' },
+  { name: 'Tablets', category: 'tablet' as const, href: '/devices/tablets', count: devicesByCategory.tablet.length, description: 'iPad, Galaxy Tab, Surface Pro', color: 'indigo' },
+  { name: 'TVs', category: 'tv' as const, href: '/devices/tvs', count: devicesByCategory.tv.length, description: '43", 55", 65", 75", 85" televisions', color: 'blue' },
+  { name: 'Monitors', category: 'monitor' as const, href: '/devices/monitors', count: devicesByCategory.monitor.length, description: '24", 27", 32" and ultrawide displays', color: 'purple' },
+  { name: 'Projectors', category: 'projector' as const, href: '/devices/projectors', count: devicesByCategory.projector.length, description: '100", 120", 150" screens', color: 'amber' },
 ];
+
+// Color classes for category cards
+const colorClasses: Record<string, { bg: string; text: string; border: string }> = {
+  green: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-400', border: 'hover:border-green-400 dark:hover:border-green-600' },
+  indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-600 dark:text-indigo-400', border: 'hover:border-indigo-400 dark:hover:border-indigo-600' },
+  blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', border: 'hover:border-blue-400 dark:hover:border-blue-600' },
+  purple: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400', border: 'hover:border-purple-400 dark:hover:border-purple-600' },
+  amber: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', border: 'hover:border-amber-400 dark:hover:border-amber-600' },
+};
+
+// FAQ data
+const faqData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I find my device's screen size?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use our search feature or browse by category (Phones, Tablets, TVs, Monitors, Projectors). Each device page shows diagonal size, width, height, resolution, and PPI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What information is available for each device?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each device listing includes diagonal screen size, width and height dimensions (in inches and cm), resolution, aspect ratio, PPI (pixels per inch), and total megapixels."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I compare multiple devices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Visit our comparison page to select multiple devices and see them side by side. You can compare phones, tablets, TVs, monitors, and projectors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often is the device database updated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We regularly update our database with new device releases. Latest phones like iPhone and Samsung Galaxy are added shortly after their official announcements."
+      }
+    }
+  ]
+};
 
 // CollectionPage Schema
 const collectionSchema = {
@@ -77,198 +95,254 @@ const collectionSchema = {
   "description": description,
   "url": "https://screensizecalculators.com/devices"
 };
+
+// BreadcrumbList Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://screensizecalculators.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "All Devices",
+      "item": "https://screensizecalculators.com/devices"
+    }
+  ]
+};
+
+// ItemList Schema for categories
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Device Categories",
+  "numberOfItems": categories.length,
+  "itemListElement": categories.map((cat, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": cat.name,
+    "url": `https://screensizecalculators.com${cat.href}`
+  }))
+};
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <Header />
 
-  <main class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Breadcrumb Navigation -->
-    <nav class="mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-        <li>
-          <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a>
-        </li>
-        <li class="text-gray-400">/</li>
-        <li>
-          <span class="text-gray-900 dark:text-gray-100 font-medium">All Devices</span>
-        </li>
-      </ol>
-    </nav>
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 pt-6 pb-12 lg:pb-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+                <span itemprop="name">Home</span>
+              </a>
+              <meta itemprop="position" content="1" />
+            </li>
+            <li class="text-gray-400">/</li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">All Devices</span>
+              <meta itemprop="position" content="2" />
+            </li>
+          </ol>
+        </nav>
 
-    <!-- Page Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-        Screen Size Database
-      </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Browse detailed screen dimensions, resolutions, and specifications for phones, monitors, TVs, and projectors.
-      </p>
-      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {devices.length} devices available
-      </p>
-    </div>
+        <div class="text-center">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Screen Size Database
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+            Browse detailed screen dimensions, resolutions, and specifications for phones, tablets, monitors, TVs, and projectors.
+          </p>
+          <!-- Stats -->
+          <div class="flex flex-wrap justify-center gap-4 text-sm mb-8">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-primary-600 dark:text-primary-400">{devices.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">Devices</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-green-600 dark:text-green-400">{devicesByCategory.phone.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">Phones</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-indigo-600 dark:text-indigo-400">{devicesByCategory.tablet.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">Tablets</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-blue-600 dark:text-blue-400">{devicesByCategory.tv.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">TVs</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-purple-600 dark:text-purple-400">{devicesByCategory.monitor.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">Monitors</span>
+            </div>
+          </div>
+          <!-- Search -->
+          <DeviceSearch
+            client:load
+            devices={devices}
+            placeholder="Search devices (e.g. iPhone 16, Samsung Galaxy, 65 inch TV)..."
+            searchHint="Try searching for iPhone, Samsung, TV, or Monitor"
+          />
+        </div>
+      </div>
+    </section>
 
     <!-- Category Cards -->
-    <section class="mb-12">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-        Browse by Category
-      </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {categories.map(cat => (
-          <a
-            href={cat.href}
-            class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all overflow-hidden"
-          >
-            <div class={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity`}></div>
-            <div class="relative">
-              <span class="text-3xl mb-3 block">{cat.icon}</span>
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+          Browse by Category
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {categories.map(cat => (
+            <a
+              href={cat.href}
+              class={`group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 hover:shadow-lg transition-all ${colorClasses[cat.color].border}`}
+            >
+              <div class={`w-12 h-12 rounded-xl ${colorClasses[cat.color].bg} flex items-center justify-center mb-3`}>
+                <CategoryIcon icon={cat.category} size="lg" color={colorClasses[cat.color].text} useSvg />
+              </div>
               <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                 {cat.name}
               </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
                 {cat.description}
               </p>
-              <span class="text-xs font-medium text-primary-600 dark:text-primary-400">
-                {cat.count} devices →
+              <span class={`text-xs font-medium ${colorClasses[cat.color].text}`}>
+                {cat.count} devices
               </span>
-            </div>
-          </a>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
     <!-- Popular Devices -->
-    <section class="mb-12">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
-        <span class="text-amber-500">★</span> Popular Devices
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {popularDevices.map(device => (
-          <a
-            href={`/${device.id}-screen-size`}
-            class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-                {device.category}
-              </span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">
-                {device.diagonal}"
-              </span>
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-              {device.name}
-            </h3>
-          </a>
-        ))}
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+          <span class="text-amber-500">★</span> Popular Devices
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {popularDevices.map(device => (
+            <a
+              href={`/${device.id}-screen-size`}
+              class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  <CategoryIcon icon={device.category} size="xs" />
+                  {device.category}
+                </span>
+                <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">
+                  {device.diagonal}"
+                </span>
+              </div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                {device.name}
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                {device.resolution.width} × {device.resolution.height}
+              </p>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
     <!-- Quick Links by Category -->
-    <section class="mb-12">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-        Quick Links
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Phone Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <span>📱</span> Phones
-          </h3>
-          <div class="space-y-2">
-            {devicesByCategory.phone.slice(0, 5).map(device => (
-              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {device.name} ({device.diagonal}")
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+          Quick Links
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map(cat => (
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <div class={`w-6 h-6 rounded ${colorClasses[cat.color].bg} flex items-center justify-center`}>
+                  <CategoryIcon icon={cat.category} size="xs" color={colorClasses[cat.color].text} useSvg />
+                </div>
+                {cat.name}
+              </h3>
+              <div class="space-y-2">
+                {devicesByCategory[cat.category].slice(0, 5).map(device => (
+                  <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 truncate">
+                    {device.name} {device.category !== 'phone' && device.category !== 'tablet' ? '' : `(${device.diagonal}")`}
+                  </a>
+                ))}
+              </div>
+              <a href={cat.href} class={`inline-block mt-3 text-sm font-medium ${colorClasses[cat.color].text}`}>
+                View all {cat.name.toLowerCase()} →
               </a>
-            ))}
-          </div>
-          <a href="/devices/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
-            View all phones →
-          </a>
-        </div>
-
-        <!-- Tablet Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <span>📱</span> Tablets
-          </h3>
-          <div class="space-y-2">
-            {devicesByCategory.tablet.slice(0, 5).map(device => (
-              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {device.name}
-              </a>
-            ))}
-          </div>
-          <a href="/devices/tablets" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
-            View all tablets →
-          </a>
-        </div>
-
-        <!-- TV Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <span>📺</span> TVs
-          </h3>
-          <div class="space-y-2">
-            {devicesByCategory.tv.map(device => (
-              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {device.name}
-              </a>
-            ))}
-          </div>
-          <a href="/devices/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
-            View all TVs →
-          </a>
-        </div>
-
-        <!-- Monitor Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <span>🖥️</span> Monitors
-          </h3>
-          <div class="space-y-2">
-            {devicesByCategory.monitor.map(device => (
-              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {device.name}
-              </a>
-            ))}
-          </div>
-          <a href="/devices/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
-            View all monitors →
-          </a>
-        </div>
-
-        <!-- Projector Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <span>📽️</span> Projectors
-          </h3>
-          <div class="space-y-2">
-            {devicesByCategory.projector.map(device => (
-              <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {device.name}
-              </a>
-            ))}
-          </div>
-          <a href="/devices/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
-            View all projectors →
-          </a>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- Back to Home -->
-    <div class="text-center">
-      <a href="/" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Back to Home
-      </a>
-    </div>
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          {faqData.mainEntity.map((faq) => (
+            <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+              <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
+                {faq.name}
+              </summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">
+                {faq.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-br from-primary-700 to-primary-900 py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+          Compare Screen Sizes Side by Side
+        </h2>
+        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+          Select multiple devices to compare their dimensions, resolutions, and pixel densities visually.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href="/comparison"
+            class="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-primary-700 font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            Compare Devices
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a
+            href="/#calculator"
+            class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            Use Calculator
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>

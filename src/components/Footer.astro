@@ -2,21 +2,27 @@
 // Footer component with comprehensive navigation
 import { getComparisonSlug } from '../utils/url';
 import { devices } from '../data/devices';
+import CategoryIcon from './icons/CategoryIcon.astro';
+import {
+  calculatorLinks,
+  comparisonLinks,
+  resourceLinks,
+  legalLinks,
+  siteInfo
+} from '../config/navigation';
 
 const currentYear = new Date().getFullYear();
 
 // --- Dynamic Popular Comparisons ---
-const phoneComparisons = [];
+const phoneComparisons: Array<{id1: string; id2: string; text: string}> = [];
 
 // 1. Latest iPhone Pro Max vs Previous iPhone Pro Max
 const allIphoneProMax = devices.filter(d => d.category === 'phone' && d.id.includes('iphone-') && d.id.includes('-pro-max'));
 if (allIphoneProMax.length >= 2) {
-  const latest = allIphoneProMax[0];
-  const previous = allIphoneProMax[1];
   phoneComparisons.push({
-    id1: latest.id,
-    id2: previous.id,
-    text: `${latest.name} vs ${previous.name}`
+    id1: allIphoneProMax[0].id,
+    id2: allIphoneProMax[1].id,
+    text: `${allIphoneProMax[0].name} vs ${allIphoneProMax[1].name}`
   });
 }
 
@@ -34,48 +40,57 @@ if (latestIphone && latestSamsungUltra) {
 
 // Combine and map to final structure
 const popularComparisons = [
-  phoneComparisons[0], // Latest vs Previous Pro Max
+  phoneComparisons[0],
   { id1: '65-inch-tv', id2: '55-inch-tv', text: '65" vs 55" TV' },
   { id1: '27-inch-monitor', id2: '24-inch-monitor', text: '27" vs 24" Monitor' },
-  phoneComparisons[1], // Latest iPhone vs Latest Samsung
+  phoneComparisons[1],
   { id1: '120-inch-projector-screen', id2: '85-inch-tv', text: '120" Projector vs 85" TV' },
   { id1: '75-inch-tv', id2: '65-inch-tv', text: '75" vs 65" TV' },
-].filter(Boolean) // Filter out undefined in case phone lookups fail
-.map(({ id1, id2, text }) => {
-  return {
-    url: `/comparison/${getComparisonSlug(id1, id2)}`,
-    text
-  };
-});
+].filter(Boolean)
+.map(({ id1, id2, text }) => ({
+  url: `/comparison/${getComparisonSlug(id1, id2)}`,
+  text
+}));
+
+// Organization Schema for SEO
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": siteInfo.name,
+  "url": `https://${siteInfo.domain}`,
+  "logo": `https://${siteInfo.domain}/logo.png`,
+  "description": siteInfo.description,
+  "sameAs": []
+};
 ---
 
-<footer class="bg-gray-900 text-gray-300 mt-auto">
+<footer class="bg-gray-900 text-gray-300 mt-auto" role="contentinfo">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Main Footer Grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
       <!-- Brand Column -->
       <div class="col-span-2 md:col-span-1">
-        <a href="/" class="flex items-center gap-2 mb-4">
-          <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-sm">
+        <a href="/" class="flex items-center gap-2 mb-4 group">
+          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-primary-500/25 transition-shadow">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <span class="font-semibold text-white">ScreenSizeCalculator</span>
+          <span class="font-bold text-white text-lg">{siteInfo.name}</span>
         </a>
-        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
-          Free online tools to calculate screen dimensions, viewing distances, PPI, and compare display sizes for TVs, monitors, phones, and projectors.
+        <p class="text-sm text-gray-400 mb-5 leading-relaxed">
+          {siteInfo.description}
         </p>
-        <!-- Trust badges / highlights -->
+        <!-- Trust badges -->
         <div class="flex flex-wrap gap-2">
-          <span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-800 rounded text-xs text-gray-300">
-            <svg class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 border border-gray-700/50">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
             Free Forever
           </span>
-          <span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-800 rounded text-xs text-gray-300">
-            <svg class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 border border-gray-700/50">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
             No Sign-up
@@ -84,139 +99,91 @@ const popularComparisons = [
       </div>
 
       <!-- Calculators Column -->
-      <div>
+      <nav aria-label="Calculator tools">
         <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Calculators</h3>
-        <ul class="space-y-2.5">
-          <li>
-            <a href="/tv-screen-size-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-              TV Screen Size
-            </a>
-          </li>
-          <li>
-            <a href="/monitor-screen-size-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
-              Monitor Size
-            </a>
-          </li>
-          <li>
-            <a href="/phone-screen-size-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-              Phone Screen Size
-            </a>
-          </li>
-          <li>
-            <a href="/projector-screen-size-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-              Projector Size
-            </a>
-          </li>
-          <li>
-            <a href="/ppi-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-              PPI Calculator
-            </a>
-          </li>
-          <li>
-            <a href="/aspect-ratio-calculator" class="text-sm text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-              Aspect Ratio
-            </a>
-          </li>
-          <li>
-            <a href="/calculators" class="text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
-              All Calculators →
-            </a>
-          </li>
+        <ul class="space-y-3">
+          {calculatorLinks.slice(0, 6).map(link => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5"
+              >
+                {link.icon && <CategoryIcon icon={link.icon} size="sm" />}
+                <span>{link.label}</span>
+              </a>
+            </li>
+          ))}
         </ul>
-      </div>
+        <a href="/calculators" class="inline-flex items-center gap-1 mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
+          All Calculators
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </nav>
 
       <!-- Compare Column -->
-      <div>
+      <nav aria-label="Size comparisons">
         <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Compare Sizes</h3>
-        <ul class="space-y-2.5">
-          <li>
-            <a href="/comparison" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              All Comparisons
-            </a>
-          </li>
-          <li>
-            <a href="/comparison/phones" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Phone Comparisons
-            </a>
-          </li>
-          <li>
-            <a href="/comparison/tablets" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Tablet Comparisons
-            </a>
-          </li>
-          <li>
-            <a href="/comparison/tvs" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              TV Comparisons
-            </a>
-          </li>
-          <li>
-            <a href="/comparison/monitors" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Monitor Comparisons
-            </a>
-          </li>
-          <li>
-            <a href="/comparison/projectors" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Projector Comparisons
-            </a>
-          </li>
+        <ul class="space-y-3">
+          {comparisonLinks.slice(1).map(link => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5"
+              >
+                {link.icon && <CategoryIcon icon={link.icon} size="sm" />}
+                <span>{link.label}</span>
+              </a>
+            </li>
+          ))}
         </ul>
-      </div>
+        <a href="/comparison" class="inline-flex items-center gap-1 mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
+          All Comparisons
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </nav>
 
-      <!-- Resources & Company Column -->
-      <div>
+      <!-- Resources & Legal Column -->
+      <nav aria-label="Resources and legal">
         <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Resources</h3>
-        <ul class="space-y-2.5">
-          <li>
-            <a href="/resources/common-screen-sizes" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Common Screen Sizes
-            </a>
-          </li>
-          <li>
-            <a href="/resources/aspect-ratio-guide" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Aspect Ratio Guide
-            </a>
-          </li>
-          <li>
-            <a href="/resources/ppi-explained" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              PPI Explained
-            </a>
-          </li>
-          <li>
-            <a href="/blog" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Blog
-            </a>
-          </li>
+        <ul class="space-y-3">
+          {resourceLinks.map(link => (
+            <li>
+              <a href={link.href} class="text-sm text-gray-400 hover:text-white transition-colors py-0.5 block">
+                {link.label}
+              </a>
+            </li>
+          ))}
         </ul>
 
-        <!-- Legal links -->
         <h3 class="font-semibold text-white mt-6 mb-3 text-sm uppercase tracking-wider">Legal</h3>
-        <ul class="space-y-2.5">
-          <li>
-            <a href="/privacy" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Privacy Policy
-            </a>
-          </li>
-          <li>
-            <a href="/terms" class="text-sm text-gray-300 hover:text-primary-400 transition-colors">
-              Terms of Use
-            </a>
-          </li>
+        <ul class="space-y-3">
+          {legalLinks.map(link => (
+            <li>
+              <a href={link.href} class="text-sm text-gray-400 hover:text-white transition-colors py-0.5 block">
+                {link.label}
+              </a>
+            </li>
+          ))}
         </ul>
-      </div>
+      </nav>
     </div>
 
     <!-- Popular Comparisons - SEO Internal Links -->
     <div class="mt-10 pt-8 border-t border-gray-800">
-      <h3 class="text-sm font-semibold text-white mb-4">Popular Comparisons</h3>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-amber-400">★</span>
+        <h3 class="text-sm font-semibold text-white">Popular Comparisons</h3>
+      </div>
       <div class="flex flex-wrap gap-2">
         {popularComparisons.map(({ url, text }) => (
-          <a href={url} class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-300 hover:text-white transition-colors">
+          <a
+            href={url}
+            class="px-3 py-2 bg-gray-800/60 hover:bg-gray-700 border border-gray-700/50 hover:border-gray-600 rounded-lg text-xs text-gray-300 hover:text-white transition-all"
+          >
             {text}
           </a>
         ))}
@@ -225,12 +192,33 @@ const popularComparisons = [
 
     <!-- Bottom Bar -->
     <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <p class="text-sm text-gray-300">
-        &copy; {currentYear} ScreenSizeCalculators.com. All rights reserved.
+      <p class="text-sm text-gray-400">
+        &copy; {currentYear} {siteInfo.domain}
       </p>
-      <p class="text-xs text-gray-400">
-        Made with precision for screen enthusiasts worldwide.
-      </p>
+
+      <!-- Back to Top Button -->
+      <button
+        id="back-to-top"
+        type="button"
+        class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+        aria-label="Back to top"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+        Back to Top
+      </button>
     </div>
   </div>
+
+  <!-- Organization Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+
+  <!-- Back to Top Script -->
+  <script>
+    const backToTopBtn = document.getElementById('back-to-top');
+    backToTopBtn?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </footer>

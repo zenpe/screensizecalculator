@@ -1,0 +1,198 @@
+---
+// Unified icon component for device categories and tools
+// Supports emoji, custom SVG icons, and tool icons
+
+// Device categories
+type DeviceCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
+// Tool types
+type ToolType = 'ppi' | 'aspect-ratio' | 'ratio' | 'resolution' | 'all' | 'search' | 'blog';
+// Combined type
+type IconType = DeviceCategory | ToolType;
+
+interface Props {
+  icon: IconType;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+  color?: string; // Override color class
+  useSvg?: boolean; // Force SVG rendering instead of emoji
+}
+
+const { icon, size = 'md', class: className = '', color, useSvg = false } = Astro.props;
+
+// Size mappings
+const sizes = {
+  xs: { wrapper: 'w-4 h-4', svg: 'w-3 h-3', text: 'text-sm' },
+  sm: { wrapper: 'w-5 h-5', svg: 'w-4 h-4', text: 'text-base' },
+  md: { wrapper: 'w-5 h-5', svg: 'w-5 h-5', text: 'text-base' },
+  lg: { wrapper: 'w-8 h-8', svg: 'w-8 h-8', text: 'text-3xl' },
+  xl: { wrapper: '', svg: 'w-6 h-6', text: 'text-2xl' },
+};
+
+const sizeConfig = sizes[size];
+
+// Icon definitions
+type IconDef = {
+  type: 'emoji' | 'svg';
+  value?: string; // emoji value
+  svgType?: string; // svg type identifier
+  defaultColor: string;
+};
+
+const icons: Record<IconType, IconDef> = {
+  // Device categories - all use SVG for cross-platform consistency
+  phone: { type: 'svg', svgType: 'phone', defaultColor: 'text-green-600' },
+  tablet: { type: 'svg', svgType: 'tablet', defaultColor: 'text-indigo-500' },
+  tv: { type: 'svg', svgType: 'tv', defaultColor: 'text-blue-600' },
+  monitor: { type: 'svg', svgType: 'monitor', defaultColor: 'text-purple-600' },
+  projector: { type: 'svg', svgType: 'projector', defaultColor: 'text-amber-600' },
+  // Tools - all use SVG for cross-platform consistency
+  ppi: { type: 'svg', svgType: 'ppi', defaultColor: 'text-indigo-600' },
+  'aspect-ratio': { type: 'svg', svgType: 'ratio', defaultColor: 'text-cyan-600' },
+  ratio: { type: 'svg', svgType: 'ratio', defaultColor: 'text-cyan-600' },
+  resolution: { type: 'svg', svgType: 'resolution', defaultColor: 'text-rose-500' },
+  all: { type: 'svg', svgType: 'grid', defaultColor: 'text-gray-500' },
+  search: { type: 'svg', svgType: 'search', defaultColor: 'text-gray-500' },
+  blog: { type: 'svg', svgType: 'blog', defaultColor: 'text-gray-500' },
+};
+
+const iconDef = icons[icon] || icons.phone;
+const iconColor = color || iconDef.defaultColor;
+const shouldUseSvg = useSvg || iconDef.type === 'svg';
+const svgType = iconDef.svgType;
+
+// For xl size with useSvg, we don't need wrapper - return SVG directly
+const needsWrapper = size !== 'xl' || !shouldUseSvg;
+const wrapperClasses = needsWrapper ? [sizeConfig.wrapper, 'inline-flex items-center justify-center', className].filter(Boolean) : [];
+---
+
+{!shouldUseSvg && iconDef.type === 'emoji' && iconDef.value ? (
+  <span class:list={[sizeConfig.wrapper, 'inline-flex items-center justify-center', className]}>
+    <span class={sizeConfig.text}>{iconDef.value}</span>
+  </span>
+) : svgType === 'tablet' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="4" y="2" width="16" height="20" rx="2" stroke-width="2"/>
+        <line x1="12" y1="18" x2="12" y2="18.01" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <rect x="4" y="2" width="16" height="20" rx="2" stroke-width="2"/>
+      <line x1="12" y1="18" x2="12" y2="18.01" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  )
+) : svgType === 'phone' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+  )
+) : svgType === 'tv' || svgType === 'monitor' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+  )
+) : svgType === 'projector' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+  )
+) : svgType === 'ppi' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  )
+) : svgType === 'ratio' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+    </svg>
+  )
+) : svgType === 'resolution' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/>
+        <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/>
+        <path d="M21 3l-9 9M14 3h7v7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/>
+      <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/>
+      <path d="M21 3l-9 9M14 3h7v7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  )
+) : svgType === 'grid' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </svg>
+  )
+) : svgType === 'search' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  )
+) : svgType === 'blog' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+    </svg>
+  )
+) : null}

@@ -1,0 +1,439 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import CategoryIcon from '../../components/icons/CategoryIcon.astro';
+import CategoryDeviceList from '../../components/CategoryDeviceList';
+import { devices, calculateDimensions, calculateDevicePPI } from '../../data/devices';
+import type { Device } from '../../data/devices';
+
+// Category configuration
+const categoryConfig: Record<string, {
+  name: string;
+  namePlural: string;
+  icon: 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
+  color: string;
+  description: string;
+  keywords: string;
+  faq: Array<{ question: string; answer: string }>;
+}> = {
+  phones: {
+    name: 'Phone',
+    namePlural: 'Phones',
+    icon: 'phone',
+    color: 'green',
+    description: 'iPhone, Samsung Galaxy, Google Pixel, and other smartphones',
+    keywords: 'phone screen size, iphone screen size, samsung galaxy screen, pixel screen size, smartphone dimensions',
+    faq: [
+      {
+        question: 'What is the most common phone screen size?',
+        answer: 'Most modern smartphones have screen sizes between 6.1" and 6.7". The standard iPhone 16 has a 6.1" display, while larger "Plus" or "Pro Max" models typically range from 6.7" to 6.9".',
+      },
+      {
+        question: 'How do I measure my phone screen size?',
+        answer: 'Phone screen size is measured diagonally from one corner to the opposite corner. Manufacturers list this measurement in inches. Our database includes accurate diagonal measurements for all popular phones.',
+      },
+      {
+        question: 'Does a bigger phone screen mean better display quality?',
+        answer: 'Not necessarily. Display quality depends on resolution and PPI (pixels per inch). A smaller screen with high resolution can appear sharper than a larger screen with lower resolution. Check both screen size and PPI when comparing phones.',
+      },
+      {
+        question: 'What is PPI and why does it matter for phones?',
+        answer: 'PPI (Pixels Per Inch) measures pixel density. Higher PPI means sharper text and images. Most flagship phones have 400+ PPI, which provides excellent clarity. Anything above 300 PPI is considered "Retina" quality.',
+      },
+    ],
+  },
+  tablets: {
+    name: 'Tablet',
+    namePlural: 'Tablets',
+    icon: 'tablet',
+    color: 'indigo',
+    description: 'iPad Pro, iPad Air, Samsung Galaxy Tab, Surface Pro, and other tablets',
+    keywords: 'tablet screen size, ipad screen size, galaxy tab screen, surface pro dimensions, tablet dimensions',
+    faq: [
+      {
+        question: 'What tablet screen size is best for reading?',
+        answer: 'For reading, 10-11" tablets offer a good balance between portability and readability. The iPad Air (10.9") and Samsung Galaxy Tab S9 are popular choices. Larger 12.9" tablets like iPad Pro are better for magazines and textbooks.',
+      },
+      {
+        question: 'What is the difference between iPad and iPad Pro screen sizes?',
+        answer: 'Standard iPad has a 10.9" display. iPad Pro comes in two sizes: 11" and 12.9" (or 13" for newer models). iPad Pro also features ProMotion 120Hz displays and higher resolution.',
+      },
+      {
+        question: 'Which tablet size is best for drawing and design?',
+        answer: 'Professional artists often prefer the 12.9" iPad Pro or 13" iPad Pro for the larger canvas. However, the 11" models are more portable while still offering excellent precision for digital art.',
+      },
+      {
+        question: 'How do tablet screens compare to laptop screens?',
+        answer: 'Many tablets now match or exceed laptop screen sizes. The 12.9" iPad Pro is larger than many 13" laptop displays, and with keyboard accessories, tablets can function as laptop replacements.',
+      },
+    ],
+  },
+  tvs: {
+    name: 'TV',
+    namePlural: 'TVs',
+    icon: 'tv',
+    color: 'blue',
+    description: '43", 55", 65", 75", 85" and other television sizes',
+    keywords: 'tv screen size, television dimensions, 55 inch tv size, 65 inch tv dimensions, tv comparison',
+    faq: [
+      {
+        question: 'What TV size should I get for my room?',
+        answer: 'For optimal viewing, multiply your viewing distance (in inches) by 0.84 for the minimum TV size, or by 0.625 for a more immersive experience. For example, sitting 8 feet (96") away suggests a 60-80" TV.',
+      },
+      {
+        question: 'What is the most popular TV size?',
+        answer: '55" and 65" TVs are currently the most popular sizes. 65" TVs offer a great balance of screen real estate and room compatibility. 55" is ideal for smaller living rooms or bedrooms.',
+      },
+      {
+        question: 'How much bigger is a 65" TV than a 55" TV?',
+        answer: 'A 65" TV has about 40% more screen area than a 55" TV. The 65" measures approximately 56.7" × 31.9", while the 55" measures 47.9" × 27.0". The difference is significant for movie watching.',
+      },
+      {
+        question: 'Is an 85" TV too big for my living room?',
+        answer: 'An 85" TV works best with viewing distances of 7-14 feet. For closer seating, a 75" or 65" may be more comfortable. Consider your room layout and ensure the TV fits your entertainment center.',
+      },
+    ],
+  },
+  monitors: {
+    name: 'Monitor',
+    namePlural: 'Monitors',
+    icon: 'monitor',
+    color: 'purple',
+    description: '24", 27", 32" and ultrawide desktop displays',
+    keywords: 'monitor screen size, computer monitor dimensions, 27 inch monitor, ultrawide monitor size',
+    faq: [
+      {
+        question: 'What monitor size is best for productivity?',
+        answer: '27" monitors at 1440p (QHD) are ideal for most productivity work. They offer enough screen space for side-by-side windows without being too large for typical desk setups. 32" monitors work well for 4K resolution.',
+      },
+      {
+        question: 'Is a 24" or 27" monitor better for gaming?',
+        answer: 'For competitive gaming, 24-25" at 1080p is often preferred for faster visual scanning. For immersive gaming, 27" at 1440p provides better detail. Both sizes offer excellent gaming experiences depending on your priorities.',
+      },
+      {
+        question: 'What is an ultrawide monitor and when should I get one?',
+        answer: 'Ultrawide monitors (21:9 or 32:9 aspect ratio) provide extra horizontal space. 34" ultrawides are great for multitasking and creative work. They eliminate the bezels of dual-monitor setups while providing similar screen real estate.',
+      },
+      {
+        question: 'How far should I sit from my monitor?',
+        answer: 'For a 24" monitor, sit 2-3 feet away. For 27", sit 2.5-3.5 feet. For 32", sit 3-4 feet. The goal is to see the entire screen comfortably without excessive head movement.',
+      },
+    ],
+  },
+  projectors: {
+    name: 'Projector',
+    namePlural: 'Projectors',
+    icon: 'projector',
+    color: 'amber',
+    description: '100", 120", 150" projection screens for home theater',
+    keywords: 'projector screen size, projection screen dimensions, home theater screen, projector screen calculator',
+    faq: [
+      {
+        question: 'What projector screen size should I get?',
+        answer: 'For home theaters, 100-120" screens are most popular. Use the formula: viewing distance ÷ 1.5 = maximum screen size. For a 12-foot viewing distance, a 96" (8 foot) screen is ideal.',
+      },
+      {
+        question: 'How does a 100" projector screen compare to a TV?',
+        answer: 'A 100" projector screen is significantly larger than even the biggest consumer TVs (85"). It offers 36% more screen area than an 85" TV, providing a true cinematic experience at a lower cost per inch.',
+      },
+      {
+        question: 'What is throw distance for a projector?',
+        answer: 'Throw distance is how far the projector needs to be from the screen. Standard projectors need 10-15 feet for a 100" image. Short-throw projectors need 4-8 feet, and ultra-short-throw can be placed just inches from the screen.',
+      },
+      {
+        question: 'Is a projector better than a large TV?',
+        answer: 'Projectors offer larger screen sizes at lower costs and are great for dedicated home theaters. However, TVs provide better brightness for rooms with ambient light and require less setup. Consider your room conditions and usage.',
+      },
+    ],
+  },
+};
+
+// Map URL category to device category
+const categoryMap: Record<string, Device['category']> = {
+  phones: 'phone',
+  tablets: 'tablet',
+  tvs: 'tv',
+  monitors: 'monitor',
+  projectors: 'projector',
+};
+
+// Related categories (for recommendations)
+const relatedCategories: Record<string, string[]> = {
+  phones: ['tablets', 'monitors'],
+  tablets: ['phones', 'monitors'],
+  tvs: ['monitors', 'projectors'],
+  monitors: ['tvs', 'tablets'],
+  projectors: ['tvs', 'monitors'],
+};
+
+export function getStaticPaths() {
+  return [
+    { params: { category: 'phones' } },
+    { params: { category: 'tablets' } },
+    { params: { category: 'tvs' } },
+    { params: { category: 'monitors' } },
+    { params: { category: 'projectors' } },
+  ];
+}
+
+const { category } = Astro.params;
+const config = categoryConfig[category!];
+const deviceCategory = categoryMap[category!];
+
+if (!config || !deviceCategory) {
+  return Astro.redirect('/devices');
+}
+
+// Filter and sort devices
+const categoryDevices = devices
+  .filter(d => d.category === deviceCategory)
+  .sort((a, b) => b.diagonal - a.diagonal);
+
+const title = `${config.namePlural} Screen Sizes - Complete List of ${categoryDevices.length} Devices`;
+const description = `Browse ${categoryDevices.length} ${config.name.toLowerCase()} screen sizes including ${config.description}. Find detailed dimensions, resolutions, and PPI.`;
+
+// Color classes
+const colorClasses: Record<string, { bg: string; text: string; border: string }> = {
+  green: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-400', border: 'border-green-200 dark:border-green-800' },
+  indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-600 dark:text-indigo-400', border: 'border-indigo-200 dark:border-indigo-800' },
+  blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' },
+  purple: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800' },
+  amber: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800' },
+};
+
+const colors = colorClasses[config.color];
+
+// Get related category info
+const related = relatedCategories[category!] || [];
+const relatedCategoryInfo = related.map(cat => ({
+  slug: cat,
+  ...categoryConfig[cat],
+  count: devices.filter(d => d.category === categoryMap[cat]).length,
+}));
+
+// Schema.org structured data
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://screensizecalculators.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Devices",
+      "item": "https://screensizecalculators.com/devices"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": config.namePlural,
+      "item": `https://screensizecalculators.com/devices/${category}`
+    }
+  ]
+};
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": `${config.namePlural} Screen Sizes`,
+  "description": description,
+  "numberOfItems": categoryDevices.length,
+  "itemListElement": categoryDevices.slice(0, 10).map((device, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": device.name,
+    "url": `https://screensizecalculators.com/${device.id}-screen-size`
+  }))
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": config.faq.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
+};
+---
+
+<Layout title={title} description={description} keywords={config.keywords}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 pt-6 pb-12 lg:pb-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+                <span itemprop="name">Home</span>
+              </a>
+              <meta itemprop="position" content="1" />
+            </li>
+            <li class="text-gray-400">/</li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="/devices" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+                <span itemprop="name">Devices</span>
+              </a>
+              <meta itemprop="position" content="2" />
+            </li>
+            <li class="text-gray-400">/</li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">{config.namePlural}</span>
+              <meta itemprop="position" content="3" />
+            </li>
+          </ol>
+        </nav>
+
+        <div class="text-center">
+          <div class={`w-16 h-16 rounded-2xl ${colors.bg} flex items-center justify-center mx-auto mb-4`}>
+            <CategoryIcon icon={config.icon} size="xl" color={colors.text} useSvg />
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            {config.namePlural} Screen Sizes
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
+            {config.description}
+          </p>
+          <!-- Stats -->
+          <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <div class={`flex items-center gap-2 px-4 py-2 ${colors.bg} rounded-full ${colors.border} border`}>
+              <span class={`font-bold ${colors.text}`}>{categoryDevices.length}</span>
+              <span class="text-gray-600 dark:text-gray-400">{config.namePlural}</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+              <span class="font-bold text-gray-700 dark:text-gray-300">
+                {categoryDevices.length > 0 ? categoryDevices[categoryDevices.length - 1].diagonal : 0}" - {categoryDevices.length > 0 ? categoryDevices[0].diagonal : 0}"
+              </span>
+              <span class="text-gray-600 dark:text-gray-400">Size Range</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Device List with Search/Filter -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <CategoryDeviceList
+          client:load
+          devices={categoryDevices}
+          category={category!}
+          categoryName={config.namePlural}
+          colorText={colors.text}
+          colorBg={colors.bg}
+        />
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+          Frequently Asked Questions about {config.namePlural}
+        </h2>
+        <div class="space-y-4">
+          {config.faq.map((item) => (
+            <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm group">
+              <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer flex items-center justify-between">
+                <span>{item.question}</span>
+                <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Categories -->
+    {relatedCategoryInfo.length > 0 && (
+      <section class="py-12 lg:py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            Explore Other Categories
+          </h2>
+          <div class="grid sm:grid-cols-2 gap-4">
+            {relatedCategoryInfo.map(related => {
+              const relatedColors = colorClasses[related.color];
+              return (
+                <a
+                  href={`/devices/${related.slug}`}
+                  class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+                >
+                  <div class="flex items-center gap-4">
+                    <div class={`w-12 h-12 rounded-xl ${relatedColors.bg} flex items-center justify-center flex-shrink-0`}>
+                      <CategoryIcon icon={related.icon} size="lg" color={relatedColors.text} useSvg />
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        {related.namePlural} Screen Sizes
+                      </h3>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        {related.count} devices • {related.description}
+                      </p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-br from-primary-700 to-primary-900 py-12 lg:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+          Compare {config.namePlural} Side by Side
+        </h2>
+        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+          Select multiple {config.namePlural.toLowerCase()} to compare their dimensions, resolutions, and pixel densities visually.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href={`/comparison/${category}`}
+            class="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-primary-700 font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            Compare {config.namePlural}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a
+            href="/devices"
+            class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            All Devices
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</Layout>

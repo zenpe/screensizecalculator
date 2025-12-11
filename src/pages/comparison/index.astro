@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import CategoryIcon from '../../components/icons/CategoryIcon.astro';
 import ComparisonSearch from '../../components/ComparisonSearch.tsx';
 import { devices, isValidComparison } from '../../data/devices';
 import { getComparisonSlug, getComparisonUrl } from '../../utils/url';
@@ -135,46 +136,11 @@ const searchHint = `Try "${latestIphoneStandard[0]?.name}", "${latestSamsungStan
 
 // Category cards data
 const categories = [
-  {
-    name: 'Phones',
-    icon: '📱',
-    href: '/comparison/phones',
-    count: phonePairsCount,
-    description: phoneDescription,
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    name: 'Tablets',
-    icon: '📱',
-    href: '/comparison/tablets',
-    count: tabletPairsCount,
-    description: 'iPad, Galaxy Tab, Surface Pro',
-    color: 'from-indigo-500 to-purple-500',
-  },
-  {
-    name: 'Monitors',
-    icon: '🖥️',
-    href: '/comparison/monitors',
-    count: monitorPairsCount,
-    description: '24", 27", 32" and ultrawide displays',
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
-    name: 'TVs',
-    icon: '📺',
-    href: '/comparison/tvs',
-    count: tvPairsCount,
-    description: '43", 55", 65", 75", 85" televisions',
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    name: 'Projectors',
-    icon: '📽️',
-    href: '/comparison/projectors',
-    count: projectorPairsCount + tvProjectorPairsCount,
-    description: '100", 120", 150" screens + TV comparisons',
-    color: 'from-orange-500 to-amber-500',
-  },
+  { name: 'Phones', category: 'phone' as const, href: '/comparison/phones', count: phonePairsCount, description: phoneDescription, color: 'from-blue-500 to-cyan-500' },
+  { name: 'Tablets', category: 'tablet' as const, href: '/comparison/tablets', count: tabletPairsCount, description: 'iPad, Galaxy Tab, Surface Pro', color: 'from-indigo-500 to-purple-500' },
+  { name: 'Monitors', category: 'monitor' as const, href: '/comparison/monitors', count: monitorPairsCount, description: '24", 27", 32" and ultrawide displays', color: 'from-purple-500 to-pink-500' },
+  { name: 'TVs', category: 'tv' as const, href: '/comparison/tvs', count: tvPairsCount, description: '43", 55", 65", 75", 85" televisions', color: 'from-green-500 to-emerald-500' },
+  { name: 'Projectors', category: 'projector' as const, href: '/comparison/projectors', count: projectorPairsCount + tvProjectorPairsCount, description: '100", 120", 150" screens + TV comparisons', color: 'from-orange-500 to-amber-500' },
 ];
 ---
 
@@ -237,7 +203,7 @@ const categories = [
           >
             <div class={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity`}></div>
             <div class="relative">
-              <span class="text-3xl mb-3 block">{cat.icon}</span>
+              <CategoryIcon icon={cat.category} size="lg" class="mb-3" />
               <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                 {cat.name}
               </h3>
