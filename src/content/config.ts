@@ -5,6 +5,7 @@ const blogCollection = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.string(),
+    updatedDate: z.string().optional(),
     category: z.string().optional().default('Guide'),
     author: z.string().optional().default('Screen Size Calculator Team'),
     keywords: z.string().optional(),

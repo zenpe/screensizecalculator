@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 const title = 'Monitor Screen Size Calculator - Perfect Size & Resolution';
 const description = 'Calculate the perfect monitor size for your desk. Get resolution recommendations, screen dimensions, and PPI analysis for 1440p, 4K, and 5K.';
@@ -49,6 +50,11 @@ const faqData = {
 
 <Layout title={title} description={description} keywords={keywords}>
   <Header />
+  <Breadcrumb items={[
+    { label: 'Home', href: '/' },
+    { label: 'Calculators', href: '/calculators' },
+    { label: 'Monitor Size Calculator' }
+  ]} />
 
   <main class="flex-1">
     <!-- Hero Section -->

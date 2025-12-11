@@ -7,6 +7,7 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   keywords?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -14,7 +15,8 @@ const {
   description,
   canonical,
   ogImage = '/og-image.png',
-  keywords = 'screen size calculator, tv size calculator, monitor dimensions, ppi calculator, aspect ratio calculator, viewing distance calculator, projector throw distance, 4k tv size, phone screen size, iphone screen size, android screen size'
+  keywords = 'screen size calculator, tv size calculator, monitor dimensions, ppi calculator, aspect ratio calculator, viewing distance calculator, projector throw distance, 4k tv size, phone screen size, iphone screen size, android screen size',
+  noindex = false
 } = Astro.props;
 
 // Generate the canonical URL without .html extension
@@ -74,6 +76,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / Facebook -->

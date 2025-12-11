@@ -6,18 +6,24 @@ interface Props {
   title: string;
   description: string;
   pubDate: string;
+  updatedDate?: string;
   author?: string;
   category?: string;
   readingTime?: number;
   keywords?: string;
 }
 
-const { title, description, pubDate, author = "Screen Size Calculator Team", category = "Guide", readingTime, keywords: customKeywords } = Astro.props;
+const { title, description, pubDate, updatedDate, author = "Screen Size Calculator Team", category = "Guide", readingTime, keywords: customKeywords } = Astro.props;
 const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
+const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : null;
 
 const estimatedReadingTime = readingTime || 5;
 
@@ -41,6 +47,7 @@ const articleData = {
   "headline": title,
   "description": description,
   "datePublished": pubDate,
+  ...(updatedDate && { "dateModified": updatedDate }),
   "author": {
     "@type": "Organization",
     "name": author
@@ -90,6 +97,14 @@ const articleData = {
             <span class="text-gray-500 dark:text-gray-400">
               <time datetime={pubDate}>{formattedDate}</time>
             </span>
+            {formattedUpdatedDate && (
+              <>
+                <span class="text-gray-300 dark:text-gray-600">·</span>
+                <span class="text-gray-500 dark:text-gray-400" title="Last updated">
+                  Updated: <time datetime={updatedDate}>{formattedUpdatedDate}</time>
+                </span>
+              </>
+            )}
             <span class="text-gray-300 dark:text-gray-600">·</span>
             <span class="text-gray-500 dark:text-gray-400">{estimatedReadingTime} min read</span>
           </div>
