@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getAmazonSearchUrl } from '../../site.config';
+import { getAmazonSearchUrl, siteConfig } from '../../site.config';
 import type { DeviceMode } from './config';
 import { DEVICE_CONFIGS } from './config';
 import { useScreenCalculation } from './hooks/useScreenCalculation';
@@ -444,14 +444,16 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
                 )}
 
                 {/* Amazon CTA */}
-                <a
-                  href={amazonInfo.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-2 px-3 rounded-lg shadow hover:shadow-md transition-all text-xs"
-                >
-                  {amazonInfo.label} on Amazon
-                </a>
+                {siteConfig.amazon.enabled && (
+                  <a
+                    href={amazonInfo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-2 px-3 rounded-lg shadow hover:shadow-md transition-all text-xs"
+                  >
+                    {amazonInfo.label} on Amazon
+                  </a>
+                )}
               </div>
             ) : (
               <p className="text-center py-3 text-gray-600 text-sm">Enter screen size to see results</p>

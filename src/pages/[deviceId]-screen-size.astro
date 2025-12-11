@@ -8,7 +8,7 @@ import {
   calculateDevicePPI,
   type Device
 } from '../data/devices';
-import { getAmazonSearchUrl } from '../site.config';
+import { getAmazonSearchUrl, siteConfig } from '../site.config';
 import { getComparisonUrl } from '../utils/url';
 
 // Generate pages for all devices
@@ -331,17 +331,19 @@ const svgStyle = device.category === 'phone'
           )}
 
           <!-- CTA Button -->
-          <a
-            href={getAmazonUrl()}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            class="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
-          >
-            <svg class="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            </svg>
-            Shop {device.name} on Amazon
-          </a>
+          {siteConfig.amazon.enabled && (
+            <a
+              href={getAmazonUrl()}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+            >
+              <svg class="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              </svg>
+              Shop {device.name} on Amazon
+            </a>
+          )}
         </div>
       </div>
     </div>
