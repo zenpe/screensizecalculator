@@ -11,6 +11,18 @@ export interface DeviceModeConfig {
   showWallWidth: boolean;
   shopLabel: string;
   shopKeyword: string;
+  // Theme colors for each device mode
+  colors: {
+    headerGradient: string;
+    headerText: string;
+    activeTab: string;
+    overlayText: string;
+    svgFill: string;        // For SVG fill class
+    svgBadgeBg: string;     // For SVG badge background (rgba)
+  };
+  // Header text for each device mode
+  headerTitle: string;
+  headerSubtitle: string;
 }
 
 export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
@@ -24,6 +36,16 @@ export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     showWallWidth: false,
     shopLabel: 'Shop Phones',
     shopKeyword: 'smartphone',
+    colors: {
+      headerGradient: 'from-amber-600 to-amber-700',
+      headerText: 'text-amber-200',
+      activeTab: 'text-amber-700 dark:text-amber-400',
+      overlayText: 'text-amber-400',
+      svgFill: 'fill-amber-400',
+      svgBadgeBg: 'rgba(245, 158, 11, 0.25)',
+    },
+    headerTitle: 'Phone Screen Calculator',
+    headerSubtitle: 'Calculate PPI, dimensions & pixel density',
   },
   monitor: {
     label: 'Monitor',
@@ -35,6 +57,16 @@ export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     showWallWidth: false,
     shopLabel: 'Shop Monitors',
     shopKeyword: 'monitor',
+    colors: {
+      headerGradient: 'from-blue-600 to-blue-700',
+      headerText: 'text-blue-200',
+      activeTab: 'text-blue-700 dark:text-blue-400',
+      overlayText: 'text-blue-400',
+      svgFill: 'fill-blue-400',
+      svgBadgeBg: 'rgba(59, 130, 246, 0.25)',
+    },
+    headerTitle: 'Monitor Size Calculator',
+    headerSubtitle: 'Calculate dimensions, resolution & PPI',
   },
   tv: {
     label: 'TV',
@@ -46,6 +78,16 @@ export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     showWallWidth: false,
     shopLabel: 'Shop TVs',
     shopKeyword: 'tv 4k',
+    colors: {
+      headerGradient: 'from-emerald-600 to-emerald-700',
+      headerText: 'text-emerald-200',
+      activeTab: 'text-emerald-700 dark:text-emerald-400',
+      overlayText: 'text-emerald-400',
+      svgFill: 'fill-emerald-400',
+      svgBadgeBg: 'rgba(52, 211, 153, 0.25)',
+    },
+    headerTitle: 'TV Size Calculator',
+    headerSubtitle: 'Calculate viewing distance & screen size',
   },
   projector: {
     label: 'Projector',
@@ -57,6 +99,16 @@ export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     showWallWidth: true,
     shopLabel: 'Shop Projectors & Screens',
     shopKeyword: 'projector 4k',
+    colors: {
+      headerGradient: 'from-indigo-600 to-indigo-700',
+      headerText: 'text-indigo-200',
+      activeTab: 'text-indigo-700 dark:text-indigo-400',
+      overlayText: 'text-violet-400',
+      svgFill: 'fill-violet-400',
+      svgBadgeBg: 'rgba(139, 92, 246, 0.25)',
+    },
+    headerTitle: 'Projector Calculator',
+    headerSubtitle: 'Calculate throw distance & screen size',
   },
   tablet: {
     label: 'Tablet',
@@ -68,6 +120,16 @@ export const DEVICE_CONFIGS: Record<DeviceMode, DeviceModeConfig> = {
     showWallWidth: false,
     shopLabel: 'Shop Tablets',
     shopKeyword: 'tablet',
+    colors: {
+      headerGradient: 'from-purple-600 to-purple-700',
+      headerText: 'text-purple-200',
+      activeTab: 'text-purple-700 dark:text-purple-400',
+      overlayText: 'text-purple-400',
+      svgFill: 'fill-purple-400',
+      svgBadgeBg: 'rgba(168, 85, 247, 0.25)',
+    },
+    headerTitle: 'Tablet Size Calculator',
+    headerSubtitle: 'Calculate PPI, dimensions & display specs',
   },
 };
 

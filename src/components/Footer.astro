@@ -72,8 +72,12 @@ const organizationSchema = {
       <div class="col-span-2 md:col-span-1">
         <a href="/" class="flex items-center gap-2 mb-4 group">
           <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-primary-500/25 transition-shadow">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="14" height="9" rx="1.5" fill="#99F6E4"/>
+              <rect x="7" y="11" width="14" height="9" rx="1.5" fill="white"/>
+              <path d="M1 7V2h5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M23 17v5h-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="2" fill="white"/>
             </svg>
           </div>
           <span class="font-bold text-white text-lg">{siteInfo.name}</span>
