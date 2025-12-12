@@ -607,9 +607,9 @@ function RoomView({
   // Human height reference: ~170cm = 67 inches
   const humanHeightInches = 67;
 
-  // Container dimensions
-  const containerWidth = isMobile ? 320 : 700;
-  const containerHeight = isMobile ? 420 : 400;
+  // Container dimensions - use larger width for better display
+  const containerWidth = isMobile ? 340 : 900;
+  const containerHeight = isMobile ? 450 : 480;
 
   // TV cabinet height from floor (typical: ~20-24 inches / 50-60cm)
   const cabinetHeightInches = 22;
@@ -665,7 +665,7 @@ function RoomView({
     <div className="flex flex-col items-center w-full">
       {/* Room simulation */}
       <div
-        className="relative w-full bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg overflow-hidden"
+        className="relative w-full max-w-5xl mx-auto bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg overflow-hidden"
         style={{ height: `${roomHeight}px` }}
       >
         {/* Wall texture */}
@@ -754,7 +754,7 @@ function RoomView({
       </div>
 
       {/* Info cards */}
-      <div className="grid grid-cols-2 gap-3 mt-4 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 w-full max-w-5xl mx-auto">
         {/* Larger device info */}
         <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700">
           <div className="flex items-center gap-2 mb-2">
@@ -893,7 +893,7 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
   const smallerExtraHeight = getExtraHeight(smaller.device.category, smallerScaled.height, displayMode);
 
   const containerHeight = displayMode === 'room-view'
-    ? (isMobile ? 520 : 480)
+    ? (isMobile ? 550 : 580)
     : isMobile
       ? (isStacked ? 620 : 480)
       : 520;
