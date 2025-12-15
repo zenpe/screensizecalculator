@@ -582,16 +582,85 @@ function DeviceFrame({
   }
 }
 
-// Hook to detect mobile viewport
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+// Breakpoint type for responsive design
+type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+// Hook to detect breakpoint
+function useBreakpoint(): Breakpoint {
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>('lg');
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const check = () => {
+      const w = window.innerWidth;
+      if (w < 375) setBreakpoint('xs');
+      else if (w < 428) setBreakpoint('sm');
+      else if (w < 768) setBreakpoint('md');
+      else if (w < 1024) setBreakpoint('lg');
+      else setBreakpoint('xl');
+    };
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
-  return isMobile;
+  return breakpoint;
+}
+
+// Hook to get dynamic container size
+function useContainerSize() {
+  const [size, setSize] = useState({ width: 320, height: 500 });
+  useEffect(() => {
+    const update = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      setSize({
+        width: Math.min(Math.max(vw - 32, 280), 1000),
+        height: Math.min(Math.max(vh * 0.6, 400), 700),
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return size;
+}
+
+// Hook for swipe gesture support
+function useSwipeGesture(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) onSwipeLeft();
+    if (isRightSwipe) onSwipeRight();
+  };
+
+  return { onTouchStart, onTouchMove, onTouchEnd };
+}
+
+// Legacy hook for backward compatibility
+function useIsMobile() {
+  const breakpoint = useBreakpoint();
+  return breakpoint === 'xs' || breakpoint === 'sm';
+}
+
+// Hook to get container width (for RoomView compatibility)
+function useContainerWidth() {
+  const { width } = useContainerSize();
+  return width;
 }
 
 // Room View component
@@ -599,17 +668,23 @@ function RoomView({
   larger,
   smaller,
   isMobile,
+  availableHeight,
 }: {
   larger: DeviceWithDimensions;
   smaller: DeviceWithDimensions;
   isMobile: boolean;
+  availableHeight: number;
 }) {
   // Human height reference: ~170cm = 67 inches
   const humanHeightInches = 67;
 
-  // Container dimensions - use larger width for better display
-  const containerWidth = isMobile ? 340 : 900;
-  const containerHeight = isMobile ? 450 : 480;
+  // Container dimensions - responsive based on viewport
+  const dynamicWidth = useContainerWidth();
+  const containerWidth = isMobile ? Math.min(dynamicWidth, 340) : Math.min(dynamicWidth, 900);
+
+  // Use available height from parent, minus space for info cards (~80px on mobile, ~100px on desktop)
+  const infoCardsHeight = isMobile ? 70 : 90;
+  const containerHeight = Math.max(availableHeight - infoCardsHeight, 280);
 
   // TV cabinet height from floor (typical: ~20-24 inches / 50-60cm)
   const cabinetHeightInches = 22;
@@ -617,21 +692,21 @@ function RoomView({
   // Wall space above cabinet (where screens are mounted/placed)
   // Calculate based on largest screen + some padding
   const maxScreenHeightInches = Math.max(larger.dims.height, smaller.dims.height);
-  const wallSpaceInches = maxScreenHeightInches + 15; // 15" padding above screens
+  const wallSpaceInches = maxScreenHeightInches + 10; // 10" padding above screens
 
   // Total height needed: floor to human head top
   const totalHeightInches = Math.max(humanHeightInches, cabinetHeightInches + wallSpaceInches);
 
   // Human width
   const humanWidthInches = 15;
-  const gapInches = 8;
+  const gapInches = isMobile ? 3 : 5;
 
   // Total width: human + gap + screens side by side
   const totalWidthInches = humanWidthInches + gapInches + larger.dims.width + gapInches + smaller.dims.width;
 
-  // Calculate scale to fit everything
-  const scaleByWidth = (containerWidth * 0.92) / totalWidthInches;
-  const scaleByHeight = (containerHeight * 0.88) / totalHeightInches;
+  // Calculate scale to fit everything - use higher ratios to maximize space usage
+  const scaleByWidth = (containerWidth * 0.95) / totalWidthInches;
+  const scaleByHeight = (containerHeight * 0.80) / totalHeightInches;
   const roomScaleFactor = Math.min(scaleByWidth, scaleByHeight);
 
   // Apply scale
@@ -655,8 +730,8 @@ function RoomView({
   // Room total height
   const roomHeight = containerHeight;
 
-  // Floor position from bottom of container
-  const floorFromBottom = 40;
+  // Floor position from bottom of container - smaller on mobile
+  const floorFromBottom = isMobile ? 25 : 35;
 
   // Cabinet line position (distance from floor)
   const cabinetLineFromFloor = cabinetHeightPx;
@@ -744,7 +819,7 @@ function RoomView({
           className="absolute left-1/2 -translate-x-1/2"
           style={{ bottom: 0 }}
         >
-          <SofaHint width={isMobile ? 300 : 550} />
+          <SofaHint width={isMobile ? Math.min(containerWidth * 0.85, 300) : 550} />
         </div>
 
         {/* Scale indicator */}
@@ -753,31 +828,27 @@ function RoomView({
         </div>
       </div>
 
-      {/* Info cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 w-full max-w-5xl mx-auto">
+      {/* Info cards - compact layout */}
+      <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mt-2 w-full max-w-5xl mx-auto px-1">
         {/* Larger device info */}
-        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-2 border-2 border-dashed border-slate-400 rounded"></div>
-            <span className="text-sm font-medium text-slate-300 truncate">{larger.device.name}</span>
+        <div className="bg-slate-800/50 rounded p-1.5 sm:p-2 border border-slate-700">
+          <div className="flex items-center gap-1 mb-0.5">
+            <div className="w-2 h-1.5 sm:w-2.5 sm:h-1.5 border border-dashed border-slate-400 rounded flex-shrink-0"></div>
+            <span className="text-[9px] sm:text-xs font-medium text-slate-300 truncate">{larger.device.name}</span>
           </div>
-          <div className="space-y-1 text-xs text-slate-400">
-            <div>Screen: <span className="text-slate-300">{larger.device.diagonal}" ({(larger.dims.width * 2.54).toFixed(0)} × {(larger.dims.height * 2.54).toFixed(0)} cm)</span></div>
-            <div>Viewing: <span className="text-slate-300">{(largerDistance.min * 0.3048).toFixed(1)}-{(largerDistance.max * 0.3048).toFixed(1)} m</span></div>
-            <div className="text-slate-500">{getRoomSize(larger.device.diagonal)}</div>
+          <div className="text-[9px] sm:text-[10px] text-slate-400 truncate">
+            {larger.device.diagonal}" ({(larger.dims.width * 2.54).toFixed(0)}×{(larger.dims.height * 2.54).toFixed(0)}cm)
           </div>
         </div>
 
         {/* Smaller device info */}
-        <div className="bg-slate-800/50 rounded-lg p-3 border border-cyan-900/50">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-2 border-2 border-solid border-cyan-400 rounded"></div>
-            <span className="text-sm font-medium text-cyan-300 truncate">{smaller.device.name}</span>
+        <div className="bg-slate-800/50 rounded p-1.5 sm:p-2 border border-cyan-900/50">
+          <div className="flex items-center gap-1 mb-0.5">
+            <div className="w-2 h-1.5 sm:w-2.5 sm:h-1.5 border border-solid border-cyan-400 rounded flex-shrink-0"></div>
+            <span className="text-[9px] sm:text-xs font-medium text-cyan-300 truncate">{smaller.device.name}</span>
           </div>
-          <div className="space-y-1 text-xs text-cyan-400/70">
-            <div>Screen: <span className="text-cyan-300">{smaller.device.diagonal}" ({(smaller.dims.width * 2.54).toFixed(0)} × {(smaller.dims.height * 2.54).toFixed(0)} cm)</span></div>
-            <div>Viewing: <span className="text-cyan-300">{(smallerDistance.min * 0.3048).toFixed(1)}-{(smallerDistance.max * 0.3048).toFixed(1)} m</span></div>
-            <div className="text-slate-500">{getRoomSize(smaller.device.diagonal)}</div>
+          <div className="text-[9px] sm:text-[10px] text-cyan-400/70 truncate">
+            {smaller.device.diagonal}" ({(smaller.dims.width * 2.54).toFixed(0)}×{(smaller.dims.height * 2.54).toFixed(0)}cm)
           </div>
         </div>
       </div>
@@ -787,7 +858,9 @@ function RoomView({
 
 export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVisualizerProps) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('overlay');
-  const isMobile = useIsMobile();
+  const breakpoint = useBreakpoint();
+  const containerSize = useContainerSize();
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md';
 
   // Calculate physical dimensions for both devices
   const { larger, smaller, isPhoneComparison, isLargeScreenComparison, areSameSize, sizeDiffPercent } = useMemo(() => {
@@ -834,41 +907,66 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
 
   const isStacked = isMobile && displayMode === 'side-by-side';
 
-  // Calculate scale factor based on viewport and mode
+  // Fixed container height based on breakpoint only (not display mode)
+  // This prevents page reflow when switching between modes
+  const fixedContainerHeight = useMemo(() => {
+    switch (breakpoint) {
+      case 'xs': return 480;
+      case 'sm': return 500;
+      case 'md': return 520;
+      case 'lg': return 500;
+      case 'xl': return 520;
+    }
+  }, [breakpoint]);
+
+  // Get scale multipliers based on breakpoint
+  // For stacked mode (mobile), sideBySideHeight is for EACH device (need to fit 2 vertically)
+  const getScaleConfig = (bp: Breakpoint) => {
+    switch (bp) {
+      case 'xs': return { widthRatio: 0.88, heightRatio: 0.48, sideBySideWidth: 0.82, sideBySideHeight: 0.28 };
+      case 'sm': return { widthRatio: 0.88, heightRatio: 0.5, sideBySideWidth: 0.82, sideBySideHeight: 0.30 };
+      case 'md': return { widthRatio: 0.85, heightRatio: 0.52, sideBySideWidth: 0.80, sideBySideHeight: 0.32 };
+      case 'lg': return { widthRatio: 0.7, heightRatio: 0.6, sideBySideWidth: 0.42, sideBySideHeight: 0.6 };
+      case 'xl': return { widthRatio: 0.6, heightRatio: 0.65, sideBySideWidth: 0.4, sideBySideHeight: 0.65 };
+    }
+  };
+
+  // Calculate scale factor using fixed container height to prevent layout shifts
   const scaleFactor = useMemo(() => {
-    const containerHeight = isMobile ? 500 : 450;
-    const containerWidth = isMobile ? 320 : 750;
+    const cw = containerSize.width;
+    const ch = fixedContainerHeight; // Use fixed height instead of dynamic
+    const config = getScaleConfig(breakpoint);
 
     if (displayMode === 'room-view') {
-      // For room view, scale based on showing both screens + human reference
-      const totalWidth = larger.dims.width + smaller.dims.width + 50; // 50px gap
+      const totalWidth = larger.dims.width + smaller.dims.width + 50;
       const maxHeight = Math.max(larger.dims.height, smaller.dims.height);
-      const scaleByWidth = (containerWidth * 0.85) / totalWidth;
-      const scaleByHeight = (containerHeight * 0.5) / maxHeight;
-      return Math.min(scaleByWidth, scaleByHeight, 4); // Max 4px per inch for room view
+      const scaleByWidth = (cw * 0.85) / totalWidth;
+      const scaleByHeight = (ch * 0.5) / maxHeight;
+      return Math.min(scaleByWidth, scaleByHeight, 4);
     }
 
     if (displayMode === 'side-by-side') {
-      if (isMobile) {
-        const maxDeviceWidth = Math.max(larger.dims.width, smaller.dims.width);
-        const maxDeviceHeight = Math.max(larger.dims.height, smaller.dims.height);
-        const scaleByWidth = (containerWidth * 0.85) / maxDeviceWidth;
-        const scaleByHeight = (containerHeight * 0.35) / maxDeviceHeight;
+      const maxDeviceWidth = Math.max(larger.dims.width, smaller.dims.width);
+      const maxDeviceHeight = Math.max(larger.dims.height, smaller.dims.height);
+
+      if (isStacked) {
+        // Stacked mode (mobile): each device takes most of the width, fit 2 devices vertically
+        const scaleByWidth = (cw * config.sideBySideWidth) / maxDeviceWidth;
+        const scaleByHeight = (ch * config.sideBySideHeight) / maxDeviceHeight;
         return Math.min(scaleByWidth, scaleByHeight);
       } else {
-        const maxDeviceWidth = Math.max(larger.dims.width, smaller.dims.width);
-        const maxDeviceHeight = Math.max(larger.dims.height, smaller.dims.height);
-        const scaleByWidth = (containerWidth * 0.38) / maxDeviceWidth;
-        const scaleByHeight = (containerHeight * 0.65) / maxDeviceHeight;
+        // True side-by-side: two devices fit horizontally
+        const scaleByWidth = (cw * config.sideBySideWidth) / maxDeviceWidth;
+        const scaleByHeight = (ch * config.sideBySideHeight) / maxDeviceHeight;
         return Math.min(scaleByWidth, scaleByHeight);
       }
     } else {
       // Overlay mode
-      const scaleByHeight = (containerHeight * 0.55) / larger.dims.height;
-      const scaleByWidth = (containerWidth * (isMobile ? 0.8 : 0.55)) / larger.dims.width;
+      const scaleByHeight = (ch * config.heightRatio) / larger.dims.height;
+      const scaleByWidth = (cw * config.widthRatio) / larger.dims.width;
       return Math.min(scaleByHeight, scaleByWidth);
     }
-  }, [displayMode, larger, smaller, isMobile]);
+  }, [displayMode, larger, smaller, containerSize.width, fixedContainerHeight, breakpoint, isStacked]);
 
   const largerScaled: Dimensions = {
     width: larger.dims.width * scaleFactor,
@@ -892,11 +990,28 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
   const largerExtraHeight = getExtraHeight(larger.device.category, largerScaled.height, displayMode);
   const smallerExtraHeight = getExtraHeight(smaller.device.category, smallerScaled.height, displayMode);
 
-  const containerHeight = displayMode === 'room-view'
-    ? (isMobile ? 550 : 580)
-    : isMobile
-      ? (isStacked ? 620 : 480)
-      : 520;
+  // Use the fixed container height for rendering
+  const containerHeight = fixedContainerHeight;
+
+  // Mode switching functions for swipe gestures
+  const modes: DisplayMode[] = isLargeScreenComparison
+    ? ['overlay', 'side-by-side', 'room-view']
+    : ['overlay', 'side-by-side'];
+
+  const nextMode = () => {
+    const currentIndex = modes.indexOf(displayMode);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    setDisplayMode(modes[nextIndex]);
+  };
+
+  const prevMode = () => {
+    const currentIndex = modes.indexOf(displayMode);
+    const prevIndex = (currentIndex - 1 + modes.length) % modes.length;
+    setDisplayMode(modes[prevIndex]);
+  };
+
+  // Swipe gesture handlers
+  const swipeHandlers = useSwipeGesture(nextMode, prevMode);
 
   // Viewing distance info for large screens
   const largerDistance = getViewingDistance(larger.device.diagonal);
@@ -904,161 +1019,171 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
 
   return (
     <div className="bg-slate-900 rounded-xl overflow-hidden">
-      {/* Mode Toggle */}
-      <div className="flex justify-center gap-2 p-3 sm:p-4 bg-slate-800/50 border-b border-slate-700">
+      {/* Mode Toggle - fixed height header */}
+      <div className="h-[60px] flex justify-center items-center gap-1.5 sm:gap-2 px-3 sm:px-4 bg-slate-800/50 border-b border-slate-700">
         <button
           onClick={() => setDisplayMode('overlay')}
-          className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            displayMode === 'overlay' ? 'bg-primary-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+          className={`h-[36px] px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            displayMode === 'overlay'
+              ? 'bg-primary-600 text-white'
+              : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
           }`}
         >
           Overlay
         </button>
         <button
           onClick={() => setDisplayMode('side-by-side')}
-          className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            displayMode === 'side-by-side' ? 'bg-primary-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+          className={`h-[36px] px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            displayMode === 'side-by-side'
+              ? 'bg-primary-600 text-white'
+              : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
           }`}
         >
-          {isMobile ? 'Stacked' : 'Side by Side'}
+          {isMobile ? 'Stack' : 'Side by Side'}
         </button>
         {isLargeScreenComparison && (
           <button
             onClick={() => setDisplayMode('room-view')}
-            className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              displayMode === 'room-view' ? 'bg-primary-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            className={`h-[36px] px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              displayMode === 'room-view'
+                ? 'bg-primary-600 text-white'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
             }`}
           >
-            Room View
+            Room
           </button>
         )}
       </div>
 
-      {/* Visualization Container */}
+      {/* Swipe hint - fixed height, always rendered */}
+      <div className={`h-[20px] text-center text-[10px] text-slate-500 bg-slate-800/30 ${isMobile ? '' : 'invisible'}`}>
+        {isMobile && 'Swipe left/right to switch modes'}
+      </div>
+
+      {/* Visualization Container - fixed height with absolute positioned content */}
       <div
-        className="relative flex justify-center items-center p-4 sm:p-6"
-        style={{ minHeight: `${containerHeight}px` }}
+        className="relative select-none overflow-hidden"
+        style={{ height: `${containerHeight}px` }}
         role="img"
         aria-label={`Visual comparison of ${larger.device.name} and ${smaller.device.name}`}
+        {...swipeHandlers}
       >
-        {displayMode === 'room-view' ? (
-          <RoomView
-            larger={larger}
-            smaller={smaller}
-            isMobile={isMobile}
-          />
-        ) : displayMode === 'side-by-side' ? (
-          /* Side by Side / Stacked Mode */
-          <div className={`flex justify-center ${isStacked ? 'flex-col items-center gap-4' : 'flex-row items-end gap-6 md:gap-12'}`}>
-            <DeviceFrame
-              device={larger.device}
-              scaledDims={largerScaled}
-              physicalDims={larger.dims}
-              isLarger={true}
-              isOverlayMode={false}
-              showLabel={true}
-              showDiagonal={true}
+        {/* Content wrapper - absolutely positioned to prevent affecting container height */}
+        <div className="absolute inset-0 flex justify-center items-center p-3 sm:p-6">
+          {displayMode === 'room-view' ? (
+            <RoomView
+              larger={larger}
+              smaller={smaller}
+              isMobile={isMobile}
+              availableHeight={containerHeight}
             />
-            <DeviceFrame
-              device={smaller.device}
-              scaledDims={smallerScaled}
-              physicalDims={smaller.dims}
-              isLarger={false}
-              isOverlayMode={false}
-              showLabel={true}
-              showDiagonal={true}
-            />
-          </div>
-        ) : (
-          /* Overlay Mode */
-          <div className="relative flex flex-col items-center">
-            {areSameSize && (
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20 bg-amber-500/90 text-slate-900 text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap">
-                Similar sizes ({sizeDiffPercent.toFixed(1)}% diff)
-              </div>
-            )}
+          ) : displayMode === 'side-by-side' ? (
+            /* Side by Side / Stacked Mode */
+            <div className={`flex justify-center ${isStacked ? 'flex-col items-center gap-2' : 'flex-row items-end gap-6 md:gap-12'}`}>
+              <DeviceFrame
+                device={larger.device}
+                scaledDims={largerScaled}
+                physicalDims={larger.dims}
+                isLarger={true}
+                isOverlayMode={false}
+                showLabel={true}
+                showDiagonal={true}
+              />
+              <DeviceFrame
+                device={smaller.device}
+                scaledDims={smallerScaled}
+                physicalDims={smaller.dims}
+                isLarger={false}
+                isOverlayMode={false}
+                showLabel={true}
+                showDiagonal={true}
+              />
+            </div>
+          ) : (
+            /* Overlay Mode */
+            <div className="relative flex flex-col items-center">
+              {areSameSize && (
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20 bg-amber-500/90 text-slate-900 text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap">
+                  Similar sizes ({sizeDiffPercent.toFixed(1)}% diff)
+                </div>
+              )}
 
-            {/* Devices container with bottom alignment */}
-            <div
-              className="relative flex items-end justify-center"
-              style={{
-                minHeight: `${Math.max(largerScaled.height + largerExtraHeight, smallerScaled.height + smallerExtraHeight) + 20}px`,
-                minWidth: `${Math.max(largerScaled.width, smallerScaled.width) + (areSameSize ? 60 : 0)}px`
-              }}
-            >
-              {/* Larger device (background) */}
-              <div
-                className="absolute bottom-0 transition-transform duration-300"
-                style={{ transform: areSameSize ? 'translateX(-25px)' : 'none' }}
-              >
-                <DeviceFrame
-                  device={larger.device}
-                  scaledDims={largerScaled}
-                  physicalDims={larger.dims}
-                  isLarger={true}
-                  isOverlayMode={true}
-                  showLabel={false}
-                  showDiagonal={false}
-                />
+              {/* Devices container with bottom alignment */}
+              <div className="relative flex items-end justify-center">
+                {/* Larger device (background) */}
+                <div
+                  className="absolute bottom-0"
+                  style={{ transform: areSameSize ? 'translateX(-25px)' : 'none' }}
+                >
+                  <DeviceFrame
+                    device={larger.device}
+                    scaledDims={largerScaled}
+                    physicalDims={larger.dims}
+                    isLarger={true}
+                    isOverlayMode={true}
+                    showLabel={false}
+                    showDiagonal={false}
+                  />
+                </div>
+                {/* Smaller device (foreground) */}
+                <div
+                  className="relative z-10"
+                  style={{ transform: areSameSize ? 'translateX(25px)' : 'none' }}
+                >
+                  <DeviceFrame
+                    device={smaller.device}
+                    scaledDims={smallerScaled}
+                    physicalDims={smaller.dims}
+                    isLarger={false}
+                    isOverlayMode={true}
+                    showLabel={false}
+                    showDiagonal={false}
+                  />
+                </div>
               </div>
-              {/* Smaller device (foreground) */}
-              <div
-                className="relative z-10 transition-transform duration-300"
-                style={{ transform: areSameSize ? 'translateX(25px)' : 'none' }}
-              >
-                <DeviceFrame
-                  device={smaller.device}
-                  scaledDims={smallerScaled}
-                  physicalDims={smaller.dims}
-                  isLarger={false}
-                  isOverlayMode={true}
-                  showLabel={false}
-                  showDiagonal={false}
-                />
+
+              {/* Labels below */}
+              <div className="flex justify-center gap-2 sm:gap-10 mt-3 sm:mt-4 w-full px-1">
+                <div className="text-center text-slate-400 flex-1 max-w-[140px] sm:max-w-[200px]">
+                  <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
+                    <div className="w-3 h-2 sm:w-4 sm:h-3 border-2 border-dashed border-slate-400 bg-slate-800/50 rounded flex-shrink-0"></div>
+                    <span className="font-medium text-[10px] sm:text-sm truncate">{larger.device.name}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-slate-500 truncate">
+                    {larger.device.diagonal}" · {isPhoneComparison
+                      ? `${(larger.dims.height * 25.4).toFixed(0)}×${(larger.dims.width * 25.4).toFixed(0)}mm`
+                      : `${larger.dims.width.toFixed(1)}"×${larger.dims.height.toFixed(1)}"`
+                    }
+                  </div>
+                  {isLargeScreenComparison && (
+                    <div className="text-[10px] sm:text-xs text-slate-600 mt-0.5 sm:mt-1 hidden sm:block">
+                      View: {largerDistance.min.toFixed(1)}-{largerDistance.max.toFixed(1)} ft
+                    </div>
+                  )}
+                </div>
+                <div className="text-center text-cyan-300 flex-1 max-w-[140px] sm:max-w-[200px]">
+                  <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
+                    <div className="w-3 h-2 sm:w-4 sm:h-3 border-2 border-solid border-cyan-400 bg-slate-700/70 rounded flex-shrink-0"></div>
+                    <span className="font-medium text-[10px] sm:text-sm truncate">{smaller.device.name}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-cyan-400/70 truncate">
+                    {smaller.device.diagonal}" · {isPhoneComparison
+                      ? `${(smaller.dims.height * 25.4).toFixed(0)}×${(smaller.dims.width * 25.4).toFixed(0)}mm`
+                      : `${smaller.dims.width.toFixed(1)}"×${smaller.dims.height.toFixed(1)}"`
+                    }
+                  </div>
+                  {isLargeScreenComparison && (
+                    <div className="text-[10px] sm:text-xs text-cyan-600 mt-0.5 sm:mt-1 hidden sm:block">
+                      View: {smallerDistance.min.toFixed(1)}-{smallerDistance.max.toFixed(1)} ft
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+          )}
+        </div>
 
-            {/* Labels below */}
-            <div className="flex justify-center gap-4 sm:gap-10 mt-4 w-full">
-              <div className="text-center text-slate-400 flex-1 max-w-[160px] sm:max-w-[200px]">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <div className="w-4 h-3 border-2 border-dashed border-slate-400 bg-slate-800/50 rounded"></div>
-                  <span className="font-medium text-sm truncate">{larger.device.name}</span>
-                </div>
-                <div className="text-xs text-slate-500">
-                  {larger.device.diagonal}" · {isPhoneComparison
-                    ? `${(larger.dims.height * 25.4).toFixed(0)} × ${(larger.dims.width * 25.4).toFixed(0)}mm`
-                    : `${larger.dims.width.toFixed(1)}" × ${larger.dims.height.toFixed(1)}"`
-                  }
-                </div>
-                {isLargeScreenComparison && (
-                  <div className="text-xs text-slate-600 mt-1">
-                    View: {largerDistance.min.toFixed(1)}-{largerDistance.max.toFixed(1)} ft
-                  </div>
-                )}
-              </div>
-              <div className="text-center text-cyan-300 flex-1 max-w-[160px] sm:max-w-[200px]">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <div className="w-4 h-3 border-2 border-solid border-cyan-400 bg-slate-700/70 rounded"></div>
-                  <span className="font-medium text-sm truncate">{smaller.device.name}</span>
-                </div>
-                <div className="text-xs text-cyan-400/70">
-                  {smaller.device.diagonal}" · {isPhoneComparison
-                    ? `${(smaller.dims.height * 25.4).toFixed(0)} × ${(smaller.dims.width * 25.4).toFixed(0)}mm`
-                    : `${smaller.dims.width.toFixed(1)}" × ${smaller.dims.height.toFixed(1)}"`
-                  }
-                </div>
-                {isLargeScreenComparison && (
-                  <div className="text-xs text-cyan-600 mt-1">
-                    View: {smallerDistance.min.toFixed(1)}-{smallerDistance.max.toFixed(1)} ft
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Scale Reference */}
+        {/* Scale Reference - absolutely positioned */}
         {displayMode !== 'room-view' && (
           <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 text-xs text-slate-500">
             {(scaleFactor * 10).toFixed(1)}px/inch
@@ -1066,19 +1191,25 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
         )}
       </div>
 
-      {/* Legend - only for side-by-side mode */}
-      {displayMode === 'side-by-side' && (
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-8 py-3 sm:py-4 px-4 bg-slate-800/50 border-t border-slate-700">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-3 sm:w-6 sm:h-4 border-2 border-solid border-slate-400 bg-slate-800/50 rounded"></div>
-            <span className="text-xs sm:text-sm text-slate-400 truncate max-w-[100px] sm:max-w-none">{larger.device.name}</span>
+      {/* Footer - Fixed height, no wrap to prevent reflow */}
+      <div className="h-[48px] flex justify-center items-center gap-2 sm:gap-8 px-2 sm:px-4 bg-slate-800/50 border-t border-slate-700 overflow-hidden">
+        {displayMode === 'side-by-side' ? (
+          <>
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <div className="w-3 h-2 sm:w-4 sm:h-3 border-2 border-solid border-slate-400 bg-slate-800/50 rounded flex-shrink-0"></div>
+              <span className="text-[9px] sm:text-sm text-slate-400 truncate">{larger.device.name}</span>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <div className="w-3 h-2 sm:w-4 sm:h-3 border-2 border-solid border-cyan-400 bg-slate-700/70 rounded flex-shrink-0"></div>
+              <span className="text-[9px] sm:text-sm text-cyan-300 truncate">{smaller.device.name}</span>
+            </div>
+          </>
+        ) : (
+          <div className="text-[10px] sm:text-xs text-slate-500">
+            {displayMode === 'overlay' ? 'Overlay comparison view' : 'Room scale view'}
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-3 sm:w-6 sm:h-4 border-2 border-solid border-cyan-400 bg-slate-700/70 rounded"></div>
-            <span className="text-xs sm:text-sm text-cyan-300 truncate max-w-[100px] sm:max-w-none">{smaller.device.name}</span>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
