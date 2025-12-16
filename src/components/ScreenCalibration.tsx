@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 
 // Reference object dimensions in mm
 const REFERENCE_OBJECTS = {
@@ -252,10 +253,10 @@ export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCal
         <span className="whitespace-nowrap">{getStatusText()}</span>
       </button>
 
-      {/* Modal - Full screen on mobile */}
-      {isOpen && (
+      {/* Modal - Full screen on mobile, rendered via Portal to escape stacking context */}
+      {isOpen && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
             // Close when clicking backdrop (not modal content)
             if (e.target === e.currentTarget) setIsOpen(false);
@@ -509,7 +510,8 @@ export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCal
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

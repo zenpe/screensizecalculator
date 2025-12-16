@@ -682,9 +682,9 @@ function RoomView({
   const dynamicWidth = useContainerWidth();
   const containerWidth = isMobile ? Math.min(dynamicWidth, 340) : Math.min(dynamicWidth, 900);
 
-  // Use available height from parent, minus space for info cards (~80px on mobile, ~100px on desktop)
-  const infoCardsHeight = isMobile ? 70 : 90;
-  const containerHeight = Math.max(availableHeight - infoCardsHeight, 280);
+  // Use available height from parent, minus space for info cards
+  const infoCardsHeight = isMobile ? 80 : 100;
+  const containerHeight = Math.max(availableHeight - infoCardsHeight, 250);
 
   // TV cabinet height from floor (typical: ~20-24 inches / 50-60cm)
   const cabinetHeightInches = 22;
@@ -704,9 +704,9 @@ function RoomView({
   // Total width: human + gap + screens side by side
   const totalWidthInches = humanWidthInches + gapInches + larger.dims.width + gapInches + smaller.dims.width;
 
-  // Calculate scale to fit everything - use higher ratios to maximize space usage
-  const scaleByWidth = (containerWidth * 0.95) / totalWidthInches;
-  const scaleByHeight = (containerHeight * 0.80) / totalHeightInches;
+  // Calculate scale to fit everything
+  const scaleByWidth = (containerWidth * 0.92) / totalWidthInches;
+  const scaleByHeight = (containerHeight * 0.72) / totalHeightInches;
   const roomScaleFactor = Math.min(scaleByWidth, scaleByHeight);
 
   // Apply scale
@@ -753,7 +753,7 @@ function RoomView({
           className="absolute left-0 right-0 border-t border-dashed border-slate-600/50"
           style={{ bottom: `${floorFromBottom + cabinetLineFromFloor}px` }}
         >
-          <span className="absolute right-2 -top-4 text-xs text-slate-600">TV Cabinet</span>
+          <span className={`absolute right-2 -top-4 text-xs text-slate-600 ${isMobile ? 'hidden' : ''}`}>TV Cabinet</span>
         </div>
 
         {/* Floor line */}

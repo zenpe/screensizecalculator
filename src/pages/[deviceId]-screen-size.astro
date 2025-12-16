@@ -325,13 +325,117 @@ const breadcrumbSchema = {
     </div>
 
     <!-- Interactive Visual Comparison -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-      <div class="p-4 lg:p-6">
-        <DeviceDetailVisualizer
-          client:load
-          device={device}
-          relatedDevices={relatedDevices}
-        />
+    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 mb-8">
+      <!-- Header Bar -->
+      <div class={`relative overflow-hidden rounded-t-2xl ${
+        device.category === 'projector'
+          ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900'
+          : device.category === 'tv'
+          ? 'bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900'
+          : device.category === 'monitor'
+          ? 'bg-gradient-to-r from-cyan-900 via-blue-900 to-cyan-900'
+          : device.category === 'tablet'
+          ? 'bg-gradient-to-r from-violet-900 via-purple-800 to-violet-900'
+          : 'bg-gradient-to-r from-rose-900 via-pink-900 to-rose-900'
+      }`}>
+        <!-- Decorative pattern -->
+        <div class="absolute inset-0 opacity-10">
+          <div class="absolute inset-0" style={`background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 24px 24px;`}></div>
+        </div>
+
+        <div class="relative px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
+          <!-- Device info -->
+          <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+            <!-- Device type icon -->
+            <div class={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
+              device.category === 'projector'
+                ? 'bg-slate-700/50 text-slate-300'
+                : device.category === 'tv'
+                ? 'bg-indigo-700/50 text-indigo-300'
+                : device.category === 'monitor'
+                ? 'bg-cyan-700/50 text-cyan-300'
+                : device.category === 'tablet'
+                ? 'bg-violet-700/50 text-violet-300'
+                : 'bg-rose-700/50 text-rose-300'
+            }`}>
+              {device.category === 'projector' && (
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                </svg>
+              )}
+              {device.category === 'tv' && (
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              )}
+              {device.category === 'monitor' && (
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              )}
+              {device.category === 'tablet' && (
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+              )}
+              {device.category === 'phone' && (
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+              )}
+            </div>
+
+            <!-- Device name and specs -->
+            <div class="min-w-0">
+              <h2 class="text-white font-bold text-sm sm:text-lg truncate">{device.name}</h2>
+              <p class="text-white/60 text-xs sm:text-sm">
+                {fmt(dims.width, 1)}" × {fmt(dims.height, 1)}" • {fmt(device.ratio, 2)}:1
+              </p>
+            </div>
+          </div>
+
+          <!-- Size badge -->
+          <div class={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-lg sm:text-2xl ${
+            device.category === 'projector'
+              ? 'bg-slate-700/60 text-white'
+              : device.category === 'tv'
+              ? 'bg-indigo-700/60 text-white'
+              : device.category === 'monitor'
+              ? 'bg-cyan-700/60 text-white'
+              : device.category === 'tablet'
+              ? 'bg-violet-700/60 text-white'
+              : 'bg-rose-700/60 text-white'
+          }`}>
+            {device.diagonal}"
+          </div>
+        </div>
+      </div>
+
+      <!-- Visualization Area with enhanced background -->
+      <div class={`relative rounded-b-2xl overflow-hidden ${
+        device.category === 'projector'
+          ? 'bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950'
+          : 'bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950'
+      }`}>
+        <!-- Subtle grid pattern for tech feel -->
+        <div class="absolute inset-0 opacity-[0.03]">
+          <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+        </div>
+
+        <!-- Ambient glow for projector -->
+        {device.category === 'projector' && (
+          <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-gradient-radial from-slate-700/20 via-transparent to-transparent rounded-full blur-3xl"></div>
+          </div>
+        )}
+
+        <div class="relative p-3 sm:p-4 lg:p-6">
+          <DeviceDetailVisualizer
+            client:load
+            device={device}
+            relatedDevices={relatedDevices}
+          />
+        </div>
       </div>
     </div>
 
