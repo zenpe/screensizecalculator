@@ -177,7 +177,7 @@ import CategoryIcon from './icons/CategoryIcon.astro';
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden pb-4">
-      <!-- Tools Section -->
+      <!-- Screen Calculators Section -->
       <div class="py-2">
         <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Screen Calculators</div>
         <div class="grid grid-cols-2 gap-1 px-2">
@@ -196,10 +196,24 @@ import CategoryIcon from './icons/CategoryIcon.astro';
           <a href="/projector-screen-size-calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
             <CategoryIcon icon="projector" size="sm" /> Projector
           </a>
+        </div>
+      </div>
+
+      <!-- Other Tools Section -->
+      <div class="py-2 border-t border-gray-100 dark:border-gray-700">
+        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Other Tools</div>
+        <div class="grid grid-cols-2 gap-1 px-2">
           <a href="/ppi-calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
             <CategoryIcon icon="ppi" size="sm" /> PPI
           </a>
+          <a href="/aspect-ratio-calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
+            <CategoryIcon icon="aspect-ratio" size="sm" /> Aspect Ratio
+          </a>
         </div>
+        <a href="/calculators" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2 mt-1">
+          <CategoryIcon icon="all" size="sm" />
+          All Calculators
+        </a>
       </div>
 
       <!-- Compare Section -->
@@ -221,6 +235,9 @@ import CategoryIcon from './icons/CategoryIcon.astro';
           </a>
           <a href="/comparison/monitors" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
             <CategoryIcon icon="monitor" size="sm" /> Monitors
+          </a>
+          <a href="/comparison/projectors" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
+            <CategoryIcon icon="projector" size="sm" /> Projectors
           </a>
         </div>
         <a href="/devices" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2 mt-1">

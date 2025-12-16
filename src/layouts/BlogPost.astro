@@ -27,20 +27,18 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 const estimatedReadingTime = readingTime || 5;
 
-// Use custom keywords if provided, otherwise generate dynamic keywords
 const keywords = customKeywords || (() => {
-  const categoryKeywords = {
+  const categoryKeywords: Record<string, string> = {
     'TV': 'tv guide, television buying guide, tv size guide, best tv size',
     'Monitor': 'monitor guide, display guide, monitor buying tips, best monitor size',
     'Phone': 'phone guide, smartphone guide, phone buying tips, best phone size',
     'Projector': 'projector guide, projector buying guide, home theater guide',
     'Guide': 'screen size guide, display guide, buying guide'
   };
-  const baseKeywords = categoryKeywords[category] || categoryKeywords['Guide'];
+  const baseKeywords = categoryKeywords[category || 'Guide'] || categoryKeywords['Guide'];
   return `${title.toLowerCase()}, ${baseKeywords}, screen size calculator, display comparison`;
 })();
 
-// Article structured data
 const articleData = {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -61,157 +59,167 @@ const articleData = {
     }
   }
 };
+
+const slug = Astro.params.slug || '';
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <!-- Reading Progress Bar -->
-  <div id="reading-progress" class="fixed top-0 left-0 h-0.5 bg-primary-500 z-50 transition-all duration-100" style="width: 0%"></div>
-
   <Header />
+
+  <!-- Reading Progress Bar -->
+  <div id="reading-progress" class="fixed top-14 left-0 h-0.5 bg-primary-500 z-40 transition-all duration-100 pointer-events-none" style="width: 0%"></div>
 
   <main class="flex-1">
     <article class="relative">
-      <!-- Hero Section - Simplified -->
-      <header class="relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 pt-8 pb-12 lg:pt-12 lg:pb-16">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Hero Section -->
+      <header class="pt-6 pb-8 sm:pt-8 sm:pb-12 lg:pt-12 lg:pb-16">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
           <!-- Breadcrumb -->
-          <nav class="mb-6 text-sm" aria-label="Breadcrumb">
-            <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <nav class="mb-4 sm:mb-6 text-sm overflow-x-auto" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2 text-gray-500 dark:text-gray-400 whitespace-nowrap">
               <li>
                 <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a>
               </li>
-              <li class="text-gray-400">/</li>
+              <li class="text-gray-400" aria-hidden="true">/</li>
               <li>
                 <a href="/blog" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</a>
               </li>
-              <li class="text-gray-400">/</li>
-              <li class="text-gray-700 dark:text-gray-300 truncate max-w-[180px]">{category}</li>
+              <li class="text-gray-400" aria-hidden="true">/</li>
+              <li class="text-gray-700 dark:text-gray-300 truncate max-w-[150px] sm:max-w-none">{category}</li>
             </ol>
           </nav>
 
-          <!-- Category & Meta -->
-          <div class="flex flex-wrap items-center gap-3 mb-4 text-sm">
-            <span class="px-2.5 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 rounded-md font-medium">
+          <!-- Category Tag -->
+          <div class="mb-4 text-center">
+            <span class="inline-block px-3 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 rounded-full text-sm font-medium">
               {category}
             </span>
-            <span class="text-gray-500 dark:text-gray-400">
-              <time datetime={pubDate}>{formattedDate}</time>
-            </span>
-            {formattedUpdatedDate && (
-              <>
-                <span class="text-gray-300 dark:text-gray-600">·</span>
-                <span class="text-gray-500 dark:text-gray-400" title="Last updated">
-                  Updated: <time datetime={updatedDate}>{formattedUpdatedDate}</time>
-                </span>
-              </>
-            )}
-            <span class="text-gray-300 dark:text-gray-600">·</span>
-            <span class="text-gray-500 dark:text-gray-400">{estimatedReadingTime} min read</span>
           </div>
 
           <!-- Title -->
-          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white leading-snug">
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 text-center">
             {title}
           </h1>
+
+          <!-- Meta -->
+          <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+            <time datetime={pubDate}>{formattedDate}</time>
+            {formattedUpdatedDate && (
+              <>
+                <span class="text-gray-300 dark:text-gray-600 hidden sm:inline">·</span>
+                <span title="Last updated" class="hidden sm:inline">Updated {formattedUpdatedDate}</span>
+              </>
+            )}
+            <span class="text-gray-300 dark:text-gray-600">·</span>
+            <span>{estimatedReadingTime} min read</span>
+          </div>
         </div>
       </header>
 
-      <!-- Article Content with TOC -->
-      <div class="bg-white dark:bg-gray-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <div class="lg:flex lg:gap-10 xl:gap-16">
-            <!-- Main Content -->
-            <div class="min-w-0 flex-1">
-              <div class="prose prose-gray max-w-none" id="article-content">
-                <slot />
-              </div>
-            </div>
-
-            <!-- Sidebar -->
-            <aside class="hidden lg:block w-60 flex-shrink-0">
-              <div class="sticky top-20 space-y-6">
-                <!-- TOC -->
-                <nav id="toc" class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg" aria-label="Table of contents">
-                  <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    On This Page
-                  </h2>
-                  <ul id="toc-list" class="space-y-2 text-sm max-h-[50vh] overflow-y-auto"></ul>
-                </nav>
-
-                <!-- Share -->
-                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                  <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    Share
-                  </h2>
-                  <div class="flex gap-2">
-                    <a
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://screensizecalculators.com/blog/${Astro.params.slug}`)}&text=${encodeURIComponent(title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                      aria-label="Share on Twitter"
-                    >
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </a>
-                    <a
-                      href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://screensizecalculators.com/blog/${Astro.params.slug}`)}&title=${encodeURIComponent(title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                      aria-label="Share on LinkedIn"
-                    >
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                    </a>
-                    <button
-                      id="copy-link"
-                      class="flex-1 flex items-center justify-center p-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                      aria-label="Copy link"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- CTA Mini -->
-                <a href="/#calculator" class="block p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-100 dark:border-primary-800 hover:border-primary-300 dark:hover:border-primary-600 transition-colors group">
-                  <div class="flex items-center gap-3">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
-                      <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div class="min-w-0">
-                      <div class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                        Screen Calculator
-                      </div>
-                      <div class="text-xs text-gray-500 dark:text-gray-400">
-                        Try it free
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </aside>
+      <!-- Article Content -->
+      <div class="pb-8 sm:pb-12 lg:pb-16">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+          <div class="prose prose-lg max-w-none" id="article-content">
+            <slot />
           </div>
         </div>
       </div>
 
-      <!-- Article Footer (outside sidebar layout) -->
-      <div class="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <!-- Share Section -->
+      <div class="border-t border-gray-200 dark:border-gray-800">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Share this article</span>
+            <div class="flex gap-2">
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://screensizecalculators.com/blog/${slug}`)}&text=${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Share on Twitter"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://screensizecalculators.com/blog/${slug}`)}&title=${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Share on LinkedIn"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <button
+                type="button"
+                id="copy-link"
+                class="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Copy link to clipboard"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Article Footer -->
+      <div class="border-t border-gray-200 dark:border-gray-800">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <slot name="footer" />
         </div>
       </div>
     </article>
   </main>
 
+  <!-- Floating TOC Button -->
+  <div id="toc-container" class="fixed left-3 sm:left-4 bottom-20 z-40">
+    <button
+      type="button"
+      id="toc-toggle"
+      class="w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all opacity-0 invisible"
+      aria-label="Toggle table of contents"
+      aria-expanded="false"
+      aria-controls="toc-panel"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+    </button>
+
+    <!-- TOC Panel -->
+    <div
+      id="toc-panel"
+      role="dialog"
+      aria-label="Table of contents"
+      class="absolute left-0 bottom-14 sm:bottom-16 w-[calc(100vw-24px)] sm:w-72 max-w-[280px] sm:max-w-none max-h-[60vh] bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden opacity-0 invisible translate-y-2 transition-all duration-200"
+    >
+      <div class="p-3 sm:p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">On This Page</h2>
+        <button
+          type="button"
+          id="toc-close"
+          class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+          aria-label="Close table of contents"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav class="p-3 sm:p-4 overflow-y-auto max-h-[calc(60vh-56px)]" aria-label="Table of contents navigation">
+        <ul id="toc-list" class="space-y-1 text-sm"></ul>
+      </nav>
+    </div>
+  </div>
+
   <!-- Back to Top Button -->
   <button
+    type="button"
     id="back-to-top"
-    class="fixed bottom-6 right-6 w-10 h-10 bg-gray-800 dark:bg-gray-700 text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-200 flex items-center justify-center z-40 hover:bg-gray-700 dark:hover:bg-gray-600"
+    class="fixed bottom-6 right-3 sm:right-6 w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible transition-all duration-200 flex items-center justify-center z-40 hover:bg-gray-50 dark:hover:bg-gray-700"
     aria-label="Back to top"
   >
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
     </svg>
   </button>
@@ -220,75 +228,165 @@ const articleData = {
 </Layout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initBlogPost() {
     const progressBar = document.getElementById('reading-progress');
     const backToTop = document.getElementById('back-to-top');
     const article = document.querySelector('article');
     const tocList = document.getElementById('toc-list');
     const articleContent = document.getElementById('article-content');
     const copyLinkBtn = document.getElementById('copy-link');
+    const tocToggle = document.getElementById('toc-toggle');
+    const tocPanel = document.getElementById('toc-panel');
+    const tocClose = document.getElementById('toc-close');
+    const tocContainer = document.getElementById('toc-container');
 
     if (!progressBar || !article) return;
 
-    // Generate TOC from headings (only h2 for cleaner navigation)
+    // Generate TOC
     if (tocList && articleContent) {
-      const headings = articleContent.querySelectorAll('h2');
+      const headings = articleContent.querySelectorAll('h2, h3');
 
-      headings.forEach((heading, index) => {
-        if (!heading.id) {
-          heading.id = `heading-${index}`;
+      if (headings.length === 0) {
+        // Hide TOC button if no headings
+        if (tocContainer) {
+          tocContainer.style.display = 'none';
         }
-
-        const li = document.createElement('li');
-
-        const a = document.createElement('a');
-        a.href = `#${heading.id}`;
-        a.textContent = heading.textContent;
-        a.className = 'block py-1.5 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors truncate text-sm';
-        a.dataset.tocId = heading.id;
-
-        li.appendChild(a);
-        tocList.appendChild(li);
-      });
-
-      // Highlight current section
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id;
-            tocList.querySelectorAll('a').forEach(a => {
-              a.classList.remove('text-primary-600', 'dark:text-primary-400', 'font-medium');
-              a.classList.add('text-gray-600', 'dark:text-gray-400');
-            });
-            const activeLink = tocList.querySelector(`a[data-toc-id="${id}"]`);
-            if (activeLink) {
-              activeLink.classList.remove('text-gray-600', 'dark:text-gray-400');
-              activeLink.classList.add('text-primary-600', 'dark:text-primary-400', 'font-medium');
-            }
+      } else {
+        headings.forEach((heading, index) => {
+          if (!heading.id) {
+            heading.id = `heading-${index}`;
           }
-        });
-      }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
 
-      headings.forEach(heading => observer.observe(heading));
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${heading.id}`;
+          a.textContent = heading.textContent || '';
+
+          const isH3 = heading.tagName === 'H3';
+          a.className = `block py-1.5 rounded-md px-2 transition-colors truncate ${isH3 ? 'pl-4 text-gray-500 dark:text-gray-400 text-xs' : 'text-gray-700 dark:text-gray-300'}`;
+          a.className += ' hover:bg-gray-100 dark:hover:bg-gray-700';
+          a.dataset.tocId = heading.id;
+
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.getElementById(heading.id);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+              closeToc();
+            }
+          });
+
+          li.appendChild(a);
+          tocList.appendChild(li);
+        });
+
+        // Highlight current section
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const id = entry.target.id;
+              tocList.querySelectorAll('a').forEach(a => {
+                a.classList.remove('bg-primary-50', 'text-primary-700', 'font-medium');
+              });
+              const activeLink = tocList.querySelector(`a[data-toc-id="${id}"]`);
+              if (activeLink) {
+                activeLink.classList.add('bg-primary-50', 'text-primary-700', 'font-medium');
+              }
+            }
+          });
+        }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+        headings.forEach(heading => observer.observe(heading));
+      }
     }
 
-    // Copy link
+    // TOC Toggle functions
+    function openToc() {
+      if (!tocPanel || !tocToggle) return;
+      tocPanel.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+      tocPanel.classList.add('opacity-100', 'visible', 'translate-y-0');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeToc() {
+      if (!tocPanel || !tocToggle) return;
+      tocPanel.classList.add('opacity-0', 'invisible', 'translate-y-2');
+      tocPanel.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      tocToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleToc() {
+      if (!tocPanel) return;
+      const isOpen = tocPanel.classList.contains('opacity-100');
+      if (isOpen) {
+        closeToc();
+      } else {
+        openToc();
+      }
+    }
+
+    tocToggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleToc();
+    });
+
+    tocClose?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeToc();
+    });
+
+    // Close TOC when clicking outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (tocContainer && !tocContainer.contains(target)) {
+        closeToc();
+      }
+    });
+
+    // Close TOC on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeToc();
+      }
+    });
+
+    // Copy link functionality
     if (copyLinkBtn) {
       copyLinkBtn.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(window.location.href);
+          const originalHTML = copyLinkBtn.innerHTML;
           copyLinkBtn.innerHTML = '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
           setTimeout(() => {
-            copyLinkBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>';
+            copyLinkBtn.innerHTML = originalHTML;
           }, 2000);
         } catch (err) {
-          console.error('Failed to copy:', err);
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = window.location.href;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-9999px';
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            const originalHTML = copyLinkBtn.innerHTML;
+            copyLinkBtn.innerHTML = '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+            setTimeout(() => {
+              copyLinkBtn.innerHTML = originalHTML;
+            }, 2000);
+          } catch (e) {
+            console.error('Failed to copy:', e);
+          }
+          document.body.removeChild(textArea);
         }
       });
     }
 
-    // Progress & Back to top
-    const updateProgress = () => {
+    // Progress bar and scroll-based UI
+    let ticking = false;
+
+    function updateProgress() {
       const articleRect = article.getBoundingClientRect();
       const articleTop = articleRect.top + window.scrollY;
       const articleHeight = articleRect.height;
@@ -298,30 +396,71 @@ const articleData = {
       const start = articleTop;
       const end = articleTop + articleHeight - windowHeight;
       let progress = 0;
-      if (scrollY >= start && scrollY <= end) {
-        progress = ((scrollY - start) / (end - start)) * 100;
-      } else if (scrollY > end) {
-        progress = 100;
-      }
-      progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
 
-      if (backToTop) {
-        if (scrollY > 400) {
-          backToTop.classList.remove('opacity-0', 'invisible');
-          backToTop.classList.add('opacity-100', 'visible');
-        } else {
-          backToTop.classList.add('opacity-0', 'invisible');
-          backToTop.classList.remove('opacity-100', 'visible');
+      if (end > start) {
+        if (scrollY >= start && scrollY <= end) {
+          progress = ((scrollY - start) / (end - start)) * 100;
+        } else if (scrollY > end) {
+          progress = 100;
         }
       }
-    };
+
+      progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+
+      // Show/hide floating buttons
+      const showButtons = scrollY > 300;
+
+      if (showButtons) {
+        backToTop?.classList.remove('opacity-0', 'invisible');
+        backToTop?.classList.add('opacity-100', 'visible');
+        tocToggle?.classList.remove('opacity-0', 'invisible');
+        tocToggle?.classList.add('opacity-100', 'visible');
+      } else {
+        backToTop?.classList.add('opacity-0', 'invisible');
+        backToTop?.classList.remove('opacity-100', 'visible');
+        tocToggle?.classList.add('opacity-0', 'invisible');
+        tocToggle?.classList.remove('opacity-100', 'visible');
+        closeToc();
+      }
+
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }
 
     backToTop?.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     updateProgress();
-  });
-</script>
 
+    // Keyboard shortcut for TOC (only when not in input)
+    document.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement;
+      const isInputField = target.tagName === 'INPUT' ||
+                          target.tagName === 'TEXTAREA' ||
+                          target.isContentEditable;
+
+      if (e.key === 't' && !e.ctrlKey && !e.metaKey && !e.altKey && !isInputField) {
+        e.preventDefault();
+        toggleToc();
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBlogPost);
+  } else {
+    initBlogPost();
+  }
+
+  // Re-initialize on Astro page transitions (View Transitions API)
+  document.addEventListener('astro:page-load', initBlogPost);
+</script>
