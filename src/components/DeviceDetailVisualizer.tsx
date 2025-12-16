@@ -1,28 +1,26 @@
-import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, useLayoutEffect, useRef, lazy, Suspense, memo, useId, useCallback } from 'react';
 import type { Device } from '../data/devices';
+import { calculateDimensions } from '../data/devices';
 import ScreenCalibration, { getStoredCalibration, getEffectivePpi } from './ScreenCalibration';
 
 // Lazy load ComparisonVisualizer only when needed
 const ComparisonVisualizer = lazy(() => import('./ComparisonVisualizer'));
+
+// Use useLayoutEffect on client, useEffect on server
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+// Constants for layout calculations
+const PADDING_MOBILE = 40;
+const PADDING_DESKTOP = 60;
+const ACTUAL_SIZE_THRESHOLD = 0.95; // Can show actual size if scale >= 95%
 
 interface DeviceDetailVisualizerProps {
   device: Device;
   relatedDevices: Device[];
 }
 
-// Calculate physical dimensions from diagonal and aspect ratio
-function calculateDimensions(diagonal: number, ratio: number) {
-  // Guard against invalid inputs
-  if (diagonal <= 0 || ratio <= 0 || !isFinite(diagonal) || !isFinite(ratio)) {
-    return { width: 0, height: 0 };
-  }
-  const height = diagonal / Math.sqrt(ratio * ratio + 1);
-  const width = height * ratio;
-  return { width, height };
-}
-
 // Single device visualization with actual size support and pan mode
-function SingleDeviceView({
+const SingleDeviceView = memo(function SingleDeviceView({
   device,
   ppi,
   showActualSize,
@@ -33,6 +31,7 @@ function SingleDeviceView({
   showActualSize: boolean;
   isMobile: boolean;
 }) {
+  const gradientId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isPanMode, setIsPanMode] = useState(false);
@@ -50,12 +49,15 @@ function SingleDeviceView({
   const actualWidthPx = displayDims.width * ppi;
   const actualHeightPx = displayDims.height * ppi;
 
-  // Track if container has been measured
-  const [isContainerReady, setIsContainerReady] = useState(false);
-
-  // Observe container size
-  useEffect(() => {
+  // Measure container synchronously before paint using useLayoutEffect
+  useIsomorphicLayoutEffect(() => {
     if (!containerRef.current) return;
+
+    // Immediate synchronous measurement before browser paint
+    const rect = containerRef.current.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      setContainerSize({ width: rect.width, height: rect.height });
+    }
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
@@ -64,7 +66,6 @@ function SingleDeviceView({
           width: entry.contentRect.width,
           height: entry.contentRect.height,
         });
-        setIsContainerReady(true);
       }
     });
 
@@ -83,7 +84,7 @@ function SingleDeviceView({
       return { scale: 0.5, canShowActualSize: false };
     }
 
-    const padding = isMobile ? 40 : 60;
+    const padding = isMobile ? PADDING_MOBILE : PADDING_DESKTOP;
     const availableWidth = containerSize.width - padding;
     const availableHeight = containerSize.height - padding;
 
@@ -91,8 +92,7 @@ function SingleDeviceView({
     const scaleY = availableHeight / actualHeightPx;
     const autoScale = Math.min(scaleX, scaleY, 1);
 
-    // Can show actual size if scale is >= 0.95 (fits within 5% of container)
-    const canShow = autoScale >= 0.95;
+    const canShow = autoScale >= ACTUAL_SIZE_THRESHOLD;
 
     return { scale: autoScale, canShowActualSize: canShow };
   }, [containerSize, actualWidthPx, actualHeightPx, isMobile]);
@@ -243,11 +243,9 @@ function SingleDeviceView({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Device SVG - only render when container is ready */}
+        {/* Device SVG */}
         <div
-          className={`absolute left-1/2 top-1/2 transition-all duration-300 ${
-            isContainerReady ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute left-1/2 top-1/2"
           style={{
             transform: isPanMode
               ? `translate(calc(-50% + ${panOffset.x}px), calc(-50% + ${panOffset.y}px))`
@@ -262,7 +260,7 @@ function SingleDeviceView({
               style={{ height: `${displayHeightPx}px` }}
             >
               <defs>
-                <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id={`screenGrad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#374151" />
                   <stop offset="50%" stopColor="#1F2937" />
                   <stop offset="100%" stopColor="#111827" />
@@ -279,7 +277,7 @@ function SingleDeviceView({
                 x="2" y="2"
                 width="96" height={100 * device.ratio - 4}
                 rx={device.category === 'phone' ? 16 : 6}
-                fill="url(#screenGrad)"
+                fill={`url(#screenGrad-${gradientId})`}
               />
               {/* Phone-specific elements: notch and home indicator */}
               {device.category === 'phone' && (
@@ -303,14 +301,14 @@ function SingleDeviceView({
               style={{ width: `${displayWidthPx}px` }}
             >
               <defs>
-                <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id={`screenGrad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#374151" />
                   <stop offset="50%" stopColor="#1F2937" />
                   <stop offset="100%" stopColor="#111827" />
                 </linearGradient>
               </defs>
               <rect x="0" y="0" width={device.ratio * 100} height="100" rx="3" fill="#4B5563" />
-              <rect x="2.5" y="2.5" width={device.ratio * 100 - 5} height="95" rx="1.5" fill="url(#screenGrad)" />
+              <rect x="2.5" y="2.5" width={device.ratio * 100 - 5} height="95" rx="1.5" fill={`url(#screenGrad-${gradientId})`} />
               <text x={device.ratio * 50} y="42" textAnchor="middle" className="fill-white" style={{ fontSize: '18px', fontWeight: 'bold' }}>{device.diagonal}"</text>
               <text x={device.ratio * 50} y="58" textAnchor="middle" className="fill-gray-300" style={{ fontSize: '7px' }}>{displayDims.width.toFixed(2)}" × {displayDims.height.toFixed(2)}"</text>
             </svg>
@@ -354,39 +352,44 @@ function SingleDeviceView({
       </p>
     </div>
   );
+});
+
+// Initialize state from browser APIs (runs once on module load for SSR safety)
+function getInitialState() {
+  if (typeof window === 'undefined') {
+    return { isMobile: false, ppi: 96, isCalibrated: false, showActualSize: false };
+  }
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  const ppi = getEffectivePpi();
+  const stored = getStoredCalibration();
+  return {
+    isMobile,
+    ppi,
+    isCalibrated: !!stored,
+    showActualSize: !!stored,
+  };
 }
 
 export default function DeviceDetailVisualizer({
   device,
   relatedDevices,
 }: DeviceDetailVisualizerProps) {
-  const [calibratedPpi, setCalibratedPpi] = useState<number>(96);
-  const [showActualSize, setShowActualSize] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isCalibrated, setIsCalibrated] = useState(false);
+  // Initialize all state synchronously to avoid layout shifts
+  const [initialState] = useState(getInitialState);
+  const [calibratedPpi, setCalibratedPpi] = useState<number>(initialState.ppi);
+  const [showActualSize, setShowActualSize] = useState<boolean>(initialState.showActualSize);
+  const [isMobile, setIsMobile] = useState(initialState.isMobile);
+  const [isCalibrated, setIsCalibrated] = useState(initialState.isCalibrated);
   const [compareDevice, setCompareDevice] = useState<Device | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Detect mobile on mount
+  // Listen for resize changes only
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia('(max-width: 640px)').matches);
     };
-    checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Load calibration on mount
-  useEffect(() => {
-    const ppi = getEffectivePpi();
-    setCalibratedPpi(ppi);
-
-    const stored = getStoredCalibration();
-    if (stored) {
-      setShowActualSize(true);
-      setIsCalibrated(true);
-    }
   }, []);
 
   // Handle calibration update
@@ -397,33 +400,41 @@ export default function DeviceDetailVisualizer({
   };
 
   // Handle compare device selection - open modal
-  const handleCompareChange = (deviceId: string) => {
+  const handleCompareChange = useCallback((deviceId: string) => {
     if (deviceId) {
       const selected = relatedDevices.find(d => d.id === deviceId) || null;
       setCompareDevice(selected);
       setIsModalOpen(true);
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden';
     }
-  };
+  }, [relatedDevices]);
 
   // Close modal
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setCompareDevice(null);
-    document.body.style.overflow = '';
-  };
+  }, []);
 
-  // Close modal on escape key
+  // Handle body overflow and escape key when modal is open
   useEffect(() => {
+    if (!isModalOpen) return;
+
+    // Prevent body scroll when modal is open
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isModalOpen) {
+      if (e.key === 'Escape') {
         closeModal();
       }
     };
     window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [isModalOpen]);
+
+    // Cleanup: restore overflow and remove listener
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isModalOpen, closeModal]);
 
   return (
     <div className="w-full">
@@ -433,13 +444,14 @@ export default function DeviceDetailVisualizer({
           {/* Compare Section */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary-500/20 text-primary-400">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
             <div className="flex flex-col">
-              <label className="text-[10px] sm:text-xs text-slate-400 mb-0.5">Compare with</label>
+              <label htmlFor="compare-device-select" className="text-[10px] sm:text-xs text-slate-400 mb-0.5">Compare with</label>
               <select
+                id="compare-device-select"
                 value=""
                 onChange={(e) => handleCompareChange(e.target.value)}
                 className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-700/80 border border-slate-600/50 rounded-lg text-xs sm:text-sm text-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent min-w-[130px] sm:min-w-[180px] cursor-pointer hover:bg-slate-700 transition-colors"

@@ -35,31 +35,58 @@ const title = `${device.name} Screen Size: ${device.diagonal}" Display Dimension
 const description = `${device.name} screen size: ${device.diagonal}" diagonal (${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}")${ppi ? `, ${Math.round(ppi)} PPI` : ''}${device.resolution ? `, ${device.resolution}` : ''}. Compare with similar ${device.category}s instantly. Free calculator tool.`;
 const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === 'phone' ? `, ${device.name} size comparison` : ''}`;
 
-// Extract brand from device name
+// Brand detection patterns - ordered by specificity (product names before brand names)
+const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
+  // Product-specific patterns (check first)
+  { pattern: /iphone|ipad|macbook|imac|mac\s?(pro|mini|studio)/i, brand: 'Apple' },
+  { pattern: /galaxy|samsung/i, brand: 'Samsung' },
+  { pattern: /pixel/i, brand: 'Google' },
+  { pattern: /surface/i, brand: 'Microsoft' },
+  { pattern: /thinkpad|ideapad|legion/i, brand: 'Lenovo' },
+  { pattern: /xps|alienware|inspiron/i, brand: 'Dell' },
+  { pattern: /rog|zenbook|vivobook/i, brand: 'ASUS' },
+  { pattern: /redmi|poco/i, brand: 'Xiaomi' },
+  // Direct brand name matches
+  { pattern: /\bapple\b/i, brand: 'Apple' },
+  { pattern: /\bgoogle\b/i, brand: 'Google' },
+  { pattern: /\boneplus\b/i, brand: 'OnePlus' },
+  { pattern: /\bxiaomi\b/i, brand: 'Xiaomi' },
+  { pattern: /\bsony\b/i, brand: 'Sony' },
+  { pattern: /\blg\b/i, brand: 'LG' },
+  { pattern: /\btcl\b/i, brand: 'TCL' },
+  { pattern: /\bhisense\b/i, brand: 'Hisense' },
+  { pattern: /\bdell\b/i, brand: 'Dell' },
+  { pattern: /\basus\b/i, brand: 'ASUS' },
+  { pattern: /\bacer\b/i, brand: 'Acer' },
+  { pattern: /\bbenq\b/i, brand: 'BenQ' },
+  { pattern: /\bviewsonic\b/i, brand: 'ViewSonic' },
+  { pattern: /\bmsi\b/i, brand: 'MSI' },
+  { pattern: /\blenovo\b/i, brand: 'Lenovo' },
+  { pattern: /\bhp\b/i, brand: 'HP' },
+  { pattern: /\bmicrosoft\b/i, brand: 'Microsoft' },
+  { pattern: /\bhuawei\b/i, brand: 'Huawei' },
+  { pattern: /\boppo\b/i, brand: 'Oppo' },
+  { pattern: /\bvivo\b/i, brand: 'Vivo' },
+  { pattern: /\bmotorola\b/i, brand: 'Motorola' },
+  { pattern: /\bnothing\b/i, brand: 'Nothing' },
+];
+
+// Extract brand from device name using pattern matching
 const extractBrand = (name: string): string => {
-  const brands = ['Apple', 'Samsung', 'Google', 'OnePlus', 'Xiaomi', 'Sony', 'LG', 'TCL', 'Hisense', 'Dell', 'ASUS', 'Acer', 'BenQ', 'ViewSonic', 'MSI', 'Lenovo', 'HP', 'Microsoft', 'Huawei', 'Oppo', 'Vivo', 'Motorola', 'Nothing'];
-  for (const brand of brands) {
-    if (name.toLowerCase().includes(brand.toLowerCase())) {
+  for (const { pattern, brand } of BRAND_PATTERNS) {
+    if (pattern.test(name)) {
       return brand;
     }
-  }
-  // Check for iPhone/iPad/Mac (Apple products)
-  if (name.toLowerCase().includes('iphone') || name.toLowerCase().includes('ipad') || name.toLowerCase().includes('macbook')) {
-    return 'Apple';
-  }
-  // Check for Galaxy (Samsung)
-  if (name.toLowerCase().includes('galaxy')) {
-    return 'Samsung';
-  }
-  // Check for Pixel (Google)
-  if (name.toLowerCase().includes('pixel')) {
-    return 'Google';
   }
   return '';
 };
 
 const brand = extractBrand(device.name);
-const lastUpdated = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+
+// Use a fixed date for content that doesn't change frequently
+// This prevents unnecessary cache invalidation and SEO issues
+const CONTENT_VERSION_DATE = '2025-01-15'; // Update this when content structure changes
+const lastUpdated = CONTENT_VERSION_DATE;
 
 // Get related devices for comparison (same category, different sizes)
 const relatedDevices = devices
@@ -187,7 +214,16 @@ const getAmazonUrl = () => {
   return getAmazonSearchUrl(searchTerm);
 };
 
-// Breadcrumb Schema
+// Category display name mapping
+const CATEGORY_NAMES: Record<string, string> = {
+  phone: 'Phones',
+  tv: 'TVs',
+  monitor: 'Monitors',
+  tablet: 'Tablets',
+  projector: 'Projectors',
+};
+
+// Breadcrumb Schema - using siteUrl from config
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -196,25 +232,25 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://screensizecalculators.com"
+      "item": siteConfig.siteUrl
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Devices",
-      "item": "https://screensizecalculators.com/devices"
+      "item": `${siteConfig.siteUrl}/devices`
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": device.category === 'phone' ? 'Phones' : device.category === 'tv' ? 'TVs' : device.category === 'monitor' ? 'Monitors' : device.category === 'tablet' ? 'Tablets' : 'Projectors',
-      "item": `https://screensizecalculators.com/devices/${device.category}s`
+      "name": CATEGORY_NAMES[device.category] || 'Devices',
+      "item": `${siteConfig.siteUrl}/devices/${device.category}s`
     },
     {
       "@type": "ListItem",
       "position": 4,
       "name": device.name,
-      "item": `https://screensizecalculators.com/${device.id}-screen-size`
+      "item": `${siteConfig.siteUrl}/${device.id}-screen-size`
     }
   ]
 };
@@ -660,7 +696,7 @@ const breadcrumbSchema = {
           <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
           </svg>
-          Browse Similar {device.category === 'phone' ? 'Phones' : device.category === 'tv' ? 'TVs' : device.category === 'monitor' ? 'Monitors' : device.category === 'tablet' ? 'Tablets' : 'Projectors'}
+          Browse Similar {CATEGORY_NAMES[device.category] || 'Devices'}
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           {displayRelatedDevices.map(d => (

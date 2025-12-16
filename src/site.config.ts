@@ -1,5 +1,8 @@
 // Site configuration
 export const siteConfig = {
+  // Site URL for canonical links and structured data
+  siteUrl: 'https://screensizecalculators.com',
+
   // Amazon Affiliate Program
   amazon: {
     enabled: false, // Set to true to enable Amazon affiliate links

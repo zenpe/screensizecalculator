@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { createPortal } from 'react-dom';
 
 // Reference object dimensions in mm
@@ -103,16 +103,48 @@ export function getEffectivePpi(): number {
   return stored?.ppi ?? estimatePpi();
 }
 
-export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCalibrationProps) {
+// Get initial state synchronously to avoid flicker
+function getCalibrationInitialState() {
+  if (typeof window === 'undefined') {
+    return {
+      screenInfo: { width: 0, height: 0, isMobile: false },
+      calibrationData: null as CalibrationData | null,
+      method: 'auto' as CalibrationMethod,
+      selectedReference: 'creditCard' as ReferenceObjectId,
+    };
+  }
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  const screenWidth = window.innerWidth;
+  const stored = getStoredCalibration();
+
+  // Auto-select appropriate reference based on screen width
+  let selectedReference: ReferenceObjectId = 'creditCard';
+  if (screenWidth < 320) {
+    selectedReference = 'euroCoin';
+  } else if (screenWidth < 640) {
+    selectedReference = 'usCoin';
+  }
+
+  return {
+    screenInfo: { width: screenWidth, height: window.innerHeight, isMobile },
+    calibrationData: stored,
+    method: stored?.method ?? 'auto' as CalibrationMethod,
+    selectedReference,
+  };
+}
+
+const ScreenCalibration = memo(function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCalibrationProps) {
+  // Initialize state synchronously
+  const [initialState] = useState(getCalibrationInitialState);
   const [isOpen, setIsOpen] = useState(false);
-  const [method, setMethod] = useState<CalibrationMethod>('auto');
+  const [method, setMethod] = useState<CalibrationMethod>(initialState.method);
   const [sliderValue, setSliderValue] = useState(100);
   const [manualDiagonal, setManualDiagonal] = useState('');
-  const [selectedReference, setSelectedReference] = useState<ReferenceObjectId>('creditCard');
-  const [calibrationData, setCalibrationData] = useState<CalibrationData | null>(null);
-  const [screenInfo, setScreenInfo] = useState({ width: 0, height: 0, isMobile: false });
+  const [selectedReference, setSelectedReference] = useState<ReferenceObjectId>(initialState.selectedReference);
+  const [calibrationData, setCalibrationData] = useState<CalibrationData | null>(initialState.calibrationData);
+  const [screenInfo, setScreenInfo] = useState(initialState.screenInfo);
 
-  // Detect screen info on mount
+  // Listen for resize changes only
   useEffect(() => {
     const updateScreenInfo = () => {
       const isMobile = window.matchMedia('(max-width: 640px)').matches;
@@ -121,32 +153,9 @@ export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCal
         height: window.innerHeight,
         isMobile,
       });
-
     };
-
-    updateScreenInfo();
     window.addEventListener('resize', updateScreenInfo);
     return () => window.removeEventListener('resize', updateScreenInfo);
-  }, []);
-
-  // Load stored calibration on mount and set initial reference for mobile
-  useEffect(() => {
-    const stored = getStoredCalibration();
-    if (stored) {
-      setCalibrationData(stored);
-      setMethod(stored.method);
-    }
-
-    // Auto-select appropriate reference based on screen width
-    const screenWidth = window.innerWidth;
-    if (screenWidth < 320) {
-      // Very narrow screen: use smallest coin
-      setSelectedReference('euroCoin');
-    } else if (screenWidth < 640) {
-      // Mobile: use coin instead of credit card
-      setSelectedReference('usCoin');
-    }
-    // Desktop: keep default creditCard
   }, []);
 
   // Get available reference objects based on screen size
@@ -256,18 +265,16 @@ export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCal
       {/* Modal - Full screen on mobile, rendered via Portal to escape stacking context */}
       {isOpen && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 sm:p-4"
           onClick={(e) => {
             // Close when clicking backdrop (not modal content)
             if (e.target === e.currentTarget) setIsOpen(false);
           }}
         >
           <div
-            className={`bg-gray-800 shadow-2xl w-full border-gray-700 ${
-              isMobile
-                ? 'rounded-t-2xl max-h-[85vh] border-t'
-                : 'rounded-2xl max-w-lg max-h-[90vh] border m-4'
-            } overflow-hidden flex flex-col`}
+            className={`bg-gray-800 shadow-2xl w-full border-gray-700 rounded-2xl max-h-[85vh] sm:max-h-[90vh] border overflow-hidden flex flex-col ${
+              isMobile ? 'max-w-full' : 'max-w-lg'
+            }`}
           >
             {/* Header - Sticky */}
             <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800">
@@ -515,4 +522,6 @@ export default function ScreenCalibration({ onCalibrate, currentPpi }: ScreenCal
       )}
     </>
   );
-}
+});
+
+export default ScreenCalibration;
