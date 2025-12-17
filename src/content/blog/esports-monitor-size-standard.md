@@ -168,7 +168,7 @@ Some players do use 27" monitors, particularly in:
 
 ---
 
-## Top Esports Monitors (2024)
+## Top Esports Monitors (2025)
 
 ### Tournament-Grade 24"
 

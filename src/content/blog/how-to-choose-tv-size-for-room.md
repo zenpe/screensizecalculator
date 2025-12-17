@@ -1,5 +1,5 @@
 ---
-title: 'How to Choose the Right TV Size for Your Room - Complete 2024 Guide'
+title: 'How to Choose the Right TV Size for Your Room - Complete 2025 Guide'
 description: 'Expert guide to selecting the perfect TV size based on room dimensions, viewing distance, resolution, and seating arrangement. Includes THX and SMPTE.'
 pubDate: '2025-12-01'
 category: 'TV Buying Guide'

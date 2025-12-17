@@ -1,5 +1,5 @@
 ---
-title: '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It in 2024?'
+title: '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It in 2025?'
 description: 'Detailed comparison of 4K and 8K resolution TVs with optimal viewing distances, PPI analysis, and whether 8K is worth the investment based on visual acuity.'
 pubDate: '2025-12-02'
 category: 'Display Technology'
@@ -8,7 +8,7 @@ author: 'Screen Size Calculator Team'
 
 ## Introduction
 
-The display industry is pushing 8K TVs hard, but is the upgrade from 4K actually worth it? This comprehensive guide examines the **science of human vision**, optimal viewing distances, real-world content availability, and whether 8K TVs make sense for your home theater in 2024.
+The display industry is pushing 8K TVs hard, but is the upgrade from 4K actually worth it? This comprehensive guide examines the **science of human vision**, optimal viewing distances, real-world content availability, and whether 8K TVs make sense for your home theater in 2025.
 
 ## Understanding Resolution: 4K vs 8K
 
@@ -122,7 +122,7 @@ Distance = (Screen Height × 3438) ÷ Vertical Resolution
 
 ### Scenario 4: Future-Proofing (Debatable)
 **Arguments for**: 8K content will eventually arrive
-**Reality**: Most content in 2024 is still 1080p/4K
+**Reality**: Most content in 2025 is still 1080p/4K
 
 ## When 4K Is More Than Enough
 
@@ -146,7 +146,7 @@ Distance = (Screen Height × 3438) ÷ Vertical Resolution
 
 ## The Content Problem
 
-### Current Content Availability (2024)
+### Current Content Availability (2025)
 
 **8K Native Content**:
 - YouTube: Some 8K videos
@@ -175,7 +175,7 @@ Distance = (Screen Height × 3438) ÷ Vertical Resolution
 
 **Reality**: Upscaled 4K on 8K TV looks nearly identical to native 4K on 4K TV at normal viewing distances.
 
-## Price Comparison (2024)
+## Price Comparison (2025)
 
 ### 65" TVs
 - **4K OLED** (LG C3, Sony A80L): $1,500 - $2,000
@@ -341,7 +341,7 @@ Want to know your ideal TV specs? Use our **[TV Size Calculator](/#calculator)**
 
 ## Conclusion
 
-**The Bottom Line**: For 99% of buyers in 2024, **4K is the sweet spot**.
+**The Bottom Line**: For 99% of buyers in 2025, **4K is the sweet spot**.
 
 **Key Takeaways**:
 - 4K already exceeds human visual acuity at normal viewing distances

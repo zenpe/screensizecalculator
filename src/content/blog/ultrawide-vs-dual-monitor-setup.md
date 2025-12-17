@@ -204,7 +204,7 @@ Two separate monitors positioned side by side, offering flexibility in arrangeme
 
 ## Cost Analysis
 
-### Ultrawide Monitor Costs (2024-2025)
+### Ultrawide Monitor Costs (2025)
 
 | Category | Resolution | Refresh Rate | Price Range |
 |----------|------------|--------------|-------------|

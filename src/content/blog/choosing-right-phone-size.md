@@ -8,7 +8,7 @@ author: 'Screen Size Calculator Team'
 
 Smartphone screen sizes have steadily increased over the years, from sub-4-inch displays to today's 7-inch phablets. With this wide range of options, choosing the right phone size requires balancing multiple factors. This comprehensive guide will help you determine the perfect phone size for your needs and lifestyle.
 
-## Phone Size Categories in 2024
+## Phone Size Categories in 2025
 
 | Category | Screen Size | Example Phones | Best For |
 |----------|-------------|----------------|----------|
@@ -193,7 +193,7 @@ Where do you carry your phone?
 
 ---
 
-## Current Popular Models by Size (2024)
+## Current Popular Models by Size (2025)
 
 ### Compact (Under 6.2")
 

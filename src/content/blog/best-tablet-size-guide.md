@@ -21,7 +21,7 @@ Tablet screens are measured diagonally, just like TVs and monitors. Here's how t
 | **Standard** | 9-11" | 400-500g | General use, media, light work |
 | **Large** | 11-13" | 500-700g | Productivity, art, laptop replacement |
 
-> **Key Insight:** According to [Statista's 2024 tablet market report](https://www.statista.com/statistics/272595/global-shipments-forecast-for-tablets-laptops-and-desktop-pcs/), the 10-11 inch segment remains the most popular, accounting for over 60% of global tablet sales.
+> **Key Insight:** According to [Statista's 2025 tablet market report](https://www.statista.com/statistics/272595/global-shipments-forecast-for-tablets-laptops-and-desktop-pcs/), the 10-11 inch segment remains the most popular, accounting for over 60% of global tablet sales.
 
 ---
 
