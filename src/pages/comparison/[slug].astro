@@ -111,12 +111,114 @@ const faqSchema = comparisonFAQs.length > 0 ? {
     }
   }))
 } : null;
+
+// Breadcrumb Schema for SEO
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteConfig.siteUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Comparisons",
+      "item": `${siteConfig.siteUrl}/comparison`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${primaryDevice.name} vs ${secondaryDevice.name}`,
+      "item": `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`
+    }
+  ]
+};
+
+// ItemList Schema for comparison products
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": `${primaryDevice.name} vs ${secondaryDevice.name} Comparison`,
+  "description": description,
+  "numberOfItems": 2,
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Product",
+        "name": primaryDevice.name,
+        "description": `${primaryDevice.name} with ${primaryDevice.diagonal}" ${primaryDevice.category} display${primaryDevice.resolution ? ` (${primaryDevice.resolution})` : ''}`,
+        "category": primaryDevice.category,
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Screen Size",
+            "value": `${primaryDevice.diagonal} inches`
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Screen Area",
+            "value": `${formatNum(primaryArea, 1)} square inches`
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Dimensions",
+            "value": `${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}"`
+          }
+        ]
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@type": "Product",
+        "name": secondaryDevice.name,
+        "description": `${secondaryDevice.name} with ${secondaryDevice.diagonal}" ${secondaryDevice.category} display${secondaryDevice.resolution ? ` (${secondaryDevice.resolution})` : ''}`,
+        "category": secondaryDevice.category,
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Screen Size",
+            "value": `${secondaryDevice.diagonal} inches`
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Screen Area",
+            "value": `${formatNum(secondaryArea, 1)} square inches`
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Dimensions",
+            "value": `${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}"`
+          }
+        ]
+      }
+    }
+  ]
+};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
   <Header />
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+    <!-- Breadcrumb Navigation -->
+    <nav class="mb-4 sm:mb-6 overflow-x-auto" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a></li>
+        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/comparison" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Comparisons</a></li>
+        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px] sm:max-w-none">{primaryDevice.name} vs {secondaryDevice.name}</li>
+      </ol>
+    </nav>
+
     <!-- Page Header -->
     <div class="text-center mb-6 sm:mb-8">
       <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
@@ -535,4 +637,8 @@ const faqSchema = comparisonFAQs.length > 0 ? {
   {faqSchema && (
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   )}
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <!-- ItemList Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
 </Layout>

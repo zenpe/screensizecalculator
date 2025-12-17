@@ -5,6 +5,7 @@ import CategoryIcon from '../../components/icons/CategoryIcon.astro';
 import CategoryDeviceList from '../../components/CategoryDeviceList';
 import { devices, calculateDimensions, calculateDevicePPI } from '../../data/devices';
 import type { Device } from '../../data/devices';
+import { siteConfig } from '../../site.config';
 
 // Category configuration
 const categoryConfig: Record<string, {
@@ -220,19 +221,19 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://screensizecalculators.com"
+      "item": siteConfig.siteUrl
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Devices",
-      "item": "https://screensizecalculators.com/devices"
+      "item": `${siteConfig.siteUrl}/devices`
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": config.namePlural,
-      "item": `https://screensizecalculators.com/devices/${category}`
+      "item": `${siteConfig.siteUrl}/devices/${category}`
     }
   ]
 };
@@ -247,7 +248,7 @@ const itemListSchema = {
     "@type": "ListItem",
     "position": index + 1,
     "name": device.name,
-    "url": `https://screensizecalculators.com/${device.id}-screen-size`
+    "url": `${siteConfig.siteUrl}/${device.id}-screen-size`
   }))
 };
 

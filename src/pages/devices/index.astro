@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import CategoryIcon from '../../components/icons/CategoryIcon.astro';
 import DeviceSearch from '../../components/DeviceSearch';
 import { devices } from '../../data/devices';
+import { siteConfig } from '../../site.config';
 
 // Group devices by category
 const devicesByCategory = {
@@ -93,7 +94,7 @@ const collectionSchema = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": "https://screensizecalculators.com/devices"
+  "url": `${siteConfig.siteUrl}/devices`
 };
 
 // BreadcrumbList Schema
@@ -105,13 +106,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://screensizecalculators.com"
+      "item": siteConfig.siteUrl
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "All Devices",
-      "item": "https://screensizecalculators.com/devices"
+      "item": `${siteConfig.siteUrl}/devices`
     }
   ]
 };
@@ -126,7 +127,7 @@ const itemListSchema = {
     "@type": "ListItem",
     "position": index + 1,
     "name": cat.name,
-    "url": `https://screensizecalculators.com${cat.href}`
+    "url": `${siteConfig.siteUrl}${cat.href}`
   }))
 };
 ---

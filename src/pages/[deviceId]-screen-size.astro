@@ -83,10 +83,8 @@ const extractBrand = (name: string): string => {
 
 const brand = extractBrand(device.name);
 
-// Use a fixed date for content that doesn't change frequently
-// This prevents unnecessary cache invalidation and SEO issues
-const CONTENT_VERSION_DATE = '2025-01-15'; // Update this when content structure changes
-const lastUpdated = CONTENT_VERSION_DATE;
+// Use device-specific date if available, otherwise fall back to global config
+const lastUpdated = device.updatedAt || siteConfig.contentDates.devicePages;
 
 // Get related devices for comparison (same category, different sizes)
 const relatedDevices = devices

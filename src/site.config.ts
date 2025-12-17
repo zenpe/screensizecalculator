@@ -3,6 +3,13 @@ export const siteConfig = {
   // Site URL for canonical links and structured data
   siteUrl: 'https://screensizecalculators.com',
 
+  // Content dates for SEO
+  // Update these when content structure changes significantly
+  contentDates: {
+    // Default date for device pages (used when device has no updatedAt)
+    devicePages: '2025-12-05',
+  },
+
   // Amazon Affiliate Program
   amazon: {
     enabled: false, // Set to true to enable Amazon affiliate links

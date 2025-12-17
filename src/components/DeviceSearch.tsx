@@ -177,7 +177,7 @@ export default function DeviceSearch({
                         {device.name}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {device.diagonal}" • {device.resolution.width}×{device.resolution.height} • {device.category}
+                        {device.diagonal}" • {device.resolution || 'N/A'} • {device.category}
                       </p>
                     </div>
                     <svg

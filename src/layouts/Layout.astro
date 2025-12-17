@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { siteConfig } from '../site.config';
 
 interface Props {
   title: string;
@@ -21,7 +22,7 @@ const {
 
 // Generate the canonical URL without .html extension
 let canonicalUrl = canonical || Astro.url.href;
-const siteUrl = 'https://screensizecalculators.com';
+const siteUrl = siteConfig.siteUrl;
 
 // Handle .html extension removal
 if (canonicalUrl.endsWith('.html')) {

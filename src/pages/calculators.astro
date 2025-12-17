@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import CategoryIcon from '../components/icons/CategoryIcon.astro';
 import { devices } from '../data/devices';
+import { siteConfig } from '../site.config';
 
 const title = 'Screen Calculators - Free Online Display Tools | PPI, Resolution, Aspect Ratio';
 const description = 'Free online screen calculators: PPI calculator, resolution scaler, aspect ratio converter, and screen size comparators for TVs, monitors, phones, tablets, and projectors.';
@@ -101,7 +102,7 @@ const itemListSchema = {
     "position": index + 1,
     "name": calc.title,
     "description": calc.description,
-    "url": `https://screensizecalculators.com${calc.href}`
+    "url": `${siteConfig.siteUrl}${calc.href}`
   }))
 };
 

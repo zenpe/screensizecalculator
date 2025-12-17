@@ -1,6 +1,7 @@
 ---
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
+import { siteConfig } from '../site.config';
 
 interface Props {
   title: string;
@@ -39,6 +40,8 @@ const keywords = customKeywords || (() => {
   return `${title.toLowerCase()}, ${baseKeywords}, screen size calculator, display comparison`;
 })();
 
+const slug = Astro.params.slug || '';
+
 const articleData = {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -55,12 +58,36 @@ const articleData = {
     "name": "Screen Size Calculator",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://screensizecalculators.com/logo.png"
+      "url": `${siteConfig.siteUrl}/logo.png`
     }
   }
 };
 
-const slug = Astro.params.slug || '';
+// Breadcrumb Schema for SEO
+const breadcrumbData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteConfig.siteUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": `${siteConfig.siteUrl}/blog`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": `${siteConfig.siteUrl}/blog/${slug}`
+    }
+  ]
+};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -132,7 +159,7 @@ const slug = Astro.params.slug || '';
             <span class="text-sm text-gray-500 dark:text-gray-400">Share this article</span>
             <div class="flex gap-2">
               <a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://screensizecalculators.com/blog/${slug}`)}&text=${encodeURIComponent(title)}`}
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${siteConfig.siteUrl}/blog/${slug}`)}&text=${encodeURIComponent(title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -141,7 +168,7 @@ const slug = Astro.params.slug || '';
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
               <a
-                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://screensizecalculators.com/blog/${slug}`)}&title=${encodeURIComponent(title)}`}
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`${siteConfig.siteUrl}/blog/${slug}`)}&title=${encodeURIComponent(title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -225,6 +252,7 @@ const slug = Astro.params.slug || '';
   </button>
 
   <script type="application/ld+json" set:html={JSON.stringify(articleData)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />
 </Layout>
 
 <script>

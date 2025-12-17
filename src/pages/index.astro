@@ -4,9 +4,10 @@ import Header from '../components/Header.astro';
 import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
 import { devices } from '../data/devices';
 import { getComparisonSlug } from '../utils/url';
+import { siteConfig } from '../site.config';
 
-const title = 'Screen Size Calculator - TV, Monitor, Phone & Projector Sizes';
-const description = 'Free screen size calculator for TV, monitor, phone & projector. Calculate dimensions, viewing distance, PPI, throw distance & aspect ratio.';
+const title = 'Screen Size & PPI Calculator - Free TV, Monitor, Phone Size Tool';
+const description = 'Free screen size and PPI calculator. Calculate TV, monitor, phone dimensions, pixel density, viewing distance & aspect ratio instantly.';
 const keywords = 'screen size calculator, tv size calculator, monitor size calculator, phone screen size, projector calculator, viewing distance calculator, ppi calculator, aspect ratio calculator, screen dimensions, display size comparison';
 
 // --- Dynamic Popular Comparisons ---
@@ -66,7 +67,7 @@ const structuredData = {
   "@type": "WebApplication",
   "name": "Screen Size Calculator",
   "description": description,
-  "url": "https://screensizecalculators.com",
+  "url": siteConfig.siteUrl,
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Any",
   "offers": {
@@ -160,13 +161,13 @@ const breadcrumbData = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://screensizecalculators.com"
+      "item": siteConfig.siteUrl
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Screen Size Calculator",
-      "item": "https://screensizecalculators.com/#calculator"
+      "item": `${siteConfig.siteUrl}/#calculator`
     }
   ]
 };

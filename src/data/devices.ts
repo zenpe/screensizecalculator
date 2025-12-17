@@ -7,6 +7,7 @@ export interface Device {
   diagonal: number;     // Screen diagonal in inches
   ratio: number;        // Aspect ratio as decimal (e.g., 16/9 = 1.777...)
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
+  updatedAt?: string;   // Optional date when device data was last updated (YYYY-MM-DD)
 }
 
 // Parse resolution string "2556 x 1179" to { w, h }
@@ -56,7 +57,7 @@ export const devices: Device[] = [
   // PHONES
   // ============================================
 
-  // iPhone 17 Series
+  // iPhone 17 Series (Released: September 10, 2025)
   {
     id: 'iphone-17',
     name: 'iPhone 17',
@@ -64,6 +65,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    updatedAt: '2025-09-10',
   },
   {
     id: 'iphone-17-air',
@@ -72,6 +74,7 @@ export const devices: Device[] = [
     diagonal: 6.5,
     ratio: 19.6 / 9,
     resolution: '2736 x 1260',
+    updatedAt: '2025-09-10',
   },
   {
     id: 'iphone-17-pro',
@@ -80,6 +83,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    updatedAt: '2025-09-10',
   },
   {
     id: 'iphone-17-pro-max',
@@ -88,9 +92,10 @@ export const devices: Device[] = [
     diagonal: 6.9,
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
+    updatedAt: '2025-09-10',
   },
 
-  // iPhone 16 Series
+  // iPhone 16 Series (Released: September 20, 2024)
   {
     id: 'iphone-16',
     name: 'iPhone 16',
@@ -98,6 +103,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    updatedAt: '2024-09-20',
   },
   {
     id: 'iphone-16-plus',
@@ -106,6 +112,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    updatedAt: '2024-09-20',
   },
   {
     id: 'iphone-16-pro',
@@ -114,6 +121,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    updatedAt: '2024-09-20',
   },
   {
     id: 'iphone-16-pro-max',
@@ -122,9 +130,10 @@ export const devices: Device[] = [
     diagonal: 6.9,
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
+    updatedAt: '2024-09-20',
   },
 
-  // iPhone 15 Series
+  // iPhone 15 Series (Released: September 22, 2023)
   {
     id: 'iphone-15',
     name: 'iPhone 15',
@@ -132,6 +141,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    updatedAt: '2023-09-22',
   },
   {
     id: 'iphone-15-plus',
@@ -140,6 +150,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    updatedAt: '2023-09-22',
   },
   {
     id: 'iphone-15-pro',
@@ -148,6 +159,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    updatedAt: '2023-09-22',
   },
   {
     id: 'iphone-15-pro-max',
@@ -156,9 +168,10 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    updatedAt: '2023-09-22',
   },
 
-  // iPhone 14 Series
+  // iPhone 14 Series (Released: September 16, 2022)
   {
     id: 'iphone-14',
     name: 'iPhone 14',
@@ -166,6 +179,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    updatedAt: '2022-09-16',
   },
   {
     id: 'iphone-14-plus',
@@ -174,6 +188,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
+    updatedAt: '2022-09-16',
   },
   {
     id: 'iphone-14-pro',
@@ -182,6 +197,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    updatedAt: '2022-09-16',
   },
   {
     id: 'iphone-14-pro-max',
@@ -190,9 +206,10 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    updatedAt: '2022-09-16',
   },
 
-  // iPhone 13 Series
+  // iPhone 13 Series (Released: September 24, 2021)
   {
     id: 'iphone-13',
     name: 'iPhone 13',
@@ -200,6 +217,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    updatedAt: '2021-09-24',
   },
   {
     id: 'iphone-13-mini',
@@ -208,6 +226,7 @@ export const devices: Device[] = [
     diagonal: 5.4,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    updatedAt: '2021-09-24',
   },
   {
     id: 'iphone-13-pro',
@@ -216,6 +235,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    updatedAt: '2021-09-24',
   },
   {
     id: 'iphone-13-pro-max',
@@ -224,9 +244,10 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
+    updatedAt: '2021-09-24',
   },
 
-  // Samsung Galaxy S25 Series
+  // Samsung Galaxy S25 Series (Released: February 7, 2025)
   {
     id: 'samsung-galaxy-s25-ultra',
     name: 'Samsung Galaxy S25 Ultra',
@@ -234,6 +255,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    updatedAt: '2025-02-07',
   },
   {
     id: 'samsung-galaxy-s25-plus',
@@ -242,6 +264,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    updatedAt: '2025-02-07',
   },
   {
     id: 'samsung-galaxy-s25',
@@ -250,9 +273,10 @@ export const devices: Device[] = [
     diagonal: 6.2,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    updatedAt: '2025-02-07',
   },
 
-  // Samsung Galaxy S24 Series
+  // Samsung Galaxy S24 Series (Released: January 31, 2024)
   {
     id: 'samsung-galaxy-s24-ultra',
     name: 'Samsung Galaxy S24 Ultra',
@@ -260,6 +284,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 19.3 / 9,
     resolution: '3120 x 1440',
+    updatedAt: '2024-01-31',
   },
   {
     id: 'samsung-galaxy-s24-plus',
@@ -268,6 +293,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    updatedAt: '2024-01-31',
   },
   {
     id: 'samsung-galaxy-s24',
@@ -276,9 +302,10 @@ export const devices: Device[] = [
     diagonal: 6.2,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    updatedAt: '2024-01-31',
   },
 
-  // Google Pixel 10 Series
+  // Google Pixel 10 Series (Released: August 20, 2025)
   {
     id: 'google-pixel-10',
     name: 'Google Pixel 10',
@@ -286,6 +313,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1080 x 2424',
+    updatedAt: '2025-08-20',
   },
   {
     id: 'google-pixel-10-pro',
@@ -294,6 +322,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1280 x 2856',
+    updatedAt: '2025-08-20',
   },
   {
     id: 'google-pixel-10-pro-xl',
@@ -302,9 +331,10 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 20 / 9,
     resolution: '1344 x 2992',
+    updatedAt: '2025-08-20',
   },
 
-  // Google Pixel 9 Series
+  // Google Pixel 9 Series (Released: August 22, 2024)
   {
     id: 'google-pixel-9',
     name: 'Google Pixel 9',
@@ -312,6 +342,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '2400 x 1080',
+    updatedAt: '2024-08-22',
   },
   {
     id: 'google-pixel-9-pro',
@@ -320,6 +351,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1280 x 2856',
+    updatedAt: '2024-08-22',
   },
   {
     id: 'google-pixel-9-pro-xl',
@@ -328,6 +360,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 20 / 9,
     resolution: '1344 x 2992',
+    updatedAt: '2024-08-22',
   },
 
   // ============================================
@@ -458,7 +491,7 @@ export const devices: Device[] = [
   // TABLETS
   // ============================================
 
-  // iPad Pro Series
+  // iPad Pro Series (Released: May 15, 2024)
   {
     id: 'ipad-pro-13',
     name: 'iPad Pro 13"',
@@ -466,6 +499,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 4 / 3,
     resolution: '2752 x 2064',
+    updatedAt: '2024-05-15',
   },
   {
     id: 'ipad-pro-11',
@@ -474,9 +508,10 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 4 / 3,
     resolution: '2420 x 1668',
+    updatedAt: '2024-05-15',
   },
 
-  // iPad Air
+  // iPad Air (Released: May 15, 2024)
   {
     id: 'ipad-air-13',
     name: 'iPad Air 13"',
@@ -484,6 +519,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 4 / 3,
     resolution: '2732 x 2048',
+    updatedAt: '2024-05-15',
   },
   {
     id: 'ipad-air-11',
@@ -492,9 +528,10 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 4 / 3,
     resolution: '2360 x 1640',
+    updatedAt: '2024-05-15',
   },
 
-  // iPad
+  // iPad (10th gen released: October 26, 2022)
   {
     id: 'ipad-10',
     name: 'iPad 10.9"',
@@ -502,6 +539,7 @@ export const devices: Device[] = [
     diagonal: 10.9,
     ratio: 4 / 3,
     resolution: '2360 x 1640',
+    updatedAt: '2022-10-26',
   },
   {
     id: 'ipad-9',
@@ -510,9 +548,10 @@ export const devices: Device[] = [
     diagonal: 10.2,
     ratio: 4 / 3,
     resolution: '2160 x 1620',
+    updatedAt: '2021-09-24',
   },
 
-  // iPad mini
+  // iPad mini (7th gen released: October 23, 2024)
   {
     id: 'ipad-mini-7',
     name: 'iPad mini 8.3"',
@@ -520,9 +559,10 @@ export const devices: Device[] = [
     diagonal: 8.3,
     ratio: 4 / 3,
     resolution: '2266 x 1488',
+    updatedAt: '2024-10-23',
   },
 
-  // Samsung Galaxy Tab S11 Series
+  // Samsung Galaxy Tab S11 Series (Released: September 4, 2025)
   {
     id: 'samsung-galaxy-tab-s11-ultra',
     name: 'Samsung Galaxy Tab S11 Ultra',
@@ -530,6 +570,7 @@ export const devices: Device[] = [
     diagonal: 14.6,
     ratio: 16 / 10,
     resolution: '2960 x 1848',
+    updatedAt: '2025-09-04',
   },
   {
     id: 'samsung-galaxy-tab-s11-plus',
@@ -538,6 +579,7 @@ export const devices: Device[] = [
     diagonal: 12.4,
     ratio: 16 / 10,
     resolution: '2800 x 1752',
+    updatedAt: '2025-09-04',
   },
   {
     id: 'samsung-galaxy-tab-s11',
@@ -546,9 +588,10 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 16 / 10,
     resolution: '2560 x 1600',
+    updatedAt: '2025-09-04',
   },
 
-  // Samsung Galaxy Tab S10 Series
+  // Samsung Galaxy Tab S10 Series (Released: September 26, 2024)
   {
     id: 'samsung-galaxy-tab-s10-ultra',
     name: 'Samsung Galaxy Tab S10 Ultra',
@@ -556,6 +599,7 @@ export const devices: Device[] = [
     diagonal: 14.6,
     ratio: 16 / 10,
     resolution: '2960 x 1848',
+    updatedAt: '2024-09-26',
   },
   {
     id: 'samsung-galaxy-tab-s10-plus',
@@ -564,6 +608,7 @@ export const devices: Device[] = [
     diagonal: 12.4,
     ratio: 16 / 10,
     resolution: '2800 x 1752',
+    updatedAt: '2024-09-26',
   },
   {
     id: 'samsung-galaxy-tab-s10-fe-plus',
@@ -572,6 +617,7 @@ export const devices: Device[] = [
     diagonal: 13.1,
     ratio: 16 / 10,
     resolution: '2880 x 1800',
+    updatedAt: '2024-09-26',
   },
   {
     id: 'samsung-galaxy-tab-s10-fe',
@@ -580,9 +626,10 @@ export const devices: Device[] = [
     diagonal: 10.9,
     ratio: 16 / 10,
     resolution: '2880 x 1800',
+    updatedAt: '2024-09-26',
   },
 
-  // Microsoft Surface
+  // Microsoft Surface (Released: June 18, 2024)
   {
     id: 'surface-pro-11',
     name: 'Surface Pro 13"',
@@ -590,6 +637,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 3 / 2,
     resolution: '2880 x 1920',
+    updatedAt: '2024-06-18',
   },
 ];
 

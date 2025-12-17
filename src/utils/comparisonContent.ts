@@ -395,32 +395,27 @@ export function generateComparisonFAQ(
 }
 
 /**
- * Generate optimized SEO title
+ * Generate optimized SEO title (max ~60 chars for Google display)
  */
 export function generateSEOTitle(deviceA: Device, deviceB: Device, areaA: number, areaB: number): string {
-  const larger = areaA > areaB ? deviceA : deviceB;
-  const smaller = areaA > areaB ? deviceB : deviceA;
   const sizeDiff = Math.abs(deviceA.diagonal - deviceB.diagonal);
   const areaDiff = ((Math.max(areaA, areaB) - Math.min(areaA, areaB)) / Math.min(areaA, areaB)) * 100;
 
-  // Different title formats based on comparison type
-  if (deviceA.category === deviceB.category) {
-    // Same category comparison
-    if (sizeDiff > 3) {
-      return `${deviceA.name} vs ${deviceB.name}: ${sizeDiff.toFixed(1)}" Size Difference Comparison`;
-    } else if (areaDiff > 20) {
-      return `${deviceA.name} vs ${deviceB.name}: ${areaDiff.toFixed(0)}% Screen Size Difference`;
-    } else {
-      return `${deviceA.name} vs ${deviceB.name}: Which ${deviceA.category === 'phone' ? 'Phone' : deviceA.category === 'tv' ? 'TV' : deviceA.category === 'monitor' ? 'Monitor' : 'Tablet'} is Better?`;
-    }
+  // Base: "Device A vs Device B Screen Size"
+  const baseTitle = `${deviceA.name} vs ${deviceB.name} Screen Size`;
+
+  // Add difference data for uniqueness, keep under 60 chars
+  if (sizeDiff >= 1) {
+    return `${baseTitle} - ${sizeDiff.toFixed(1)}" Difference`;
+  } else if (areaDiff > 15) {
+    return `${baseTitle} - ${areaDiff.toFixed(0)}% Difference`;
   } else {
-    // Cross-category comparison
-    return `${deviceA.name} vs ${deviceB.name}: Screen Size Comparison`;
+    return `${baseTitle} Comparison`;
   }
 }
 
 /**
- * Generate optimized SEO description
+ * Generate optimized SEO description (max ~155 chars for Google display)
  */
 export function generateSEODescription(
   deviceA: Device,
@@ -429,35 +424,30 @@ export function generateSEODescription(
   areaB: number
 ): string {
   const larger = areaA > areaB ? deviceA : deviceB;
-  const smaller = areaA > areaB ? deviceB : deviceA;
   const areaDiff = ((Math.max(areaA, areaB) - Math.min(areaA, areaB)) / Math.min(areaA, areaB)) * 100;
 
-  let description = `Compare ${deviceA.name} (${deviceA.diagonal}"`;
-  if (deviceA.resolution) {
-    description += `, ${deviceA.resolution}`;
-  }
-  description += `) with ${deviceB.name} (${deviceB.diagonal}"`;
-  if (deviceB.resolution) {
-    description += `, ${deviceB.resolution}`;
-  }
-  description += `). `;
+  // Start with "Free" to attract clicks
+  let description = `Free ${deviceA.name} vs ${deviceB.name} comparison. `;
+
+  // Add size info
+  description += `${deviceA.diagonal}" vs ${deviceB.diagonal}" screen. `;
 
   // Add key differentiator
   if (areaDiff > 15) {
-    description += `The ${larger.name} offers ${areaDiff.toFixed(0)}% more screen area. `;
-  } else {
-    description += `See detailed size comparison and specifications. `;
+    description += `${areaDiff.toFixed(0)}% size difference. `;
   }
 
   // Add category-specific value prop
   if (deviceA.category === 'phone') {
-    description += `Visual overlay, dimensions, and one-handed use comparison.`;
+    description += `Visual overlay, dimensions & one-handed use guide.`;
   } else if (deviceA.category === 'tv') {
-    description += `Viewing distance recommendations and room size guide.`;
+    description += `Viewing distance & room size recommendations.`;
   } else if (deviceA.category === 'monitor') {
-    description += `Desk space requirements and productivity comparison.`;
+    description += `Desk space & productivity comparison.`;
+  } else if (deviceA.category === 'tablet') {
+    description += `Portability & use case comparison.`;
   } else {
-    description += `Visual comparison with exact dimensions and use cases.`;
+    description += `Visual comparison with exact dimensions.`;
   }
 
   return description;
