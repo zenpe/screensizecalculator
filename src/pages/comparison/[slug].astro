@@ -138,67 +138,70 @@ const breadcrumbSchema = {
   ]
 };
 
-// ItemList Schema for comparison products
-const itemListSchema = {
+// TechArticle Schema for comparison page
+const techArticleSchema = {
   "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": `${primaryDevice.name} vs ${secondaryDevice.name} Comparison`,
+  "@type": "TechArticle",
+  "headline": title,
   "description": description,
-  "numberOfItems": 2,
-  "itemListElement": [
+  "datePublished": siteConfig.contentDates.devicePages,
+  "dateModified": siteConfig.contentDates.devicePages,
+  "author": {
+    "@type": "Organization",
+    "name": "Screen Size Calculator",
+    "url": siteConfig.siteUrl
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Screen Size Calculator",
+    "url": siteConfig.siteUrl
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `${siteConfig.siteUrl}/comparison/${primaryDevice.id}-vs-${secondaryDevice.id}`
+  },
+  "about": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "item": {
-        "@type": "Product",
-        "name": primaryDevice.name,
-        "description": `${primaryDevice.name} with ${primaryDevice.diagonal}" ${primaryDevice.category} display${primaryDevice.resolution ? ` (${primaryDevice.resolution})` : ''}`,
-        "category": primaryDevice.category,
-        "additionalProperty": [
-          {
-            "@type": "PropertyValue",
-            "name": "Screen Size",
-            "value": `${primaryDevice.diagonal} inches`
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Screen Area",
-            "value": `${formatNum(primaryArea, 1)} square inches`
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Dimensions",
-            "value": `${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}"`
-          }
-        ]
-      }
+      "@type": "Thing",
+      "name": primaryDevice.name,
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "Screen Size",
+          "value": `${primaryDevice.diagonal} inches`
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Screen Area",
+          "value": `${formatNum(primaryArea, 1)} square inches`
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Dimensions",
+          "value": `${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}"`
+        }
+      ]
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "item": {
-        "@type": "Product",
-        "name": secondaryDevice.name,
-        "description": `${secondaryDevice.name} with ${secondaryDevice.diagonal}" ${secondaryDevice.category} display${secondaryDevice.resolution ? ` (${secondaryDevice.resolution})` : ''}`,
-        "category": secondaryDevice.category,
-        "additionalProperty": [
-          {
-            "@type": "PropertyValue",
-            "name": "Screen Size",
-            "value": `${secondaryDevice.diagonal} inches`
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Screen Area",
-            "value": `${formatNum(secondaryArea, 1)} square inches`
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Dimensions",
-            "value": `${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}"`
-          }
-        ]
-      }
+      "@type": "Thing",
+      "name": secondaryDevice.name,
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "Screen Size",
+          "value": `${secondaryDevice.diagonal} inches`
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Screen Area",
+          "value": `${formatNum(secondaryArea, 1)} square inches`
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Dimensions",
+          "value": `${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}"`
+        }
+      ]
     }
   ]
 };
@@ -639,6 +642,6 @@ const itemListSchema = {
   )}
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-  <!-- ItemList Schema -->
-  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <!-- TechArticle Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(techArticleSchema)} />
 </Layout>

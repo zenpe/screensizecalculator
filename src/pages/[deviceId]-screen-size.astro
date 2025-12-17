@@ -147,49 +147,65 @@ const generateFAQ = (device: Device) => {
 
 const faqs = generateFAQ(device);
 
-// Product Schema - Enhanced for Rich Snippets
-const productSchema = {
+// TechArticle Schema - Technical specifications content
+const techArticleSchema = {
   "@context": "https://schema.org",
-  "@type": "Product",
-  "name": device.name,
+  "@type": "TechArticle",
+  "headline": title,
   "description": description,
-  "category": device.category,
-  "sku": device.id,
-  "mpn": device.id,
+  "datePublished": lastUpdated,
   "dateModified": lastUpdated,
-  ...(brand ? { "brand": { "@type": "Brand", "name": brand } } : {}),
-  "additionalProperty": [
-    {
-      "@type": "PropertyValue",
-      "name": "Screen Size",
-      "value": `${device.diagonal} inches`
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Width",
-      "value": `${fmt(dims.width, 2)} inches`
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Height",
-      "value": `${fmt(dims.height, 2)} inches`
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Aspect Ratio",
-      "value": `${fmt(device.ratio, 2)}:1`
-    },
-    ...(device.resolution ? [{
-      "@type": "PropertyValue",
-      "name": "Resolution",
-      "value": device.resolution
-    }] : []),
-    ...(ppi ? [{
-      "@type": "PropertyValue",
-      "name": "PPI",
-      "value": `${Math.round(ppi)}`
-    }] : [])
-  ]
+  "author": {
+    "@type": "Organization",
+    "name": "Screen Size Calculator",
+    "url": siteConfig.siteUrl
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Screen Size Calculator",
+    "url": siteConfig.siteUrl
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `${siteConfig.siteUrl}/${device.id}-screen-size`
+  },
+  "about": {
+    "@type": "Thing",
+    "name": device.name,
+    ...(brand ? { "brand": { "@type": "Brand", "name": brand } } : {}),
+    "additionalProperty": [
+      {
+        "@type": "PropertyValue",
+        "name": "Screen Size",
+        "value": `${device.diagonal} inches`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Width",
+        "value": `${fmt(dims.width, 2)} inches`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Height",
+        "value": `${fmt(dims.height, 2)} inches`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Aspect Ratio",
+        "value": `${fmt(device.ratio, 2)}:1`
+      },
+      ...(device.resolution ? [{
+        "@type": "PropertyValue",
+        "name": "Resolution",
+        "value": device.resolution
+      }] : []),
+      ...(ppi ? [{
+        "@type": "PropertyValue",
+        "name": "PPI",
+        "value": `${Math.round(ppi)}`
+      }] : [])
+    ]
+  }
 };
 
 // FAQ Schema
@@ -779,7 +795,7 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(techArticleSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 </Layout>
