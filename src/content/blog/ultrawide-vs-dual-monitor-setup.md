@@ -130,7 +130,7 @@ Two separate monitors positioned side by side, offering flexibility in arrangeme
 | **Strategy (Civilization, Total War)** | Excellent | See more of the map |
 | **MMOs (WoW, FFXIV)** | Good | More UI space |
 
-> **Game Support:** According to [PC Gaming Wiki's ultrawide database](https://www.pcgamingwiki.com/wiki/List_of_games_with_ultrawide_support), over 4,000 games now support 21:9 aspect ratios, though quality of implementation varies.
+> **Game Support:** Most modern AAA titles and many indie games now support 21:9 aspect ratios natively, though quality of implementation varies. Competitive multiplayer games often restrict ultrawide FOV for fairness.
 
 ### Dual Monitor Gaming
 

@@ -274,7 +274,7 @@ Movies benefit most from OLED's perfect blacks—dark scenes look stunning, and 
 | **Bright room gaming** | Mini-LED | Visibility in ambient light |
 | **Marathon sessions (same game)** | Mini-LED | No burn-in risk |
 
-> **Gaming Performance:** According to [Digital Foundry's testing](https://www.eurogamer.net/digitalfoundry-2024-lg-c4-oled-review), modern OLED TVs achieve input lag under 10ms in game mode—competitive with dedicated gaming monitors.
+> **Gaming Performance:** Modern OLED TVs achieve input lag under 10ms in game mode—competitive with dedicated gaming monitors. The near-instantaneous pixel response eliminates motion blur in fast-paced games.
 
 ### PC Monitor Use
 
