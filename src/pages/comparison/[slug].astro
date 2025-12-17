@@ -138,12 +138,21 @@ const breadcrumbSchema = {
   ]
 };
 
+// OG Image URL - use primary device's image
+const ogImageUrl = `${siteConfig.siteUrl}/og/${primaryDevice.id}.png`;
+
 // TechArticle Schema for comparison page
 const techArticleSchema = {
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": title,
   "description": description,
+  "image": {
+    "@type": "ImageObject",
+    "url": ogImageUrl,
+    "width": 1200,
+    "height": 630
+  },
   "datePublished": siteConfig.contentDates.devicePages,
   "dateModified": siteConfig.contentDates.devicePages,
   "author": {
@@ -154,7 +163,11 @@ const techArticleSchema = {
   "publisher": {
     "@type": "Organization",
     "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl
+    "url": siteConfig.siteUrl,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteConfig.siteUrl}/favicon.svg`
+    }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -188,7 +201,7 @@ const techArticleSchema = {
 };
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description} keywords={keywords} ogImage={`/og/${primaryDevice.id}.png`}>
   <Header />
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">

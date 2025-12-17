@@ -83,8 +83,16 @@ const extractBrand = (name: string): string => {
 
 const brand = extractBrand(device.name);
 
+// Convert date to ISO 8601 format with timezone (for structured data)
+const toISO8601 = (date: string): string => {
+  // If already in ISO 8601 format with time, return as-is
+  if (date.includes('T')) return date;
+  // Convert YYYY-MM-DD to full ISO 8601 format
+  return `${date}T10:00:00+08:00`;
+};
+
 // Use device-specific date if available, otherwise fall back to global config
-const lastUpdated = device.updatedAt || siteConfig.contentDates.devicePages;
+const lastUpdated = toISO8601(device.updatedAt || siteConfig.contentDates.devicePages);
 
 // Get related devices for comparison (same category, different sizes)
 const relatedDevices = devices
@@ -147,12 +155,21 @@ const generateFAQ = (device: Device) => {
 
 const faqs = generateFAQ(device);
 
+// OG Image URL for this device
+const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
+
 // TechArticle Schema - Technical specifications content
 const techArticleSchema = {
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": title,
   "description": description,
+  "image": {
+    "@type": "ImageObject",
+    "url": ogImageUrl,
+    "width": 1200,
+    "height": 630
+  },
   "datePublished": lastUpdated,
   "dateModified": lastUpdated,
   "author": {
@@ -163,7 +180,11 @@ const techArticleSchema = {
   "publisher": {
     "@type": "Organization",
     "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl
+    "url": siteConfig.siteUrl,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteConfig.siteUrl}/favicon.svg`
+    }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -250,7 +271,7 @@ const breadcrumbSchema = {
 
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description} keywords={keywords} ogImage={`/og/${device.id}.png`}>
   <Header />
 
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">

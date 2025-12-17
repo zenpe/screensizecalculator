@@ -3,11 +3,11 @@ export const siteConfig = {
   // Site URL for canonical links and structured data
   siteUrl: 'https://screensizecalculators.com',
 
-  // Content dates for SEO
+  // Content dates for SEO (ISO 8601 format with timezone)
   // Update these when content structure changes significantly
   contentDates: {
     // Default date for device pages (used when device has no updatedAt)
-    devicePages: '2025-12-05',
+    devicePages: '2025-12-05T10:00:00+08:00',
   },
 
   // Amazon Affiliate Program
