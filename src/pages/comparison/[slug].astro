@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import ComparisonVisualizer from '../../components/ComparisonVisualizer.tsx';
+import ShareButtons from '../../components/ShareButtons.astro';
 import {
   devices,
   getDeviceById,
@@ -222,10 +223,17 @@ const techArticleSchema = {
         {primaryDevice.name} vs {secondaryDevice.name}
         <span class="block sm:inline"> Screen Size</span>
       </h1>
-      <p class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2">
+      <p class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4">
         Visual comparison of {primaryDevice.name} ({primaryDevice.diagonal}") and
         {secondaryDevice.name} ({secondaryDevice.diagonal}") screens.
       </p>
+      <div class="flex justify-center">
+        <ShareButtons
+          title={`${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`}
+          url={`${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`}
+          description={description}
+        />
+      </div>
     </div>
 
     <!-- Detailed Comparison Description -->

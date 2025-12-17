@@ -225,44 +225,164 @@ export function generateUseCaseScenarios(deviceA: Device, deviceB: Device) {
 export function generateRecommendations(deviceA: Device, deviceB: Device, areaA: number, areaB: number) {
   const larger = areaA > areaB ? deviceA : deviceB;
   const smaller = areaA > areaB ? deviceB : deviceA;
+  const largerArea = Math.max(areaA, areaB);
+  const smallerArea = Math.min(areaA, areaB);
+  const areaDiff = ((largerArea - smallerArea) / smallerArea) * 100;
 
   const recommendations = {
     larger: [] as string[],
     smaller: [] as string[]
   };
 
-  if (deviceA.category === 'phone') {
-    if (larger.diagonal > 6.5) {
+  if (deviceA.category === 'phone' || deviceB.category === 'phone') {
+    // Larger phone recommendations
+    if (larger.diagonal > 6.7) {
       recommendations.larger.push('You prioritize screen size for media and productivity');
       recommendations.larger.push('You typically use your phone with two hands');
       recommendations.larger.push('You want the best viewing experience for videos and games');
+    } else if (larger.diagonal > 6.3) {
+      recommendations.larger.push('You want a balance of screen size and usability');
+      recommendations.larger.push('You enjoy watching videos and browsing on your phone');
+      recommendations.larger.push('You prefer a larger display for reading and typing');
+    } else {
+      recommendations.larger.push('You want a slightly larger screen for better visibility');
+      recommendations.larger.push('You value the extra screen space for daily tasks');
+      recommendations.larger.push('You prefer more content visible at once');
     }
-    if (smaller.diagonal < 6.3) {
+    // Smaller phone recommendations
+    if (smaller.diagonal < 6.1) {
       recommendations.smaller.push('You prefer one-handed operation and portability');
       recommendations.smaller.push('You want a phone that fits comfortably in pockets');
       recommendations.smaller.push('You value ease of use over maximum screen size');
+    } else if (smaller.diagonal < 6.5) {
+      recommendations.smaller.push('You want a more manageable device size');
+      recommendations.smaller.push('You prefer easier one-handed use');
+      recommendations.smaller.push('You value portability without sacrificing too much screen');
+    } else {
+      recommendations.smaller.push('You want a slightly more compact option');
+      recommendations.smaller.push('You prefer a lighter device for extended use');
+      recommendations.smaller.push('You value the cost savings of a smaller model');
     }
-  } else if (deviceA.category === 'tv') {
-    if (larger.diagonal >= 65) {
+  } else if (deviceA.category === 'tv' || deviceB.category === 'tv') {
+    // Larger TV recommendations
+    if (larger.diagonal >= 75) {
       recommendations.larger.push('You have a large room with 10+ feet viewing distance');
-      recommendations.larger.push('You want a cinematic, immersive experience');
-      recommendations.larger.push('You primarily watch 4K content');
+      recommendations.larger.push('You want a cinematic, home theater experience');
+      recommendations.larger.push('You primarily watch 4K/8K content');
+    } else if (larger.diagonal >= 65) {
+      recommendations.larger.push('You have a medium to large living room');
+      recommendations.larger.push('You want an immersive viewing experience');
+      recommendations.larger.push('You enjoy movies, sports, and gaming');
+    } else {
+      recommendations.larger.push('You want a bigger screen for better visibility');
+      recommendations.larger.push('You have adequate wall or stand space');
+      recommendations.larger.push('You prefer more immersive content viewing');
     }
-    if (smaller.diagonal < 55) {
+    // Smaller TV recommendations
+    if (smaller.diagonal < 50) {
       recommendations.smaller.push('You have a smaller room or bedroom setup');
-      recommendations.smaller.push('Your viewing distance is under 8 feet');
+      recommendations.smaller.push('Your viewing distance is under 7 feet');
       recommendations.smaller.push('You want a more budget-friendly option');
+    } else if (smaller.diagonal < 65) {
+      recommendations.smaller.push('You have a standard living room setup');
+      recommendations.smaller.push('Your viewing distance is 7-10 feet');
+      recommendations.smaller.push('You want good value without oversizing');
+    } else {
+      recommendations.smaller.push('You prefer a more modest screen size');
+      recommendations.smaller.push('You want to save on cost and energy');
+      recommendations.smaller.push('Your room layout works better with this size');
     }
-  } else if (deviceA.category === 'monitor') {
-    if (larger.diagonal >= 27) {
-      recommendations.larger.push('You need more screen real estate for multitasking');
+  } else if (deviceA.category === 'monitor' || deviceB.category === 'monitor') {
+    // Larger monitor recommendations
+    if (larger.diagonal >= 32) {
+      recommendations.larger.push('You need maximum screen real estate for multitasking');
+      recommendations.larger.push('You work with video editing or complex spreadsheets');
+      recommendations.larger.push('You have a deep desk with adequate viewing distance');
+    } else if (larger.diagonal >= 27) {
+      recommendations.larger.push('You need more screen space for productivity');
       recommendations.larger.push('You work with multiple windows simultaneously');
       recommendations.larger.push('You have adequate desk space');
+    } else {
+      recommendations.larger.push('You want more visible content area');
+      recommendations.larger.push('You prefer larger text and UI elements');
+      recommendations.larger.push('You value the extra workspace');
     }
+    // Smaller monitor recommendations
     if (smaller.diagonal <= 24) {
       recommendations.smaller.push('You have limited desk space');
       recommendations.smaller.push('You sit closer to your monitor');
       recommendations.smaller.push('You prefer a more compact setup');
+    } else if (smaller.diagonal <= 27) {
+      recommendations.smaller.push('You want a balanced size for your desk');
+      recommendations.smaller.push('You prefer less eye movement during use');
+      recommendations.smaller.push('You value a cleaner, minimal setup');
+    } else {
+      recommendations.smaller.push('You want a more manageable screen size');
+      recommendations.smaller.push('You prefer easier focus on content');
+      recommendations.smaller.push('You want to reduce neck strain');
+    }
+  } else if (deviceA.category === 'tablet' || deviceB.category === 'tablet') {
+    // Larger tablet recommendations
+    if (larger.diagonal >= 12) {
+      recommendations.larger.push('You use your tablet as a laptop replacement');
+      recommendations.larger.push('You do professional creative work or note-taking');
+      recommendations.larger.push('You want the best experience for split-screen multitasking');
+    } else if (larger.diagonal >= 10) {
+      recommendations.larger.push('You want a versatile tablet for work and entertainment');
+      recommendations.larger.push('You prefer a larger canvas for drawing or writing');
+      recommendations.larger.push('You enjoy watching movies and reading magazines');
+    } else {
+      recommendations.larger.push('You want more screen space for media consumption');
+      recommendations.larger.push('You prefer easier reading and browsing');
+      recommendations.larger.push('You value the extra display area');
+    }
+    // Smaller tablet recommendations
+    if (smaller.diagonal < 8) {
+      recommendations.smaller.push('You prioritize maximum portability');
+      recommendations.smaller.push('You want a tablet that fits in a jacket pocket');
+      recommendations.smaller.push('You prefer one-handed use for reading');
+    } else if (smaller.diagonal < 10) {
+      recommendations.smaller.push('You want a balance of portability and usability');
+      recommendations.smaller.push('You prefer a lighter device for travel');
+      recommendations.smaller.push('You value comfortable handheld use');
+    } else {
+      recommendations.smaller.push('You want a more portable option');
+      recommendations.smaller.push('You prefer a lighter device for extended use');
+      recommendations.smaller.push('You value easier handling and storage');
+    }
+  } else if (deviceA.category === 'projector' || deviceB.category === 'projector') {
+    // Larger projector screen recommendations
+    recommendations.larger.push('You have a dedicated home theater room');
+    recommendations.larger.push('You want the most immersive cinematic experience');
+    recommendations.larger.push('You have adequate throw distance for the projector');
+    // Smaller projector screen recommendations
+    recommendations.smaller.push('You have a multi-purpose room');
+    recommendations.smaller.push('You want flexibility in projector placement');
+    recommendations.smaller.push('You prefer a more manageable screen setup');
+  }
+
+  // Add general recommendations based on size difference if lists are still empty
+  if (recommendations.larger.length === 0) {
+    if (areaDiff > 30) {
+      recommendations.larger.push('You want significantly more viewing area');
+      recommendations.larger.push('You prioritize immersive content consumption');
+      recommendations.larger.push('You have space to accommodate the larger size');
+    } else {
+      recommendations.larger.push('You prefer a larger display experience');
+      recommendations.larger.push('You want more content visible at once');
+      recommendations.larger.push('You value the extra screen real estate');
+    }
+  }
+
+  if (recommendations.smaller.length === 0) {
+    if (areaDiff > 30) {
+      recommendations.smaller.push('You prefer a more compact form factor');
+      recommendations.smaller.push('You value portability and space efficiency');
+      recommendations.smaller.push('You want a more budget-friendly option');
+    } else {
+      recommendations.smaller.push('You prefer a slightly smaller size');
+      recommendations.smaller.push('You want easier handling and placement');
+      recommendations.smaller.push('You value the cost savings');
     }
   }
 
