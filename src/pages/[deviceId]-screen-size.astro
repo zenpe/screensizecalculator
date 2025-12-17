@@ -169,43 +169,22 @@ const techArticleSchema = {
     "@type": "WebPage",
     "@id": `${siteConfig.siteUrl}/${device.id}-screen-size`
   },
-  "about": {
-    "@type": "Thing",
-    "name": device.name,
-    ...(brand ? { "brand": { "@type": "Brand", "name": brand } } : {}),
-    "additionalProperty": [
-      {
-        "@type": "PropertyValue",
-        "name": "Screen Size",
-        "value": `${device.diagonal} inches`
-      },
-      {
-        "@type": "PropertyValue",
-        "name": "Width",
-        "value": `${fmt(dims.width, 2)} inches`
-      },
-      {
-        "@type": "PropertyValue",
-        "name": "Height",
-        "value": `${fmt(dims.height, 2)} inches`
-      },
-      {
-        "@type": "PropertyValue",
-        "name": "Aspect Ratio",
-        "value": `${fmt(device.ratio, 2)}:1`
-      },
-      ...(device.resolution ? [{
-        "@type": "PropertyValue",
-        "name": "Resolution",
-        "value": device.resolution
-      }] : []),
-      ...(ppi ? [{
-        "@type": "PropertyValue",
-        "name": "PPI",
-        "value": `${Math.round(ppi)}`
-      }] : [])
-    ]
-  }
+  "about": (() => {
+    const categoryInfo: Record<string, { label: string; sameAs: string }> = {
+      phone: { label: 'smartphone', sameAs: 'https://en.wikipedia.org/wiki/Smartphone' },
+      tv: { label: 'TV', sameAs: 'https://en.wikipedia.org/wiki/Television_set' },
+      monitor: { label: 'computer monitor', sameAs: 'https://en.wikipedia.org/wiki/Computer_monitor' },
+      tablet: { label: 'tablet', sameAs: 'https://en.wikipedia.org/wiki/Tablet_computer' },
+      projector: { label: 'projector', sameAs: 'https://en.wikipedia.org/wiki/Projector' }
+    };
+    const info = categoryInfo[device.category] || { label: device.category, sameAs: '' };
+    return {
+      "@type": "Thing",
+      "name": device.name,
+      "description": `A ${device.diagonal}-inch ${info.label} with a screen area of ${fmt(area, 1)} sq inches and dimensions of ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}".`,
+      ...(info.sameAs ? { "sameAs": info.sameAs } : {})
+    };
+  })()
 };
 
 // FAQ Schema

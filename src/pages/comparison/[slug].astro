@@ -160,50 +160,31 @@ const techArticleSchema = {
     "@type": "WebPage",
     "@id": `${siteConfig.siteUrl}/comparison/${primaryDevice.id}-vs-${secondaryDevice.id}`
   },
-  "about": [
-    {
-      "@type": "Thing",
-      "name": primaryDevice.name,
-      "additionalProperty": [
-        {
-          "@type": "PropertyValue",
-          "name": "Screen Size",
-          "value": `${primaryDevice.diagonal} inches`
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Screen Area",
-          "value": `${formatNum(primaryArea, 1)} square inches`
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Dimensions",
-          "value": `${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}"`
-        }
-      ]
-    },
-    {
-      "@type": "Thing",
-      "name": secondaryDevice.name,
-      "additionalProperty": [
-        {
-          "@type": "PropertyValue",
-          "name": "Screen Size",
-          "value": `${secondaryDevice.diagonal} inches`
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Screen Area",
-          "value": `${formatNum(secondaryArea, 1)} square inches`
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Dimensions",
-          "value": `${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}"`
-        }
-      ]
-    }
-  ]
+  "about": (() => {
+    const categoryInfo: Record<string, { label: string; sameAs: string }> = {
+      phone: { label: 'smartphone', sameAs: 'https://en.wikipedia.org/wiki/Smartphone' },
+      tv: { label: 'TV', sameAs: 'https://en.wikipedia.org/wiki/Television_set' },
+      monitor: { label: 'computer monitor', sameAs: 'https://en.wikipedia.org/wiki/Computer_monitor' },
+      tablet: { label: 'tablet', sameAs: 'https://en.wikipedia.org/wiki/Tablet_computer' },
+      projector: { label: 'projector', sameAs: 'https://en.wikipedia.org/wiki/Projector' }
+    };
+    const primaryInfo = categoryInfo[primaryDevice.category] || { label: primaryDevice.category, sameAs: '' };
+    const secondaryInfo = categoryInfo[secondaryDevice.category] || { label: secondaryDevice.category, sameAs: '' };
+    return [
+      {
+        "@type": "Thing",
+        "name": primaryDevice.name,
+        "description": `A ${primaryDevice.diagonal}-inch ${primaryInfo.label} with a screen area of ${formatNum(primaryArea, 1)} sq inches and dimensions of ${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}".`,
+        ...(primaryInfo.sameAs ? { "sameAs": primaryInfo.sameAs } : {})
+      },
+      {
+        "@type": "Thing",
+        "name": secondaryDevice.name,
+        "description": `A ${secondaryDevice.diagonal}-inch ${secondaryInfo.label} with a screen area of ${formatNum(secondaryArea, 1)} sq inches and dimensions of ${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}".`,
+        ...(secondaryInfo.sameAs ? { "sameAs": secondaryInfo.sameAs } : {})
+      }
+    ];
+  })()
 };
 ---
 
