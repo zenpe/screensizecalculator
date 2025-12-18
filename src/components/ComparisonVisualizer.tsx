@@ -1,5 +1,63 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useLayoutEffect } from 'react';
 import type { Device } from '../data/devices';
+
+// SSR-safe useLayoutEffect
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+// Skeleton component for loading state (Overlay mode layout)
+function VisualizerSkeleton() {
+  return (
+    <div className="bg-slate-900 rounded-xl overflow-hidden">
+      {/* Header skeleton */}
+      <div className="h-[60px] flex justify-center items-center gap-2 px-4 bg-slate-800/50 border-b border-slate-700">
+        <div className="h-9 w-20 bg-slate-700 rounded-lg animate-pulse"></div>
+        <div className="h-9 w-24 bg-slate-700 rounded-lg animate-pulse"></div>
+        <div className="h-9 w-16 bg-slate-700 rounded-lg animate-pulse"></div>
+      </div>
+      {/* Swipe hint placeholder */}
+      <div className="h-[20px] bg-slate-800/30"></div>
+      {/* Content skeleton - Overlay mode, responsive sizes */}
+      <div className="h-[480px] flex items-center justify-center p-3 sm:p-6">
+        <div className="flex flex-col items-center w-full">
+          {/* Overlapping device placeholders - responsive */}
+          <div className="relative flex items-end justify-center w-full max-w-[700px]" style={{ height: '320px' }}>
+            {/* Larger device (background) - dashed border */}
+            <div
+              className="absolute bottom-0 bg-slate-800/60 rounded border-2 border-dashed border-slate-500 animate-pulse w-[85%] sm:w-[560px] lg:w-[620px]"
+              style={{ aspectRatio: '16/9' }}
+            ></div>
+            {/* Smaller device (foreground) - solid border */}
+            <div
+              className="relative z-10 bg-slate-700/80 rounded border-2 border-cyan-400/50 animate-pulse w-[65%] sm:w-[440px] lg:w-[490px]"
+              style={{ aspectRatio: '16/9' }}
+            ></div>
+          </div>
+          {/* Labels skeleton */}
+          <div className="flex justify-center gap-10 mt-4 w-full px-1">
+            <div className="text-center flex-1 max-w-[200px]">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="w-4 h-3 border-2 border-dashed border-slate-400 bg-slate-800/50 rounded"></div>
+                <div className="h-4 w-24 bg-slate-700 rounded animate-pulse"></div>
+              </div>
+              <div className="h-3 w-28 bg-slate-800 rounded mx-auto animate-pulse"></div>
+            </div>
+            <div className="text-center flex-1 max-w-[200px]">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="w-4 h-3 border-2 border-solid border-cyan-400/50 bg-slate-700/70 rounded"></div>
+                <div className="h-4 w-24 bg-slate-700 rounded animate-pulse"></div>
+              </div>
+              <div className="h-3 w-28 bg-slate-800 rounded mx-auto animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Footer skeleton */}
+      <div className="h-[48px] flex justify-center items-center gap-8 px-4 bg-slate-800/50 border-t border-slate-700">
+        <div className="h-3 w-36 bg-slate-700 rounded animate-pulse"></div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * ComparisonVisualizer - Visual comparison of screen sizes
@@ -585,10 +643,13 @@ function DeviceFrame({
 // Breakpoint type for responsive design
 type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-// Hook to detect breakpoint
+// Hook to detect breakpoint (SSR-safe)
 function useBreakpoint(): Breakpoint {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('lg');
-  useEffect(() => {
+
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const check = () => {
       const w = window.innerWidth;
       if (w < 375) setBreakpoint('xs');
@@ -601,13 +662,17 @@ function useBreakpoint(): Breakpoint {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
   return breakpoint;
 }
 
-// Hook to get dynamic container size
+// Hook to get dynamic container size (SSR-safe)
 function useContainerSize() {
   const [size, setSize] = useState({ width: 320, height: 500 });
-  useEffect(() => {
+
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
@@ -620,6 +685,7 @@ function useContainerSize() {
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
+
   return size;
 }
 
@@ -659,8 +725,8 @@ function useIsMobile() {
 
 // Hook to get container width (for RoomView compatibility)
 function useContainerWidth() {
-  const { width } = useContainerSize();
-  return width;
+  const size = useContainerSize();
+  return size.width;
 }
 
 // Room View component
@@ -857,12 +923,18 @@ function RoomView({
 }
 
 export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVisualizerProps) {
+  const [isHydrated, setIsHydrated] = useState(false);
   const [displayMode, setDisplayMode] = useState<DisplayMode>('overlay');
   const breakpoint = useBreakpoint();
   const containerSize = useContainerSize();
   const isMobile = breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md';
 
-  // Calculate physical dimensions for both devices
+  // Mark as hydrated after mount
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Calculate physical dimensions for both devices (must be before conditional return)
   const { larger, smaller, isPhoneComparison, isLargeScreenComparison, areSameSize, sizeDiffPercent } = useMemo(() => {
     const dimsA = calculateDimensions(deviceA.diagonal, deviceA.ratio);
     const dimsB = calculateDimensions(deviceB.diagonal, deviceB.ratio);
@@ -920,7 +992,6 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
   }, [breakpoint]);
 
   // Get scale multipliers based on breakpoint
-  // For stacked mode (mobile), sideBySideHeight is for EACH device (need to fit 2 vertically)
   const getScaleConfig = (bp: Breakpoint) => {
     switch (bp) {
       case 'xs': return { widthRatio: 0.88, heightRatio: 0.48, sideBySideWidth: 0.82, sideBySideHeight: 0.28 };
@@ -931,10 +1002,10 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
     }
   };
 
-  // Calculate scale factor using fixed container height to prevent layout shifts
+  // Calculate scale factor
   const scaleFactor = useMemo(() => {
     const cw = containerSize.width;
-    const ch = fixedContainerHeight; // Use fixed height instead of dynamic
+    const ch = fixedContainerHeight;
     const config = getScaleConfig(breakpoint);
 
     if (displayMode === 'room-view') {
@@ -950,12 +1021,10 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
       const maxDeviceHeight = Math.max(larger.dims.height, smaller.dims.height);
 
       if (isStacked) {
-        // Stacked mode (mobile): each device takes most of the width, fit 2 devices vertically
         const scaleByWidth = (cw * config.sideBySideWidth) / maxDeviceWidth;
         const scaleByHeight = (ch * config.sideBySideHeight) / maxDeviceHeight;
         return Math.min(scaleByWidth, scaleByHeight);
       } else {
-        // True side-by-side: two devices fit horizontally
         const scaleByWidth = (cw * config.sideBySideWidth) / maxDeviceWidth;
         const scaleByHeight = (ch * config.sideBySideHeight) / maxDeviceHeight;
         return Math.min(scaleByWidth, scaleByHeight);
@@ -1016,6 +1085,11 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
   // Viewing distance info for large screens
   const largerDistance = getViewingDistance(larger.device.diagonal);
   const smallerDistance = getViewingDistance(smaller.device.diagonal);
+
+  // Show skeleton during SSR and initial hydration (after all hooks)
+  if (!isHydrated) {
+    return <VisualizerSkeleton />;
+  }
 
   return (
     <div className="bg-slate-900 rounded-xl overflow-hidden">

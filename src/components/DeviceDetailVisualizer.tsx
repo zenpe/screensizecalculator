@@ -34,6 +34,7 @@ const SingleDeviceView = memo(function SingleDeviceView({
   const gradientId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [isReady, setIsReady] = useState(false); // Track when measurements are ready
   const [isPanMode, setIsPanMode] = useState(false);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -57,6 +58,7 @@ const SingleDeviceView = memo(function SingleDeviceView({
     const rect = containerRef.current.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
       setContainerSize({ width: rect.width, height: rect.height });
+      setIsReady(true); // Mark as ready after initial measurement
     }
 
     const observer = new ResizeObserver((entries) => {
@@ -66,6 +68,7 @@ const SingleDeviceView = memo(function SingleDeviceView({
           width: entry.contentRect.width,
           height: entry.contentRect.height,
         });
+        if (!isReady) setIsReady(true);
       }
     });
 
@@ -76,7 +79,7 @@ const SingleDeviceView = memo(function SingleDeviceView({
   // Calculate scale to fit container
   const { scale, canShowActualSize } = useMemo(() => {
     if (containerSize.width === 0 || containerSize.height === 0) {
-      return { scale: 0.5, canShowActualSize: false }; // Default to smaller scale while loading
+      return { scale: 0.5, canShowActualSize: false }; // Default while loading
     }
 
     // Guard against invalid dimensions
@@ -250,6 +253,8 @@ const SingleDeviceView = memo(function SingleDeviceView({
             transform: isPanMode
               ? `translate(calc(-50% + ${panOffset.x}px), calc(-50% + ${panOffset.y}px))`
               : 'translate(-50%, -50%)',
+            opacity: isReady ? 1 : 0,
+            transition: 'opacity 200ms ease-out',
           }}
         >
           {isPortraitDevice ? (
