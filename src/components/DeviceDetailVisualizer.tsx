@@ -9,6 +9,62 @@ const ComparisonVisualizer = lazy(() => import('./ComparisonVisualizer'));
 // Use useLayoutEffect on client, useEffect on server
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
+// Skeleton component for loading state
+function DeviceVisualizerSkeleton({ isMobile }: { isMobile: boolean }) {
+  return (
+    <div className="w-full">
+      {/* Controls Bar skeleton */}
+      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-slate-800/80 via-slate-800/60 to-slate-800/80 rounded-xl border border-slate-700/50">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-4">
+          {/* Compare Section skeleton */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-700 animate-pulse"></div>
+            <div className="flex flex-col gap-1">
+              <div className="h-3 w-16 bg-slate-700 rounded animate-pulse"></div>
+              <div className="h-8 w-[130px] sm:w-[180px] bg-slate-700 rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-10 bg-slate-600/50" />
+          <div className="sm:hidden h-px w-full bg-slate-600/50" />
+          {/* Tools Section skeleton */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="h-9 w-24 bg-slate-700 rounded-lg animate-pulse"></div>
+            <div className="h-9 w-24 bg-slate-700 rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Visualization Area skeleton */}
+      <div className={`bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 rounded-xl w-full p-3 sm:p-4 md:p-6 ${
+        isMobile ? 'min-h-[350px]' : 'min-h-[500px]'
+      }`}>
+        <div className={`w-full ${isMobile ? 'h-[300px]' : 'h-[450px]'} flex flex-col`}>
+          {/* Status bar skeleton */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="h-7 w-20 bg-slate-700/50 rounded-lg animate-pulse"></div>
+          </div>
+          {/* Device visualization skeleton */}
+          <div className="flex-1 relative overflow-hidden rounded-xl bg-gray-900/30 flex items-center justify-center">
+            <div
+              className="bg-slate-800/60 rounded border-2 border-slate-600 animate-pulse"
+              style={{
+                width: isMobile ? '70%' : '60%',
+                aspectRatio: '16/9',
+                maxWidth: '500px',
+              }}
+            ></div>
+          </div>
+          {/* Info text skeleton */}
+          <div className="flex justify-center mt-4">
+            <div className="h-3 w-40 bg-slate-700/50 rounded animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Constants for layout calculations
 const PADDING_MOBILE = 40;
 const PADDING_DESKTOP = 60;
@@ -379,6 +435,9 @@ export default function DeviceDetailVisualizer({
   device,
   relatedDevices,
 }: DeviceDetailVisualizerProps) {
+  // Hydration state for SSR
+  const [isHydrated, setIsHydrated] = useState(false);
+
   // Initialize all state synchronously to avoid layout shifts
   const [initialState] = useState(getInitialState);
   const [calibratedPpi, setCalibratedPpi] = useState<number>(initialState.ppi);
@@ -387,6 +446,11 @@ export default function DeviceDetailVisualizer({
   const [isCalibrated, setIsCalibrated] = useState(initialState.isCalibrated);
   const [compareDevice, setCompareDevice] = useState<Device | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Mark as hydrated after mount
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Listen for resize changes only
   useEffect(() => {
@@ -440,6 +504,11 @@ export default function DeviceDetailVisualizer({
       window.removeEventListener('keydown', handleEscape);
     };
   }, [isModalOpen, closeModal]);
+
+  // Show skeleton during SSR and initial hydration
+  if (!isHydrated) {
+    return <DeviceVisualizerSkeleton isMobile={isMobile} />;
+  }
 
   return (
     <div className="w-full">

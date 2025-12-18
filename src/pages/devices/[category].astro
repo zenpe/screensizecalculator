@@ -334,6 +334,7 @@ const faqSchema = {
           categoryName={config.namePlural}
           colorText={colors.text}
           colorBg={colors.bg}
+          defaultSort={category === 'phones' || category === 'tablets' ? 'brand' : 'size-desc'}
         />
       </div>
     </section>

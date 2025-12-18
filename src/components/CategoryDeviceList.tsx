@@ -8,9 +8,101 @@ interface CategoryDeviceListProps {
   categoryName: string;
   colorText: string;
   colorBg: string;
+  defaultSort?: SortOption;
 }
 
-type SortOption = 'size-desc' | 'size-asc' | 'ppi-desc' | 'ppi-asc' | 'name-asc';
+type SortOption = 'brand' | 'size-desc' | 'size-asc' | 'ppi-desc' | 'ppi-asc' | 'name-asc';
+
+// Brand priority for sorting (lower = higher priority)
+const brandPriority: Record<string, number> = {
+  Apple: 1,
+  Samsung: 2,
+  Google: 3,
+  OnePlus: 4,
+  Xiaomi: 5,
+  Microsoft: 6,
+  Sony: 7,
+  Generic: 100,
+  Other: 99,
+};
+
+// Extract model number/generation from device name for sorting within brand
+function getModelSortKey(device: Device): number {
+  const name = device.name.toLowerCase();
+  const id = device.id.toLowerCase();
+
+  // iPhone: extract number (17 > 16 > 15...)
+  const iphoneMatch = name.match(/iphone\s*(\d+)/i);
+  if (iphoneMatch) {
+    const num = parseInt(iphoneMatch[1], 10);
+    // Pro Max > Pro > Plus > base (add decimal for variant)
+    let variant = 0;
+    if (name.includes('pro max')) variant = 0.3;
+    else if (name.includes('pro')) variant = 0.2;
+    else if (name.includes('plus')) variant = 0.1;
+    return -(num + variant); // Negative for descending (newer first)
+  }
+
+  // iPad: Pro > Air > Mini > base
+  if (id.includes('ipad')) {
+    let base = 0;
+    if (name.includes('pro')) base = -100;
+    else if (name.includes('air')) base = -90;
+    else if (name.includes('mini')) base = -80;
+    else base = -70;
+    // Extract size for Pro/Air
+    const sizeMatch = name.match(/(\d+(?:\.\d+)?)["\s]*inch|(\d+(?:\.\d+)?)"?$/i);
+    if (sizeMatch) {
+      const size = parseFloat(sizeMatch[1] || sizeMatch[2]);
+      base -= size; // Larger size first within same model
+    }
+    return base;
+  }
+
+  // Samsung Galaxy S series: S25 > S24 > S23...
+  const galaxyMatch = name.match(/galaxy\s*s(\d+)/i);
+  if (galaxyMatch) {
+    const num = parseInt(galaxyMatch[1], 10);
+    let variant = 0;
+    if (name.includes('ultra')) variant = 0.3;
+    else if (name.includes('+') || name.includes('plus')) variant = 0.2;
+    else if (name.includes('fe')) variant = -0.1;
+    return -(num + variant);
+  }
+
+  // Samsung Galaxy Z Fold/Flip
+  const zMatch = name.match(/galaxy\s*z\s*(fold|flip)\s*(\d+)/i);
+  if (zMatch) {
+    const type = zMatch[1].toLowerCase() === 'fold' ? 50 : 40;
+    const num = parseInt(zMatch[2], 10);
+    return -(type + num);
+  }
+
+  // Google Pixel
+  const pixelMatch = name.match(/pixel\s*(\d+)/i);
+  if (pixelMatch) {
+    const num = parseInt(pixelMatch[1], 10);
+    let variant = 0;
+    if (name.includes('pro xl')) variant = 0.3;
+    else if (name.includes('pro')) variant = 0.2;
+    else if (name.includes('xl')) variant = 0.15;
+    else if (name.includes('a')) variant = -0.1;
+    return -(num + variant);
+  }
+
+  // OnePlus
+  const oneplusMatch = name.match(/oneplus\s*(\d+)/i);
+  if (oneplusMatch) {
+    const num = parseInt(oneplusMatch[1], 10);
+    let variant = 0;
+    if (name.includes('ultra')) variant = 0.3;
+    else if (name.includes('pro')) variant = 0.2;
+    return -(num + variant);
+  }
+
+  // Fallback: use diagonal size (larger first)
+  return -device.diagonal;
+}
 
 // Brand configuration with colors
 const brandConfig: Record<string, { color: string; bgLight: string; bgDark: string; border: string }> = {
@@ -134,9 +226,10 @@ export default function CategoryDeviceList({
   categoryName,
   colorText,
   colorBg,
+  defaultSort = 'size-desc',
 }: CategoryDeviceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<SortOption>('size-desc');
+  const [sortBy, setSortBy] = useState<SortOption>(defaultSort);
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [showAll, setShowAll] = useState(false);
 
@@ -168,6 +261,16 @@ export default function CategoryDeviceList({
 
     result.sort((a, b) => {
       switch (sortBy) {
+        case 'brand': {
+          // Sort by brand priority, then by model (newest first)
+          const brandA = getBrand(a);
+          const brandB = getBrand(b);
+          const priorityA = brandPriority[brandA] ?? 50;
+          const priorityB = brandPriority[brandB] ?? 50;
+          if (priorityA !== priorityB) return priorityA - priorityB;
+          // Same brand: sort by model (newer/higher tier first)
+          return getModelSortKey(a) - getModelSortKey(b);
+        }
         case 'size-desc':
           return b.diagonal - a.diagonal;
         case 'size-asc':
@@ -260,6 +363,7 @@ export default function CategoryDeviceList({
             onChange={(e) => setSortBy(e.target.value as SortOption)}
             className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none"
           >
+            <option value="brand">Brand + Model</option>
             <option value="size-desc">Size: Large → Small</option>
             <option value="size-asc">Size: Small → Large</option>
             <option value="ppi-desc">PPI: High → Low</option>
