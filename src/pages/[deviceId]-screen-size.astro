@@ -31,10 +31,10 @@ const ppi = calculateDevicePPI(device);
 // Format numbers
 const fmt = (num: number, decimals = 1) => num.toFixed(decimals);
 
-// SEO metadata - optimized for CTR
-const title = `${device.name} Screen Size: ${device.diagonal}" Display Dimensions & Specs`;
-const description = `${device.name} screen size: ${device.diagonal}" diagonal (${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}")${ppi ? `, ${Math.round(ppi)} PPI` : ''}${device.resolution ? `, ${device.resolution}` : ''}. Compare with similar ${device.category}s instantly. Free calculator tool.`;
-const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === 'phone' ? `, ${device.name} size comparison` : ''}`;
+// SEO metadata - optimized for search intent and CTR
+const title = `${device.name} Screen Size & Dimensions | ${device.diagonal}" Display Specs`;
+const description = `${device.name} screen size is ${device.diagonal}" diagonal (${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}")${ppi ? ` with ${Math.round(ppi)} PPI` : ''}${device.resolution ? ` and ${device.resolution} resolution` : ''}. Full dimensions, specs & comparison tools.`;
+const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, how big is ${device.name}, ${device.name} specs${device.category === 'phone' ? `, ${device.name} size in inches` : ''}`;
 
 // Brand detection patterns - ordered by specificity (product names before brand names)
 const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
@@ -114,7 +114,13 @@ const generateFAQ = (device: Device) => {
     answer: `The ${device.name} has a ${device.diagonal}" diagonal screen with dimensions of ${fmt(dims.width, 2)}" wide × ${fmt(dims.height, 2)}" tall (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm). The total screen area is ${fmt(area, 1)} square inches.`
   });
 
-  // Question 2: Resolution/PPI (if available)
+  // Question 2: What are the dimensions of [device]?
+  faqs.push({
+    question: `What are the ${device.name} dimensions?`,
+    answer: `The ${device.name} screen dimensions are ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm) with a ${device.diagonal}" diagonal. The aspect ratio is ${fmt(device.ratio, 2)}:1${device.resolution ? ` and the resolution is ${device.resolution}` : ''}.`
+  });
+
+  // Question 3: Resolution/PPI (if available)
   if (device.resolution && ppi) {
     faqs.push({
       question: `What is the ${device.name} resolution and PPI?`,
@@ -292,7 +298,7 @@ const breadcrumbSchema = {
     <!-- Hero Section -->
     <div class="text-center mb-8">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-        {device.name} Screen Size
+        {device.name} Screen Size & Dimensions
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-3">
         Complete screen size guide for the {device.name} with {device.diagonal}" display

@@ -519,18 +519,16 @@ export function generateComparisonFAQ(
  */
 export function generateSEOTitle(deviceA: Device, deviceB: Device, areaA: number, areaB: number): string {
   const sizeDiff = Math.abs(deviceA.diagonal - deviceB.diagonal);
-  const areaDiff = ((Math.max(areaA, areaB) - Math.min(areaA, areaB)) / Math.min(areaA, areaB)) * 100;
 
-  // Base: "Device A vs Device B Screen Size"
-  const baseTitle = `${deviceA.name} vs ${deviceB.name} Screen Size`;
+  // Format: "Device A vs Device B: Screen Size & Dimensions"
+  // This targets both "screen size" and "dimensions" keywords
+  const baseTitle = `${deviceA.name} vs ${deviceB.name}`;
 
-  // Add difference data for uniqueness, keep under 60 chars
-  if (sizeDiff >= 1) {
-    return `${baseTitle} - ${sizeDiff.toFixed(1)}" Difference`;
-  } else if (areaDiff > 15) {
-    return `${baseTitle} - ${areaDiff.toFixed(0)}% Difference`;
+  // Keep title concise but keyword-rich
+  if (sizeDiff >= 0.5) {
+    return `${baseTitle}: ${deviceA.diagonal}" vs ${deviceB.diagonal}" Size Comparison`;
   } else {
-    return `${baseTitle} Comparison`;
+    return `${baseTitle}: Screen Size & Dimensions Compared`;
   }
 }
 
@@ -544,30 +542,26 @@ export function generateSEODescription(
   areaB: number
 ): string {
   const larger = areaA > areaB ? deviceA : deviceB;
+  const smaller = areaA > areaB ? deviceB : deviceA;
   const areaDiff = ((Math.max(areaA, areaB) - Math.min(areaA, areaB)) / Math.min(areaA, areaB)) * 100;
 
-  // Start with "Free" to attract clicks
-  let description = `Free ${deviceA.name} vs ${deviceB.name} comparison. `;
+  // Start with key comparison info
+  let description = `Compare ${deviceA.name} vs ${deviceB.name} screen size. `;
 
-  // Add size info
-  description += `${deviceA.diagonal}" vs ${deviceB.diagonal}" screen. `;
-
-  // Add key differentiator
-  if (areaDiff > 15) {
-    description += `${areaDiff.toFixed(0)}% size difference. `;
-  }
+  // Add dimensions info (targets "dimensions" keyword)
+  description += `${deviceA.diagonal}" vs ${deviceB.diagonal}" display dimensions. `;
 
   // Add category-specific value prop
   if (deviceA.category === 'phone') {
-    description += `Visual overlay, dimensions & one-handed use guide.`;
+    description += `See which phone is bigger with visual size comparison & specs.`;
   } else if (deviceA.category === 'tv') {
-    description += `Viewing distance & room size recommendations.`;
+    description += `Find the right TV size with viewing distance calculator.`;
   } else if (deviceA.category === 'monitor') {
-    description += `Desk space & productivity comparison.`;
+    description += `Compare monitor dimensions for your desk setup.`;
   } else if (deviceA.category === 'tablet') {
-    description += `Portability & use case comparison.`;
+    description += `Compare tablet sizes with visual overlay & specs.`;
   } else {
-    description += `Visual comparison with exact dimensions.`;
+    description += `Visual comparison with exact dimensions & specs.`;
   }
 
   return description;
