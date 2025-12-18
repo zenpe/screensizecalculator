@@ -1108,8 +1108,11 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
                 </div>
               )}
 
-              {/* Devices container with bottom alignment */}
-              <div className="relative flex items-end justify-center">
+              {/* Devices container with explicit height for larger device */}
+              <div
+                className="relative flex items-end justify-center"
+                style={{ height: `${largerScaled.height + 10}px` }}
+              >
                 {/* Larger device (background) */}
                 <div
                   className="absolute bottom-0"

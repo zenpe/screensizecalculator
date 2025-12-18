@@ -18,9 +18,12 @@ import {
   generateUseCaseScenarios,
   generateRecommendations,
   generateComparisonFAQ,
-  generateSEOTitle,
-  generateSEODescription
 } from '../../utils/comparisonContent';
+import {
+  generateComparisonTitle,
+  generateComparisonDescription as generateComparisonSeoDescription,
+  generateComparisonH1,
+} from '../../utils/seoTitles';
 
 // Generate valid comparison pairs with alphabetical deduplication (SEO: single canonical URL)
 export function getStaticPaths() {
@@ -74,9 +77,10 @@ const percentLarger = ((primaryArea - secondaryArea) / secondaryArea) * 100;
 // Format number helper
 const formatNum = (num: number, decimals = 1) => num.toFixed(decimals);
 
-// SEO metadata (optimized with dynamic content)
-const title = generateSEOTitle(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
-const description = generateSEODescription(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
+// SEO metadata - dynamic title generation based on device characteristics
+const title = generateComparisonTitle(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
+const description = generateComparisonSeoDescription(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
+const h1 = generateComparisonH1(primaryDevice, secondaryDevice);
 const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size comparison, ${primaryDevice.name} screen size, ${secondaryDevice.name} screen size, display comparison, ${primaryDevice.category} comparison`;
 
 // Amazon search URLs (generic searches)
@@ -220,8 +224,7 @@ const techArticleSchema = {
     <!-- Page Header -->
     <div class="text-center mb-6 sm:mb-8">
       <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
-        {primaryDevice.name} vs {secondaryDevice.name}
-        <span class="block sm:inline"> Screen Size</span>
+        {h1}
       </h1>
       <p class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4">
         Visual comparison of {primaryDevice.name} ({primaryDevice.diagonal}") and
@@ -485,6 +488,131 @@ const techArticleSchema = {
             </div>
           )}
 
+          {/* Phone-specific specs for mobile */}
+          {(primaryDevice.phone?.refreshRate || secondaryDevice.phone?.refreshRate) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Refresh Rate</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.refreshRate ? `${primaryDevice.phone.refreshRate}Hz` : 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.refreshRate ? `${secondaryDevice.phone.refreshRate}Hz` : 'N/A'}</div>
+                </div>
+              </div>
+              {primaryDevice.phone?.refreshRate && secondaryDevice.phone?.refreshRate && (
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.refreshRate - secondaryDevice.phone.refreshRate)}Hz</div>
+              )}
+            </div>
+          )}
+
+          {(primaryDevice.phone?.screenType || secondaryDevice.phone?.screenType) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Screen Type</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{primaryDevice.phone?.screenType || 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{secondaryDevice.phone?.screenType || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(primaryDevice.phone?.peakBrightness || secondaryDevice.phone?.peakBrightness) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Peak Brightness</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.peakBrightness ? `${primaryDevice.phone.peakBrightness} nits` : 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.peakBrightness ? `${secondaryDevice.phone.peakBrightness} nits` : 'N/A'}</div>
+                </div>
+              </div>
+              {primaryDevice.phone?.peakBrightness && secondaryDevice.phone?.peakBrightness && (
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.peakBrightness - secondaryDevice.phone.peakBrightness)} nits</div>
+              )}
+            </div>
+          )}
+
+          {(primaryDevice.phone?.weight || secondaryDevice.phone?.weight) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Weight</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.weight ? `${primaryDevice.phone.weight}g` : 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.weight ? `${secondaryDevice.phone.weight}g` : 'N/A'}</div>
+                </div>
+              </div>
+              {primaryDevice.phone?.weight && secondaryDevice.phone?.weight && (
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.weight - secondaryDevice.phone.weight)}g</div>
+              )}
+            </div>
+          )}
+
+          {(primaryDevice.phone?.battery || secondaryDevice.phone?.battery) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Battery</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.battery ? `${primaryDevice.phone.battery} mAh` : 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.battery ? `${secondaryDevice.phone.battery} mAh` : 'N/A'}</div>
+                </div>
+              </div>
+              {primaryDevice.phone?.battery && secondaryDevice.phone?.battery && (
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.battery - secondaryDevice.phone.battery)} mAh</div>
+              )}
+            </div>
+          )}
+
+          {(primaryDevice.phone?.dimensions || secondaryDevice.phone?.dimensions) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Body Size (H×W×D)</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">{primaryDevice.phone?.dimensions ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm` : 'N/A'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">{secondaryDevice.phone?.dimensions ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm` : 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(primaryDevice.phone?.alwaysOnDisplay !== undefined || secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Always-On Display</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <!-- Category -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Category</div>
@@ -548,6 +676,63 @@ const techArticleSchema = {
                   <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Resolution</td>
                   <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.resolution || 'N/A'}</td>
                   <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.resolution || 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
+                </tr>
+              )}
+              {/* Phone-specific specs */}
+              {(primaryDevice.phone?.refreshRate || secondaryDevice.phone?.refreshRate) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Refresh Rate</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.refreshRate ? `${primaryDevice.phone.refreshRate}Hz` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.refreshRate ? `${secondaryDevice.phone.refreshRate}Hz` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.refreshRate && secondaryDevice.phone?.refreshRate ? `${Math.abs(primaryDevice.phone.refreshRate - secondaryDevice.phone.refreshRate)}Hz` : '-'}</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.screenType || secondaryDevice.phone?.screenType) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Screen Type</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.screenType || 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.screenType || 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.peakBrightness || secondaryDevice.phone?.peakBrightness) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Peak Brightness</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.peakBrightness ? `${primaryDevice.phone.peakBrightness} nits` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.peakBrightness ? `${secondaryDevice.phone.peakBrightness} nits` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.peakBrightness && secondaryDevice.phone?.peakBrightness ? `${Math.abs(primaryDevice.phone.peakBrightness - secondaryDevice.phone.peakBrightness)} nits` : '-'}</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.weight || secondaryDevice.phone?.weight) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Weight</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.weight ? `${primaryDevice.phone.weight}g` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.weight ? `${secondaryDevice.phone.weight}g` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.weight && secondaryDevice.phone?.weight ? `${Math.abs(primaryDevice.phone.weight - secondaryDevice.phone.weight)}g` : '-'}</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.battery || secondaryDevice.phone?.battery) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Battery</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.battery ? `${primaryDevice.phone.battery} mAh` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.battery ? `${secondaryDevice.phone.battery} mAh` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.battery && secondaryDevice.phone?.battery ? `${Math.abs(primaryDevice.phone.battery - secondaryDevice.phone.battery)} mAh` : '-'}</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.dimensions || secondaryDevice.phone?.dimensions) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Body Size (H×W×D)</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.dimensions ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.dimensions ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm` : 'N/A'}</td>
+                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
+                </tr>
+              )}
+              {(primaryDevice.phone?.alwaysOnDisplay !== undefined || secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Always-On Display</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</td>
+                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</td>
                   <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
                 </tr>
               )}

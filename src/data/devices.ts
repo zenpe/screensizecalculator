@@ -1,5 +1,24 @@
 // Device type definitions and database for programmatic SEO comparison pages
 
+// Phone-specific attributes for detailed comparisons
+export interface PhoneSpecs {
+  // Physical attributes
+  weight?: number;           // Weight in grams
+  battery?: number;          // Battery capacity in mAh
+  dimensions?: {             // Body dimensions in mm
+    height: number;
+    width: number;
+    depth: number;
+  };
+
+  // Display attributes
+  refreshRate?: number;      // Refresh rate in Hz (60, 90, 120, 144)
+  screenType?: 'OLED' | 'AMOLED' | 'Super Retina XDR' | 'Dynamic AMOLED' | 'LTPO OLED' | 'LCD';
+  peakBrightness?: number;   // Peak brightness in nits
+  hdr?: boolean;             // HDR support
+  alwaysOnDisplay?: boolean; // Always-on display support
+}
+
 export interface Device {
   id: string;           // Slug-friendly identifier (e.g., "iphone-15")
   name: string;         // Display name (e.g., "iPhone 15")
@@ -8,6 +27,7 @@ export interface Device {
   ratio: number;        // Aspect ratio as decimal (e.g., 16/9 = 1.777...)
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
   updatedAt?: string;   // Optional date when device data was last updated (YYYY-MM-DD)
+  phone?: PhoneSpecs;   // Phone-specific attributes (only for phones)
 }
 
 // Parse resolution string "2556 x 1179" to { w, h }
@@ -66,6 +86,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
     updatedAt: '2025-09-10',
+    phone: {
+      weight: 194,
+      battery: 3850,
+      dimensions: { height: 152.8, width: 72.1, depth: 7.8 },
+      refreshRate: 90,
+      screenType: 'OLED',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-17-air',
@@ -75,6 +105,16 @@ export const devices: Device[] = [
     ratio: 19.6 / 9,
     resolution: '2736 x 1260',
     updatedAt: '2025-09-10',
+    phone: {
+      weight: 168,
+      battery: 3200,
+      dimensions: { height: 155.5, width: 71.5, depth: 5.5 },
+      refreshRate: 120,
+      screenType: 'OLED',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'iphone-17-pro',
@@ -84,6 +124,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
     updatedAt: '2025-09-10',
+    phone: {
+      weight: 199,
+      battery: 3900,
+      dimensions: { height: 152.8, width: 72.1, depth: 8.1 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2500,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'iphone-17-pro-max',
@@ -93,6 +143,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
     updatedAt: '2025-09-10',
+    phone: {
+      weight: 227,
+      battery: 4685,
+      dimensions: { height: 163.0, width: 77.6, depth: 8.25 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2500,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // iPhone 16 Series (Released: September 20, 2024)
@@ -104,6 +164,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
     updatedAt: '2024-09-20',
+    phone: {
+      weight: 170,
+      battery: 3561,
+      dimensions: { height: 147.6, width: 71.6, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-16-plus',
@@ -113,6 +183,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
     updatedAt: '2024-09-20',
+    phone: {
+      weight: 199,
+      battery: 4674,
+      dimensions: { height: 160.9, width: 77.8, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-16-pro',
@@ -122,6 +202,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
     updatedAt: '2024-09-20',
+    phone: {
+      weight: 199,
+      battery: 3582,
+      dimensions: { height: 149.6, width: 71.5, depth: 8.25 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'iphone-16-pro-max',
@@ -131,6 +221,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
     updatedAt: '2024-09-20',
+    phone: {
+      weight: 227,
+      battery: 4685,
+      dimensions: { height: 163.0, width: 77.6, depth: 8.25 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // iPhone 15 Series (Released: September 22, 2023)
@@ -142,6 +242,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
     updatedAt: '2023-09-22',
+    phone: {
+      weight: 171,
+      battery: 3349,
+      dimensions: { height: 147.6, width: 71.6, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-15-plus',
@@ -151,6 +261,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
     updatedAt: '2023-09-22',
+    phone: {
+      weight: 201,
+      battery: 4383,
+      dimensions: { height: 160.9, width: 77.8, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-15-pro',
@@ -160,6 +280,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
     updatedAt: '2023-09-22',
+    phone: {
+      weight: 187,
+      battery: 3274,
+      dimensions: { height: 146.6, width: 70.6, depth: 8.25 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'iphone-15-pro-max',
@@ -169,6 +299,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
     updatedAt: '2023-09-22',
+    phone: {
+      weight: 221,
+      battery: 4422,
+      dimensions: { height: 159.9, width: 76.7, depth: 8.25 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // iPhone 14 Series (Released: September 16, 2022)
@@ -180,6 +320,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
     updatedAt: '2022-09-16',
+    phone: {
+      weight: 172,
+      battery: 3279,
+      dimensions: { height: 146.7, width: 71.5, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-14-plus',
@@ -189,6 +339,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
     updatedAt: '2022-09-16',
+    phone: {
+      weight: 203,
+      battery: 4325,
+      dimensions: { height: 160.8, width: 78.1, depth: 7.8 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-14-pro',
@@ -198,6 +358,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
     updatedAt: '2022-09-16',
+    phone: {
+      weight: 206,
+      battery: 3200,
+      dimensions: { height: 147.5, width: 71.5, depth: 7.85 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'iphone-14-pro-max',
@@ -207,6 +377,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
     updatedAt: '2022-09-16',
+    phone: {
+      weight: 240,
+      battery: 4323,
+      dimensions: { height: 160.7, width: 77.6, depth: 7.85 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 2000,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // iPhone 13 Series (Released: September 24, 2021)
@@ -218,6 +398,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
     updatedAt: '2021-09-24',
+    phone: {
+      weight: 174,
+      battery: 3227,
+      dimensions: { height: 146.7, width: 71.5, depth: 7.65 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-13-mini',
@@ -227,6 +417,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
     updatedAt: '2021-09-24',
+    phone: {
+      weight: 140,
+      battery: 2406,
+      dimensions: { height: 131.5, width: 64.2, depth: 7.65 },
+      refreshRate: 60,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-13-pro',
@@ -236,6 +436,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
     updatedAt: '2021-09-24',
+    phone: {
+      weight: 204,
+      battery: 3095,
+      dimensions: { height: 146.7, width: 71.5, depth: 7.65 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
   {
     id: 'iphone-13-pro-max',
@@ -245,6 +455,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
     updatedAt: '2021-09-24',
+    phone: {
+      weight: 238,
+      battery: 4352,
+      dimensions: { height: 160.8, width: 78.1, depth: 7.65 },
+      refreshRate: 120,
+      screenType: 'Super Retina XDR',
+      peakBrightness: 1200,
+      hdr: true,
+      alwaysOnDisplay: false,
+    },
   },
 
   // Samsung Galaxy S25 Series (Released: February 7, 2025)
@@ -256,6 +476,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
     updatedAt: '2025-02-07',
+    phone: {
+      weight: 218,
+      battery: 5000,
+      dimensions: { height: 162.8, width: 77.6, depth: 8.2 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'samsung-galaxy-s25-plus',
@@ -265,6 +495,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
     updatedAt: '2025-02-07',
+    phone: {
+      weight: 190,
+      battery: 4900,
+      dimensions: { height: 158.4, width: 75.8, depth: 7.3 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'samsung-galaxy-s25',
@@ -274,6 +514,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
     updatedAt: '2025-02-07',
+    phone: {
+      weight: 162,
+      battery: 4000,
+      dimensions: { height: 146.9, width: 70.5, depth: 7.2 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // Samsung Galaxy S24 Series (Released: January 31, 2024)
@@ -285,6 +535,16 @@ export const devices: Device[] = [
     ratio: 19.3 / 9,
     resolution: '3120 x 1440',
     updatedAt: '2024-01-31',
+    phone: {
+      weight: 232,
+      battery: 5000,
+      dimensions: { height: 162.3, width: 79.0, depth: 8.6 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'samsung-galaxy-s24-plus',
@@ -294,6 +554,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
     updatedAt: '2024-01-31',
+    phone: {
+      weight: 196,
+      battery: 4900,
+      dimensions: { height: 158.5, width: 75.9, depth: 7.7 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'samsung-galaxy-s24',
@@ -303,6 +573,16 @@ export const devices: Device[] = [
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
     updatedAt: '2024-01-31',
+    phone: {
+      weight: 167,
+      battery: 4000,
+      dimensions: { height: 147.0, width: 70.6, depth: 7.6 },
+      refreshRate: 120,
+      screenType: 'Dynamic AMOLED',
+      peakBrightness: 2600,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // Google Pixel 10 Series (Released: August 20, 2025)
@@ -314,6 +594,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '1080 x 2424',
     updatedAt: '2025-08-20',
+    phone: {
+      weight: 185,
+      battery: 4500,
+      dimensions: { height: 152.8, width: 72.0, depth: 8.5 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2400,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'google-pixel-10-pro',
@@ -323,6 +613,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '1280 x 2856',
     updatedAt: '2025-08-20',
+    phone: {
+      weight: 199,
+      battery: 4700,
+      dimensions: { height: 152.8, width: 72.0, depth: 8.5 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2800,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'google-pixel-10-pro-xl',
@@ -332,6 +632,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '1344 x 2992',
     updatedAt: '2025-08-20',
+    phone: {
+      weight: 221,
+      battery: 5200,
+      dimensions: { height: 162.8, width: 76.6, depth: 8.8 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2800,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // Google Pixel 9 Series (Released: August 22, 2024)
@@ -343,6 +653,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '2400 x 1080',
     updatedAt: '2024-08-22',
+    phone: {
+      weight: 198,
+      battery: 4700,
+      dimensions: { height: 152.8, width: 72.0, depth: 8.5 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2700,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'google-pixel-9-pro',
@@ -352,6 +672,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '1280 x 2856',
     updatedAt: '2024-08-22',
+    phone: {
+      weight: 199,
+      battery: 4700,
+      dimensions: { height: 152.8, width: 72.0, depth: 8.5 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2761,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
   {
     id: 'google-pixel-9-pro-xl',
@@ -361,6 +691,16 @@ export const devices: Device[] = [
     ratio: 20 / 9,
     resolution: '1344 x 2992',
     updatedAt: '2024-08-22',
+    phone: {
+      weight: 221,
+      battery: 5060,
+      dimensions: { height: 162.8, width: 76.6, depth: 8.5 },
+      refreshRate: 120,
+      screenType: 'LTPO OLED',
+      peakBrightness: 2761,
+      hdr: true,
+      alwaysOnDisplay: true,
+    },
   },
 
   // ============================================

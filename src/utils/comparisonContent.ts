@@ -1,5 +1,21 @@
 // Utility functions for generating unique comparison content
 
+// Phone-specific attributes
+interface PhoneSpecs {
+  weight?: number;
+  battery?: number;
+  dimensions?: {
+    height: number;
+    width: number;
+    depth: number;
+  };
+  refreshRate?: number;
+  screenType?: string;
+  peakBrightness?: number;
+  hdr?: boolean;
+  alwaysOnDisplay?: boolean;
+}
+
 interface Device {
   id: string;
   name: string;
@@ -7,6 +23,7 @@ interface Device {
   ratio: number;
   category: string;
   resolution?: string;
+  phone?: PhoneSpecs;
 }
 
 interface ComparisonDimensions {
@@ -408,11 +425,18 @@ export function generateComparisonFAQ(
   const sizeDiff = Math.abs(deviceA.diagonal - deviceB.diagonal);
   const areaDiff = ((largerArea - smallerArea) / smallerArea) * 100;
 
-  // Size difference FAQ
-  if (sizeDiff > 1) {
+  // Size difference FAQ - optimized for real search patterns
+  if (sizeDiff < 0.2) {
+    // Nearly identical sizes - use "same size" question
     faqs.push({
-      question: `How much bigger is the ${larger.name} compared to the ${smaller.name}?`,
-      answer: `The ${larger.name} is ${sizeDiff.toFixed(1)} inches larger diagonally (${larger.diagonal}" vs ${smaller.diagonal}"), which translates to approximately ${areaDiff.toFixed(0)}% more screen area. In actual measurements, the ${larger.name} provides ${largerArea.toFixed(1)} square inches of viewing space compared to ${smallerArea.toFixed(1)} square inches on the ${smaller.name}.`
+      question: `Are ${deviceA.name} and ${deviceB.name} the same size?`,
+      answer: `Yes, ${deviceA.name} and ${deviceB.name} are nearly identical in size. Both have ${deviceA.diagonal}" diagonal screens with the same ${largerArea.toFixed(1)} square inches of viewing area. The dimensional difference is negligible at just ${sizeDiff.toFixed(2)} inches.`
+    });
+  } else {
+    // Different sizes - use "how much bigger" question (no "the" - matches search patterns)
+    faqs.push({
+      question: `How much bigger is ${larger.name} than ${smaller.name}?`,
+      answer: `${larger.name} is ${sizeDiff.toFixed(1)} inches larger diagonally (${larger.diagonal}" vs ${smaller.diagonal}"), which translates to approximately ${areaDiff.toFixed(0)}% more screen area. In actual measurements, ${larger.name} provides ${largerArea.toFixed(1)} square inches of viewing space compared to ${smallerArea.toFixed(1)} square inches on ${smaller.name}.`
     });
   }
 
@@ -438,6 +462,65 @@ export function generateComparisonFAQ(
         question: `Which is better for watching videos?`,
         answer: `The ${larger.name} provides a superior video watching experience with ${areaDiff.toFixed(0)}% more screen area. This extra space makes movies, YouTube videos, and streaming content more immersive. However, if you primarily watch videos in portrait mode or prefer a lighter device, the ${smaller.name} is still excellent for media consumption.`
       });
+    }
+
+    // Battery comparison FAQ (phone-specific)
+    if (deviceA.phone?.battery && deviceB.phone?.battery) {
+      const batteryA = deviceA.phone.battery;
+      const batteryB = deviceB.phone.battery;
+      const largerBattery = batteryA > batteryB ? deviceA : deviceB;
+      const smallerBattery = batteryA > batteryB ? deviceB : deviceA;
+      const batteryDiff = Math.abs(batteryA - batteryB);
+      if (batteryDiff > 200) {
+        faqs.push({
+          question: `Which phone has better battery life?`,
+          answer: `The ${largerBattery.name} has a larger ${Math.max(batteryA, batteryB)} mAh battery compared to ${Math.min(batteryA, batteryB)} mAh on the ${smallerBattery.name}, a difference of ${batteryDiff} mAh. This typically translates to ${Math.round(batteryDiff / 500)}-${Math.round(batteryDiff / 300)} hours more screen-on time, though actual battery life depends on usage patterns, display brightness, and software optimization.`
+        });
+      }
+    }
+
+    // Weight comparison FAQ (phone-specific)
+    if (deviceA.phone?.weight && deviceB.phone?.weight) {
+      const weightA = deviceA.phone.weight;
+      const weightB = deviceB.phone.weight;
+      const lighterPhone = weightA < weightB ? deviceA : deviceB;
+      const heavierPhone = weightA < weightB ? deviceB : deviceA;
+      const weightDiff = Math.abs(weightA - weightB);
+      if (weightDiff > 10) {
+        faqs.push({
+          question: `Which phone is lighter and easier to hold?`,
+          answer: `The ${lighterPhone.name} weighs ${Math.min(weightA, weightB)}g, which is ${weightDiff}g lighter than the ${heavierPhone.name} at ${Math.max(weightA, weightB)}g. For extended use, reading, or one-handed operation, the lighter ${lighterPhone.name} will cause less hand fatigue. However, the heavier ${heavierPhone.name} may feel more premium and substantial.`
+        });
+      }
+    }
+
+    // Refresh rate comparison FAQ (phone-specific)
+    if (deviceA.phone?.refreshRate && deviceB.phone?.refreshRate) {
+      const rateA = deviceA.phone.refreshRate;
+      const rateB = deviceB.phone.refreshRate;
+      if (rateA !== rateB) {
+        const higherRate = rateA > rateB ? deviceA : deviceB;
+        const lowerRate = rateA > rateB ? deviceB : deviceA;
+        faqs.push({
+          question: `Which phone has a smoother display for gaming?`,
+          answer: `The ${higherRate.name} has a ${Math.max(rateA, rateB)}Hz display compared to ${Math.min(rateA, rateB)}Hz on the ${lowerRate.name}. The higher refresh rate provides smoother scrolling, more responsive touch input, and a better gaming experience. For competitive mobile gaming or users sensitive to motion smoothness, the ${higherRate.name} is the better choice.`
+        });
+      }
+    }
+
+    // Display brightness comparison FAQ (phone-specific)
+    if (deviceA.phone?.peakBrightness && deviceB.phone?.peakBrightness) {
+      const brightnessA = deviceA.phone.peakBrightness;
+      const brightnessB = deviceB.phone.peakBrightness;
+      const brightnessDiff = Math.abs(brightnessA - brightnessB);
+      if (brightnessDiff > 200) {
+        const brighterPhone = brightnessA > brightnessB ? deviceA : deviceB;
+        const dimmerPhone = brightnessA > brightnessB ? deviceB : deviceA;
+        faqs.push({
+          question: `Which phone is better for outdoor use?`,
+          answer: `The ${brighterPhone.name} has a peak brightness of ${Math.max(brightnessA, brightnessB)} nits compared to ${Math.min(brightnessA, brightnessB)} nits on the ${dimmerPhone.name}. The ${brightnessDiff} nits difference makes the ${brighterPhone.name} significantly easier to read in direct sunlight, making it the better choice for frequent outdoor use.`
+        });
+      }
     }
   } else if (deviceA.category === 'tv') {
     // Viewing distance FAQ
