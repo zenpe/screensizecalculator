@@ -34,7 +34,7 @@ Typical Video Editing Layout:
 - Eye strain during long sessions
 - Detail visibility in color grading
 
-> **Industry Insight:** According to a [Puget Systems survey of video professionals](https://www.pugetsystems.com/labs/articles/Most-Popular-Hardware-for-Video-Editing-2023/), 68% of professional editors use monitors 27" or larger, with 32" being the most popular single-monitor size.
+> **Industry Insight:** As noted in professional hardware reviews, such as those from [RTINGS.com](https://www.rtings.com/monitor/reviews/best/by-usage/video-editing), most professional editors use monitors 27" or larger, with 32" being a popular choice for a single-monitor setup.
 
 ---
 
@@ -87,7 +87,7 @@ To see your footage at 100% zoom (1:1 pixel mapping), your monitor resolution mu
 - Fine detail work
 - Quality control
 
-> **Technical Note:** The [Adobe Premiere Pro User Guide](https://helpx.adobe.com/premiere-pro/using/monitor-playback.html) recommends viewing footage at 100% scale for quality assessment, which requires matching monitor resolution.
+> **Technical Note:** To ensure quality, video editors often use 1:1 pixel mapping to view footage at its native resolution without scaling. This [display technique](https://en.wikipedia.org/wiki/1:1_pixel_mapping) is crucial for accurately assessing focus and detail.
 
 ### Resolution and PPI by Size
 
