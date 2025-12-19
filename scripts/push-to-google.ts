@@ -5,6 +5,7 @@ import xml2js from 'xml2js';
 
 // Configuration
 const KEY_FILE = path.join(process.cwd(), 'scripts', 'screencalc-indexing-481706-551aa52f6727.json');
+const STATE_FILE = path.join(process.cwd(), 'scripts', 'indexing-state.json');
 const MAX_URLS = 200;
 
 interface SitemapUrl {
@@ -18,6 +19,16 @@ async function pushToGoogle() {
         if (!fs.existsSync(KEY_FILE)) {
             console.error(`Error: Key file not found at ${KEY_FILE}`);
             process.exit(1);
+        }
+
+        // 1.5 Load existing state
+        let state: Record<string, string> = {}; // { url: lastmod_pushed }
+        if (fs.existsSync(STATE_FILE)) {
+            try {
+                state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8'));
+            } catch (e) {
+                console.warn('Warning: Could not parse state file, starting fresh.');
+            }
         }
 
         let urlsToPush: { url: string; lastmod: string }[] = [];
@@ -72,16 +83,23 @@ async function pushToGoogle() {
             const result = await parser.parseStringPromise(sitemapContent);
             const rawUrls = result.urlset?.url || [];
 
-            console.log('Sorting URLs by lastmod (most recent first)...');
+            console.log('Filtering and sorting URLs by lastmod...');
             const sortedUrls = rawUrls
                 .map((u: any) => ({
                     url: u.loc[0],
                     lastmod: u.lastmod ? u.lastmod[0] : '1970-01-01'
                 }))
+                // Filter: only push if never pushed or if sitemap date > pushed date
+                .filter((u: any) => {
+                    const lastPushedLastmod = state[u.url];
+                    if (!lastPushedLastmod) return true; // Never pushed
+                    return new Date(u.lastmod).getTime() > new Date(lastPushedLastmod).getTime(); // Updated
+                })
                 .sort((a: any, b: any) => {
                     return new Date(b.lastmod).getTime() - new Date(a.lastmod).getTime();
                 });
 
+            console.log(`Initial URLs that need update: ${sortedUrls.length}`);
             urlsToPush = sortedUrls.slice(0, MAX_URLS);
         }
 
@@ -115,6 +133,11 @@ async function pushToGoogle() {
                     },
                 });
                 console.log(`[SUCCESS] ${entry.lastmod} - ${entry.url}`);
+
+                // Update state after success
+                state[entry.url] = entry.lastmod;
+                fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+
             } catch (err: any) {
                 const status = err.response?.status || err.code;
                 const errorMsg = err.response?.data?.error?.message || err.message;
