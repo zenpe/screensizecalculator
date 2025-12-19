@@ -19,11 +19,6 @@ import {
   generateRecommendations,
   generateComparisonFAQ,
 } from '../../utils/comparisonContent';
-import {
-  generateComparisonTitle,
-  generateComparisonDescription as generateComparisonSeoDescription,
-  generateComparisonH1,
-} from '../../utils/seoTitles';
 
 // Generate valid comparison pairs with alphabetical deduplication (SEO: single canonical URL)
 export function getStaticPaths() {
@@ -77,11 +72,10 @@ const percentLarger = ((primaryArea - secondaryArea) / secondaryArea) * 100;
 // Format number helper
 const formatNum = (num: number, decimals = 1) => num.toFixed(decimals);
 
-// SEO metadata - dynamic title generation based on device characteristics
-const title = generateComparisonTitle(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
-const description = generateComparisonSeoDescription(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
-const h1 = generateComparisonH1(primaryDevice, secondaryDevice);
-const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size comparison, ${primaryDevice.name} screen size, ${secondaryDevice.name} screen size, display comparison, ${primaryDevice.category} comparison`;
+// SEO metadata
+const title = `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`;
+const description = `Compare screen sizes between ${primaryDevice.name} (${primaryDevice.diagonal}") and ${secondaryDevice.name} (${secondaryDevice.diagonal}"). See visual overlay comparison and exact dimensions.`;
+const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size comparison, ${primaryDevice.name} screen size, ${secondaryDevice.name} screen size, display comparison`;
 
 // Amazon search URLs (generic searches)
 const getAmazonUrl = (device: typeof deviceA) => {
@@ -224,7 +218,7 @@ const techArticleSchema = {
     <!-- Page Header -->
     <div class="text-center mb-6 sm:mb-8">
       <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
-        {h1}
+        {primaryDevice.name} vs {secondaryDevice.name} Screen Size Comparison
       </h1>
       <p class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4">
         Visual comparison of {primaryDevice.name} ({primaryDevice.diagonal}") and

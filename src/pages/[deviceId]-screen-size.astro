@@ -12,7 +12,6 @@ import {
 } from '../data/devices';
 import { getAmazonSearchUrl, siteConfig } from '../site.config';
 import { getComparisonUrl } from '../utils/url';
-import { generateDetailTitle, generateDetailDescription, generateDetailH1 } from '../utils/seoTitles';
 
 // Generate pages for all devices
 export function getStaticPaths() {
@@ -32,11 +31,10 @@ const ppi = calculateDevicePPI(device);
 // Format numbers
 const fmt = (num: number, decimals = 1) => num.toFixed(decimals);
 
-// SEO metadata - dynamic title generation based on device characteristics
-const title = generateDetailTitle(device);
-const description = generateDetailDescription(device, dims);
-const h1 = generateDetailH1(device);
-const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, how big is ${device.name}, ${device.name} specs${device.category === 'phone' ? `, ${device.name} size in inches, ${device.name} weight, ${device.name} battery` : ''}`;
+// SEO metadata
+const title = `${device.name} Screen Size - Dimensions & Specifications`;
+const description = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ''}. Complete screen size guide with specs and comparisons.`;
+const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === 'phone' ? `, ${device.name} size comparison` : ''}`;
 
 // Brand detection patterns - ordered by specificity (product names before brand names)
 const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
@@ -313,7 +311,7 @@ const breadcrumbSchema = {
     <!-- Hero Section -->
     <div class="text-center mb-8">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-        {h1}
+        {device.name} Screen Size
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-3">
         Complete screen size guide for the {device.name} with {device.diagonal}" display
