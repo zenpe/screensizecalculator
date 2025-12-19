@@ -70,7 +70,7 @@ const organizationSchema = {
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
       <!-- Brand Column -->
       <div class="col-span-2 md:col-span-1">
-        <a href="/" class="flex items-center gap-2 mb-4 group">
+        <a href="/" class="flex items-center gap-2.5 mb-4 group">
           <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-primary-500/25 transition-shadow">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" role="img" aria-label="Screen Size Calculator logo">
               <rect x="3" y="4" width="14" height="9" rx="1.5" fill="#99F6E4"/>
@@ -80,7 +80,10 @@ const organizationSchema = {
               <circle cx="12" cy="12" r="2" fill="white"/>
             </svg>
           </div>
-          <span class="font-bold text-white text-lg">{siteInfo.name}</span>
+          <div class="flex flex-col">
+            <span class="font-bold text-white text-sm leading-tight group-hover:text-primary-400 transition-colors">ScreenCalc</span>
+            <span class="text-[10px] text-gray-400 leading-tight">Size Calculator</span>
+          </div>
         </a>
         <p class="text-sm text-gray-400 mb-5 leading-relaxed">
           {siteInfo.description}
@@ -106,24 +109,18 @@ const organizationSchema = {
       <nav aria-label="Calculator tools">
         <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Calculators</h3>
         <ul class="space-y-3">
-          {calculatorLinks.slice(0, 6).map(link => (
+          {calculatorLinks.map(link => (
             <li>
               <a
                 href={link.href}
                 class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5"
               >
                 {link.icon && <CategoryIcon icon={link.icon} size="sm" />}
-                <span>{link.label}</span>
+                <span>{link.shortLabel || link.label}</span>
               </a>
             </li>
           ))}
         </ul>
-        <a href="/calculators" class="inline-flex items-center gap-1 mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
-          All Calculators
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </a>
       </nav>
 
       <!-- Compare Column -->

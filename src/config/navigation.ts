@@ -2,7 +2,7 @@
 // Single source of truth for all navigation links
 
 export type DeviceCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
-export type ToolType = 'ppi' | 'aspect-ratio' | 'all' | 'search' | 'blog';
+export type ToolType = 'ppi' | 'aspect-ratio' | 'resolution' | 'all' | 'search' | 'blog';
 export type IconType = DeviceCategory | ToolType;
 
 export interface NavLink {
@@ -27,6 +27,7 @@ export const calculatorLinks: NavLink[] = [
   { href: '/projector-screen-size-calculator', label: 'Projector Size', shortLabel: 'Projector', icon: 'projector' },
   { href: '/ppi-calculator', label: 'PPI Calculator', shortLabel: 'PPI', icon: 'ppi' },
   { href: '/aspect-ratio-calculator', label: 'Aspect Ratio', shortLabel: 'Ratio', icon: 'aspect-ratio' },
+  { href: '/resolution-calculator', label: 'Resolution', shortLabel: 'Resolution', icon: 'resolution' },
 ];
 
 // Comparison pages navigation

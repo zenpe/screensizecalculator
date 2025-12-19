@@ -1,15 +1,28 @@
 ---
-// Header component with simplified navigation
+// Header component
+import { calculatorLinks, comparisonLinks, deviceLinks, resourceLinks, siteInfo } from '../config/navigation';
 import CategoryIcon from './icons/CategoryIcon.astro';
+
+const currentPath = Astro.url.pathname;
+
+const screenCalculators = calculatorLinks.filter(link =>
+  ['tv', 'monitor', 'phone', 'tablet', 'projector'].includes(link.icon || '')
+);
+const utilityTools = calculatorLinks.filter(link =>
+  ['ppi', 'aspect-ratio', 'resolution'].includes(link.icon || '')
+);
+const comparisonCategories = comparisonLinks.filter(link => link.icon !== 'all');
+const deviceCategories = deviceLinks.filter(link => link.icon !== 'all');
+const guideLinks = resourceLinks.filter(link => link.href !== '/blog');
 ---
 
-<header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-900/95">
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-14">
+<header class="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 group shrink-0" aria-label="Home">
-        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-sm">
-          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" role="img" aria-label="Screen Size Calculator logo">
+      <a href="/" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
             <rect x="3" y="4" width="14" height="9" rx="1.5" fill="#99F6E4"/>
             <rect x="7" y="11" width="14" height="9" rx="1.5" fill="white"/>
             <path d="M1 7V2h5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -17,280 +30,238 @@ import CategoryIcon from './icons/CategoryIcon.astro';
             <circle cx="12" cy="12" r="2" fill="white"/>
           </svg>
         </div>
-        <span class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors hidden sm:block text-sm">
-          ScreenSizeCalculator
-        </span>
+        <span class="hidden sm:block font-bold text-gray-900 dark:text-white">ScreenCalc</span>
       </a>
 
-      <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-1">
-        <!-- Tools Dropdown -->
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-1">
+        <!-- Calculators -->
         <div class="relative group">
-          <button
-            type="button"
-            class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Tools
-            <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+          <button class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 inline-flex items-center gap-1">
+            Calculators
+            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <!-- Dropdown Menu -->
-          <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 min-w-[200px]">
-              <!-- Device Calculators -->
-              <div class="px-3 py-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Screen Calculators</div>
-              <a href="/tv-screen-size-calculator" aria-label="TV Screen Size Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="tv" size="sm" />
-                <span>TV Size</span>
-              </a>
-              <a href="/monitor-screen-size-calculator" aria-label="Monitor Screen Size Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="monitor" size="sm" />
-                <span>Monitor Size</span>
-              </a>
-              <a href="/phone-screen-size-calculator" aria-label="Phone Screen Size Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="phone" size="sm" />
-                <span>Phone Size</span>
-              </a>
-              <a href="/tablet-screen-size-calculator" aria-label="Tablet Screen Size Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="tablet" size="sm" />
-                <span>Tablet Size</span>
-              </a>
-              <a href="/projector-screen-size-calculator" aria-label="Projector Screen Size Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="projector" size="sm" />
-                <span>Projector Size</span>
-              </a>
-
-              <div class="border-t border-gray-100 dark:border-gray-700 my-1.5"></div>
-              <div class="px-3 py-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Other Tools</div>
-              <a href="/ppi-calculator" aria-label="PPI Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="ppi" size="sm" />
-                <span>PPI Calculator</span>
-              </a>
-              <a href="/aspect-ratio-calculator" aria-label="Aspect Ratio Calculator" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="aspect-ratio" size="sm" />
-                <span>Aspect Ratio</span>
-              </a>
-              <div class="border-t border-gray-100 dark:border-gray-700 my-1.5"></div>
-              <a href="/calculators" aria-label="All Calculators" class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <CategoryIcon icon="all" size="sm" />
-                <span>All Calculators</span>
-              </a>
+          <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-[420px]">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div class="text-xs font-semibold text-gray-400 uppercase mb-2">Screen Calculators</div>
+                  {screenCalculators.map(link => (
+                    <a href={link.href} class="flex items-center gap-2 px-2 py-1.5 rounded text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <CategoryIcon icon={link.icon || 'tv'} size="sm" />
+                      {link.shortLabel || link.label}
+                    </a>
+                  ))}
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-gray-400 uppercase mb-2">Utility Tools</div>
+                  {utilityTools.map(link => (
+                    <a href={link.href} class="flex items-center gap-2 px-2 py-1.5 rounded text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <CategoryIcon icon={link.icon || 'ppi'} size="sm" />
+                      {link.shortLabel || link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Compare Dropdown -->
+        <!-- Compare -->
         <div class="relative group">
-          <button
-            type="button"
-            class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
+          <button class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 inline-flex items-center gap-1">
             Compare
-            <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <!-- Dropdown Menu -->
-          <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 min-w-[200px]">
-              <a href="/comparison" aria-label="Search Comparisons" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <span>Search Comparisons</span>
-              </a>
-              <div class="border-t border-gray-100 dark:border-gray-700 my-1.5"></div>
-              <a href="/comparison/phones" aria-label="Compare Phone Screen Sizes" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="phone" size="sm" />
-                <span>Phones</span>
-              </a>
-              <a href="/comparison/tablets" aria-label="Compare Tablet Screen Sizes" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="tablet" size="sm" />
-                <span>Tablets</span>
-              </a>
-              <a href="/comparison/tvs" aria-label="Compare TV Screen Sizes" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="tv" size="sm" />
-                <span>TVs</span>
-              </a>
-              <a href="/comparison/monitors" aria-label="Compare Monitor Screen Sizes" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="monitor" size="sm" />
-                <span>Monitors</span>
-              </a>
-              <a href="/comparison/projectors" aria-label="Compare Projector Screen Sizes" class="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <CategoryIcon icon="projector" size="sm" />
-                <span>Projectors</span>
-              </a>
-              <div class="border-t border-gray-100 dark:border-gray-700 my-1.5"></div>
-              <a href="/devices" aria-label="All Devices" class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <CategoryIcon icon="all" size="sm" />
-                <span>All Devices</span>
-              </a>
+          <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-56">
+              {comparisonCategories.map(link => (
+                <a href={link.href} class="flex items-center gap-2 px-2 py-1.5 rounded text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <CategoryIcon icon={link.icon || 'phone'} size="sm" />
+                  {link.shortLabel || link.label}
+                </a>
+              ))}
+              <div class="border-t border-gray-100 dark:border-gray-800 mt-2 pt-2">
+                <a href="/comparison" class="flex items-center gap-2 px-2 py-1.5 text-sm text-primary-600 dark:text-primary-400 font-medium">
+                  <CategoryIcon icon="search" size="sm" />
+                  Search all
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Blog Link -->
-        <a href="/blog" class="px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+        <!-- Devices -->
+        <div class="relative group">
+          <button class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 inline-flex items-center gap-1">
+            Devices
+            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-56">
+              {deviceCategories.map(link => (
+                <a href={link.href} class="flex items-center gap-2 px-2 py-1.5 rounded text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <CategoryIcon icon={link.icon || 'phone'} size="sm" />
+                  {link.label}
+                </a>
+              ))}
+              <div class="border-t border-gray-100 dark:border-gray-800 mt-2 pt-2">
+                <a href="/devices" class="flex items-center gap-2 px-2 py-1.5 text-sm text-primary-600 dark:text-primary-400 font-medium">
+                  <CategoryIcon icon="all" size="sm" />
+                  All devices
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resources -->
+        <div class="relative group">
+          <button class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 inline-flex items-center gap-1">
+            Resources
+            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-56">
+              {guideLinks.map(link => (
+                <a href={link.href} class="block px-2 py-1.5 rounded text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  {link.label}
+                </a>
+              ))}
+              <div class="border-t border-gray-100 dark:border-gray-800 mt-2 pt-2">
+                <a href="/blog" class="flex items-center gap-2 px-2 py-1.5 text-sm text-primary-600 dark:text-primary-400 font-medium">
+                  <CategoryIcon icon="blog" size="sm" />
+                  Blog
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Right -->
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" type="button" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Toggle theme">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <button id="mobile-menu-btn" type="button" class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 z-50 lg:hidden" style="display: none;">
+  <!-- Backdrop -->
+  <div id="mobile-backdrop" class="absolute inset-0 bg-gray-900/50"></div>
+
+  <!-- Panel -->
+  <div class="absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 h-16 border-b border-gray-200 dark:border-gray-800">
+      <span class="font-semibold text-gray-900 dark:text-white">Menu</span>
+      <button id="mobile-close" type="button" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <nav class="p-4 overflow-y-auto" style="max-height: calc(100vh - 64px);">
+      <!-- Main Links -->
+      <div class="space-y-1 mb-6">
+        <a href="/calculators" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800">
+          Calculators
+        </a>
+        <a href="/comparison" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800">
+          Compare
+        </a>
+        <a href="/devices" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800">
+          Devices
+        </a>
+        <a href="/blog" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800">
           Blog
         </a>
       </div>
 
-      <!-- Right side: Dark Mode Toggle -->
-      <div class="flex items-center gap-1">
-        <button
-          id="dark-mode-toggle"
-          type="button"
-          class="p-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-          aria-label="Toggle dark mode"
-        >
-          <svg id="dark-mode-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <svg id="dark-mode-moon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
-
-        <!-- Mobile Menu Button -->
-        <button
-          id="mobile-menu-button"
-          type="button"
-          class="md:hidden p-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-          aria-label="Toggle menu"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <svg id="menu-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <svg id="close-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden pb-4">
-      <!-- Screen Calculators Section -->
-      <div class="py-2">
-        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Screen Calculators</div>
-        <div class="grid grid-cols-2 gap-1 px-2">
-          <a href="/tv-screen-size-calculator" aria-label="TV Screen Size Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="tv" size="sm" /> TV
-          </a>
-          <a href="/monitor-screen-size-calculator" aria-label="Monitor Screen Size Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="monitor" size="sm" /> Monitor
-          </a>
-          <a href="/phone-screen-size-calculator" aria-label="Phone Screen Size Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="phone" size="sm" /> Phone
-          </a>
-          <a href="/tablet-screen-size-calculator" aria-label="Tablet Screen Size Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="tablet" size="sm" /> Tablet
-          </a>
-          <a href="/projector-screen-size-calculator" aria-label="Projector Screen Size Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="projector" size="sm" /> Projector
-          </a>
+      <!-- Quick Access -->
+      <div class="border-t border-gray-200 dark:border-gray-800 pt-4">
+        <div class="text-xs font-semibold text-gray-400 uppercase px-4 mb-2">Quick Access</div>
+        <div class="space-y-1">
+          {screenCalculators.slice(0, 4).map(link => (
+            <a href={link.href} class="flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+              <CategoryIcon icon={link.icon || 'tv'} size="sm" />
+              {link.shortLabel || link.label}
+            </a>
+          ))}
         </div>
       </div>
+    </nav>
+  </div>
+</div>
 
-      <!-- Other Tools Section -->
-      <div class="py-2 border-t border-gray-100 dark:border-gray-700">
-        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Other Tools</div>
-        <div class="grid grid-cols-2 gap-1 px-2">
-          <a href="/ppi-calculator" aria-label="PPI Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="ppi" size="sm" /> PPI
-          </a>
-          <a href="/aspect-ratio-calculator" aria-label="Aspect Ratio Calculator" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="aspect-ratio" size="sm" /> Aspect Ratio
-          </a>
-        </div>
-        <a href="/calculators" aria-label="All Calculators" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2 mt-1">
-          <CategoryIcon icon="all" size="sm" />
-          All Calculators
-        </a>
-      </div>
+<script is:inline>
+(function() {
+  // Theme
+  var toggle = document.getElementById('theme-toggle');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var stored = localStorage.getItem('theme');
 
-      <!-- Compare Section -->
-      <div class="py-2 border-t border-gray-100 dark:border-gray-700">
-        <div class="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Compare Sizes</div>
-        <a href="/comparison" aria-label="Search All Comparisons" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2">
-          <CategoryIcon icon="search" size="sm" />
-          Search All Comparisons
-        </a>
-        <div class="grid grid-cols-2 gap-1 px-2 mt-1">
-          <a href="/comparison/phones" aria-label="Compare Phone Screen Sizes" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="phone" size="sm" /> Phones
-          </a>
-          <a href="/comparison/tablets" aria-label="Compare Tablet Screen Sizes" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="tablet" size="sm" /> Tablets
-          </a>
-          <a href="/comparison/tvs" aria-label="Compare TV Screen Sizes" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="tv" size="sm" /> TVs
-          </a>
-          <a href="/comparison/monitors" aria-label="Compare Monitor Screen Sizes" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="monitor" size="sm" /> Monitors
-          </a>
-          <a href="/comparison/projectors" aria-label="Compare Projector Screen Sizes" class="flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg">
-            <CategoryIcon icon="projector" size="sm" /> Projectors
-          </a>
-        </div>
-        <a href="/devices" aria-label="Browse All Devices" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2 mt-1">
-          <CategoryIcon icon="all" size="sm" />
-          Browse All Devices
-        </a>
-      </div>
+  if (stored === 'dark' || (!stored && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  }
 
-      <!-- Blog -->
-      <div class="py-2 border-t border-gray-100 dark:border-gray-700">
-        <a href="/blog" aria-label="Blog" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg mx-2">
-          <CategoryIcon icon="blog" size="sm" />
-          Blog
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <script>
-    // Dark mode toggle
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const currentTheme = localStorage.getItem('theme');
-
-    if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-
-    document.getElementById('dark-mode-toggle')?.addEventListener('click', function() {
+  if (toggle) {
+    toggle.onclick = function() {
       document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    });
+    };
+  }
 
-    // Mobile menu toggle
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
+  // Mobile Menu
+  var menuBtn = document.getElementById('mobile-menu-btn');
+  var closeBtn = document.getElementById('mobile-close');
+  var backdrop = document.getElementById('mobile-backdrop');
+  var menu = document.getElementById('mobile-menu');
 
-    mobileMenuButton?.addEventListener('click', function() {
-      const isExpanded = mobileMenu?.classList.toggle('hidden');
-      mobileMenuButton.setAttribute('aria-expanded', String(!isExpanded));
-      menuIcon?.classList.toggle('hidden');
-      closeIcon?.classList.toggle('hidden');
-    });
+  function openMenu() {
+    if (menu) {
+      menu.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+  }
 
-    // Auto-close mobile menu when clicking links
-    document.querySelectorAll('#mobile-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu?.classList.add('hidden');
-        mobileMenuButton?.setAttribute('aria-expanded', 'false');
-        menuIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
-      });
-    });
-  </script>
-</header>
+  function closeMenu() {
+    if (menu) {
+      menu.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (menuBtn) menuBtn.onclick = openMenu;
+  if (closeBtn) closeBtn.onclick = closeMenu;
+  if (backdrop) backdrop.onclick = closeMenu;
+
+  // Close on link click
+  if (menu) {
+    var links = menu.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].onclick = closeMenu;
+    }
+  }
+
+  // Close on Escape
+  document.onkeydown = function(e) {
+    if (e.key === 'Escape') closeMenu();
+  };
+})();
+</script>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  "name": "Main Navigation",
+  "url": `https://${siteInfo.domain}`
+})} />
