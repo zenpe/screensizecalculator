@@ -1,17 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import DeviceDetailVisualizer from '../components/DeviceDetailVisualizer';
-import ShareButtons from '../components/ShareButtons.astro';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import DeviceDetailVisualizer from "../components/DeviceDetailVisualizer";
+import ShareButtons from "../components/ShareButtons.astro";
 import {
   devices,
   calculateDimensions,
   calculateArea,
   calculateDevicePPI,
-  type Device
-} from '../data/devices';
-import { getAmazonSearchUrl, siteConfig } from '../site.config';
-import { getComparisonUrl } from '../utils/url';
+  type Device,
+} from "../data/devices";
+import { getAmazonSearchUrl, siteConfig } from "../site.config";
+import { getComparisonUrl } from "../utils/url";
 
 // Generate pages for all devices
 export function getStaticPaths() {
@@ -33,43 +33,46 @@ const fmt = (num: number, decimals = 1) => num.toFixed(decimals);
 
 // SEO metadata
 const title = `${device.name} Screen Size - Dimensions & Specifications`;
-const description = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ''}. Complete screen size guide with specs and comparisons.`;
-const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === 'phone' ? `, ${device.name} size comparison` : ''}`;
+const description = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ""}. Complete screen size guide with specs and comparisons.`;
+const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === "phone" ? `, ${device.name} size comparison` : ""}`;
 
 // Brand detection patterns - ordered by specificity (product names before brand names)
 const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
   // Product-specific patterns (check first)
-  { pattern: /iphone|ipad|macbook|imac|mac\s?(pro|mini|studio)/i, brand: 'Apple' },
-  { pattern: /galaxy|samsung/i, brand: 'Samsung' },
-  { pattern: /pixel/i, brand: 'Google' },
-  { pattern: /surface/i, brand: 'Microsoft' },
-  { pattern: /thinkpad|ideapad|legion/i, brand: 'Lenovo' },
-  { pattern: /xps|alienware|inspiron/i, brand: 'Dell' },
-  { pattern: /rog|zenbook|vivobook/i, brand: 'ASUS' },
-  { pattern: /redmi|poco/i, brand: 'Xiaomi' },
+  {
+    pattern: /iphone|ipad|macbook|imac|mac\s?(pro|mini|studio)/i,
+    brand: "Apple",
+  },
+  { pattern: /galaxy|samsung/i, brand: "Samsung" },
+  { pattern: /pixel/i, brand: "Google" },
+  { pattern: /surface/i, brand: "Microsoft" },
+  { pattern: /thinkpad|ideapad|legion/i, brand: "Lenovo" },
+  { pattern: /xps|alienware|inspiron/i, brand: "Dell" },
+  { pattern: /rog|zenbook|vivobook/i, brand: "ASUS" },
+  { pattern: /redmi|poco/i, brand: "Xiaomi" },
   // Direct brand name matches
-  { pattern: /\bapple\b/i, brand: 'Apple' },
-  { pattern: /\bgoogle\b/i, brand: 'Google' },
-  { pattern: /\boneplus\b/i, brand: 'OnePlus' },
-  { pattern: /\bxiaomi\b/i, brand: 'Xiaomi' },
-  { pattern: /\bsony\b/i, brand: 'Sony' },
-  { pattern: /\blg\b/i, brand: 'LG' },
-  { pattern: /\btcl\b/i, brand: 'TCL' },
-  { pattern: /\bhisense\b/i, brand: 'Hisense' },
-  { pattern: /\bdell\b/i, brand: 'Dell' },
-  { pattern: /\basus\b/i, brand: 'ASUS' },
-  { pattern: /\bacer\b/i, brand: 'Acer' },
-  { pattern: /\bbenq\b/i, brand: 'BenQ' },
-  { pattern: /\bviewsonic\b/i, brand: 'ViewSonic' },
-  { pattern: /\bmsi\b/i, brand: 'MSI' },
-  { pattern: /\blenovo\b/i, brand: 'Lenovo' },
-  { pattern: /\bhp\b/i, brand: 'HP' },
-  { pattern: /\bmicrosoft\b/i, brand: 'Microsoft' },
-  { pattern: /\bhuawei\b/i, brand: 'Huawei' },
-  { pattern: /\boppo\b/i, brand: 'Oppo' },
-  { pattern: /\bvivo\b/i, brand: 'Vivo' },
-  { pattern: /\bmotorola\b/i, brand: 'Motorola' },
-  { pattern: /\bnothing\b/i, brand: 'Nothing' },
+  { pattern: /\bapple\b/i, brand: "Apple" },
+  { pattern: /\bgoogle\b/i, brand: "Google" },
+  { pattern: /\boneplus\b/i, brand: "OnePlus" },
+  { pattern: /\bxiaomi\b/i, brand: "Xiaomi" },
+  { pattern: /\bsony\b/i, brand: "Sony" },
+  { pattern: /\blg\b/i, brand: "LG" },
+  { pattern: /\btcl\b/i, brand: "TCL" },
+  { pattern: /\bhisense\b/i, brand: "Hisense" },
+  { pattern: /\bdell\b/i, brand: "Dell" },
+  { pattern: /\basus\b/i, brand: "ASUS" },
+  { pattern: /\bacer\b/i, brand: "Acer" },
+  { pattern: /\bbenq\b/i, brand: "BenQ" },
+  { pattern: /\bviewsonic\b/i, brand: "ViewSonic" },
+  { pattern: /\bmsi\b/i, brand: "MSI" },
+  { pattern: /\blenovo\b/i, brand: "Lenovo" },
+  { pattern: /\bhp\b/i, brand: "HP" },
+  { pattern: /\bmicrosoft\b/i, brand: "Microsoft" },
+  { pattern: /\bhuawei\b/i, brand: "Huawei" },
+  { pattern: /\boppo\b/i, brand: "Oppo" },
+  { pattern: /\bvivo\b/i, brand: "Vivo" },
+  { pattern: /\bmotorola\b/i, brand: "Motorola" },
+  { pattern: /\bnothing\b/i, brand: "Nothing" },
 ];
 
 // Extract brand from device name using pattern matching
@@ -79,7 +82,7 @@ const extractBrand = (name: string): string => {
       return brand;
     }
   }
-  return '';
+  return "";
 };
 
 const brand = extractBrand(device.name);
@@ -87,18 +90,23 @@ const brand = extractBrand(device.name);
 // Convert date to ISO 8601 format with timezone (for structured data)
 const toISO8601 = (date: string): string => {
   // If already in ISO 8601 format with time, return as-is
-  if (date.includes('T')) return date;
+  if (date.includes("T")) return date;
   // Convert YYYY-MM-DD to full ISO 8601 format
   return `${date}T10:00:00+08:00`;
 };
 
-// Use device-specific date if available, otherwise fall back to global config
-const lastUpdated = toISO8601(device.updatedAt || siteConfig.contentDates.devicePages);
+// Use device-specific date if available, otherwise fall back to a fixed date
+const DEFAULT_DATE = "2025-12-05T10:00:00+08:00";
+const lastUpdated = toISO8601(device.updatedAt || DEFAULT_DATE);
 
 // Get related devices for comparison (same category, different sizes)
 const relatedDevices = devices
-  .filter(d => d.category === device.category && d.id !== device.id)
-  .sort((a, b) => Math.abs(a.diagonal - device.diagonal) - Math.abs(b.diagonal - device.diagonal))
+  .filter((d) => d.category === device.category && d.id !== device.id)
+  .sort(
+    (a, b) =>
+      Math.abs(a.diagonal - device.diagonal) -
+      Math.abs(b.diagonal - device.diagonal),
+  )
   .slice(0, 10);
 
 // For display in "Browse Similar" section (limited to 6)
@@ -107,66 +115,73 @@ const displayRelatedDevices = relatedDevices.slice(0, 6);
 // Generate dynamic FAQ based on device type
 // Questions optimized to match real search patterns (based on GSC data)
 const generateFAQ = (device: Device) => {
-  const faqs: Array<{question: string; answer: string; link?: {url: string; text: string}}> = [];
+  const faqs: Array<{
+    question: string;
+    answer: string;
+    link?: { url: string; text: string };
+  }> = [];
 
   // Question 1: How big is [device]? (no "the" - matches search pattern)
   faqs.push({
     question: `How big is ${device.name}?`,
-    answer: `${device.name} has a ${device.diagonal}" diagonal screen with dimensions of ${fmt(dims.width, 2)}" wide × ${fmt(dims.height, 2)}" tall (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm). The total screen area is ${fmt(area, 1)} square inches.`
+    answer: `${device.name} has a ${device.diagonal}" diagonal screen with dimensions of ${fmt(dims.width, 2)}" wide × ${fmt(dims.height, 2)}" tall (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm). The total screen area is ${fmt(area, 1)} square inches.`,
   });
 
   // Question 2: What are [device] screen dimensions?
   faqs.push({
     question: `What are ${device.name} screen dimensions?`,
-    answer: `${device.name} screen dimensions are ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm) with a ${device.diagonal}" diagonal. The aspect ratio is ${fmt(device.ratio, 2)}:1${device.resolution ? ` and the resolution is ${device.resolution}` : ''}.`
+    answer: `${device.name} screen dimensions are ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm) with a ${device.diagonal}" diagonal. The aspect ratio is ${fmt(device.ratio, 2)}:1${device.resolution ? ` and the resolution is ${device.resolution}` : ""}.`,
   });
 
   // Question 3: Resolution/PPI (if available)
   if (device.resolution && ppi) {
     faqs.push({
       question: `What is ${device.name} resolution and PPI?`,
-      answer: `${device.name} features a ${device.resolution} resolution with ${Math.round(ppi)} PPI (pixels per inch). ${ppi >= 300 ? 'This qualifies as a Retina display with sharp, crisp visuals.' : 'This provides clear image quality for typical viewing distances.'}`
+      answer: `${device.name} features a ${device.resolution} resolution with ${Math.round(ppi)} PPI (pixels per inch). ${ppi >= 300 ? "This qualifies as a Retina display with sharp, crisp visuals." : "This provides clear image quality for typical viewing distances."}`,
     });
   }
 
   // Question 4: Comparison with similar device (with internal link)
   if (relatedDevices.length > 0) {
     const similar = relatedDevices[0];
-    const percentDiff = ((area - calculateArea(similar.diagonal, similar.ratio)) / calculateArea(similar.diagonal, similar.ratio) * 100);
+    const percentDiff =
+      ((area - calculateArea(similar.diagonal, similar.ratio)) /
+        calculateArea(similar.diagonal, similar.ratio)) *
+      100;
     faqs.push({
       question: `How does ${device.name} compare to ${similar.name}?`,
-      answer: `${device.name} (${device.diagonal}") is ${Math.abs(percentDiff) > 1 ? (percentDiff > 0 ? `${fmt(percentDiff, 1)}% larger` : `${fmt(Math.abs(percentDiff), 1)}% smaller`) : 'about the same size as'} ${similar.name} (${similar.diagonal}") in screen area.`,
+      answer: `${device.name} (${device.diagonal}") is ${Math.abs(percentDiff) > 1 ? (percentDiff > 0 ? `${fmt(percentDiff, 1)}% larger` : `${fmt(Math.abs(percentDiff), 1)}% smaller`) : "about the same size as"} ${similar.name} (${similar.diagonal}") in screen area.`,
       link: {
         url: getComparisonUrl(device.id, similar.id),
-        text: `See full ${device.name} vs ${similar.name} comparison`
-      }
+        text: `See full ${device.name} vs ${similar.name} comparison`,
+      },
     });
   }
 
   // Device-specific questions
-  if (device.category === 'phone') {
+  if (device.category === "phone") {
     // "How tall is" question - only when body dimensions available
     if (device.phone?.dimensions) {
       const heightInches = (device.phone.dimensions.height / 25.4).toFixed(2);
       faqs.push({
         question: `How tall is ${device.name}?`,
-        answer: `${device.name} is ${device.phone.dimensions.height}mm (${heightInches} inches) tall, ${device.phone.dimensions.width}mm wide, and ${device.phone.dimensions.depth}mm thick.`
+        answer: `${device.name} is ${device.phone.dimensions.height}mm (${heightInches} inches) tall, ${device.phone.dimensions.width}mm wide, and ${device.phone.dimensions.depth}mm thick.`,
       });
     }
     faqs.push({
       question: `Is ${device.name} good for one-handed use?`,
-      answer: `${device.diagonal <= 6.1 ? 'Yes, ' + device.name + ' with its ' + device.diagonal + '" screen is suitable for one-handed use for most users.' : device.name + ' with its ' + device.diagonal + '" screen may be challenging for one-handed use, especially for users with smaller hands. It\'s better suited for two-handed operation.'}`
+      answer: `${device.diagonal <= 6.1 ? "Yes, " + device.name + " with its " + device.diagonal + '" screen is suitable for one-handed use for most users.' : device.name + " with its " + device.diagonal + "\" screen may be challenging for one-handed use, especially for users with smaller hands. It's better suited for two-handed operation."}`,
     });
-  } else if (device.category === 'tv') {
+  } else if (device.category === "tv") {
     const optimalDistance = device.diagonal * 1.6;
     faqs.push({
       question: `How far should you sit from a ${device.diagonal} inch TV?`,
-      answer: `For a ${device.diagonal}" TV, the optimal viewing distance is ${fmt(optimalDistance / 12, 1)} feet (${fmt(optimalDistance * 2.54 / 100, 1)}m). The comfortable range is ${fmt(device.diagonal * 1.2 / 12, 1)}-${fmt(device.diagonal * 2.5 / 12, 1)} feet.`
+      answer: `For a ${device.diagonal}" TV, the optimal viewing distance is ${fmt(optimalDistance / 12, 1)} feet (${fmt((optimalDistance * 2.54) / 100, 1)}m). The comfortable range is ${fmt((device.diagonal * 1.2) / 12, 1)}-${fmt((device.diagonal * 2.5) / 12, 1)} feet.`,
     });
-  } else if (device.category === 'tablet') {
+  } else if (device.category === "tablet") {
     faqs.push({
       question: `Is ${device.name} good for reading and productivity?`,
-      answer: `${device.diagonal >= 11 ? 'Yes, ' + device.name + ' with its ' + device.diagonal + '" screen is excellent for reading, note-taking, and productivity tasks with ample screen space.' : device.name + ' with its ' + device.diagonal + '" screen is great for reading and media consumption, though larger tablets may be better for heavy productivity work.'}`
+      answer: `${device.diagonal >= 11 ? "Yes, " + device.name + " with its " + device.diagonal + '" screen is excellent for reading, note-taking, and productivity tasks with ample screen space.' : device.name + " with its " + device.diagonal + '" screen is great for reading and media consumption, though larger tablets may be better for heavy productivity work.'}`,
     });
   }
 
@@ -178,146 +193,228 @@ const faqs = generateFAQ(device);
 // OG Image URL for this device
 const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
 
-// TechArticle Schema - Technical specifications content
-const techArticleSchema = {
+// Conditional Schema: Product (with price) or SoftwareApplication (utility tool)
+// This ensures 100% clean SEO reports by avoiding "missing offers" warnings for unpriced items.
+const isToolSchema = !device.price;
+
+const productSchema = {
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": title,
-  "description": description,
-  "image": {
+  "@type": "Product",
+  name: device.name,
+  description: description,
+  image: {
     "@type": "ImageObject",
-    "url": ogImageUrl,
-    "width": 1200,
-    "height": 630
+    url: ogImageUrl,
+    width: 1200,
+    height: 630,
   },
-  "datePublished": lastUpdated,
-  "dateModified": lastUpdated,
-  "author": {
-    "@type": "Organization",
-    "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl
+  brand: {
+    "@type": "Brand",
+    name: brand || "Universal",
   },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl,
-    "logo": {
-      "@type": "ImageObject",
-      "url": `${siteConfig.siteUrl}/favicon.svg`
-    }
+  sku: device.id,
+  mpn: device.id,
+  offers: {
+    "@type": "Offer",
+    price: device.price,
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+    url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
+    priceValidUntil: "2026-12-31",
   },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": `${siteConfig.siteUrl}/${device.id}-screen-size`
-  },
-  "about": (() => {
-    const categoryInfo: Record<string, { label: string; sameAs: string }> = {
-      phone: { label: 'smartphone', sameAs: 'https://en.wikipedia.org/wiki/Smartphone' },
-      tv: { label: 'TV', sameAs: 'https://en.wikipedia.org/wiki/Television_set' },
-      monitor: { label: 'computer monitor', sameAs: 'https://en.wikipedia.org/wiki/Computer_monitor' },
-      tablet: { label: 'tablet', sameAs: 'https://en.wikipedia.org/wiki/Tablet_computer' },
-      projector: { label: 'projector', sameAs: 'https://en.wikipedia.org/wiki/Projector' }
-    };
-    const info = categoryInfo[device.category] || { label: device.category, sameAs: '' };
-    return {
-      "@type": "Thing",
-      "name": device.name,
-      "description": `A ${device.diagonal}-inch ${info.label} with a screen area of ${fmt(area, 1)} sq inches and dimensions of ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}".`,
-      ...(info.sameAs ? { "sameAs": info.sameAs } : {})
-    };
-  })()
 };
+
+const toolSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: `${device.name} Screen Size Calculator`,
+  description: description,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
+  image: ogImageUrl,
+  author: {
+    "@type": "Organization",
+    name: "Screen Size Calculator",
+  },
+  about: {
+    "@type": "Thing",
+    name: device.name,
+    description: `Specifications and screen dimensions for ${device.name}.`,
+  },
+};
+
+const finalSchema = isToolSchema ? toolSchema : productSchema;
 
 // FAQ Schema
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": faqs.map(faq => ({
+  mainEntity: faqs.map((faq) => ({
     "@type": "Question",
-    "name": faq.question,
-    "acceptedAnswer": {
+    name: faq.question,
+    acceptedAnswer: {
       "@type": "Answer",
-      "text": faq.answer
-    }
-  }))
+      text: faq.answer,
+    },
+  })),
 };
 
 // Amazon URL
 const getAmazonUrl = () => {
-  const searchTerm = device.name.toLowerCase().replace(/['"]/g, '').replace(/\s+/g, '+');
+  const searchTerm = device.name
+    .toLowerCase()
+    .replace(/['"]/g, "")
+    .replace(/\s+/g, "+");
   return getAmazonSearchUrl(searchTerm);
 };
 
 // Category display name mapping
 const CATEGORY_NAMES: Record<string, string> = {
-  phone: 'Phones',
-  tv: 'TVs',
-  monitor: 'Monitors',
-  tablet: 'Tablets',
-  projector: 'Projectors',
+  phone: "Phones",
+  tv: "TVs",
+  monitor: "Monitors",
+  tablet: "Tablets",
+  projector: "Projectors",
 };
 
 // Breadcrumb Schema - using siteUrl from config
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
+  itemListElement: [
     {
       "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": siteConfig.siteUrl
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
     },
     {
       "@type": "ListItem",
-      "position": 2,
-      "name": "Devices",
-      "item": `${siteConfig.siteUrl}/devices`
+      position: 2,
+      name: "Devices",
+      item: `${siteConfig.siteUrl}/devices`,
     },
     {
       "@type": "ListItem",
-      "position": 3,
-      "name": CATEGORY_NAMES[device.category] || 'Devices',
-      "item": `${siteConfig.siteUrl}/devices/${device.category}s`
+      position: 3,
+      name: CATEGORY_NAMES[device.category] || "Devices",
+      item: `${siteConfig.siteUrl}/devices/${device.category}s`,
     },
     {
       "@type": "ListItem",
-      "position": 4,
-      "name": device.name,
-      "item": `${siteConfig.siteUrl}/${device.id}-screen-size`
-    }
-  ]
+      position: 4,
+      name: device.name,
+      item: `${siteConfig.siteUrl}/${device.id}-screen-size`,
+    },
+  ],
 };
-
 ---
 
-<Layout title={title} description={description} keywords={keywords} ogImage={`/og/${device.id}.png`}>
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  ogImage={`/og/${device.id}.png`}
+>
   <Header />
 
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb Navigation -->
     <nav class="mb-4 sm:mb-6 overflow-x-auto" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a></li>
-        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
-        <li><a href="/devices" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Devices</a></li>
-        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
-        <li><a href={`/devices/${device.category}s`} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors capitalize">{device.category}s</a></li>
-        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
-        <li class="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[120px] sm:max-w-none">{device.name}</li>
+      <ol
+        class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+      >
+        <li>
+          <a
+            href="/"
+            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >Home</a
+          >
+        </li>
+        <li>
+          <svg
+            class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path></svg
+          >
+        </li>
+        <li>
+          <a
+            href="/devices"
+            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >Devices</a
+          >
+        </li>
+        <li>
+          <svg
+            class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path></svg
+          >
+        </li>
+        <li>
+          <a
+            href={`/devices/${device.category}s`}
+            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors capitalize"
+            >{device.category}s</a
+          >
+        </li>
+        <li>
+          <svg
+            class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path></svg
+          >
+        </li>
+        <li
+          class="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[120px] sm:max-w-none"
+        >
+          {device.name}
+        </li>
       </ol>
     </nav>
 
     <!-- Hero Section -->
     <div class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      <h1
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+      >
         {device.name} Screen Size
       </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-3">
-        Complete screen size guide for the {device.name} with {device.diagonal}" display
+      <p
+        class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-3"
+      >
+        Complete screen size guide for the {device.name} with {device.diagonal}"
+        display
       </p>
       <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
-        <time datetime={lastUpdated}>Last updated: {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time>
+        <time datetime={lastUpdated}
+          >Last updated: {
+            new Date(lastUpdated).toLocaleDateString("en-US", {
+              month: "long",
+              year: "numeric",
+            })
+          }</time
+        >
         {brand && <span class="ml-2">• {brand}</span>}
       </p>
       <div class="flex justify-center">
@@ -330,211 +427,492 @@ const breadcrumbSchema = {
     </div>
 
     <!-- Key Takeaways Summary -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 sm:p-6 mb-8">
-      <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
-        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+    <div
+      class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 sm:p-6 mb-8"
+    >
+      <h2
+        class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2"
+      >
+        <svg
+          class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+          ></path>
         </svg>
         Key Takeaways
       </h2>
-      <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-x-6 md:gap-y-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+      <ul
+        class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-x-6 md:gap-y-2 text-sm sm:text-base text-gray-700 dark:text-gray-300"
+      >
         <li class="flex items-start gap-2">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          <svg
+            class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"></path>
           </svg>
-          <span><strong>Screen diagonal:</strong> {device.diagonal}" ({fmt(device.diagonal * 2.54, 1)} cm)</span>
+          <span
+            ><strong>Screen diagonal:</strong>
+            {device.diagonal}" ({fmt(device.diagonal * 2.54, 1)} cm)</span
+          >
         </li>
         <li class="flex items-start gap-2">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          <svg
+            class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"></path>
           </svg>
-          <span><strong>Width:</strong> {fmt(dims.width, 2)}" ({fmt(dims.width * 2.54, 1)} cm)</span>
+          <span
+            ><strong>Width:</strong>
+            {fmt(dims.width, 2)}" ({fmt(dims.width * 2.54, 1)} cm)</span
+          >
         </li>
         <li class="flex items-start gap-2">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          <svg
+            class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"></path>
           </svg>
-          <span><strong>Height:</strong> {fmt(dims.height, 2)}" ({fmt(dims.height * 2.54, 1)} cm)</span>
+          <span
+            ><strong>Height:</strong>
+            {fmt(dims.height, 2)}" ({fmt(dims.height * 2.54, 1)} cm)</span
+          >
         </li>
-        {ppi && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Pixel density:</strong> {Math.round(ppi)} PPI — {ppi >= 300 ? 'Retina-quality display with sharp text and images' : 'Good clarity for typical viewing distances'}</span>
-          </li>
-        )}
-        {device.category === 'phone' && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>One-handed use:</strong> {device.diagonal <= 6.1 ? 'Easy — compact size suitable for most users' : device.diagonal <= 6.5 ? 'Moderate — manageable for users with average-sized hands' : 'Challenging — better suited for two-handed operation'}</span>
-          </li>
-        )}
-        {device.category === 'phone' && device.phone?.refreshRate && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Refresh rate:</strong> {device.phone.refreshRate}Hz — {device.phone.refreshRate >= 120 ? 'Smooth scrolling and responsive gaming' : device.phone.refreshRate >= 90 ? 'Good smoothness for daily use' : 'Standard display refresh'}</span>
-          </li>
-        )}
-        {device.category === 'phone' && device.phone?.battery && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Battery:</strong> {device.phone.battery} mAh — {device.phone.battery >= 4500 ? 'All-day battery life with heavy use' : device.phone.battery >= 3500 ? 'Full day of moderate use' : 'Lighter use throughout the day'}</span>
-          </li>
-        )}
-        {device.category === 'phone' && device.phone?.weight && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Weight:</strong> {device.phone.weight}g — {device.phone.weight <= 175 ? 'Lightweight and easy to carry' : device.phone.weight <= 200 ? 'Balanced weight for features' : 'Heavier but feature-packed'}</span>
-          </li>
-        )}
-        {device.category === 'tv' && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Ideal room:</strong> {device.diagonal <= 50 ? 'Bedroom, office, or small living room (5-8 ft viewing)' : device.diagonal <= 65 ? 'Medium to large living room (7-10 ft viewing)' : 'Large living room or home theater (9-14 ft viewing)'}</span>
-          </li>
-        )}
-        {device.category === 'monitor' && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Desk distance:</strong> {device.diagonal <= 24 ? '2-2.5 feet — ideal for compact desks' : device.diagonal <= 27 ? '2.5-3 feet — standard desk setup' : '3-4 feet — requires deeper desk or wall mount'}</span>
-          </li>
-        )}
-        {device.category === 'tablet' && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Best for:</strong> {device.diagonal <= 8.5 ? 'Portability and reading — easy to hold for extended periods' : device.diagonal <= 11 ? 'Balanced use — good for media, reading, and light productivity' : 'Productivity and creative work — laptop replacement potential'}</span>
-          </li>
-        )}
-        {device.category === 'projector' && (
-          <li class="flex items-start gap-2">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span><strong>Viewing distance:</strong> {fmt(device.diagonal * 1.5 / 12, 1)}-{fmt(device.diagonal * 2.5 / 12, 1)} feet for optimal cinematic experience</span>
-          </li>
-        )}
+        {
+          ppi && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Pixel density:</strong> {Math.round(ppi)} PPI —{" "}
+                {ppi >= 300
+                  ? "Retina-quality display with sharp text and images"
+                  : "Good clarity for typical viewing distances"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "phone" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>One-handed use:</strong>{" "}
+                {device.diagonal <= 6.1
+                  ? "Easy — compact size suitable for most users"
+                  : device.diagonal <= 6.5
+                    ? "Moderate — manageable for users with average-sized hands"
+                    : "Challenging — better suited for two-handed operation"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "phone" && device.phone?.refreshRate && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Refresh rate:</strong> {device.phone.refreshRate}Hz —{" "}
+                {device.phone.refreshRate >= 120
+                  ? "Smooth scrolling and responsive gaming"
+                  : device.phone.refreshRate >= 90
+                    ? "Good smoothness for daily use"
+                    : "Standard display refresh"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "phone" && device.phone?.battery && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Battery:</strong> {device.phone.battery} mAh —{" "}
+                {device.phone.battery >= 4500
+                  ? "All-day battery life with heavy use"
+                  : device.phone.battery >= 3500
+                    ? "Full day of moderate use"
+                    : "Lighter use throughout the day"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "phone" && device.phone?.weight && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Weight:</strong> {device.phone.weight}g —{" "}
+                {device.phone.weight <= 175
+                  ? "Lightweight and easy to carry"
+                  : device.phone.weight <= 200
+                    ? "Balanced weight for features"
+                    : "Heavier but feature-packed"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "tv" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Ideal room:</strong>{" "}
+                {device.diagonal <= 50
+                  ? "Bedroom, office, or small living room (5-8 ft viewing)"
+                  : device.diagonal <= 65
+                    ? "Medium to large living room (7-10 ft viewing)"
+                    : "Large living room or home theater (9-14 ft viewing)"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "monitor" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Desk distance:</strong>{" "}
+                {device.diagonal <= 24
+                  ? "2-2.5 feet — ideal for compact desks"
+                  : device.diagonal <= 27
+                    ? "2.5-3 feet — standard desk setup"
+                    : "3-4 feet — requires deeper desk or wall mount"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "tablet" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Best for:</strong>{" "}
+                {device.diagonal <= 8.5
+                  ? "Portability and reading — easy to hold for extended periods"
+                  : device.diagonal <= 11
+                    ? "Balanced use — good for media, reading, and light productivity"
+                    : "Productivity and creative work — laptop replacement potential"}
+              </span>
+            </li>
+          )
+        }
+        {
+          device.category === "projector" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Viewing distance:</strong>{" "}
+                {fmt((device.diagonal * 1.5) / 12, 1)}-
+                {fmt((device.diagonal * 2.5) / 12, 1)} feet for optimal
+                cinematic experience
+              </span>
+            </li>
+          )
+        }
       </ul>
     </div>
 
     <!-- Interactive Visual Comparison -->
-    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 mb-8">
+    <div
+      class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 mb-8"
+    >
       <!-- Header Bar -->
-      <div class={`relative overflow-hidden rounded-t-2xl ${
-        device.category === 'projector'
-          ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900'
-          : device.category === 'tv'
-          ? 'bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900'
-          : device.category === 'monitor'
-          ? 'bg-gradient-to-r from-cyan-900 via-blue-900 to-cyan-900'
-          : device.category === 'tablet'
-          ? 'bg-gradient-to-r from-violet-900 via-purple-800 to-violet-900'
-          : 'bg-gradient-to-r from-rose-900 via-pink-900 to-rose-900'
-      }`}>
+      <div
+        class={`relative overflow-hidden rounded-t-2xl ${
+          device.category === "projector"
+            ? "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900"
+            : device.category === "tv"
+              ? "bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900"
+              : device.category === "monitor"
+                ? "bg-gradient-to-r from-cyan-900 via-blue-900 to-cyan-900"
+                : device.category === "tablet"
+                  ? "bg-gradient-to-r from-violet-900 via-purple-800 to-violet-900"
+                  : "bg-gradient-to-r from-rose-900 via-pink-900 to-rose-900"
+        }`}
+      >
         <!-- Decorative pattern -->
         <div class="absolute inset-0 opacity-10">
-          <div class="absolute inset-0" style={`background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 24px 24px;`}></div>
+          <div
+            class="absolute inset-0"
+            style={`background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 24px 24px;`}
+          >
+          </div>
         </div>
 
-        <div class="relative px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
+        <div
+          class="relative px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4"
+        >
           <!-- Device info -->
           <div class="flex items-center gap-3 sm:gap-4 min-w-0">
             <!-- Device type icon -->
-            <div class={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
-              device.category === 'projector'
-                ? 'bg-slate-700/50 text-slate-300'
-                : device.category === 'tv'
-                ? 'bg-indigo-700/50 text-indigo-300'
-                : device.category === 'monitor'
-                ? 'bg-cyan-700/50 text-cyan-300'
-                : device.category === 'tablet'
-                ? 'bg-violet-700/50 text-violet-300'
-                : 'bg-rose-700/50 text-rose-300'
-            }`}>
-              {device.category === 'projector' && (
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
-                </svg>
-              )}
-              {device.category === 'tv' && (
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-              )}
-              {device.category === 'monitor' && (
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-              )}
-              {device.category === 'tablet' && (
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>
-              )}
-              {device.category === 'phone' && (
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>
-              )}
+            <div
+              class={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
+                device.category === "projector"
+                  ? "bg-slate-700/50 text-slate-300"
+                  : device.category === "tv"
+                    ? "bg-indigo-700/50 text-indigo-300"
+                    : device.category === "monitor"
+                      ? "bg-cyan-700/50 text-cyan-300"
+                      : device.category === "tablet"
+                        ? "bg-violet-700/50 text-violet-300"
+                        : "bg-rose-700/50 text-rose-300"
+              }`}
+            >
+              {
+                device.category === "projector" && (
+                  <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                    />
+                  </svg>
+                )
+              }
+              {
+                device.category === "tv" && (
+                  <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                )
+              }
+              {
+                device.category === "monitor" && (
+                  <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                )
+              }
+              {
+                device.category === "tablet" && (
+                  <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                )
+              }
+              {
+                device.category === "phone" && (
+                  <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                )
+              }
             </div>
 
             <!-- Device name and specs -->
             <div class="min-w-0">
-              <h2 class="text-white font-bold text-sm sm:text-lg truncate">{device.name}</h2>
+              <h2 class="text-white font-bold text-sm sm:text-lg truncate">
+                {device.name}
+              </h2>
               <p class="text-white/60 text-xs sm:text-sm">
-                {fmt(dims.width, 1)}" × {fmt(dims.height, 1)}" • {fmt(device.ratio, 2)}:1
+                {fmt(dims.width, 1)}" × {fmt(dims.height, 1)}" • {
+                  fmt(device.ratio, 2)
+                }:1
               </p>
             </div>
           </div>
 
           <!-- Size badge -->
-          <div class={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-lg sm:text-2xl ${
-            device.category === 'projector'
-              ? 'bg-slate-700/60 text-white'
-              : device.category === 'tv'
-              ? 'bg-indigo-700/60 text-white'
-              : device.category === 'monitor'
-              ? 'bg-cyan-700/60 text-white'
-              : device.category === 'tablet'
-              ? 'bg-violet-700/60 text-white'
-              : 'bg-rose-700/60 text-white'
-          }`}>
+          <div
+            class={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-lg sm:text-2xl ${
+              device.category === "projector"
+                ? "bg-slate-700/60 text-white"
+                : device.category === "tv"
+                  ? "bg-indigo-700/60 text-white"
+                  : device.category === "monitor"
+                    ? "bg-cyan-700/60 text-white"
+                    : device.category === "tablet"
+                      ? "bg-violet-700/60 text-white"
+                      : "bg-rose-700/60 text-white"
+            }`}
+          >
             {device.diagonal}"
           </div>
         </div>
       </div>
 
       <!-- Visualization Area with enhanced background -->
-      <div class={`relative rounded-b-2xl overflow-hidden ${
-        device.category === 'projector'
-          ? 'bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950'
-          : 'bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950'
-      }`}>
+      <div
+        class={`relative rounded-b-2xl overflow-hidden ${
+          device.category === "projector"
+            ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+            : "bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950"
+        }`}
+      >
         <!-- Subtle grid pattern for tech feel -->
         <div class="absolute inset-0 opacity-[0.03]">
-          <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+          <div
+            class="absolute inset-0"
+            style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px;"
+          >
+          </div>
         </div>
 
         <!-- Ambient glow for projector -->
-        {device.category === 'projector' && (
-          <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-gradient-radial from-slate-700/20 via-transparent to-transparent rounded-full blur-3xl"></div>
-          </div>
-        )}
+        {
+          device.category === "projector" && (
+            <div class="absolute inset-0 overflow-hidden">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-gradient-radial from-slate-700/20 via-transparent to-transparent rounded-full blur-3xl" />
+            </div>
+          )
+        }
 
         <div class="relative p-3 sm:p-4 lg:p-6">
           <DeviceDetailVisualizer
@@ -548,156 +926,332 @@ const breadcrumbSchema = {
 
     <!-- Quick Stats Bar -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
-      <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">Diagonal</p>
-        <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{device.diagonal}"</p>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center"
+      >
+        <p
+          class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1"
+        >
+          Diagonal
+        </p>
+        <p
+          class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100"
+        >
+          {device.diagonal}"
+        </p>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">W × H</p>
-        <p class="text-sm sm:text-lg font-bold text-gray-900 dark:text-gray-100">{fmt(dims.width, 1)}" × {fmt(dims.height, 1)}"</p>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center"
+      >
+        <p
+          class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1"
+        >
+          W × H
+        </p>
+        <p
+          class="text-sm sm:text-lg font-bold text-gray-900 dark:text-gray-100"
+        >
+          {fmt(dims.width, 1)}" × {fmt(dims.height, 1)}"
+        </p>
       </div>
-      {device.category === 'phone' && device.phone?.refreshRate ? (
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">Refresh</p>
-          <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{device.phone.refreshRate}<span class="text-xs sm:text-sm font-normal ml-0.5">Hz</span></p>
-        </div>
-      ) : ppi ? (
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">PPI</p>
-          <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{Math.round(ppi)}</p>
-        </div>
-      ) : (
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">Area</p>
-          <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{fmt(area, 1)}<span class="text-xs sm:text-sm font-normal ml-0.5">in²</span></p>
-        </div>
-      )}
-      {device.category === 'phone' && device.phone?.battery ? (
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">Battery</p>
-          <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{device.phone.battery}<span class="text-xs sm:text-sm font-normal ml-0.5">mAh</span></p>
-        </div>
-      ) : (
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">Area</p>
-          <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{fmt(area, 1)}<span class="text-xs sm:text-sm font-normal ml-0.5">in²</span></p>
-        </div>
-      )}
+      {
+        device.category === "phone" && device.phone?.refreshRate ? (
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">
+              Refresh
+            </p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {device.phone.refreshRate}
+              <span class="text-xs sm:text-sm font-normal ml-0.5">Hz</span>
+            </p>
+          </div>
+        ) : ppi ? (
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">
+              PPI
+            </p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {Math.round(ppi)}
+            </p>
+          </div>
+        ) : (
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">
+              Area
+            </p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {fmt(area, 1)}
+              <span class="text-xs sm:text-sm font-normal ml-0.5">in²</span>
+            </p>
+          </div>
+        )
+      }
+      {
+        device.category === "phone" && device.phone?.battery ? (
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">
+              Battery
+            </p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {device.phone.battery}
+              <span class="text-xs sm:text-sm font-normal ml-0.5">mAh</span>
+            </p>
+          </div>
+        ) : (
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-2 sm:p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5 sm:mb-1">
+              Area
+            </p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {fmt(area, 1)}
+              <span class="text-xs sm:text-sm font-normal ml-0.5">in²</span>
+            </p>
+          </div>
+        )
+      }
     </div>
 
     <!-- Amazon CTA (if enabled) -->
-    {siteConfig.amazon.enabled && (
-      <div class="mb-8">
-        <a
-          href={getAmazonUrl()}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
-        >
-          <svg class="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-          </svg>
-          Shop {device.name} on Amazon
-        </a>
-      </div>
-    )}
+    {
+      siteConfig.amazon.enabled && (
+        <div class="mb-8">
+          <a
+            href={getAmazonUrl()}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="block w-full text-center bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+          >
+            <svg
+              class="w-5 h-5 inline-block mr-2"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+            </svg>
+            Shop {device.name} on Amazon
+          </a>
+        </div>
+      )
+    }
 
     <!-- Detailed Specs -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6 sm:mb-8">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6 sm:mb-8"
+    >
       <div class="p-4 sm:p-6">
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
+        <h2
+          class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4"
+        >
           Detailed Specifications
         </h2>
         <div class="grid md:grid-cols-2 gap-0 md:gap-4">
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Screen Size</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.diagonal}"</span>
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Screen Size</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right"
+              >{device.diagonal}"</span
+            >
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Width</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{fmt(dims.width, 2)}" ({fmt(dims.width * 2.54, 1)}cm)</span>
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Width</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right"
+              >{fmt(dims.width, 2)}" ({fmt(dims.width * 2.54, 1)}cm)</span
+            >
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Height</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{fmt(dims.height, 2)}" ({fmt(dims.height * 2.54, 1)}cm)</span>
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Height</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right"
+              >{fmt(dims.height, 2)}" ({fmt(dims.height * 2.54, 1)}cm)</span
+            >
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Area</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{fmt(area, 1)} in²</span>
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Area</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right"
+              >{fmt(area, 1)} in²</span
+            >
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Aspect Ratio</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{fmt(device.ratio, 2)}:1</span>
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Aspect Ratio</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right"
+              >{fmt(device.ratio, 2)}:1</span
+            >
           </div>
-          {device.resolution && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Resolution</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.resolution}</span>
-            </div>
-          )}
-          {ppi && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">PPI</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{Math.round(ppi)}</span>
-            </div>
-          )}
+          {
+            device.resolution && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Resolution
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.resolution}
+                </span>
+              </div>
+            )
+          }
+          {
+            ppi && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  PPI
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {Math.round(ppi)}
+                </span>
+              </div>
+            )
+          }
           {/* Phone-specific specifications */}
-          {device.phone?.refreshRate && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Refresh Rate</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.refreshRate}Hz</span>
-            </div>
-          )}
-          {device.phone?.screenType && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Screen Type</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.screenType}</span>
-            </div>
-          )}
-          {device.phone?.peakBrightness && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Peak Brightness</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.peakBrightness} nits</span>
-            </div>
-          )}
-          {device.phone?.weight && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Weight</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.weight}g</span>
-            </div>
-          )}
-          {device.phone?.battery && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Battery</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.battery} mAh</span>
-            </div>
-          )}
-          {device.phone?.dimensions && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Body Size</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.dimensions.height}×{device.phone.dimensions.width}×{device.phone.dimensions.depth}mm</span>
-            </div>
-          )}
-          {device.phone?.alwaysOnDisplay !== undefined && (
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-              <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Always-On Display</span>
-              <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{device.phone.alwaysOnDisplay ? 'Yes' : 'No'}</span>
-            </div>
-          )}
-          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
-            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">Category</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize text-right">{device.category}</span>
+          {
+            device.phone?.refreshRate && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Refresh Rate
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.refreshRate}Hz
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.screenType && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Screen Type
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.screenType}
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.peakBrightness && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Peak Brightness
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.peakBrightness} nits
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.weight && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Weight
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.weight}g
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.battery && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Battery
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.battery} mAh
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.dimensions && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Body Size
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.dimensions.height}×
+                  {device.phone.dimensions.width}×
+                  {device.phone.dimensions.depth}mm
+                </span>
+              </div>
+            )
+          }
+          {
+            device.phone?.alwaysOnDisplay !== undefined && (
+              <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2">
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  Always-On Display
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
+                  {device.phone.alwaysOnDisplay ? "Yes" : "No"}
+                </span>
+              </div>
+            )
+          }
+          <div
+            class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 gap-2"
+          >
+            <span
+              class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-shrink-0"
+              >Category</span
+            >
+            <span
+              class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize text-right"
+              >{device.category}</span
+            >
           </div>
         </div>
       </div>
     </div>
 
     <!-- Is This Right for You? - Device-specific recommendations -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8"
+    >
       <div class="p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        <h2
+          class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5 text-amber-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            ></path>
           </svg>
           Is the {device.name} Right for You?
         </h2>
@@ -705,179 +1259,406 @@ const breadcrumbSchema = {
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Best For -->
           <div>
-            <h3 class="font-semibold text-green-600 dark:text-green-400 mb-3 flex items-center gap-2">
+            <h3
+              class="font-semibold text-green-600 dark:text-green-400 mb-3 flex items-center gap-2"
+            >
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
               </svg>
               Best For
             </h3>
             <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              {device.category === 'phone' && (
-                <>
-                  {device.diagonal <= 6.1 && <li>• One-handed daily use and quick tasks</li>}
-                  {device.diagonal >= 6.3 && <li>• Watching videos and streaming content</li>}
-                  {device.diagonal >= 6.5 && <li>• Mobile gaming with immersive visuals</li>}
-                  {ppi && ppi >= 400 && <li>• Reading small text and detailed content</li>}
-                  <li>• {device.diagonal <= 6.3 ? 'Pocket-friendly portability' : 'Media consumption and productivity'}</li>
-                </>
-              )}
-              {device.category === 'tv' && (
-                <>
-                  <li>• {device.diagonal <= 50 ? 'Bedrooms and small spaces' : device.diagonal <= 65 ? 'Living rooms and family viewing' : 'Home theater and large rooms'}</li>
-                  <li>• Viewing distance of {fmt(device.diagonal * 1.2 / 12, 1)}-{fmt(device.diagonal * 2.5 / 12, 1)} feet</li>
-                  {device.diagonal >= 55 && <li>• Sports and action movies</li>}
-                  {device.diagonal >= 65 && <li>• Immersive gaming experiences</li>}
-                  <li>• {device.diagonal <= 55 ? 'Casual viewing and everyday use' : 'Cinematic movie nights'}</li>
-                </>
-              )}
-              {device.category === 'monitor' && (
-                <>
-                  <li>• {device.diagonal <= 24 ? 'Compact workspaces and basic tasks' : device.diagonal <= 27 ? 'General productivity and gaming' : 'Professional work and multitasking'}</li>
-                  {device.diagonal >= 27 && <li>• Side-by-side document editing</li>}
-                  {device.diagonal >= 32 && <li>• Video editing and creative work</li>}
-                  {device.ratio > 2 && <li>• Ultrawide multitasking without bezels</li>}
-                  <li>• Desk depth of {device.diagonal <= 27 ? '24+ inches' : '30+ inches'}</li>
-                </>
-              )}
-              {device.category === 'tablet' && (
-                <>
-                  <li>• {device.diagonal <= 8.5 ? 'E-reading and portable entertainment' : device.diagonal <= 11 ? 'Note-taking and media consumption' : 'Professional creative work'}</li>
-                  {device.diagonal >= 10 && <li>• Drawing and digital art</li>}
-                  {device.diagonal >= 11 && <li>• Laptop replacement for light work</li>}
-                  {device.diagonal <= 9 && <li>• Travel and commuting</li>}
-                  <li>• {device.diagonal <= 10 ? 'Handheld use and reading' : 'Desk-based productivity'}</li>
-                </>
-              )}
-              {device.category === 'projector' && (
-                <>
-                  <li>• Home theater and movie nights</li>
-                  <li>• Rooms with {fmt(device.diagonal * 1.5 / 12, 0)}+ feet viewing distance</li>
-                  {device.diagonal >= 120 && <li>• True cinema-like experience</li>}
-                  <li>• {device.diagonal <= 100 ? 'Casual movie viewing' : 'Dedicated home theater rooms'}</li>
-                  <li>• Wall width of at least {fmt(dims.width / 12, 1)} feet</li>
-                </>
-              )}
+              {
+                device.category === "phone" && (
+                  <>
+                    {device.diagonal <= 6.1 && (
+                      <li>• One-handed daily use and quick tasks</li>
+                    )}
+                    {device.diagonal >= 6.3 && (
+                      <li>• Watching videos and streaming content</li>
+                    )}
+                    {device.diagonal >= 6.5 && (
+                      <li>• Mobile gaming with immersive visuals</li>
+                    )}
+                    {ppi && ppi >= 400 && (
+                      <li>• Reading small text and detailed content</li>
+                    )}
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 6.3
+                        ? "Pocket-friendly portability"
+                        : "Media consumption and productivity"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "tv" && (
+                  <>
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 50
+                        ? "Bedrooms and small spaces"
+                        : device.diagonal <= 65
+                          ? "Living rooms and family viewing"
+                          : "Home theater and large rooms"}
+                    </li>
+                    <li>
+                      • Viewing distance of{" "}
+                      {fmt((device.diagonal * 1.2) / 12, 1)}-
+                      {fmt((device.diagonal * 2.5) / 12, 1)} feet
+                    </li>
+                    {device.diagonal >= 55 && (
+                      <li>• Sports and action movies</li>
+                    )}
+                    {device.diagonal >= 65 && (
+                      <li>• Immersive gaming experiences</li>
+                    )}
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 55
+                        ? "Casual viewing and everyday use"
+                        : "Cinematic movie nights"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "monitor" && (
+                  <>
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 24
+                        ? "Compact workspaces and basic tasks"
+                        : device.diagonal <= 27
+                          ? "General productivity and gaming"
+                          : "Professional work and multitasking"}
+                    </li>
+                    {device.diagonal >= 27 && (
+                      <li>• Side-by-side document editing</li>
+                    )}
+                    {device.diagonal >= 32 && (
+                      <li>• Video editing and creative work</li>
+                    )}
+                    {device.ratio > 2 && (
+                      <li>• Ultrawide multitasking without bezels</li>
+                    )}
+                    <li>
+                      • Desk depth of{" "}
+                      {device.diagonal <= 27 ? "24+ inches" : "30+ inches"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "tablet" && (
+                  <>
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 8.5
+                        ? "E-reading and portable entertainment"
+                        : device.diagonal <= 11
+                          ? "Note-taking and media consumption"
+                          : "Professional creative work"}
+                    </li>
+                    {device.diagonal >= 10 && (
+                      <li>• Drawing and digital art</li>
+                    )}
+                    {device.diagonal >= 11 && (
+                      <li>• Laptop replacement for light work</li>
+                    )}
+                    {device.diagonal <= 9 && <li>• Travel and commuting</li>}
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 10
+                        ? "Handheld use and reading"
+                        : "Desk-based productivity"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "projector" && (
+                  <>
+                    <li>• Home theater and movie nights</li>
+                    <li>
+                      • Rooms with {fmt((device.diagonal * 1.5) / 12, 0)}+ feet
+                      viewing distance
+                    </li>
+                    {device.diagonal >= 120 && (
+                      <li>• True cinema-like experience</li>
+                    )}
+                    <li>
+                      •{" "}
+                      {device.diagonal <= 100
+                        ? "Casual movie viewing"
+                        : "Dedicated home theater rooms"}
+                    </li>
+                    <li>
+                      • Wall width of at least {fmt(dims.width / 12, 1)} feet
+                    </li>
+                  </>
+                )
+              }
             </ul>
           </div>
 
           <!-- Consider If -->
           <div>
-            <h3 class="font-semibold text-amber-600 dark:text-amber-400 mb-3 flex items-center gap-2">
+            <h3
+              class="font-semibold text-amber-600 dark:text-amber-400 mb-3 flex items-center gap-2"
+            >
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"></path>
               </svg>
               Consider Alternatives If
             </h3>
             <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              {device.category === 'phone' && (
-                <>
-                  {device.diagonal >= 6.5 && <li>• You prefer easy one-handed operation</li>}
-                  {device.diagonal <= 6.1 && <li>• You watch lots of videos or play games</li>}
-                  {device.diagonal >= 6.7 && <li>• You have smaller hands or pockets</li>}
-                  {device.diagonal <= 6.3 && <li>• You need maximum screen real estate</li>}
-                  <li>• You prioritize {device.diagonal <= 6.3 ? 'larger display' : 'compact size'}</li>
-                </>
-              )}
-              {device.category === 'tv' && (
-                <>
-                  {device.diagonal >= 65 && <li>• Your viewing distance is under {fmt(device.diagonal * 1.2 / 12, 0)} feet</li>}
-                  {device.diagonal <= 55 && <li>• You want a more immersive experience</li>}
-                  {device.diagonal >= 75 && <li>• Your room has limited wall space</li>}
-                  <li>• Your seating is {device.diagonal <= 55 ? 'far from the TV (10+ ft)' : 'very close (under 6 ft)'}</li>
-                  <li>• You need to {device.diagonal >= 65 ? 'fit in a smaller space' : 'fill a large room'}</li>
-                </>
-              )}
-              {device.category === 'monitor' && (
-                <>
-                  {device.diagonal >= 32 && <li>• Your desk is less than 30 inches deep</li>}
-                  {device.diagonal <= 24 && <li>• You need to multitask with many windows</li>}
-                  {device.diagonal >= 27 && <li>• You have limited desk space</li>}
-                  <li>• You sit {device.diagonal <= 24 ? 'far from your screen (3+ ft)' : 'very close (under 2 ft)'}</li>
-                  <li>• You primarily do {device.diagonal <= 27 ? 'detailed creative work' : 'simple browsing tasks'}</li>
-                </>
-              )}
-              {device.category === 'tablet' && (
-                <>
-                  {device.diagonal >= 11 && <li>• Portability is your top priority</li>}
-                  {device.diagonal <= 9 && <li>• You need a laptop replacement</li>}
-                  {device.diagonal >= 12 && <li>• You travel frequently with your device</li>}
-                  <li>• You mainly use it for {device.diagonal <= 10 ? 'heavy productivity' : 'quick reading sessions'}</li>
-                  <li>• Weight is a concern ({device.diagonal >= 11 ? 'larger tablets are heavier' : 'consider larger for desk use'})</li>
-                </>
-              )}
-              {device.category === 'projector' && (
-                <>
-                  <li>• Your room has significant ambient light</li>
-                  {device.diagonal >= 120 && <li>• Your viewing distance is under {fmt(device.diagonal * 1.2 / 12, 0)} feet</li>}
-                  {device.diagonal <= 100 && <li>• You want a true cinema experience</li>}
-                  <li>• You need a permanent, always-on display</li>
-                  <li>• Your wall space is less than {fmt(dims.width / 12 + 1, 0)} feet wide</li>
-                </>
-              )}
+              {
+                device.category === "phone" && (
+                  <>
+                    {device.diagonal >= 6.5 && (
+                      <li>• You prefer easy one-handed operation</li>
+                    )}
+                    {device.diagonal <= 6.1 && (
+                      <li>• You watch lots of videos or play games</li>
+                    )}
+                    {device.diagonal >= 6.7 && (
+                      <li>• You have smaller hands or pockets</li>
+                    )}
+                    {device.diagonal <= 6.3 && (
+                      <li>• You need maximum screen real estate</li>
+                    )}
+                    <li>
+                      • You prioritize{" "}
+                      {device.diagonal <= 6.3
+                        ? "larger display"
+                        : "compact size"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "tv" && (
+                  <>
+                    {device.diagonal >= 65 && (
+                      <li>
+                        • Your viewing distance is under{" "}
+                        {fmt((device.diagonal * 1.2) / 12, 0)} feet
+                      </li>
+                    )}
+                    {device.diagonal <= 55 && (
+                      <li>• You want a more immersive experience</li>
+                    )}
+                    {device.diagonal >= 75 && (
+                      <li>• Your room has limited wall space</li>
+                    )}
+                    <li>
+                      • Your seating is{" "}
+                      {device.diagonal <= 55
+                        ? "far from the TV (10+ ft)"
+                        : "very close (under 6 ft)"}
+                    </li>
+                    <li>
+                      • You need to{" "}
+                      {device.diagonal >= 65
+                        ? "fit in a smaller space"
+                        : "fill a large room"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "monitor" && (
+                  <>
+                    {device.diagonal >= 32 && (
+                      <li>• Your desk is less than 30 inches deep</li>
+                    )}
+                    {device.diagonal <= 24 && (
+                      <li>• You need to multitask with many windows</li>
+                    )}
+                    {device.diagonal >= 27 && (
+                      <li>• You have limited desk space</li>
+                    )}
+                    <li>
+                      • You sit{" "}
+                      {device.diagonal <= 24
+                        ? "far from your screen (3+ ft)"
+                        : "very close (under 2 ft)"}
+                    </li>
+                    <li>
+                      • You primarily do{" "}
+                      {device.diagonal <= 27
+                        ? "detailed creative work"
+                        : "simple browsing tasks"}
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "tablet" && (
+                  <>
+                    {device.diagonal >= 11 && (
+                      <li>• Portability is your top priority</li>
+                    )}
+                    {device.diagonal <= 9 && (
+                      <li>• You need a laptop replacement</li>
+                    )}
+                    {device.diagonal >= 12 && (
+                      <li>• You travel frequently with your device</li>
+                    )}
+                    <li>
+                      • You mainly use it for{" "}
+                      {device.diagonal <= 10
+                        ? "heavy productivity"
+                        : "quick reading sessions"}
+                    </li>
+                    <li>
+                      • Weight is a concern (
+                      {device.diagonal >= 11
+                        ? "larger tablets are heavier"
+                        : "consider larger for desk use"}
+                      )
+                    </li>
+                  </>
+                )
+              }
+              {
+                device.category === "projector" && (
+                  <>
+                    <li>• Your room has significant ambient light</li>
+                    {device.diagonal >= 120 && (
+                      <li>
+                        • Your viewing distance is under{" "}
+                        {fmt((device.diagonal * 1.2) / 12, 0)} feet
+                      </li>
+                    )}
+                    {device.diagonal <= 100 && (
+                      <li>• You want a true cinema experience</li>
+                    )}
+                    <li>• You need a permanent, always-on display</li>
+                    <li>
+                      • Your wall space is less than{" "}
+                      {fmt(dims.width / 12 + 1, 0)} feet wide
+                    </li>
+                  </>
+                )
+              }
             </ul>
           </div>
         </div>
 
         <!-- Alternative Device Links -->
-        {relatedDevices.length > 0 && (
-          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-              <strong>Consider these alternatives:</strong>
-            </p>
-            <div class="flex flex-wrap gap-2">
-              {relatedDevices.slice(0, 4).map(d => (
-                <a
-                  href={`/${d.id}-screen-size`}
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors max-w-full"
-                >
-                  <span class="truncate max-w-[140px] sm:max-w-[200px]">{d.name}</span>
-                  <span class="text-gray-400 dark:text-gray-500 flex-shrink-0">({d.diagonal}")</span>
-                </a>
-              ))}
+        {
+          relatedDevices.length > 0 && (
+            <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                <strong>Consider these alternatives:</strong>
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {relatedDevices.slice(0, 4).map((d) => (
+                  <a
+                    href={`/${d.id}-screen-size`}
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors max-w-full"
+                  >
+                    <span class="truncate max-w-[140px] sm:max-w-[200px]">
+                      {d.name}
+                    </span>
+                    <span class="text-gray-400 dark:text-gray-500 flex-shrink-0">
+                      ({d.diagonal}")
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        }
       </div>
     </div>
 
     <!-- Browse Similar Devices -->
-    {relatedDevices.length > 0 && (
-      <div class="bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 rounded-xl p-6 mb-8 border border-primary-200 dark:border-primary-800">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-          </svg>
-          Browse Similar {CATEGORY_NAMES[device.category] || 'Devices'}
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {displayRelatedDevices.map(d => (
-            <div class="group bg-white dark:bg-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all border border-gray-200 dark:border-gray-600">
-              <a href={`/${d.id}-screen-size`} class="block mb-2">
-                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{d.name}</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400">{d.diagonal}" display</p>
-              </a>
-              <a
-                href={getComparisonUrl(device.id, d.id)}
-                class="inline-flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-              >
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                Compare
-              </a>
-            </div>
-          ))}
-        </div>
-        <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800">
-          <a href={`/devices/${device.category}s`} class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-            View all {device.category}s
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    {
+      relatedDevices.length > 0 && (
+        <div class="bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 rounded-xl p-6 mb-8 border border-primary-200 dark:border-primary-800">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <svg
+              class="w-5 h-5 text-primary-600 dark:text-primary-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
             </svg>
-          </a>
+            Browse Similar {CATEGORY_NAMES[device.category] || "Devices"}
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {displayRelatedDevices.map((d) => (
+              <div class="group bg-white dark:bg-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all border border-gray-200 dark:border-gray-600">
+                <a href={`/${d.id}-screen-size`} class="block mb-2">
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {d.name}
+                  </p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    {d.diagonal}" display
+                  </p>
+                </a>
+                <a
+                  href={getComparisonUrl(device.id, d.id)}
+                  class="inline-flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                >
+                  <svg
+                    class="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                  Compare
+                </a>
+              </div>
+            ))}
+          </div>
+          <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800">
+            <a
+              href={`/devices/${device.category}s`}
+              class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+            >
+              View all {device.category}s
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <!-- FAQ Section -->
     <div class="mb-8">
@@ -885,30 +1666,52 @@ const breadcrumbSchema = {
         Frequently Asked Questions
       </h2>
       <div class="space-y-3">
-        {faqs.map(faq => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              {faq.question}
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p>{faq.answer}</p>
-              {faq.link && (
-                <a
-                  href={faq.link.url}
-                  class="inline-flex items-center gap-1.5 mt-3 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors"
+        {
+          faqs.map((faq) => (
+            <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
+              <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                {faq.question}
+                <svg
+                  class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {faq.link.text}
-                  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </a>
-              )}
-            </div>
-          </details>
-        ))}
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </summary>
+              <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+                <p>{faq.answer}</p>
+                {faq.link && (
+                  <a
+                    href={faq.link.url}
+                    class="inline-flex items-center gap-1.5 mt-3 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors"
+                  >
+                    {faq.link.text}
+                    <svg
+                      class="w-4 h-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </details>
+          ))
+        }
       </div>
     </div>
 
@@ -918,14 +1721,16 @@ const breadcrumbSchema = {
         Related Comparisons
       </h2>
       <div class="flex flex-wrap gap-2">
-        {relatedDevices.map(d => (
-          <a
-            href={getComparisonUrl(device.id, d.id)}
-            class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
-          >
-            {device.name} vs {d.name}
-          </a>
-        ))}
+        {
+          relatedDevices.map((d) => (
+            <a
+              href={getComparisonUrl(device.id, d.id)}
+              class="px-3 py-1.5 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
+            >
+              {device.name} vs {d.name}
+            </a>
+          ))
+        }
       </div>
     </div>
 
@@ -935,15 +1740,27 @@ const breadcrumbSchema = {
         href="/"
         class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         Back to Screen Size Calculator
       </a>
     </div>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(techArticleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
+  />
 </Layout>

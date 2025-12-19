@@ -1,101 +1,138 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
-import { devices } from '../data/devices';
-import { getComparisonSlug } from '../utils/url';
-import { siteConfig } from '../site.config';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
+import { devices } from "../data/devices";
+import { getComparisonSlug } from "../utils/url";
+import { siteConfig } from "../site.config";
 
-const title = 'Screen Size & PPI Calculator - Free TV, Monitor, Phone Size Tool';
-const description = 'Free screen size and PPI calculator. Calculate TV, monitor, phone dimensions, pixel density, viewing distance & aspect ratio instantly.';
-const keywords = 'screen size calculator, tv size calculator, monitor size calculator, phone screen size, projector calculator, viewing distance calculator, ppi calculator, aspect ratio calculator, screen dimensions, display size comparison';
+const title =
+  "Screen Size & PPI Calculator - Free TV, Monitor, Phone Size Tool";
+const description =
+  "Free screen size and PPI calculator. Calculate TV, monitor, phone dimensions, pixel density, viewing distance & aspect ratio instantly.";
+const keywords =
+  "screen size calculator, tv size calculator, monitor size calculator, phone screen size, projector calculator, viewing distance calculator, ppi calculator, aspect ratio calculator, screen dimensions, display size comparison";
 
 // --- Dynamic Popular Comparisons ---
 const phoneComparisons = [];
 
 // 1. Latest iPhone Pro Max vs Previous iPhone Pro Max
-const allIphoneProMax = devices.filter(d => d.category === 'phone' && d.id.includes('iphone-') && d.id.includes('-pro-max'));
+const allIphoneProMax = devices.filter(
+  (d) =>
+    d.category === "phone" &&
+    d.id.includes("iphone-") &&
+    d.id.includes("-pro-max"),
+);
 if (allIphoneProMax.length >= 2) {
   const latest = allIphoneProMax[0];
   const previous = allIphoneProMax[1];
   phoneComparisons.push({
     a: latest.id,
     b: previous.id,
-    label: `${latest.name} vs ${previous.name}`
+    label: `${latest.name} vs ${previous.name}`,
   });
 }
 
 // 2. Latest standard iPhone vs Latest Samsung Galaxy S Ultra
-const latestIphone = devices.find(d => d.category === 'phone' && d.id.includes('iphone-') && !d.id.includes('-pro') && !d.id.includes('-plus') && !d.id.includes('-mini') && !d.id.includes('-air'));
-const latestSamsungUltra = devices.find(d => d.category === 'phone' && d.id.includes('samsung-galaxy-s') && d.id.includes('-ultra'));
+const latestIphone = devices.find(
+  (d) =>
+    d.category === "phone" &&
+    d.id.includes("iphone-") &&
+    !d.id.includes("-pro") &&
+    !d.id.includes("-plus") &&
+    !d.id.includes("-mini") &&
+    !d.id.includes("-air"),
+);
+const latestSamsungUltra = devices.find(
+  (d) =>
+    d.category === "phone" &&
+    d.id.includes("samsung-galaxy-s") &&
+    d.id.includes("-ultra"),
+);
 if (latestIphone && latestSamsungUltra) {
   phoneComparisons.push({
     a: latestIphone.id,
     b: latestSamsungUltra.id,
-    label: `${latestIphone.name} vs ${latestSamsungUltra.name}`
+    label: `${latestIphone.name} vs ${latestSamsungUltra.name}`,
   });
 }
 
 // 3. Latest iPhone Pro vs Latest standard iPhone
-const latestIphonePro = devices.find(d => d.category === 'phone' && d.id.includes('iphone-') && d.id.includes('-pro') && !d.id.includes('-max'));
+const latestIphonePro = devices.find(
+  (d) =>
+    d.category === "phone" &&
+    d.id.includes("iphone-") &&
+    d.id.includes("-pro") &&
+    !d.id.includes("-max"),
+);
 if (latestIphonePro && latestIphone) {
-    phoneComparisons.push({
-        a: latestIphonePro.id,
-        b: latestIphone.id,
-        label: `${latestIphonePro.name} vs ${latestIphone.name}`
-    });
+  phoneComparisons.push({
+    a: latestIphonePro.id,
+    b: latestIphone.id,
+    label: `${latestIphonePro.name} vs ${latestIphone.name}`,
+  });
 }
 
 // Combine and map to final structure
 const popularComparisons = [
   phoneComparisons[0], // Latest vs Previous Pro Max
   phoneComparisons[1], // Latest iPhone vs Latest Samsung
-  { a: '65-inch-tv', b: '55-inch-tv', label: '65" TV vs 55" TV' },
-  { a: '27-inch-monitor', b: '24-inch-monitor', label: '27" vs 24" Monitor' },
-  { a: '120-inch-projector-screen', b: '85-inch-tv', label: '120" Projector vs 85" TV' },
+  { a: "65-inch-tv", b: "55-inch-tv", label: '65" TV vs 55" TV' },
+  { a: "27-inch-monitor", b: "24-inch-monitor", label: '27" vs 24" Monitor' },
+  {
+    a: "120-inch-projector-screen",
+    b: "85-inch-tv",
+    label: '120" Projector vs 85" TV',
+  },
   phoneComparisons[2], // Latest iPhone Pro vs Latest iPhone
-].filter(Boolean) // Filter out undefined in case phone lookups fail
-.map(({ a, b, label }) => {
-  const deviceA = devices.find(d => d.id === a);
-  const deviceB = devices.find(d => d.id === b);
-  return { slug: getComparisonSlug(a, b), label, deviceA, deviceB };
-}).filter(p => p.deviceA && p.deviceB);
+]
+  .filter(Boolean) // Filter out undefined in case phone lookups fail
+  .map(({ a, b, label }) => {
+    const deviceA = devices.find((d) => d.id === a);
+    const deviceB = devices.find((d) => d.id === b);
+    return { slug: getComparisonSlug(a, b), label, deviceA, deviceB };
+  })
+  .filter((p) => p.deviceA && p.deviceB);
 
 // --- Popular Devices (for SEO internal linking) ---
 // Based on Ahrefs search volume data
 const popularDeviceIds = [
   // Latest flagship phones
-  'iphone-17-pro-max',
-  'iphone-17-pro',
-  'samsung-galaxy-s25-ultra',
-  'samsung-galaxy-s25',
+  "iphone-17-pro-max",
+  "iphone-17-pro",
+  "samsung-galaxy-s25-ultra",
+  "samsung-galaxy-s25",
   // High search volume phones
-  'iphone-16-pro-max',    // 12K searches
-  'iphone-16-pro',        // 12K searches
+  "iphone-16-pro-max", // 12K searches
+  "iphone-16-pro", // 12K searches
   // Monitors & TVs
-  '27-inch-monitor',
-  '65-inch-tv',
+  "27-inch-monitor",
+  "65-inch-tv",
 ];
 
 const popularDevices = popularDeviceIds
-  .map(id => devices.find(d => d.id === id))
+  .map((id) => devices.find((d) => d.id === id))
   .filter(Boolean) as typeof devices;
 
 // Structured data for SEO
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Screen Size Calculator",
-  "description": description,
-  "url": siteConfig.siteUrl,
-  "applicationCategory": "UtilityApplication",
-  "operatingSystem": "Any",
-  "offers": {
+  name: "Screen Size Calculator",
+  description: description,
+  url: siteConfig.siteUrl,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "Any",
+  offers: {
     "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
+    price: "0",
+    priceCurrency: "USD",
   },
-  "featureList": [
+  author: {
+    "@type": "Organization",
+    name: "Screen Size Calculator",
+  },
+  featureList: [
     "Phone mode with iPhone & Android aspect ratios (19.5:9, 20:9, 21:9)",
     "TV mode with optimal viewing distance calculator (THX & SMPTE standards)",
     "Projector mode with throw distance and wall width calculator",
@@ -105,91 +142,91 @@ const structuredData = {
     "Support for multiple aspect ratios and custom ratios",
     "Metric and imperial units (inches, cm, feet, meters)",
     "Real-time visual screen size comparison",
-    "Amazon shopping links for recommended screen sizes"
-  ]
+    "Amazon shopping links for recommended screen sizes",
+  ],
 };
 
 const faqData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": [
+  mainEntity: [
     {
       "@type": "Question",
-      "name": "How do I calculate screen size from diagonal?",
-      "acceptedAnswer": {
+      name: "How do I calculate screen size from diagonal?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "To calculate screen size from diagonal, you need the aspect ratio. Our calculator uses the Pythagorean theorem automatically - just enter your diagonal size and aspect ratio."
-      }
+        text: "To calculate screen size from diagonal, you need the aspect ratio. Our calculator uses the Pythagorean theorem automatically - just enter your diagonal size and aspect ratio.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is PPI and why does it matter?",
-      "acceptedAnswer": {
+      name: "What is PPI and why does it matter?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "PPI (Pixels Per Inch) measures pixel density. Higher PPI means sharper images. Desktop monitors typically have 90-110 PPI, while smartphones have 300-500 PPI."
-      }
+        text: "PPI (Pixels Per Inch) measures pixel density. Higher PPI means sharper images. Desktop monitors typically have 90-110 PPI, while smartphones have 300-500 PPI.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is the most common aspect ratio?",
-      "acceptedAnswer": {
+      name: "What is the most common aspect ratio?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "16:9 is the most common aspect ratio for monitors and TVs, used for HD, Full HD, and 4K content."
-      }
+        text: "16:9 is the most common aspect ratio for monitors and TVs, used for HD, Full HD, and 4K content.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What size TV should I buy for my living room?",
-      "acceptedAnswer": {
+      name: "What size TV should I buy for my living room?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "For a living room with 8-12 feet viewing distance, a 55-65 inch 4K TV is ideal. Use our TV mode calculator to determine the optimal viewing distance based on your room size."
-      }
+        text: "For a living room with 8-12 feet viewing distance, a 55-65 inch 4K TV is ideal. Use our TV mode calculator to determine the optimal viewing distance based on your room size.",
+      },
     },
     {
       "@type": "Question",
-      "name": "How far should I sit from a 55 inch TV?",
-      "acceptedAnswer": {
+      name: "How far should I sit from a 55 inch TV?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "For a 55 inch 4K TV, the optimal viewing distance is 7.3 feet (2.2m). The comfortable range is 4.6-11.5 feet. HD TVs require slightly more distance."
-      }
+        text: "For a 55 inch 4K TV, the optimal viewing distance is 7.3 feet (2.2m). The comfortable range is 4.6-11.5 feet. HD TVs require slightly more distance.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is projector throw distance?",
-      "acceptedAnswer": {
+      name: "What is projector throw distance?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Throw distance is how far the projector must be from the screen. It's calculated by multiplying screen width by the projector's throw ratio (typically 1.5 for standard projectors)."
-      }
+        text: "Throw distance is how far the projector must be from the screen. It's calculated by multiplying screen width by the projector's throw ratio (typically 1.5 for standard projectors).",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is the difference between 4K and 1080p viewing distance?",
-      "acceptedAnswer": {
+      name: "What is the difference between 4K and 1080p viewing distance?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "With 4K TVs, you can sit closer without seeing pixels - about 1.0x the screen diagonal. 1080p TVs need 1.5-2.0x the diagonal for comfortable viewing."
-      }
-    }
-  ]
+        text: "With 4K TVs, you can sit closer without seeing pixels - about 1.0x the screen diagonal. 1080p TVs need 1.5-2.0x the diagonal for comfortable viewing.",
+      },
+    },
+  ],
 };
 
 // Breadcrumb structured data
 const breadcrumbData = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
+  itemListElement: [
     {
       "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": siteConfig.siteUrl
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
     },
     {
       "@type": "ListItem",
-      "position": 2,
-      "name": "Screen Size Calculator",
-      "item": `${siteConfig.siteUrl}/#calculator`
-    }
-  ]
+      position: 2,
+      name: "Screen Size Calculator",
+      item: `${siteConfig.siteUrl}/#calculator`,
+    },
+  ],
 };
 ---
 
@@ -198,14 +235,19 @@ const breadcrumbData = {
 
   <main class="flex-1">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16"
+    >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+        >
           Free Screen Size Calculator - TV, Monitor, Phone & Projector
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Calculate display dimensions, viewing distance, PPI, and throw distance instantly.
-          Perfect for choosing the right TV, monitor, laptop, phone, or projector.
+          Calculate display dimensions, viewing distance, PPI, and throw
+          distance instantly. Perfect for choosing the right TV, monitor,
+          laptop, phone, or projector.
         </p>
       </div>
     </section>
@@ -221,33 +263,38 @@ const breadcrumbData = {
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-8">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          <h2
+            class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3"
+          >
             Popular Screen Size Comparisons
           </h2>
           <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Compare screen sizes visually. See how different devices stack up against each other.
+            Compare screen sizes visually. See how different devices stack up
+            against each other.
           </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {popularComparisons.map(({ slug, label, deviceA, deviceB }) => (
-            <a
-              href={`/comparison/${slug}`}
-              class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
-            >
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-                  {deviceA?.category}
-                </span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                  {deviceA?.diagonal}" vs {deviceB?.diagonal}"
-                </span>
-              </div>
-              <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                {label}
-              </h3>
-            </a>
-          ))}
+          {
+            popularComparisons.map(({ slug, label, deviceA, deviceB }) => (
+              <a
+                href={`/comparison/${slug}`}
+                class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+                    {deviceA?.category}
+                  </span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    {deviceA?.diagonal}" vs {deviceB?.diagonal}"
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                  {label}
+                </h3>
+              </a>
+            ))
+          }
         </div>
 
         <div class="text-center">
@@ -256,8 +303,18 @@ const breadcrumbData = {
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             View All Comparisons
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
         </div>
@@ -268,38 +325,43 @@ const breadcrumbData = {
     <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-8">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          <h2
+            class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3"
+          >
             Popular Device Screen Sizes
           </h2>
           <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Quick access to the most searched device specifications and dimensions.
+            Quick access to the most searched device specifications and
+            dimensions.
           </p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          {popularDevices.map((device) => (
-            <a
-              href={`/${device.id}-screen-size`}
-              class="group bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
-            >
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-                  {device.category}
-                </span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                  {device.diagonal}"
-                </span>
-              </div>
-              <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm sm:text-base">
-                {device.name}
-              </h3>
-              {device.resolution && (
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {device.resolution}
-                </p>
-              )}
-            </a>
-          ))}
+          {
+            popularDevices.map((device) => (
+              <a
+                href={`/${device.id}-screen-size`}
+                class="group bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+                    {device.category}
+                  </span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    {device.diagonal}"
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm sm:text-base">
+                  {device.name}
+                </h3>
+                {device.resolution && (
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {device.resolution}
+                  </p>
+                )}
+              </a>
+            ))
+          }
         </div>
 
         <div class="text-center">
@@ -308,8 +370,18 @@ const breadcrumbData = {
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             Browse All Devices
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
         </div>
@@ -317,38 +389,70 @@ const breadcrumbData = {
     </section>
 
     <!-- How It Works Section -->
-    <section id="how-it-works" class="bg-white dark:bg-gray-800 py-12 lg:py-16 scroll-mt-20">
+    <section
+      id="how-it-works"
+      class="bg-white dark:bg-gray-800 py-12 lg:py-16 scroll-mt-20"
+    >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-12">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-12"
+        >
           How Screen Size Calculation Works
         </h2>
 
         <div class="grid md:grid-cols-3 gap-8">
           <div class="text-center">
-            <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">1</span>
+            <div
+              class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <span
+                class="text-2xl font-bold text-primary-600 dark:text-primary-400"
+                >1</span
+              >
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Enter Diagonal Size</h3>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
+            >
+              Enter Diagonal Size
+            </h3>
             <p class="text-gray-600 dark:text-gray-400 text-sm">
               Input your screen's diagonal measurement in inches or centimeters.
             </p>
           </div>
 
           <div class="text-center">
-            <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">2</span>
+            <div
+              class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <span
+                class="text-2xl font-bold text-primary-600 dark:text-primary-400"
+                >2</span
+              >
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Select Aspect Ratio</h3>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
+            >
+              Select Aspect Ratio
+            </h3>
             <p class="text-gray-600 dark:text-gray-400 text-sm">
               Choose your display's aspect ratio (16:9, 16:10, 4:3, etc.).
             </p>
           </div>
 
           <div class="text-center">
-            <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">3</span>
+            <div
+              class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mx-auto mb-4"
+            >
+              <span
+                class="text-2xl font-bold text-primary-600 dark:text-primary-400"
+                >3</span
+              >
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Get Instant Results</h3>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
+            >
+              Get Instant Results
+            </h3>
             <p class="text-gray-600 dark:text-gray-400 text-sm">
               See width, height, area, PPI, and total megapixels instantly.
             </p>
@@ -356,11 +460,17 @@ const breadcrumbData = {
         </div>
 
         <div class="mt-12 bg-gray-50 dark:bg-gray-700 rounded-xl p-6 lg:p-8">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">The Math Behind It</h3>
+          <h3
+            class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4"
+          >
+            The Math Behind It
+          </h3>
           <p class="text-gray-600 dark:text-gray-400 mb-4">
             Screen dimensions are calculated using the Pythagorean theorem:
           </p>
-          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 font-mono text-sm text-gray-700 dark:text-gray-300 overflow-x-auto">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg p-4 font-mono text-sm text-gray-700 dark:text-gray-300 overflow-x-auto"
+          >
             <p>Height = diagonal / sqrt(1 + (w/h)^2)</p>
             <p>Width = Height * (w/h)</p>
             <p class="mt-2">PPI = sqrt(px_width^2 + px_height^2) / diagonal</p>
@@ -372,50 +482,104 @@ const breadcrumbData = {
     <!-- Common Screen Sizes Section -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
           Common Screen Sizes Reference
         </h2>
 
         <div class="overflow-x-auto">
-          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+          <table
+            class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden"
+          >
+            <thead
+              class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            >
               <tr>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Device Type</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Diagonal</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Resolution</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Typical PPI</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Device Type</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Diagonal</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Resolution</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Typical PPI</th
+                >
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Smartphone</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">5.5" - 6.7"</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">1080 x 2400</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">380 - 450</td>
+                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                  >Smartphone</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >5.5" - 6.7"</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >1080 x 2400</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >380 - 450</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tablet</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">10" - 12.9"</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">2560 x 1600</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">220 - 280</td>
+                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                  >Tablet</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >10" - 12.9"</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >2560 x 1600</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >220 - 280</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Laptop</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">13" - 17"</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">1920 x 1080</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">120 - 170</td>
+                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                  >Laptop</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >13" - 17"</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >1920 x 1080</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >120 - 170</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Desktop Monitor</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">24" - 32"</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">2560 x 1440</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">90 - 120</td>
+                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                  >Desktop Monitor</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >24" - 32"</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >2560 x 1440</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >90 - 120</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">4K TV</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">50" - 75"</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">3840 x 2160</td>
-                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">55 - 90</td>
+                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                  >4K TV</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >50" - 75"</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >3840 x 2160</td
+                >
+                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400"
+                  >55 - 90</td
+                >
               </tr>
             </tbody>
           </table>
@@ -424,123 +588,305 @@ const breadcrumbData = {
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq" class="py-12 lg:py-16 bg-white dark:bg-gray-800 scroll-mt-20">
+    <section
+      id="faq"
+      class="py-12 lg:py-16 bg-white dark:bg-gray-800 scroll-mt-20"
+    >
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
           Frequently Asked Questions
         </h2>
 
         <div class="space-y-4">
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">How do I calculate screen size from diagonal?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >How do I calculate screen size from diagonal?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>To calculate screen size from diagonal, you need the aspect ratio (e.g., 16:9). The formula uses the Pythagorean theorem. Our calculator does this automatically - just enter your diagonal size and aspect ratio.</p>
+              <p>
+                To calculate screen size from diagonal, you need the aspect
+                ratio (e.g., 16:9). The formula uses the Pythagorean theorem.
+                Our calculator does this automatically - just enter your
+                diagonal size and aspect ratio.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What is PPI and why does it matter?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What is PPI and why does it matter?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>PPI (Pixels Per Inch) measures pixel density. Higher PPI means sharper images and text. Desktop monitors typically have 90-110 PPI, while smartphones need 300-500 PPI because they're viewed up close.</p>
+              <p>
+                PPI (Pixels Per Inch) measures pixel density. Higher PPI means
+                sharper images and text. Desktop monitors typically have 90-110
+                PPI, while smartphones need 300-500 PPI because they're viewed
+                up close.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What is the most common aspect ratio?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What is the most common aspect ratio?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p><strong>16:9</strong> is the most common for monitors and TVs. Other popular ratios: 16:10 (productivity), 21:9 (ultrawide), 4:3 (legacy), and 32:9 (super ultrawide).</p>
+              <p>
+                <strong>16:9</strong> is the most common for monitors and TVs. Other
+                popular ratios: 16:10 (productivity), 21:9 (ultrawide), 4:3 (legacy),
+                and 32:9 (super ultrawide).
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">How do I measure my screen size?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >How do I measure my screen size?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>Measure <strong>diagonally</strong> from one corner to the opposite corner of the visible display area (not the bezel). Use a tape measure from bottom-left to top-right.</p>
+              <p>
+                Measure <strong>diagonally</strong> from one corner to the opposite
+                corner of the visible display area (not the bezel). Use a tape measure
+                from bottom-left to top-right.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What screen size should I buy for my desk?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What screen size should I buy for my desk?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
               <ul class="list-disc list-inside space-y-1">
-                <li><strong>24" (1080p)</strong> - Limited space, ~2ft distance</li>
-                <li><strong>27" (1440p)</strong> - Sweet spot, 2-3ft distance</li>
-                <li><strong>32" (4K)</strong> - Productivity, 2.5-4ft distance</li>
+                <li>
+                  <strong>24" (1080p)</strong> - Limited space, ~2ft distance
+                </li>
+                <li>
+                  <strong>27" (1440p)</strong> - Sweet spot, 2-3ft distance
+                </li>
+                <li>
+                  <strong>32" (4K)</strong> - Productivity, 2.5-4ft distance
+                </li>
                 <li><strong>34" Ultrawide</strong> - Multitasking</li>
               </ul>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What size TV should I buy for my living room?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What size TV should I buy for my living room?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>For a living room with 8-12 feet viewing distance, a <strong>55-65 inch 4K TV</strong> is ideal. Use our <strong>TV mode</strong> calculator above to determine the optimal viewing distance based on your specific room size and seating arrangement.</p>
+              <p>
+                For a living room with 8-12 feet viewing distance, a <strong
+                  >55-65 inch 4K TV</strong
+                > is ideal. Use our <strong>TV mode</strong> calculator above to determine
+                the optimal viewing distance based on your specific room size and
+                seating arrangement.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">How far should I sit from a 55 inch TV?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >How far should I sit from a 55 inch TV?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>For a <strong>55 inch 4K TV</strong>, the optimal viewing distance is <strong>7.3 feet (2.2m)</strong> based on SMPTE standards. The comfortable range is <strong>4.6-11.5 feet</strong>. For HD (1080p) TVs, you should sit slightly farther. Switch to TV mode in our calculator for personalized recommendations.</p>
+              <p>
+                For a <strong>55 inch 4K TV</strong>, the optimal viewing
+                distance is <strong>7.3 feet (2.2m)</strong> based on SMPTE standards.
+                The comfortable range is <strong>4.6-11.5 feet</strong>. For HD
+                (1080p) TVs, you should sit slightly farther. Switch to TV mode
+                in our calculator for personalized recommendations.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What is projector throw distance?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What is projector throw distance?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p><strong>Throw distance</strong> is how far the projector must be placed from the screen to achieve your desired screen size. It's calculated by multiplying screen width by the projector's <strong>throw ratio</strong> (typically 1.5 for standard projectors, 0.5 for short-throw). Our <strong>Projector mode</strong> calculates this automatically.</p>
+              <p>
+                <strong>Throw distance</strong> is how far the projector must be placed
+                from the screen to achieve your desired screen size. It's calculated
+                by multiplying screen width by the projector's <strong
+                  >throw ratio</strong
+                > (typically 1.5 for standard projectors, 0.5 for short-throw). Our
+                <strong>Projector mode</strong> calculates this automatically.
+              </p>
             </div>
           </details>
 
           <details class="group bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <summary class="flex justify-between items-center cursor-pointer p-6">
-              <span class="font-medium text-gray-900 dark:text-gray-100">What's the difference between 4K and 1080p viewing distance?</span>
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <summary
+              class="flex justify-between items-center cursor-pointer p-6"
+            >
+              <span class="font-medium text-gray-900 dark:text-gray-100"
+                >What's the difference between 4K and 1080p viewing distance?</span
+              >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-6 text-gray-600 dark:text-gray-300">
-              <p>With <strong>4K (UHD) TVs</strong>, you can sit closer without seeing individual pixels - about <strong>1.0x the screen diagonal</strong>. For <strong>1080p (Full HD) TVs</strong>, you need <strong>1.5-2.0x the diagonal</strong> for comfortable viewing. This is why 4K is better for larger screens in smaller rooms.</p>
+              <p>
+                With <strong>4K (UHD) TVs</strong>, you can sit closer without
+                seeing individual pixels - about <strong
+                  >1.0x the screen diagonal</strong
+                >. For <strong>1080p (Full HD) TVs</strong>, you need <strong
+                  >1.5-2.0x the diagonal</strong
+                > for comfortable viewing. This is why 4K is better for larger screens
+                in smaller rooms.
+              </p>
             </div>
           </details>
         </div>
@@ -548,13 +894,17 @@ const breadcrumbData = {
     </section>
 
     <!-- CTA Section -->
-    <section class="bg-gradient-to-br from-primary-700 to-primary-900 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-br from-primary-700 to-primary-900 py-12 lg:py-16"
+    >
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
           Find Your Perfect Screen Size
         </h2>
         <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
-          Whether you're shopping for a new TV, upgrading your monitor, or comparing phone displays - use our calculator to make an informed decision.
+          Whether you're shopping for a new TV, upgrading your monitor, or
+          comparing phone displays - use our calculator to make an informed
+          decision.
         </p>
         <a
           href="#calculator"
@@ -562,15 +912,31 @@ const breadcrumbData = {
           class="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-primary-700 font-semibold px-6 py-3 rounded-lg transition-colors"
         >
           Calculate Your Screen Size Now
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
           </svg>
         </a>
       </div>
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData)}
+  />
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbData)}
+  />
 </Layout>

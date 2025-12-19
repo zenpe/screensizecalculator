@@ -3,19 +3,28 @@ export const siteConfig = {
   // Site URL for canonical links and structured data
   siteUrl: 'https://screensizecalculators.com',
 
-  // Content dates for SEO (ISO 8601 format with timezone)
-  // Update these when content structure changes significantly
-  contentDates: {
-    // Default date for device pages (used when device has no updatedAt)
-    devicePages: '2025-12-05T10:00:00+08:00',
-  },
-
   // Amazon Affiliate Program
   amazon: {
     enabled: false, // Set to true to enable Amazon affiliate links
     affiliateTag: 'screensizecal-20',
     baseUrl: 'https://www.amazon.com',
   },
+};
+
+// Content dates for SEO (ISO 8601 format)
+// Update these when a category of templates is changed
+export const contentDates = {
+  // For device pages and comparison pages.
+  // Update when [deviceId]-screen-size.astro or comparison/[slug].astro templates change.
+  deviceContent: '2025-12-19', 
+
+  // For blog posts.
+  // Update when BlogPost.astro or other blog templates change.
+  blogContent: '2025-12-19',
+
+  // For all other static pages (homepage, calculators, etc.).
+  // Update when a main static page's structure or content changes.
+  staticContent: '2025-12-19',
 };
 
 // Helper function to generate Amazon search URL with affiliate tag

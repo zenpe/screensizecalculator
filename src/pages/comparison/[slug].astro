@@ -1,24 +1,24 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Header from '../../components/Header.astro';
-import ComparisonVisualizer from '../../components/ComparisonVisualizer.tsx';
-import ShareButtons from '../../components/ShareButtons.astro';
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import ComparisonVisualizer from "../../components/ComparisonVisualizer.tsx";
+import ShareButtons from "../../components/ShareButtons.astro";
 import {
   devices,
   getDeviceById,
   isValidComparison,
   calculateDimensions,
   calculateArea,
-  calculatePercentageDifference
-} from '../../data/devices';
-import { getAmazonSearchUrl, siteConfig } from '../../site.config';
-import { getComparisonUrl } from '../../utils/url';
+  calculatePercentageDifference,
+} from "../../data/devices";
+import { getAmazonSearchUrl, siteConfig } from "../../site.config";
+import { getComparisonUrl } from "../../utils/url";
 import {
   generateComparisonDescription,
   generateUseCaseScenarios,
   generateRecommendations,
   generateComparisonFAQ,
-} from '../../utils/comparisonContent';
+} from "../../utils/comparisonContent";
 
 // Generate valid comparison pairs with alphabetical deduplication (SEO: single canonical URL)
 export function getStaticPaths() {
@@ -32,9 +32,8 @@ export function getStaticPaths() {
       // Check if this comparison is valid based on category rules
       if (isValidComparison(deviceA.category, deviceB.category)) {
         // Enforce alphabetical order for URL slug to prevent duplicates
-        const [first, second] = deviceA.id < deviceB.id
-          ? [deviceA, deviceB]
-          : [deviceB, deviceA];
+        const [first, second] =
+          deviceA.id < deviceB.id ? [deviceA, deviceB] : [deviceB, deviceA];
 
         const slug = `${first.id}-vs-${second.id}`;
         paths.push({
@@ -79,7 +78,10 @@ const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size 
 
 // Amazon search URLs (generic searches)
 const getAmazonUrl = (device: typeof deviceA) => {
-  const searchTerm = device.name.toLowerCase().replace(/['"]/g, '').replace(/\s+/g, '+');
+  const searchTerm = device.name
+    .toLowerCase()
+    .replace(/['"]/g, "")
+    .replace(/\s+/g, "+");
   return getAmazonSearchUrl(searchTerm);
 };
 
@@ -90,138 +92,214 @@ const comparisonDescription = generateComparisonDescription(
   primaryArea,
   secondaryArea,
   primaryDims,
-  secondaryDims
+  secondaryDims,
 );
 
-const useCaseScenarios = generateUseCaseScenarios(primaryDevice, secondaryDevice);
-const recommendations = generateRecommendations(primaryDevice, secondaryDevice, primaryArea, secondaryArea);
-const comparisonFAQs = generateComparisonFAQ(primaryDevice, secondaryDevice, primaryArea, secondaryArea, primaryDims, secondaryDims);
+const useCaseScenarios = generateUseCaseScenarios(
+  primaryDevice,
+  secondaryDevice,
+);
+const recommendations = generateRecommendations(
+  primaryDevice,
+  secondaryDevice,
+  primaryArea,
+  secondaryArea,
+);
+const comparisonFAQs = generateComparisonFAQ(
+  primaryDevice,
+  secondaryDevice,
+  primaryArea,
+  secondaryArea,
+  primaryDims,
+  secondaryDims,
+);
 
 // FAQ Schema for SEO
-const faqSchema = comparisonFAQs.length > 0 ? {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": comparisonFAQs.map(faq => ({
-    "@type": "Question",
-    "name": faq.question,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": faq.answer
-    }
-  }))
-} : null;
+const faqSchema =
+  comparisonFAQs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: comparisonFAQs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
 
 // Breadcrumb Schema for SEO
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
+  itemListElement: [
     {
       "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": siteConfig.siteUrl
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
     },
     {
       "@type": "ListItem",
-      "position": 2,
-      "name": "Comparisons",
-      "item": `${siteConfig.siteUrl}/comparison`
+      position: 2,
+      name: "Comparisons",
+      item: `${siteConfig.siteUrl}/comparison`,
     },
     {
       "@type": "ListItem",
-      "position": 3,
-      "name": `${primaryDevice.name} vs ${secondaryDevice.name}`,
-      "item": `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`
-    }
-  ]
+      position: 3,
+      name: `${primaryDevice.name} vs ${secondaryDevice.name}`,
+      item: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
+    },
+  ],
 };
 
 // OG Image URL - use primary device's image
 const ogImageUrl = `${siteConfig.siteUrl}/og/${primaryDevice.id}.png`;
 
-// TechArticle Schema for comparison page
-const techArticleSchema = {
+// Conditional Schema: Product (with price) or SoftwareApplication (utility tool)
+const isToolSchema = !primaryDevice.price && !secondaryDevice.price;
+
+const productSchema = {
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": title,
-  "description": description,
-  "image": {
+  "@type": "Product",
+  name: primaryDevice.name,
+  description: description,
+  image: {
     "@type": "ImageObject",
-    "url": ogImageUrl,
-    "width": 1200,
-    "height": 630
+    url: ogImageUrl,
+    width: 1200,
+    height: 630,
   },
-  "datePublished": siteConfig.contentDates.devicePages,
-  "dateModified": siteConfig.contentDates.devicePages,
-  "author": {
-    "@type": "Organization",
-    "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl
+  brand: {
+    "@type": "Brand",
+    name: primaryDevice.name.split(" ")[0],
   },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Screen Size Calculator",
-    "url": siteConfig.siteUrl,
-    "logo": {
-      "@type": "ImageObject",
-      "url": `${siteConfig.siteUrl}/favicon.svg`
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": `${siteConfig.siteUrl}/comparison/${primaryDevice.id}-vs-${secondaryDevice.id}`
-  },
-  "about": (() => {
-    const categoryInfo: Record<string, { label: string; sameAs: string }> = {
-      phone: { label: 'smartphone', sameAs: 'https://en.wikipedia.org/wiki/Smartphone' },
-      tv: { label: 'TV', sameAs: 'https://en.wikipedia.org/wiki/Television_set' },
-      monitor: { label: 'computer monitor', sameAs: 'https://en.wikipedia.org/wiki/Computer_monitor' },
-      tablet: { label: 'tablet', sameAs: 'https://en.wikipedia.org/wiki/Tablet_computer' },
-      projector: { label: 'projector', sameAs: 'https://en.wikipedia.org/wiki/Projector' }
-    };
-    const primaryInfo = categoryInfo[primaryDevice.category] || { label: primaryDevice.category, sameAs: '' };
-    const secondaryInfo = categoryInfo[secondaryDevice.category] || { label: secondaryDevice.category, sameAs: '' };
-    return [
-      {
-        "@type": "Thing",
-        "name": primaryDevice.name,
-        "description": `A ${primaryDevice.diagonal}-inch ${primaryInfo.label} with a screen area of ${formatNum(primaryArea, 1)} sq inches and dimensions of ${formatNum(primaryDims.width, 2)}" × ${formatNum(primaryDims.height, 2)}".`,
-        ...(primaryInfo.sameAs ? { "sameAs": primaryInfo.sameAs } : {})
-      },
-      {
-        "@type": "Thing",
-        "name": secondaryDevice.name,
-        "description": `A ${secondaryDevice.diagonal}-inch ${secondaryInfo.label} with a screen area of ${formatNum(secondaryArea, 1)} sq inches and dimensions of ${formatNum(secondaryDims.width, 2)}" × ${formatNum(secondaryDims.height, 2)}".`,
-        ...(secondaryInfo.sameAs ? { "sameAs": secondaryInfo.sameAs } : {})
+  sku: primaryDevice.id,
+  ...(primaryDevice.price
+    ? {
+        offers: {
+          "@type": "Offer",
+          price: primaryDevice.price,
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
+          priceValidUntil: "2026-12-31",
+        },
       }
-    ];
-  })()
+    : {}),
+  isRelatedTo: {
+    "@type": "Product",
+    name: secondaryDevice.name,
+    description: `Comparison device: ${secondaryDevice.name}`,
+    sku: secondaryDevice.id,
+    ...(secondaryDevice.price
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: secondaryDevice.price,
+            priceCurrency: "USD",
+          },
+        }
+      : {}),
+  },
 };
+
+const toolSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`,
+  description: description,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  url: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
+  image: ogImageUrl,
+  author: {
+    "@type": "Organization",
+    name: "Screen Size Calculator",
+  },
+};
+
+const finalSchema = isToolSchema ? toolSchema : productSchema;
 ---
 
-<Layout title={title} description={description} keywords={keywords} ogImage={`/og/${primaryDevice.id}.png`}>
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  ogImage={`/og/${primaryDevice.id}.png`}
+>
   <Header />
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
     <!-- Breadcrumb Navigation -->
     <nav class="mb-4 sm:mb-6 overflow-x-auto" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-        <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a></li>
-        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
-        <li><a href="/comparison" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Comparisons</a></li>
-        <li><svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
-        <li class="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px] sm:max-w-none">{primaryDevice.name} vs {secondaryDevice.name}</li>
+      <ol
+        class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+      >
+        <li>
+          <a
+            href="/"
+            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >Home</a
+          >
+        </li>
+        <li>
+          <svg
+            class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path></svg
+          >
+        </li>
+        <li>
+          <a
+            href="/comparison"
+            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >Comparisons</a
+          >
+        </li>
+        <li>
+          <svg
+            class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path></svg
+          >
+        </li>
+        <li
+          class="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px] sm:max-w-none"
+        >
+          {primaryDevice.name} vs {secondaryDevice.name}
+        </li>
       </ol>
     </nav>
 
     <!-- Page Header -->
     <div class="text-center mb-6 sm:mb-8">
-      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
+      <h1
+        class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2"
+      >
         {primaryDevice.name} vs {secondaryDevice.name} Screen Size Comparison
       </h1>
-      <p class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4">
-        Visual comparison of {primaryDevice.name} ({primaryDevice.diagonal}") and
+      <p
+        class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4"
+      >
+        Visual comparison of {primaryDevice.name} ({primaryDevice.diagonal}")
+        and
         {secondaryDevice.name} ({secondaryDevice.diagonal}") screens.
       </p>
       <div class="flex justify-center">
@@ -234,12 +312,20 @@ const techArticleSchema = {
     </div>
 
     <!-- Detailed Comparison Description -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
-      <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8"
+    >
+      <h2
+        class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4"
+      >
         Detailed Comparison Analysis
       </h2>
-      <div class="prose prose-gray dark:prose-invert max-w-none prose-sm sm:prose-base">
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+      <div
+        class="prose prose-gray dark:prose-invert max-w-none prose-sm sm:prose-base"
+      >
+        <p
+          class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base"
+        >
           {comparisonDescription}
         </p>
       </div>
@@ -255,28 +341,48 @@ const techArticleSchema = {
     </div>
 
     <!-- The Verdict Section -->
-    <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-white">
+    <div
+      class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-white"
+    >
       <h2 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3">The Verdict</h2>
       <p class="text-sm sm:text-base lg:text-lg">
-        {percentLarger > 0 ? (
-          <>
-            The <strong>{primaryDevice.name}</strong> is <strong class="text-accent-300">{formatNum(percentLarger)}% larger</strong> than
-            the <strong>{secondaryDevice.name}</strong> in screen area.
-          </>
-        ) : (
-          <>
-            Both devices have <strong>identical screen areas</strong>, though their aspect ratios may differ.
-          </>
-        )}
+        {
+          percentLarger > 0 ? (
+            <>
+              The <strong>{primaryDevice.name}</strong> is{" "}
+              <strong class="text-accent-300">
+                {formatNum(percentLarger)}% larger
+              </strong>{" "}
+              than the <strong>{secondaryDevice.name}</strong> in screen area.
+            </>
+          ) : (
+            <>
+              Both devices have <strong>identical screen areas</strong>, though
+              their aspect ratios may differ.
+            </>
+          )
+        }
       </p>
       <div class="mt-4 grid grid-cols-2 gap-2 sm:gap-4 text-sm">
         <div class="bg-white/10 rounded-lg p-2 sm:p-3">
-          <p class="text-white/70 text-[10px] sm:text-xs uppercase tracking-wide mb-1 truncate">{primaryDevice.name}</p>
-          <p class="font-bold text-sm sm:text-base">{formatNum(primaryArea)} sq in</p>
+          <p
+            class="text-white/70 text-[10px] sm:text-xs uppercase tracking-wide mb-1 truncate"
+          >
+            {primaryDevice.name}
+          </p>
+          <p class="font-bold text-sm sm:text-base">
+            {formatNum(primaryArea)} sq in
+          </p>
         </div>
         <div class="bg-white/10 rounded-lg p-2 sm:p-3">
-          <p class="text-white/70 text-[10px] sm:text-xs uppercase tracking-wide mb-1 truncate">{secondaryDevice.name}</p>
-          <p class="font-bold text-sm sm:text-base">{formatNum(secondaryArea)} sq in</p>
+          <p
+            class="text-white/70 text-[10px] sm:text-xs uppercase tracking-wide mb-1 truncate"
+          >
+            {secondaryDevice.name}
+          </p>
+          <p class="font-bold text-sm sm:text-base">
+            {formatNum(secondaryArea)} sq in
+          </p>
         </div>
       </div>
     </div>
@@ -288,11 +394,26 @@ const techArticleSchema = {
         class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all group"
       >
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">View full specs</p>
-          <p class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{primaryDevice.name} Screen Size</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            View full specs
+          </p>
+          <p
+            class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+          >
+            {primaryDevice.name} Screen Size
+          </p>
         </div>
-        <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        <svg
+          class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
         </svg>
       </a>
       <a
@@ -300,102 +421,164 @@ const techArticleSchema = {
         class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all group"
       >
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">View full specs</p>
-          <p class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{secondaryDevice.name} Screen Size</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            View full specs
+          </p>
+          <p
+            class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+          >
+            {secondaryDevice.name} Screen Size
+          </p>
         </div>
-        <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        <svg
+          class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
         </svg>
       </a>
     </div>
 
     <!-- Use Case Scenarios -->
-    {useCaseScenarios.length > 0 && (
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
-          Use Case Comparison
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {useCaseScenarios.map(scenario => (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
-              <div class="flex items-center gap-2 mb-2 sm:mb-3">
-                <span class="text-xl sm:text-2xl">{scenario.icon}</span>
-                <h3 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">{scenario.title}</h3>
-              </div>
-              <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">{scenario.description}</p>
-              <div class="grid grid-cols-2 gap-1.5 sm:gap-2 text-sm">
-                <div class="bg-white dark:bg-gray-800 rounded p-1.5 sm:p-2">
-                  <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1 truncate">{primaryDevice.name}</div>
-                  <div class="font-medium text-xs sm:text-sm text-gray-900 dark:text-gray-100">{scenario.deviceA}</div>
+    {
+      useCaseScenarios.length > 0 && (
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
+            Use Case Comparison
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {useCaseScenarios.map((scenario) => (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
+                <div class="flex items-center gap-2 mb-2 sm:mb-3">
+                  <span class="text-xl sm:text-2xl">{scenario.icon}</span>
+                  <h3 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">
+                    {scenario.title}
+                  </h3>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded p-1.5 sm:p-2">
-                  <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1 truncate">{secondaryDevice.name}</div>
-                  <div class="font-medium text-xs sm:text-sm text-gray-900 dark:text-gray-100">{scenario.deviceB}</div>
+                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">
+                  {scenario.description}
+                </p>
+                <div class="grid grid-cols-2 gap-1.5 sm:gap-2 text-sm">
+                  <div class="bg-white dark:bg-gray-800 rounded p-1.5 sm:p-2">
+                    <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-medium text-xs sm:text-sm text-gray-900 dark:text-gray-100">
+                      {scenario.deviceA}
+                    </div>
+                  </div>
+                  <div class="bg-white dark:bg-gray-800 rounded p-1.5 sm:p-2">
+                    <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-medium text-xs sm:text-sm text-gray-900 dark:text-gray-100">
+                      {scenario.deviceB}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <!-- Which Should You Choose -->
-    {(recommendations.larger.length > 0 || recommendations.smaller.length > 0) && (
-      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 text-center">
-          Which Should You Choose?
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-          {recommendations.larger.length > 0 && (
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5">
-              <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg class="w-4 h-4 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
+    {
+      (recommendations.larger.length > 0 ||
+        recommendations.smaller.length > 0) && (
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 text-center">
+            Which Should You Choose?
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            {recommendations.larger.length > 0 && (
+              <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5">
+                <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg
+                      class="w-4 h-4 sm:w-6 sm:h-6 text-green-600 dark:text-green-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <h3 class="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">
+                    Choose{" "}
+                    {primaryArea > secondaryArea
+                      ? primaryDevice.name
+                      : secondaryDevice.name}
+                  </h3>
                 </div>
-                <h3 class="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">
-                  Choose {primaryArea > secondaryArea ? primaryDevice.name : secondaryDevice.name}
-                </h3>
+                <ul class="space-y-1.5 sm:space-y-2">
+                  {recommendations.larger.map((rec) => (
+                    <li class="flex items-start gap-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                      <span class="text-green-500 mt-0.5">•</span>
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul class="space-y-1.5 sm:space-y-2">
-                {recommendations.larger.map(rec => (
-                  <li class="flex items-start gap-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                    <span class="text-green-500 mt-0.5">•</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {recommendations.smaller.length > 0 && (
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5">
-              <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg class="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
+            )}
+            {recommendations.smaller.length > 0 && (
+              <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-5">
+                <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg
+                      class="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <h3 class="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">
+                    Choose{" "}
+                    {primaryArea < secondaryArea
+                      ? primaryDevice.name
+                      : secondaryDevice.name}
+                  </h3>
                 </div>
-                <h3 class="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">
-                  Choose {primaryArea < secondaryArea ? primaryDevice.name : secondaryDevice.name}
-                </h3>
+                <ul class="space-y-1.5 sm:space-y-2">
+                  {recommendations.smaller.map((rec) => (
+                    <li class="flex items-start gap-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                      <span class="text-blue-500 mt-0.5">•</span>
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul class="space-y-1.5 sm:space-y-2">
-                {recommendations.smaller.map(rec => (
-                  <li class="flex items-start gap-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                    <span class="text-blue-500 mt-0.5">•</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <!-- Detailed Specs Comparison -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8"
+    >
       <div class="p-4 sm:p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           Detailed Specifications
@@ -405,219 +588,474 @@ const techArticleSchema = {
         <div class="block sm:hidden space-y-3">
           <!-- Diagonal -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Diagonal</div>
+            <div
+              class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium"
+            >
+              Diagonal
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.diagonal}"</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {primaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {primaryDevice.diagonal}"
+                </div>
               </div>
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.diagonal}"</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {secondaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {secondaryDevice.diagonal}"
+                </div>
               </div>
             </div>
-            <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {formatNum(Math.abs(primaryDevice.diagonal - secondaryDevice.diagonal), 1)}"</div>
+            <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+              Diff: {
+                formatNum(
+                  Math.abs(primaryDevice.diagonal - secondaryDevice.diagonal),
+                  1,
+                )
+              }"
+            </div>
           </div>
 
           <!-- Dimensions -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Dimensions (W × H)</div>
+            <div
+              class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium"
+            >
+              Dimensions (W × H)
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{formatNum(primaryDims.width, 1)}" × {formatNum(primaryDims.height, 1)}"</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {primaryDevice.name}
+                </div>
+                <div
+                  class="font-semibold text-gray-900 dark:text-gray-100 text-sm"
+                >
+                  {formatNum(primaryDims.width, 1)}" × {
+                    formatNum(primaryDims.height, 1)
+                  }"
+                </div>
               </div>
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{formatNum(secondaryDims.width, 1)}" × {formatNum(secondaryDims.height, 1)}"</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {secondaryDevice.name}
+                </div>
+                <div
+                  class="font-semibold text-gray-900 dark:text-gray-100 text-sm"
+                >
+                  {formatNum(secondaryDims.width, 1)}" × {
+                    formatNum(secondaryDims.height, 1)
+                  }"
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Screen Area -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Screen Area</div>
+            <div
+              class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium"
+            >
+              Screen Area
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{formatNum(primaryArea, 1)} sq in</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {primaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {formatNum(primaryArea, 1)} sq in
+                </div>
               </div>
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{formatNum(secondaryArea, 1)} sq in</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {secondaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {formatNum(secondaryArea, 1)} sq in
+                </div>
               </div>
             </div>
-            <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {formatNum(Math.abs(primaryArea - secondaryArea), 1)} sq in</div>
+            <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+              Diff: {formatNum(Math.abs(primaryArea - secondaryArea), 1)} sq in
+            </div>
           </div>
 
           <!-- Aspect Ratio -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Aspect Ratio</div>
+            <div
+              class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium"
+            >
+              Aspect Ratio
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{formatNum(primaryDevice.ratio, 2)}:1</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {primaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {formatNum(primaryDevice.ratio, 2)}:1
+                </div>
               </div>
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{formatNum(secondaryDevice.ratio, 2)}:1</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {secondaryDevice.name}
+                </div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">
+                  {formatNum(secondaryDevice.ratio, 2)}:1
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Resolution (if available) -->
-          {(primaryDevice.resolution || secondaryDevice.resolution) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Resolution</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{primaryDevice.resolution || 'N/A'}</div>
+          {
+            (primaryDevice.resolution || secondaryDevice.resolution) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Resolution
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{secondaryDevice.resolution || 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                      {primaryDevice.resolution || "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                      {secondaryDevice.resolution || "N/A"}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
           {/* Phone-specific specs for mobile */}
-          {(primaryDevice.phone?.refreshRate || secondaryDevice.phone?.refreshRate) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Refresh Rate</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.refreshRate ? `${primaryDevice.phone.refreshRate}Hz` : 'N/A'}</div>
+          {
+            (primaryDevice.phone?.refreshRate ||
+              secondaryDevice.phone?.refreshRate) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Refresh Rate
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.refreshRate ? `${secondaryDevice.phone.refreshRate}Hz` : 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.refreshRate
+                        ? `${primaryDevice.phone.refreshRate}Hz`
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.refreshRate
+                        ? `${secondaryDevice.phone.refreshRate}Hz`
+                        : "N/A"}
+                    </div>
+                  </div>
                 </div>
+                {primaryDevice.phone?.refreshRate &&
+                  secondaryDevice.phone?.refreshRate && (
+                    <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                      Diff:{" "}
+                      {Math.abs(
+                        primaryDevice.phone.refreshRate -
+                          secondaryDevice.phone.refreshRate,
+                      )}
+                      Hz
+                    </div>
+                  )}
               </div>
-              {primaryDevice.phone?.refreshRate && secondaryDevice.phone?.refreshRate && (
-                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.refreshRate - secondaryDevice.phone.refreshRate)}Hz</div>
-              )}
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.screenType || secondaryDevice.phone?.screenType) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Screen Type</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{primaryDevice.phone?.screenType || 'N/A'}</div>
+          {
+            (primaryDevice.phone?.screenType ||
+              secondaryDevice.phone?.screenType) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Screen Type
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{secondaryDevice.phone?.screenType || 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                      {primaryDevice.phone?.screenType || "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                      {secondaryDevice.phone?.screenType || "N/A"}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.peakBrightness || secondaryDevice.phone?.peakBrightness) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Peak Brightness</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.peakBrightness ? `${primaryDevice.phone.peakBrightness} nits` : 'N/A'}</div>
+          {
+            (primaryDevice.phone?.peakBrightness ||
+              secondaryDevice.phone?.peakBrightness) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Peak Brightness
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.peakBrightness ? `${secondaryDevice.phone.peakBrightness} nits` : 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.peakBrightness
+                        ? `${primaryDevice.phone.peakBrightness} nits`
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.peakBrightness
+                        ? `${secondaryDevice.phone.peakBrightness} nits`
+                        : "N/A"}
+                    </div>
+                  </div>
                 </div>
+                {primaryDevice.phone?.peakBrightness &&
+                  secondaryDevice.phone?.peakBrightness && (
+                    <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                      Diff:{" "}
+                      {Math.abs(
+                        primaryDevice.phone.peakBrightness -
+                          secondaryDevice.phone.peakBrightness,
+                      )}{" "}
+                      nits
+                    </div>
+                  )}
               </div>
-              {primaryDevice.phone?.peakBrightness && secondaryDevice.phone?.peakBrightness && (
-                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.peakBrightness - secondaryDevice.phone.peakBrightness)} nits</div>
-              )}
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.weight || secondaryDevice.phone?.weight) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Weight</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.weight ? `${primaryDevice.phone.weight}g` : 'N/A'}</div>
+          {
+            (primaryDevice.phone?.weight || secondaryDevice.phone?.weight) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Weight
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.weight ? `${secondaryDevice.phone.weight}g` : 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.weight
+                        ? `${primaryDevice.phone.weight}g`
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.weight
+                        ? `${secondaryDevice.phone.weight}g`
+                        : "N/A"}
+                    </div>
+                  </div>
                 </div>
+                {primaryDevice.phone?.weight &&
+                  secondaryDevice.phone?.weight && (
+                    <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                      Diff:{" "}
+                      {Math.abs(
+                        primaryDevice.phone.weight -
+                          secondaryDevice.phone.weight,
+                      )}
+                      g
+                    </div>
+                  )}
               </div>
-              {primaryDevice.phone?.weight && secondaryDevice.phone?.weight && (
-                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.weight - secondaryDevice.phone.weight)}g</div>
-              )}
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.battery || secondaryDevice.phone?.battery) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Battery</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.battery ? `${primaryDevice.phone.battery} mAh` : 'N/A'}</div>
+          {
+            (primaryDevice.phone?.battery ||
+              secondaryDevice.phone?.battery) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Battery
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.battery ? `${secondaryDevice.phone.battery} mAh` : 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.battery
+                        ? `${primaryDevice.phone.battery} mAh`
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.battery
+                        ? `${secondaryDevice.phone.battery} mAh`
+                        : "N/A"}
+                    </div>
+                  </div>
                 </div>
+                {primaryDevice.phone?.battery &&
+                  secondaryDevice.phone?.battery && (
+                    <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
+                      Diff:{" "}
+                      {Math.abs(
+                        primaryDevice.phone.battery -
+                          secondaryDevice.phone.battery,
+                      )}{" "}
+                      mAh
+                    </div>
+                  )}
               </div>
-              {primaryDevice.phone?.battery && secondaryDevice.phone?.battery && (
-                <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Diff: {Math.abs(primaryDevice.phone.battery - secondaryDevice.phone.battery)} mAh</div>
-              )}
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.dimensions || secondaryDevice.phone?.dimensions) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Body Size (H×W×D)</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">{primaryDevice.phone?.dimensions ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm` : 'N/A'}</div>
+          {
+            (primaryDevice.phone?.dimensions ||
+              secondaryDevice.phone?.dimensions) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Body Size (H×W×D)
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">{secondaryDevice.phone?.dimensions ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm` : 'N/A'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">
+                      {primaryDevice.phone?.dimensions
+                        ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm`
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-xs">
+                      {secondaryDevice.phone?.dimensions
+                        ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm`
+                        : "N/A"}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
-          {(primaryDevice.phone?.alwaysOnDisplay !== undefined || secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-              <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Always-On Display</div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</div>
+          {
+            (primaryDevice.phone?.alwaysOnDisplay !== undefined ||
+              secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
+              <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  Always-On Display
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                  <div class="font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {primaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.alwaysOnDisplay ? "Yes" : "No"}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                      {secondaryDevice.name}
+                    </div>
+                    <div class="font-semibold text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.alwaysOnDisplay ? "Yes" : "No"}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
           <!-- Category -->
           <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Category</div>
+            <div
+              class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium"
+            >
+              Category
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{primaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100 capitalize">{primaryDevice.category}</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {primaryDevice.name}
+                </div>
+                <div
+                  class="font-semibold text-gray-900 dark:text-gray-100 capitalize"
+                >
+                  {primaryDevice.category}
+                </div>
               </div>
               <div>
-                <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{secondaryDevice.name}</div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100 capitalize">{secondaryDevice.category}</div>
+                <div
+                  class="text-[10px] text-gray-400 dark:text-gray-500 truncate"
+                >
+                  {secondaryDevice.name}
+                </div>
+                <div
+                  class="font-semibold text-gray-900 dark:text-gray-100 capitalize"
+                >
+                  {secondaryDevice.category}
+                </div>
               </div>
             </div>
           </div>
@@ -628,113 +1066,326 @@ const techArticleSchema = {
           <table class="w-full text-left">
             <thead>
               <tr class="border-b-2 border-gray-200 dark:border-gray-700">
-                <th class="py-3 px-4 text-sm font-semibold text-gray-500 dark:text-gray-400">Specification</th>
-                <th class="py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{primaryDevice.name}</th>
-                <th class="py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{secondaryDevice.name}</th>
-                <th class="py-3 px-4 text-sm font-semibold text-gray-500 dark:text-gray-400">Difference</th>
+                <th
+                  class="py-3 px-4 text-sm font-semibold text-gray-500 dark:text-gray-400"
+                  >Specification</th
+                >
+                <th
+                  class="py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100"
+                  >{primaryDevice.name}</th
+                >
+                <th
+                  class="py-3 px-4 text-sm font-semibold text-gray-900 dark:text-gray-100"
+                  >{secondaryDevice.name}</th
+                >
+                <th
+                  class="py-3 px-4 text-sm font-semibold text-gray-500 dark:text-gray-400"
+                  >Difference</th
+                >
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Diagonal</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.diagonal}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.diagonal}"</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{formatNum(Math.abs(primaryDevice.diagonal - secondaryDevice.diagonal), 1)}"</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Diagonal</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{primaryDevice.diagonal}"</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{secondaryDevice.diagonal}"</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >{
+                    formatNum(
+                      Math.abs(
+                        primaryDevice.diagonal - secondaryDevice.diagonal,
+                      ),
+                      1,
+                    )
+                  }"</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Width</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDims.width, 2)}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDims.width, 2)}"</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{formatNum(Math.abs(primaryDims.width - secondaryDims.width), 2)}"</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Width</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(primaryDims.width, 2)}"</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(secondaryDims.width, 2)}"</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >{
+                    formatNum(
+                      Math.abs(primaryDims.width - secondaryDims.width),
+                      2,
+                    )
+                  }"</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Height</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDims.height, 2)}"</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDims.height, 2)}"</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{formatNum(Math.abs(primaryDims.height - secondaryDims.height), 2)}"</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Height</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(primaryDims.height, 2)}"</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(secondaryDims.height, 2)}"</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >{
+                    formatNum(
+                      Math.abs(primaryDims.height - secondaryDims.height),
+                      2,
+                    )
+                  }"</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Screen Area</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryArea, 1)} sq in</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryArea, 1)} sq in</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{formatNum(Math.abs(primaryArea - secondaryArea), 1)} sq in</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Screen Area</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(primaryArea, 1)} sq in</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(secondaryArea, 1)} sq in</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >{formatNum(Math.abs(primaryArea - secondaryArea), 1)} sq in</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Aspect Ratio</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(primaryDevice.ratio, 2)}:1</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{formatNum(secondaryDevice.ratio, 2)}:1</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{formatNum(Math.abs(primaryDevice.ratio - secondaryDevice.ratio), 2)}</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Aspect Ratio</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(primaryDevice.ratio, 2)}:1</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >{formatNum(secondaryDevice.ratio, 2)}:1</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >{
+                    formatNum(
+                      Math.abs(primaryDevice.ratio - secondaryDevice.ratio),
+                      2,
+                    )
+                  }</td
+                >
               </tr>
-              {(primaryDevice.resolution || secondaryDevice.resolution) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Resolution</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.resolution || 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.resolution || 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
-                </tr>
-              )}
+              {
+                (primaryDevice.resolution || secondaryDevice.resolution) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Resolution
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.resolution || "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.resolution || "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      -
+                    </td>
+                  </tr>
+                )
+              }
               {/* Phone-specific specs */}
-              {(primaryDevice.phone?.refreshRate || secondaryDevice.phone?.refreshRate) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Refresh Rate</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.refreshRate ? `${primaryDevice.phone.refreshRate}Hz` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.refreshRate ? `${secondaryDevice.phone.refreshRate}Hz` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.refreshRate && secondaryDevice.phone?.refreshRate ? `${Math.abs(primaryDevice.phone.refreshRate - secondaryDevice.phone.refreshRate)}Hz` : '-'}</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.screenType || secondaryDevice.phone?.screenType) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Screen Type</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.screenType || 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.screenType || 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.peakBrightness || secondaryDevice.phone?.peakBrightness) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Peak Brightness</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.peakBrightness ? `${primaryDevice.phone.peakBrightness} nits` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.peakBrightness ? `${secondaryDevice.phone.peakBrightness} nits` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.peakBrightness && secondaryDevice.phone?.peakBrightness ? `${Math.abs(primaryDevice.phone.peakBrightness - secondaryDevice.phone.peakBrightness)} nits` : '-'}</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.weight || secondaryDevice.phone?.weight) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Weight</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.weight ? `${primaryDevice.phone.weight}g` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.weight ? `${secondaryDevice.phone.weight}g` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.weight && secondaryDevice.phone?.weight ? `${Math.abs(primaryDevice.phone.weight - secondaryDevice.phone.weight)}g` : '-'}</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.battery || secondaryDevice.phone?.battery) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Battery</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.battery ? `${primaryDevice.phone.battery} mAh` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.battery ? `${secondaryDevice.phone.battery} mAh` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{primaryDevice.phone?.battery && secondaryDevice.phone?.battery ? `${Math.abs(primaryDevice.phone.battery - secondaryDevice.phone.battery)} mAh` : '-'}</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.dimensions || secondaryDevice.phone?.dimensions) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Body Size (H×W×D)</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.dimensions ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.dimensions ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm` : 'N/A'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
-                </tr>
-              )}
-              {(primaryDevice.phone?.alwaysOnDisplay !== undefined || secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Always-On Display</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{primaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</td>
-                  <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">{secondaryDevice.phone?.alwaysOnDisplay ? 'Yes' : 'No'}</td>
-                  <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
-                </tr>
-              )}
+              {
+                (primaryDevice.phone?.refreshRate ||
+                  secondaryDevice.phone?.refreshRate) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Refresh Rate
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.refreshRate
+                        ? `${primaryDevice.phone.refreshRate}Hz`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.refreshRate
+                        ? `${secondaryDevice.phone.refreshRate}Hz`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      {primaryDevice.phone?.refreshRate &&
+                      secondaryDevice.phone?.refreshRate
+                        ? `${Math.abs(primaryDevice.phone.refreshRate - secondaryDevice.phone.refreshRate)}Hz`
+                        : "-"}
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.screenType ||
+                  secondaryDevice.phone?.screenType) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Screen Type
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.screenType || "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.screenType || "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      -
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.peakBrightness ||
+                  secondaryDevice.phone?.peakBrightness) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Peak Brightness
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.peakBrightness
+                        ? `${primaryDevice.phone.peakBrightness} nits`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.peakBrightness
+                        ? `${secondaryDevice.phone.peakBrightness} nits`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      {primaryDevice.phone?.peakBrightness &&
+                      secondaryDevice.phone?.peakBrightness
+                        ? `${Math.abs(primaryDevice.phone.peakBrightness - secondaryDevice.phone.peakBrightness)} nits`
+                        : "-"}
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.weight ||
+                  secondaryDevice.phone?.weight) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Weight
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.weight
+                        ? `${primaryDevice.phone.weight}g`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.weight
+                        ? `${secondaryDevice.phone.weight}g`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      {primaryDevice.phone?.weight &&
+                      secondaryDevice.phone?.weight
+                        ? `${Math.abs(primaryDevice.phone.weight - secondaryDevice.phone.weight)}g`
+                        : "-"}
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.battery ||
+                  secondaryDevice.phone?.battery) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Battery
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.battery
+                        ? `${primaryDevice.phone.battery} mAh`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.battery
+                        ? `${secondaryDevice.phone.battery} mAh`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      {primaryDevice.phone?.battery &&
+                      secondaryDevice.phone?.battery
+                        ? `${Math.abs(primaryDevice.phone.battery - secondaryDevice.phone.battery)} mAh`
+                        : "-"}
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.dimensions ||
+                  secondaryDevice.phone?.dimensions) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Body Size (H×W×D)
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.dimensions
+                        ? `${primaryDevice.phone.dimensions.height}×${primaryDevice.phone.dimensions.width}×${primaryDevice.phone.dimensions.depth}mm`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.dimensions
+                        ? `${secondaryDevice.phone.dimensions.height}×${secondaryDevice.phone.dimensions.width}×${secondaryDevice.phone.dimensions.depth}mm`
+                        : "N/A"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      -
+                    </td>
+                  </tr>
+                )
+              }
+              {
+                (primaryDevice.phone?.alwaysOnDisplay !== undefined ||
+                  secondaryDevice.phone?.alwaysOnDisplay !== undefined) && (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      Always-On Display
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {primaryDevice.phone?.alwaysOnDisplay ? "Yes" : "No"}
+                    </td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {secondaryDevice.phone?.alwaysOnDisplay ? "Yes" : "No"}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                      -
+                    </td>
+                  </tr>
+                )
+              }
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">Category</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{primaryDevice.category}</td>
-                <td class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{secondaryDevice.category}</td>
-                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">-</td>
+                <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400"
+                  >Category</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize"
+                  >{primaryDevice.category}</td
+                >
+                <td
+                  class="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-100 capitalize"
+                  >{secondaryDevice.category}</td
+                >
+                <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400"
+                  >-</td
+                >
               </tr>
             </tbody>
           </table>
@@ -743,90 +1394,131 @@ const techArticleSchema = {
     </div>
 
     <!-- Affiliate Buttons -->
-    {siteConfig.amazon.enabled && (
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
-        <a
-          href={getAmazonUrl(primaryDevice)}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
-        >
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-          </svg>
-          <span class="truncate">Shop {primaryDevice.name}</span>
-        </a>
-        <a
-          href={getAmazonUrl(secondaryDevice)}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
-        >
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-          </svg>
-          <span class="truncate">Shop {secondaryDevice.name}</span>
-        </a>
-      </div>
-    )}
+    {
+      siteConfig.amazon.enabled && (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
+          <a
+            href={getAmazonUrl(primaryDevice)}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
+          >
+            <svg
+              class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+            </svg>
+            <span class="truncate">Shop {primaryDevice.name}</span>
+          </a>
+          <a
+            href={getAmazonUrl(secondaryDevice)}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="flex items-center justify-center gap-2 bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-gray-900 font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
+          >
+            <svg
+              class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21.53 9.51c.15-.38.22-.79.22-1.21 0-1.13-.51-2.13-1.31-2.8-.81-.68-1.91-1-3.14-1-1.39 0-2.59.43-3.44 1.11-.85.68-1.35 1.62-1.35 2.69 0 .42.08.83.22 1.21H3v2h18.53v-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+            </svg>
+            <span class="truncate">Shop {secondaryDevice.name}</span>
+          </a>
+        </div>
+      )
+    }
 
     <!-- FAQ Section -->
-    {comparisonFAQs.length > 0 && (
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-3 sm:space-y-4">
-          {comparisonFAQs.map((faq, index) => (
-            <details class="group">
-              <summary class="flex justify-between items-center cursor-pointer list-none p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <h3 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 pr-2 sm:pr-4">
-                  {faq.question}
-                </h3>
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <div class="px-3 sm:px-4 pt-3 sm:pt-4 pb-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                {faq.answer}
-              </div>
-            </details>
-          ))}
+    {
+      comparisonFAQs.length > 0 && (
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-3 sm:space-y-4">
+            {comparisonFAQs.map((faq, index) => (
+              <details class="group">
+                <summary class="flex justify-between items-center cursor-pointer list-none p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <h3 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 pr-2 sm:pr-4">
+                    {faq.question}
+                  </h3>
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </summary>
+                <div class="px-3 sm:px-4 pt-3 sm:pt-4 pb-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {faq.answer}
+                </div>
+              </details>
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <!-- Related Comparisons -->
     <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 sm:p-6">
-      <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
+      <h2
+        class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4"
+      >
         Related Comparisons
       </h2>
       <div class="flex flex-wrap gap-1.5 sm:gap-2">
-        {devices
-          .filter(d => d.id !== primaryDevice.id && d.id !== secondaryDevice.id && isValidComparison(primaryDevice.category, d.category))
-          .slice(0, 6)
-          .map(d => (
-            <a
-              href={getComparisonUrl(primaryDevice.id, d.id)}
-              class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
-            >
-              <span class="hidden sm:inline">{primaryDevice.name} vs {d.name}</span>
-              <span class="sm:hidden">vs {d.name}</span>
-            </a>
-          ))
+        {
+          devices
+            .filter(
+              (d) =>
+                d.id !== primaryDevice.id &&
+                d.id !== secondaryDevice.id &&
+                isValidComparison(primaryDevice.category, d.category),
+            )
+            .slice(0, 6)
+            .map((d) => (
+              <a
+                href={getComparisonUrl(primaryDevice.id, d.id)}
+                class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
+              >
+                <span class="hidden sm:inline">
+                  {primaryDevice.name} vs {d.name}
+                </span>
+                <span class="sm:hidden">vs {d.name}</span>
+              </a>
+            ))
         }
-        {devices
-          .filter(d => d.id !== primaryDevice.id && d.id !== secondaryDevice.id && isValidComparison(secondaryDevice.category, d.category))
-          .slice(0, 6)
-          .map(d => (
-            <a
-              href={getComparisonUrl(secondaryDevice.id, d.id)}
-              class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
-            >
-              <span class="hidden sm:inline">{secondaryDevice.name} vs {d.name}</span>
-              <span class="sm:hidden">vs {d.name}</span>
-            </a>
-          ))
+        {
+          devices
+            .filter(
+              (d) =>
+                d.id !== primaryDevice.id &&
+                d.id !== secondaryDevice.id &&
+                isValidComparison(secondaryDevice.category, d.category),
+            )
+            .slice(0, 6)
+            .map((d) => (
+              <a
+                href={getComparisonUrl(secondaryDevice.id, d.id)}
+                class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
+              >
+                <span class="hidden sm:inline">
+                  {secondaryDevice.name} vs {d.name}
+                </span>
+                <span class="sm:hidden">vs {d.name}</span>
+              </a>
+            ))
         }
       </div>
     </div>
@@ -837,8 +1529,17 @@ const techArticleSchema = {
         href="/"
         class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         Back to Screen Size Calculator
       </a>
@@ -846,11 +1547,16 @@ const techArticleSchema = {
   </main>
 
   <!-- FAQ Schema -->
-  {faqSchema && (
-    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  )}
+  {
+    faqSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    )
+  }
   <!-- Breadcrumb Schema -->
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-  <!-- TechArticle Schema -->
-  <script type="application/ld+json" set:html={JSON.stringify(techArticleSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
+  />
+  <!-- Primary Schema (Product or SoftwareApplication) -->
+  <script type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
 </Layout>

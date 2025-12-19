@@ -1,48 +1,67 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
-const title = 'Tablet Size Calculator - iPad & Android Screen Dimensions';
-const description = 'Free tablet screen size calculator. Compare iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro dimensions, PPI, and display specs.';
-const keywords = 'tablet size calculator, tablet screen size calculator, iPad screen size, iPad Pro dimensions, iPad Air size, Samsung Galaxy Tab size, Surface Pro screen size, tablet dimensions';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
+import { siteConfig } from "../site.config";
+const title = "Tablet Size Calculator - iPad & Android Screen Dimensions";
+const description =
+  "Free tablet screen size calculator. Compare iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro dimensions, PPI, and display specs.";
+const keywords =
+  "tablet size calculator, tablet screen size calculator, iPad screen size, iPad Pro dimensions, iPad Air size, Samsung Galaxy Tab size, Surface Pro screen size, tablet dimensions";
 
 const faqData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": [
+  mainEntity: [
     {
       "@type": "Question",
-      "name": "What size iPad should I get?",
-      "acceptedAnswer": {
+      name: "What size iPad should I get?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "For portability, the iPad mini (8.3\") or iPad 10.9\" are ideal. For productivity and note-taking, the iPad Air 11\" offers a good balance. For professional work, illustration, or replacing a laptop, the iPad Pro 13\" or iPad Air 13\" provide the most screen real estate."
-      }
+        text: 'For portability, the iPad mini (8.3") or iPad 10.9" are ideal. For productivity and note-taking, the iPad Air 11" offers a good balance. For professional work, illustration, or replacing a laptop, the iPad Pro 13" or iPad Air 13" provide the most screen real estate.',
+      },
     },
     {
       "@type": "Question",
-      "name": "How big is the iPad Pro 13 inch?",
-      "acceptedAnswer": {
+      name: "How big is the iPad Pro 13 inch?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "The iPad Pro 13\" has a screen measuring approximately 10.4\" × 7.8\" (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is about 81 square inches, making it comparable to a small laptop display."
-      }
+        text: 'The iPad Pro 13" has a screen measuring approximately 10.4" × 7.8" (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is about 81 square inches, making it comparable to a small laptop display.',
+      },
     },
     {
       "@type": "Question",
-      "name": "What's the difference between iPad and Samsung Galaxy Tab aspect ratios?",
-      "acceptedAnswer": {
+      name: "What's the difference between iPad and Samsung Galaxy Tab aspect ratios?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "iPads use a 4:3 aspect ratio, which is better for productivity, reading, and note-taking. Samsung Galaxy Tabs use 16:10, which is wider and better for watching videos. The 4:3 ratio provides more vertical space, while 16:10 is more cinematic."
-      }
+        text: "iPads use a 4:3 aspect ratio, which is better for productivity, reading, and note-taking. Samsung Galaxy Tabs use 16:10, which is wider and better for watching videos. The 4:3 ratio provides more vertical space, while 16:10 is more cinematic.",
+      },
     },
     {
       "@type": "Question",
-      "name": "Is a bigger tablet screen always better?",
-      "acceptedAnswer": {
+      name: "Is a bigger tablet screen always better?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Not necessarily. Larger tablets (12\"+) are excellent for productivity and media but are heavier and less portable. Smaller tablets (8-10\") are better for reading, casual use, and portability. Consider your primary use case when choosing a size."
-      }
-    }
-  ]
+        text: 'Not necessarily. Larger tablets (12"+) are excellent for productivity and media but are heavier and less portable. Smaller tablets (8-10") are better for reading, casual use, and portability. Consider your primary use case when choosing a size.',
+      },
+    },
+  ],
+};
+
+// SoftwareApplication Schema for the calculator tool
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Tablet Size Calculator",
+  description: description,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  url: `${siteConfig.siteUrl}/tablet-screen-size-calculator`,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
 };
 ---
 
@@ -50,30 +69,67 @@ const faqData = {
   <Header />
 
   <main class="flex-1">
-    <section class="bg-gradient-to-b from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-b from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900 py-12 lg:py-16"
+    >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+        >
           Tablet Screen Size Calculator
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
-          Calculate screen dimensions, resolution, and PPI for iPad, Samsung Galaxy Tab, Surface Pro, and other tablets. Find the perfect tablet size for your needs.
+        <p
+          class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
+        >
+          Calculate screen dimensions, resolution, and PPI for iPad, Samsung
+          Galaxy Tab, Surface Pro, and other tablets. Find the perfect tablet
+          size for your needs.
         </p>
-        <div class="flex flex-wrap justify-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+        <div
+          class="flex flex-wrap justify-center gap-3 text-sm text-gray-600 dark:text-gray-400"
+        >
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-purple-600 dark:text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             iPad & Android Tablets
           </span>
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-purple-600 dark:text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             PPI & Resolution Analysis
           </span>
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-purple-600 dark:text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             Dimension Calculator
           </span>
@@ -89,12 +145,18 @@ const faqData = {
 
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Tablet Size Comparison Guide
         </h2>
         <div class="overflow-x-auto">
-          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
-            <thead class="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+          <table
+            class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+          >
+            <thead
+              class="bg-gradient-to-r from-purple-600 to-purple-700 text-white"
+            >
               <tr>
                 <th class="px-6 py-4 text-left font-semibold">Tablet Size</th>
                 <th class="px-6 py-4 text-left font-semibold">Common Models</th>
@@ -104,28 +166,64 @@ const faqData = {
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">8 - 9 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPad mini 8.3"</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">4:3</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Reading, portability, one-handed use</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >8 - 9 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPad mini 8.3"</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >4:3</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Reading, portability, one-handed use</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">10 - 11 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPad 10.9", iPad Air 11", Galaxy Tab S10</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">4:3 / 16:10</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">General use, note-taking, media</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >10 - 11 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPad 10.9", iPad Air 11", Galaxy Tab S10</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >4:3 / 16:10</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >General use, note-taking, media</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">12 - 13 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPad Pro 13", iPad Air 13", Surface Pro, Galaxy Tab S10+</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">4:3 / 3:2 / 16:10</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Productivity, illustration, laptop replacement</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >12 - 13 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPad Pro 13", iPad Air 13", Surface Pro, Galaxy Tab S10+</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >4:3 / 3:2 / 16:10</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Productivity, illustration, laptop replacement</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">14+ inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Galaxy Tab S10 Ultra</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">16:10</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Professional work, multitasking, desktop replacement</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >14+ inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Galaxy Tab S10 Ultra</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >16:10</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Professional work, multitasking, desktop replacement</td
+                >
               </tr>
             </tbody>
           </table>
@@ -135,65 +233,145 @@ const faqData = {
 
     <section class="py-12 lg:py-16">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Frequently Asked Questions
         </h2>
         <div class="space-y-4">
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               What size iPad should I get?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
               <ul class="space-y-2">
-                <li>• <strong>iPad mini (8.3"):</strong> Best for portability and reading</li>
-                <li>• <strong>iPad 10.9" / iPad Air 11":</strong> Great balance of size and portability</li>
-                <li>• <strong>iPad Air 13" / iPad Pro 13":</strong> Best for productivity and creative work</li>
+                <li>
+                  • <strong>iPad mini (8.3"):</strong> Best for portability and reading
+                </li>
+                <li>
+                  • <strong>iPad 10.9" / iPad Air 11":</strong> Great balance of size
+                  and portability
+                </li>
+                <li>
+                  • <strong>iPad Air 13" / iPad Pro 13":</strong> Best for productivity
+                  and creative work
+                </li>
               </ul>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               How big is the iPad Pro 13 inch?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p>The iPad Pro 13" has a screen measuring approximately <strong>10.4" × 7.8"</strong> (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is about 81 square inches, comparable to a small laptop display.</p>
+              <p>
+                The iPad Pro 13" has a screen measuring approximately <strong
+                  >10.4" × 7.8"</strong
+                > (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is
+                about 81 square inches, comparable to a small laptop display.
+              </p>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              What's the difference between iPad and Samsung Galaxy Tab aspect ratios?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What's the difference between iPad and Samsung Galaxy Tab aspect
+              ratios?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
               <ul class="space-y-2">
-                <li>• <strong>iPad (4:3):</strong> More square, better for productivity, reading, and note-taking</li>
-                <li>• <strong>Samsung Galaxy Tab (16:10):</strong> Wider, better for watching videos and multitasking with split-screen</li>
+                <li>
+                  • <strong>iPad (4:3):</strong> More square, better for productivity,
+                  reading, and note-taking
+                </li>
+                <li>
+                  • <strong>Samsung Galaxy Tab (16:10):</strong> Wider, better for
+                  watching videos and multitasking with split-screen
+                </li>
               </ul>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               Is a bigger tablet screen always better?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
               <p class="mb-2">Not necessarily. Consider these trade-offs:</p>
               <ul class="space-y-1">
-                <li>• <strong>Larger (12"+):</strong> Better for productivity but heavier and less portable</li>
-                <li>• <strong>Smaller (8-10"):</strong> Better for reading, casual use, and carrying around</li>
+                <li>
+                  • <strong>Larger (12"+):</strong> Better for productivity but heavier
+                  and less portable
+                </li>
+                <li>
+                  • <strong>Smaller (8-10"):</strong> Better for reading, casual use,
+                  and carrying around
+                </li>
               </ul>
             </div>
           </details>
@@ -203,73 +381,120 @@ const faqData = {
 
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Related Tools
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
-          <a href="/phone-screen-size-calculator" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/phone-screen-size-calculator"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-3"
+              >
                 Calculator
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+              >
                 Phone Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Calculate phone screen dimensions and PPI for iPhone and Android devices.
+                Calculate phone screen dimensions and PPI for iPhone and Android
+                devices.
               </p>
-              <span class="text-purple-600 dark:text-purple-400 text-sm font-medium">Try Calculator →</span>
+              <span
+                class="text-purple-600 dark:text-purple-400 text-sm font-medium"
+                >Try Calculator →</span
+              >
             </div>
           </a>
 
-          <a href="/monitor-screen-size-calculator" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/monitor-screen-size-calculator"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium mb-3"
+              >
                 Calculator
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+              >
                 Monitor Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Find the perfect monitor size for your desk setup and viewing distance.
+                Find the perfect monitor size for your desk setup and viewing
+                distance.
               </p>
-              <span class="text-purple-600 dark:text-purple-400 text-sm font-medium">Try Calculator →</span>
+              <span
+                class="text-purple-600 dark:text-purple-400 text-sm font-medium"
+                >Try Calculator →</span
+              >
             </div>
           </a>
 
-          <a href="/comparison/tablets" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/comparison/tablets"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium mb-3"
+              >
                 Comparison
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+              >
                 Tablet Comparisons
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Compare iPad, Samsung Galaxy Tab, and Surface Pro screen sizes visually.
+                Compare iPad, Samsung Galaxy Tab, and Surface Pro screen sizes
+                visually.
               </p>
-              <span class="text-purple-600 dark:text-purple-400 text-sm font-medium">Compare Tablets →</span>
+              <span
+                class="text-purple-600 dark:text-purple-400 text-sm font-medium"
+                >Compare Tablets →</span
+              >
             </div>
           </a>
         </div>
       </div>
     </section>
 
-    <section class="bg-gradient-to-r from-purple-600 to-purple-700 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-r from-purple-600 to-purple-700 py-12 lg:py-16"
+    >
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
           Find Your Perfect Tablet Size
         </h2>
         <p class="text-purple-100 mb-8 max-w-2xl mx-auto">
-          Use our calculator to analyze any tablet screen size and find the perfect device for your needs.
+          Use our calculator to analyze any tablet screen size and find the
+          perfect device for your needs.
         </p>
         <a
           href="#calculator"
           class="inline-flex items-center gap-2 bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg hover:bg-purple-50 transition-colors"
         >
           Use Calculator Now
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
           </svg>
         </a>
       </div>
@@ -277,4 +502,8 @@ const faqData = {
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareSchema)}
+  />
 </Layout>

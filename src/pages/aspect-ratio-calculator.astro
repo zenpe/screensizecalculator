@@ -1,77 +1,140 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import AspectRatioCalculator from '../components/calculators/AspectRatioCalculator';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import AspectRatioCalculatorComponent from "../components/calculators/AspectRatioCalculator";
+import { siteConfig } from "../site.config";
 
-const title = 'Aspect Ratio Calculator - Convert & Calculate Screen Ratios';
-const description = 'Free aspect ratio calculator. Convert between 16:9, 21:9, 4:3 and custom ratios. Calculate dimensions from width or height, find screen ratios instantly.';
-const keywords = 'aspect ratio calculator, screen ratio, 16:9 calculator, 21:9 ultrawide, 4:3 ratio, aspect ratio converter, screen dimensions, width height ratio, video aspect ratio';
+const title = "Aspect Ratio Calculator - Convert & Calculate Screen Ratios";
+const description =
+  "Free aspect ratio calculator. Convert between 16:9, 21:9, 4:3 and custom ratios. Calculate dimensions from width or height, find screen ratios instantly.";
+const keywords =
+  "aspect ratio calculator, screen ratio, 16:9 calculator, 21:9 ultrawide, 4:3 ratio, aspect ratio converter, screen dimensions, width height ratio, video aspect ratio";
 
 // Common aspect ratios data
 const commonRatios = [
-  { ratio: '16:9', decimal: '1.778', use: 'Standard widescreen TVs, monitors, YouTube videos', examples: '1920×1080, 2560×1440, 3840×2160' },
-  { ratio: '21:9', decimal: '2.333', use: 'Ultrawide monitors, cinematic films', examples: '2560×1080, 3440×1440, 5120×2160' },
-  { ratio: '4:3', decimal: '1.333', use: 'Classic TVs, iPad, presentations', examples: '1024×768, 1600×1200, 2048×1536' },
-  { ratio: '1:1', decimal: '1.000', use: 'Instagram posts, profile pictures', examples: '1080×1080, 2048×2048' },
-  { ratio: '9:16', decimal: '0.563', use: 'TikTok, Instagram Reels, mobile video', examples: '1080×1920, 1440×2560' },
-  { ratio: '3:2', decimal: '1.500', use: 'DSLR photos, MacBook displays', examples: '1440×960, 2160×1440, 3000×2000' },
-  { ratio: '16:10', decimal: '1.600', use: 'MacBooks, some monitors, tablets', examples: '1920×1200, 2560×1600, 3840×2400' },
-  { ratio: '2.39:1', decimal: '2.390', use: 'Anamorphic widescreen cinema', examples: '2048×858, 4096×1716' },
+  {
+    ratio: "16:9",
+    decimal: "1.778",
+    use: "Standard widescreen TVs, monitors, YouTube videos",
+    examples: "1920×1080, 2560×1440, 3840×2160",
+  },
+  {
+    ratio: "21:9",
+    decimal: "2.333",
+    use: "Ultrawide monitors, cinematic films",
+    examples: "2560×1080, 3440×1440, 5120×2160",
+  },
+  {
+    ratio: "4:3",
+    decimal: "1.333",
+    use: "Classic TVs, iPad, presentations",
+    examples: "1024×768, 1600×1200, 2048×1536",
+  },
+  {
+    ratio: "1:1",
+    decimal: "1.000",
+    use: "Instagram posts, profile pictures",
+    examples: "1080×1080, 2048×2048",
+  },
+  {
+    ratio: "9:16",
+    decimal: "0.563",
+    use: "TikTok, Instagram Reels, mobile video",
+    examples: "1080×1920, 1440×2560",
+  },
+  {
+    ratio: "3:2",
+    decimal: "1.500",
+    use: "DSLR photos, MacBook displays",
+    examples: "1440×960, 2160×1440, 3000×2000",
+  },
+  {
+    ratio: "16:10",
+    decimal: "1.600",
+    use: "MacBooks, some monitors, tablets",
+    examples: "1920×1200, 2560×1600, 3840×2400",
+  },
+  {
+    ratio: "2.39:1",
+    decimal: "2.390",
+    use: "Anamorphic widescreen cinema",
+    examples: "2048×858, 4096×1716",
+  },
 ];
 
 const faqData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": [
+  mainEntity: [
     {
       "@type": "Question",
-      "name": "What is aspect ratio?",
-      "acceptedAnswer": {
+      name: "What is aspect ratio?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Aspect ratio is the proportional relationship between width and height of a screen or image. It's expressed as two numbers separated by a colon (e.g., 16:9). Common ratios include 16:9 (widescreen), 21:9 (ultrawide), 4:3 (standard), and 1:1 (square)."
-      }
+        text: "Aspect ratio is the proportional relationship between width and height of a screen or image. It's expressed as two numbers separated by a colon (e.g., 16:9). Common ratios include 16:9 (widescreen), 21:9 (ultrawide), 4:3 (standard), and 1:1 (square).",
+      },
     },
     {
       "@type": "Question",
-      "name": "How do I calculate aspect ratio from width and height?",
-      "acceptedAnswer": {
+      name: "How do I calculate aspect ratio from width and height?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Divide the width by the height, then find the greatest common divisor (GCD) to simplify. For example, 1920÷1080 = 1.777... The GCD of 1920 and 1080 is 120, so 1920/120 : 1080/120 = 16:9."
-      }
+        text: "Divide the width by the height, then find the greatest common divisor (GCD) to simplify. For example, 1920÷1080 = 1.777... The GCD of 1920 and 1080 is 120, so 1920/120 : 1080/120 = 16:9.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is the most common aspect ratio for videos?",
-      "acceptedAnswer": {
+      name: "What is the most common aspect ratio for videos?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "16:9 is the most common aspect ratio for modern video content, used by YouTube, Netflix, and most streaming platforms. For vertical mobile video (TikTok, Reels), 9:16 is standard."
-      }
+        text: "16:9 is the most common aspect ratio for modern video content, used by YouTube, Netflix, and most streaming platforms. For vertical mobile video (TikTok, Reels), 9:16 is standard.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What aspect ratio is 1920x1080?",
-      "acceptedAnswer": {
+      name: "What aspect ratio is 1920x1080?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "1920×1080 pixels (Full HD or 1080p) has an aspect ratio of 16:9. This is the most widely used resolution for monitors, TVs, and video content."
-      }
+        text: "1920×1080 pixels (Full HD or 1080p) has an aspect ratio of 16:9. This is the most widely used resolution for monitors, TVs, and video content.",
+      },
     },
     {
       "@type": "Question",
-      "name": "How do I convert aspect ratio to pixels?",
-      "acceptedAnswer": {
+      name: "How do I convert aspect ratio to pixels?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Multiply the aspect ratio values by a common factor. For 16:9 at 1080p height: width = (16/9) × 1080 = 1920. For any target dimension, use our calculator's 'New Dimension' mode."
-      }
+        text: "Multiply the aspect ratio values by a common factor. For 16:9 at 1080p height: width = (16/9) × 1080 = 1920. For any target dimension, use our calculator's 'New Dimension' mode.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What is the difference between 16:9 and 16:10?",
-      "acceptedAnswer": {
+      name: "What is the difference between 16:9 and 16:10?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "16:9 (1.778:1) is wider and more common for video content. 16:10 (1.6:1) is slightly taller, preferred for productivity as it shows more vertical content. MacBooks use 16:10."
-      }
-    }
-  ]
+        text: "16:9 (1.778:1) is wider and more common for video content. 16:10 (1.6:1) is slightly taller, preferred for productivity as it shows more vertical content. MacBooks use 16:10.",
+      },
+    },
+  ],
+};
+
+// SoftwareApplication Schema for the calculator tool
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Aspect Ratio Calculator",
+  description: description,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  url: `${siteConfig.siteUrl}/aspect-ratio-calculator`,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  author: {
+    "@type": "Organization",
+    name: "Screen Size Calculator",
+  },
 };
 ---
 
@@ -80,13 +143,18 @@ const faqData = {
 
   <main class="flex-1">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16"
+    >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+        >
           Aspect Ratio Calculator
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Calculate and convert aspect ratios. Find screen dimensions from width and height.
+          Calculate and convert aspect ratios. Find screen dimensions from width
+          and height.
         </p>
       </div>
     </section>
@@ -94,39 +162,64 @@ const faqData = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AspectRatioCalculator client:load />
+        <AspectRatioCalculatorComponent client:load />
       </div>
     </section>
 
     <!-- Common Aspect Ratios Reference -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-4">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-4"
+        >
           Common Aspect Ratios Reference
         </h2>
-        <p class="text-gray-600 dark:text-gray-400 text-center mb-8 max-w-2xl mx-auto">
-          Quick reference guide for popular aspect ratios used in displays, video, and photography
+        <p
+          class="text-gray-600 dark:text-gray-400 text-center mb-8 max-w-2xl mx-auto"
+        >
+          Quick reference guide for popular aspect ratios used in displays,
+          video, and photography
         </p>
 
         <div class="overflow-x-auto">
-          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+          <table
+            class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden"
+          >
+            <thead
+              class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            >
               <tr>
                 <th class="px-4 py-3 text-left text-sm font-semibold">Ratio</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Decimal</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Common Use</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold">Example Resolutions</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Decimal</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Common Use</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Example Resolutions</th
+                >
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-              {commonRatios.map((item) => (
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td class="px-4 py-3 text-sm font-semibold text-primary-600 dark:text-primary-400">{item.ratio}</td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{item.decimal}</td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{item.use}</td>
-                  <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-500 font-mono text-xs">{item.examples}</td>
-                </tr>
-              ))}
+              {
+                commonRatios.map((item) => (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td class="px-4 py-3 text-sm font-semibold text-primary-600 dark:text-primary-400">
+                      {item.ratio}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                      {item.decimal}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                      {item.use}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-500 font-mono text-xs">
+                      {item.examples}
+                    </td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>
@@ -136,41 +229,88 @@ const faqData = {
     <!-- Use Cases -->
     <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+        <h2
+          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
           When to Use This Calculator
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <div
+              class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-blue-600 dark:text-blue-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Video Editing</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Video Editing
+            </h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Calculate the correct dimensions for YouTube (16:9), TikTok (9:16), or cinema (2.39:1) formats.
+              Calculate the correct dimensions for YouTube (16:9), TikTok
+              (9:16), or cinema (2.39:1) formats.
             </p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <div
+              class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Image Resizing</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Image Resizing
+            </h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Maintain proportions when scaling photos. Enter one dimension to find the other automatically.
+              Maintain proportions when scaling photos. Enter one dimension to
+              find the other automatically.
             </p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-            <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <div
+              class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-purple-600 dark:text-purple-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
               </svg>
             </div>
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Display Shopping</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Display Shopping
+            </h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Compare monitor aspect ratios. See how 21:9 ultrawide differs from standard 16:9 displays.
+              Compare monitor aspect ratios. See how 21:9 ultrawide differs from
+              standard 16:9 displays.
             </p>
           </div>
         </div>
@@ -184,20 +324,26 @@ const faqData = {
           Frequently Asked Questions
         </h2>
         <div class="space-y-6">
-          {faqData.mainEntity.map((faq) => (
-            <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
-                {faq.name}
-              </summary>
-              <p class="mt-3 text-gray-600 dark:text-gray-300">
-                {faq.acceptedAnswer.text}
-              </p>
-            </details>
-          ))}
+          {
+            faqData.mainEntity.map((faq) => (
+              <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+                <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
+                  {faq.name}
+                </summary>
+                <p class="mt-3 text-gray-600 dark:text-gray-300">
+                  {faq.acceptedAnswer.text}
+                </p>
+              </details>
+            ))
+          }
         </div>
       </div>
     </section>
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareSchema)}
+  />
 </Layout>

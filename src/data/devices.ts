@@ -28,6 +28,7 @@ export interface Device {
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
   updatedAt?: string;   // Optional date when device data was last updated (YYYY-MM-DD)
   phone?: PhoneSpecs;   // Phone-specific attributes (only for phones)
+  price?: number;       // Launch/Reference price in USD
 }
 
 // Parse resolution string "2556 x 1179" to { w, h }
@@ -96,6 +97,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 799,
   },
   {
     id: 'iphone-17-air',
@@ -115,6 +117,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 899,
   },
   {
     id: 'iphone-17-pro',
@@ -134,6 +137,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'iphone-17-pro-max',
@@ -153,6 +157,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1199,
   },
 
   // iPhone 16 Series (Released: September 20, 2024)
@@ -174,6 +179,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 799,
   },
   {
     id: 'iphone-16-plus',
@@ -193,6 +199,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 899,
   },
   {
     id: 'iphone-16-pro',
@@ -212,6 +219,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'iphone-16-pro-max',
@@ -231,6 +239,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1199,
   },
 
   // iPhone 15 Series (Released: September 22, 2023)
@@ -252,6 +261,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 699,
   },
   {
     id: 'iphone-15-plus',
@@ -271,6 +281,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 799,
   },
   {
     id: 'iphone-15-pro',
@@ -290,6 +301,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 899,
   },
   {
     id: 'iphone-15-pro-max',
@@ -309,6 +321,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
 
   // iPhone 14 Series (Released: September 16, 2022)
@@ -330,6 +343,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 699,
   },
   {
     id: 'iphone-14-plus',
@@ -349,6 +363,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 799,
   },
   {
     id: 'iphone-14-pro',
@@ -368,6 +383,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 899,
   },
   {
     id: 'iphone-14-pro-max',
@@ -387,6 +403,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
 
   // iPhone 13 Series (Released: September 24, 2021)
@@ -408,6 +425,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 599,
   },
   {
     id: 'iphone-13-mini',
@@ -427,6 +445,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 499,
   },
   {
     id: 'iphone-13-pro',
@@ -446,6 +465,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 899,
   },
   {
     id: 'iphone-13-pro-max',
@@ -465,6 +485,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: false,
     },
+    price: 999,
   },
 
   // Samsung Galaxy S25 Series (Released: February 7, 2025)
@@ -486,6 +507,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1299,
   },
   {
     id: 'samsung-galaxy-s25-plus',
@@ -505,6 +527,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'samsung-galaxy-s25',
@@ -524,6 +547,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 799,
   },
 
   // Samsung Galaxy S24 Series (Released: January 31, 2024)
@@ -545,6 +569,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1299,
   },
   {
     id: 'samsung-galaxy-s24-plus',
@@ -564,6 +589,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'samsung-galaxy-s24',
@@ -583,6 +609,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 799,
   },
 
   // Google Pixel 10 Series (Released: August 20, 2025)
@@ -604,6 +631,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 799,
   },
   {
     id: 'google-pixel-10-pro',
@@ -623,6 +651,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'google-pixel-10-pro-xl',
@@ -642,6 +671,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1099,
   },
 
   // Google Pixel 9 Series (Released: August 22, 2024)
@@ -663,6 +693,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 799,
   },
   {
     id: 'google-pixel-9-pro',
@@ -682,6 +713,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 999,
   },
   {
     id: 'google-pixel-9-pro-xl',
@@ -701,6 +733,7 @@ export const devices: Device[] = [
       hdr: true,
       alwaysOnDisplay: true,
     },
+    price: 1099,
   },
 
   // ============================================
@@ -872,6 +905,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2752 x 2064',
     updatedAt: '2024-05-15',
+    price: 1299,
   },
   {
     id: 'ipad-pro-11',
@@ -881,6 +915,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2420 x 1668',
     updatedAt: '2024-05-15',
+    price: 999,
   },
 
   // iPad Air (Released: May 15, 2024)
@@ -892,6 +927,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2732 x 2048',
     updatedAt: '2024-05-15',
+    price: 799,
   },
   {
     id: 'ipad-air-11',
@@ -901,6 +937,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2360 x 1640',
     updatedAt: '2024-05-15',
+    price: 599,
   },
 
   // iPad (10th gen released: October 26, 2022)
@@ -912,6 +949,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2360 x 1640',
     updatedAt: '2022-10-26',
+    price: 349,
   },
   {
     id: 'ipad-9',
@@ -921,6 +959,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2160 x 1620',
     updatedAt: '2021-09-24',
+    price: 329,
   },
 
   // iPad mini (7th gen released: October 23, 2024)
@@ -932,6 +971,7 @@ export const devices: Device[] = [
     ratio: 4 / 3,
     resolution: '2266 x 1488',
     updatedAt: '2024-10-23',
+    price: 499,
   },
 
   // Samsung Galaxy Tab S11 Series (Released: September 4, 2025)
@@ -943,6 +983,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2960 x 1848',
     updatedAt: '2025-09-04',
+    price: 1199,
   },
   {
     id: 'samsung-galaxy-tab-s11-plus',
@@ -952,6 +993,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2800 x 1752',
     updatedAt: '2025-09-04',
+    price: 999,
   },
   {
     id: 'samsung-galaxy-tab-s11',
@@ -961,6 +1003,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2560 x 1600',
     updatedAt: '2025-09-04',
+    price: 799,
   },
 
   // Samsung Galaxy Tab S10 Series (Released: September 26, 2024)
@@ -972,6 +1015,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2960 x 1848',
     updatedAt: '2024-09-26',
+    price: 1199,
   },
   {
     id: 'samsung-galaxy-tab-s10-plus',
@@ -981,6 +1025,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2800 x 1752',
     updatedAt: '2024-09-26',
+    price: 999,
   },
   {
     id: 'samsung-galaxy-tab-s10-fe-plus',
@@ -990,6 +1035,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2880 x 1800',
     updatedAt: '2024-09-26',
+    price: 599,
   },
   {
     id: 'samsung-galaxy-tab-s10-fe',
@@ -999,6 +1045,7 @@ export const devices: Device[] = [
     ratio: 16 / 10,
     resolution: '2880 x 1800',
     updatedAt: '2024-09-26',
+    price: 449,
   },
 
   // Microsoft Surface (Released: June 18, 2024)
@@ -1010,6 +1057,7 @@ export const devices: Device[] = [
     ratio: 3 / 2,
     resolution: '2880 x 1920',
     updatedAt: '2024-06-18',
+    price: 999,
   },
 ];
 

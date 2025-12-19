@@ -1,49 +1,68 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import ScreenSizeCalculator from '../components/ScreenSizeCalculator';
-const title = 'Phone Size Calculator - Screen Dimensions & PPI Tool';
-const description = 'Free phone screen size calculator. Compare iPhone vs Android dimensions, calculate PPI, and find the perfect smartphone size for your needs.';
-const keywords = 'phone size calculator, phone screen size calculator, iPhone screen size, Android screen size, phone dimensions, smartphone size comparison, phone PPI calculator';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
+import { siteConfig } from "../site.config";
+const title = "Phone Size Calculator - Screen Dimensions & PPI Tool";
+const description =
+  "Free phone screen size calculator. Compare iPhone vs Android dimensions, calculate PPI, and find the perfect smartphone size for your needs.";
+const keywords =
+  "phone size calculator, phone screen size calculator, iPhone screen size, Android screen size, phone dimensions, smartphone size comparison, phone PPI calculator";
 
 // FAQ Schema
 const faqData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": [
+  mainEntity: [
     {
       "@type": "Question",
-      "name": "How big is a 6.1 inch phone?",
-      "acceptedAnswer": {
+      name: "How big is a 6.1 inch phone?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "A 6.1 inch phone has dimensions of approximately 5.9 x 2.8 inches (150 x 71 mm) for the screen area. This is considered a medium-sized phone, suitable for one-handed use while providing enough screen real estate for multitasking. The iPhone 14 has these dimensions."
-      }
+        text: "A 6.1 inch phone has dimensions of approximately 5.9 x 2.8 inches (150 x 71 mm) for the screen area. This is considered a medium-sized phone, suitable for one-handed use while providing enough screen real estate for multitasking. The iPhone 14 has these dimensions.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What size phone is best for small hands?",
-      "acceptedAnswer": {
+      name: "What size phone is best for small hands?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Phones with 5.4-5.8 inch screens are ideal for small hands. Examples include the iPhone 14 Mini (5.4 inches), iPhone SE (5.4 inches), and smaller Android models. These sizes allow for comfortable one-handed use with easy reach to all screen areas."
-      }
+        text: "Phones with 5.4-5.8 inch screens are ideal for small hands. Examples include the iPhone 14 Mini (5.4 inches), iPhone SE (5.4 inches), and smaller Android models. These sizes allow for comfortable one-handed use with easy reach to all screen areas.",
+      },
     },
     {
       "@type": "Question",
-      "name": "What's the difference between phone PPI and TV PPI?",
-      "acceptedAnswer": {
+      name: "What's the difference between phone PPI and TV PPI?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Phone PPI (pixels per inch) is typically much higher than TV PPI due to closer viewing distances. Phone screens range from 300-600+ PPI (iPhone 14 Pro Max is 460 PPI), while TVs typically have 50-150 PPI. Higher PPI on phones prevents visible pixels at normal viewing distances."
-      }
+        text: "Phone PPI (pixels per inch) is typically much higher than TV PPI due to closer viewing distances. Phone screens range from 300-600+ PPI (iPhone 14 Pro Max is 460 PPI), while TVs typically have 50-150 PPI. Higher PPI on phones prevents visible pixels at normal viewing distances.",
+      },
     },
     {
       "@type": "Question",
-      "name": "Is bigger phone screen always better?",
-      "acceptedAnswer": {
+      name: "Is bigger phone screen always better?",
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": "Not always. Larger screens (6.7+ inches) offer better media consumption and multitasking but may be harder to use one-handed and may not fit comfortably in smaller pockets. Consider your usage patterns and hand size when choosing a phone screen size."
-      }
-    }
-  ]
+        text: "Not always. Larger screens (6.7+ inches) offer better media consumption and multitasking but may be harder to use one-handed and may not fit comfortably in smaller pockets. Consider your usage patterns and hand size when choosing a phone screen size.",
+      },
+    },
+  ],
+};
+
+// SoftwareApplication Schema for the calculator tool
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Phone Screen Size Calculator",
+  description: description,
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  url: `${siteConfig.siteUrl}/phone-screen-size-calculator`,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
 };
 ---
 
@@ -52,30 +71,68 @@ const faqData = {
 
   <main class="flex-1">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-b from-amber-50 to-white dark:from-amber-900/20 dark:to-gray-900 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-b from-amber-50 to-white dark:from-amber-900/20 dark:to-gray-900 py-12 lg:py-16"
+    >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+        >
           Phone Screen Size Calculator & Screen Analysis Tool
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
-          Find the perfect phone size for your needs with detailed resolution and PPI analysis. Calculate screen dimensions, pixel density, and compare different iPhone and Android models. Perfect for understanding how screen size affects usability.
+        <p
+          class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
+        >
+          Find the perfect phone size for your needs with detailed resolution
+          and PPI analysis. Calculate screen dimensions, pixel density, and
+          compare different iPhone and Android models. Perfect for understanding
+          how screen size affects usability.
         </p>
-        <div class="flex flex-wrap justify-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+        <div
+          class="flex flex-wrap justify-center gap-3 text-sm text-gray-600 dark:text-gray-400"
+        >
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-amber-600 dark:text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             PPI & Pixel Density
           </span>
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-amber-600 dark:text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             Screen Dimension Analysis
           </span>
           <span class="flex items-center gap-1">
-            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              class="w-5 h-5 text-amber-600 dark:text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"></path>
             </svg>
             iPhone & Android Comparison
           </span>
@@ -93,43 +150,90 @@ const faqData = {
     <!-- How to Use Guide -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           How to Analyze Phone Screen Sizes
         </h2>
         <div class="grid md:grid-cols-2 gap-6">
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+          >
             <div class="flex items-start gap-4">
-              <div class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl">1</div>
+              <div
+                class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl"
+              >
+                1
+              </div>
               <div>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Enter Screen Size</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm">Input your phone's diagonal screen size in inches or cm. The calculator shows the actual width and height dimensions.</p>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Enter Screen Size
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Input your phone's diagonal screen size in inches or cm. The
+                  calculator shows the actual width and height dimensions.
+                </p>
               </div>
             </div>
           </div>
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+          >
             <div class="flex items-start gap-4">
-              <div class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl">2</div>
+              <div
+                class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl"
+              >
+                2
+              </div>
               <div>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Select Aspect Ratio</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm">Choose your phone's aspect ratio (e.g., 19.5:9 for iPhone 14, 20:9 for Android). This affects the width and height calculations.</p>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Select Aspect Ratio
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Choose your phone's aspect ratio (e.g., 19.5:9 for iPhone 14,
+                  20:9 for Android). This affects the width and height
+                  calculations.
+                </p>
               </div>
             </div>
           </div>
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+          >
             <div class="flex items-start gap-4">
-              <div class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl">3</div>
+              <div
+                class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl"
+              >
+                3
+              </div>
               <div>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Set Resolution</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm">Select your phone's resolution (e.g., 1170 x 2532 for iPhone 14) to calculate PPI and pixel density.</p>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Set Resolution
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Select your phone's resolution (e.g., 1170 x 2532 for iPhone
+                  14) to calculate PPI and pixel density.
+                </p>
               </div>
             </div>
           </div>
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+          >
             <div class="flex items-start gap-4">
-              <div class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl">4</div>
+              <div
+                class="bg-amber-100 dark:bg-amber-900/50 rounded-lg p-3 text-amber-600 dark:text-amber-400 font-bold text-xl"
+              >
+                4
+              </div>
               <div>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Review Specifications</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm">Get exact dimensions, PPI, total pixels and pixel pitch. See if it's a 'retina' quality display (300+ PPI).</p>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Review Specifications
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Get exact dimensions, PPI, total pixels and pixel pitch. See
+                  if it's a 'retina' quality display (300+ PPI).
+                </p>
               </div>
             </div>
           </div>
@@ -140,48 +244,100 @@ const faqData = {
     <!-- Phone Size Guide -->
     <section class="py-12 lg:py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Phone Size Comparison Guide
         </h2>
         <div class="overflow-x-auto">
-          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
-            <thead class="bg-gradient-to-r from-amber-600 to-amber-700 text-white">
+          <table
+            class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+          >
+            <thead
+              class="bg-gradient-to-r from-amber-600 to-amber-700 text-white"
+            >
               <tr>
                 <th class="px-6 py-4 text-left font-semibold">Phone Size</th>
                 <th class="px-6 py-4 text-left font-semibold">Common Models</th>
-                <th class="px-6 py-4 text-left font-semibold">Screen Dimensions</th>
+                <th class="px-6 py-4 text-left font-semibold"
+                  >Screen Dimensions</th
+                >
                 <th class="px-6 py-4 text-left font-semibold">Typical PPI</th>
                 <th class="px-6 py-4 text-left font-semibold">Best For</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">5.4 - 5.8 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPhone SE, iPhone 14 Mini</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">2.6" × 5.5" - 2.7" × 5.8"</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">400-470 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Small hands, one-handed use</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >5.4 - 5.8 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPhone SE, iPhone 14 Mini</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >2.6" × 5.5" - 2.7" × 5.8"</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >400-470 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Small hands, one-handed use</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">6.1 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPhone 14, Galaxy S23</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">2.8" × 5.9"</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">400-460 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Balanced use, general purpose</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >6.1 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPhone 14, Galaxy S23</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >2.8" × 5.9"</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >400-460 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Balanced use, general purpose</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">6.7 inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">iPhone 14 Pro Max, Galaxy S23 Ultra</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">3.1" × 6.7"</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">400-510 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Media, productivity, gaming</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >6.7 inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >iPhone 14 Pro Max, Galaxy S23 Ultra</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >3.1" × 6.7"</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >400-510 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Media, productivity, gaming</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">6.8+ inches</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Foldable phones, Phablets</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">3.2" × 7.0"+</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">300-450 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Tablet-like experience</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >6.8+ inches</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Foldable phones, Phablets</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >3.2" × 7.0"+</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >300-450 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Tablet-like experience</td
+                >
               </tr>
             </tbody>
           </table>
@@ -192,43 +348,87 @@ const faqData = {
     <!-- Resolution Quality Guide -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Phone Resolution & PPI Guide
         </h2>
         <div class="overflow-x-auto">
-          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
-            <thead class="bg-gradient-to-r from-amber-600 to-amber-700 text-white">
+          <table
+            class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+          >
+            <thead
+              class="bg-gradient-to-r from-amber-600 to-amber-700 text-white"
+            >
               <tr>
                 <th class="px-6 py-4 text-left font-semibold">Resolution</th>
-                <th class="px-6 py-4 text-left font-semibold">Common in Phones</th>
+                <th class="px-6 py-4 text-left font-semibold"
+                  >Common in Phones</th
+                >
                 <th class="px-6 py-4 text-left font-semibold">PPI at 6.1"</th>
                 <th class="px-6 py-4 text-left font-semibold">Quality Level</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">720 x 1560 (HD+)</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Budget phones</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">~300 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Good (Retina threshold)</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >720 x 1560 (HD+)</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Budget phones</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >~300 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Good (Retina threshold)</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">1080 x 2340 (FHD+)</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Mid-range phones</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">~400 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Excellent (Retina)</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >1080 x 2340 (FHD+)</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Mid-range phones</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >~400 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Excellent (Retina)</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">1170 x 2532 (iPhone 14)</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Flagship phones</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">~460 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Superb (Retina)</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >1170 x 2532 (iPhone 14)</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Flagship phones</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >~460 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Superb (Retina)</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">1440 x 3200 (QHD+)</td>
-                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Premium Android</td>
-                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">~510 PPI</td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">Outstanding (Beyond Retina)</td>
+                <td
+                  class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
+                  >1440 x 3200 (QHD+)</td
+                >
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300"
+                  >Premium Android</td
+                >
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm"
+                  >~510 PPI</td
+                >
+                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"
+                  >Outstanding (Beyond Retina)</td
+                >
               </tr>
             </tbody>
           </table>
@@ -239,73 +439,155 @@ const faqData = {
     <!-- FAQ Section -->
     <section class="py-12 lg:py-16">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Frequently Asked Questions
         </h2>
         <div class="space-y-4">
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               How big is a 6.1 inch phone?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">A <strong>6.1 inch phone</strong> has dimensions of approximately <strong>5.9 x 2.8 inches</strong> (150 x 71 mm) for the screen area.</p>
-              <p>This is considered a medium-sized phone, suitable for one-handed use while providing enough screen real estate for multitasking. The iPhone 14 has these dimensions.</p>
+              <p class="mb-3">
+                A <strong>6.1 inch phone</strong> has dimensions of approximately
+                <strong>5.9 x 2.8 inches</strong> (150 x 71 mm) for the screen area.
+              </p>
+              <p>
+                This is considered a medium-sized phone, suitable for one-handed
+                use while providing enough screen real estate for multitasking.
+                The iPhone 14 has these dimensions.
+              </p>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               What size phone is best for small hands?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3"><strong>Phones with 5.4-5.8 inch screens</strong> are ideal for small hands:</p>
+              <p class="mb-3">
+                <strong>Phones with 5.4-5.8 inch screens</strong> are ideal for small
+                hands:
+              </p>
               <ul class="list-disc ml-6 space-y-1">
                 <li>iPhone 14 Mini (5.4 inches)</li>
                 <li>iPhone SE (5.4 inches)</li>
                 <li>Smaller Android models (Pixel 7a, etc.)</li>
               </ul>
-              <p>These sizes allow for comfortable one-handed use with easy reach to all screen areas.</p>
+              <p>
+                These sizes allow for comfortable one-handed use with easy reach
+                to all screen areas.
+              </p>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               What's the difference between phone PPI and TV PPI?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3"><strong>Phone PPI</strong> (pixels per inch) is typically much higher than <strong>TV PPI</strong> due to closer viewing distances.</p>
+              <p class="mb-3">
+                <strong>Phone PPI</strong> (pixels per inch) is typically much higher
+                than <strong>TV PPI</strong> due to closer viewing distances.
+              </p>
               <ul class="space-y-2">
-                <li>• <strong>Phone screens:</strong> 300-600+ PPI (iPhone 14 Pro Max is 460 PPI)</li>
+                <li>
+                  • <strong>Phone screens:</strong> 300-600+ PPI (iPhone 14 Pro Max
+                  is 460 PPI)
+                </li>
                 <li>• <strong>TVs:</strong> 50-150 PPI</li>
               </ul>
-              <p>Higher PPI on phones prevents visible pixels at normal viewing distances.</p>
+              <p>
+                Higher PPI on phones prevents visible pixels at normal viewing
+                distances.
+              </p>
             </div>
           </details>
 
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700">
-            <summary class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
               Is bigger phone screen always better?
-              <svg class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </summary>
             <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">Not always. Larger screens (6.7+ inches) offer better media consumption and multitasking but may be:</p>
+              <p class="mb-3">
+                Not always. Larger screens (6.7+ inches) offer better media
+                consumption and multitasking but may be:
+              </p>
               <ul class="list-disc ml-6 space-y-1">
                 <li>Harder to use one-handed</li>
                 <li>Might not fit comfortably in smaller pockets</li>
                 <li>Heavier and more tiring to hold</li>
               </ul>
-              <p>Consider your usage patterns and hand size when choosing a phone screen size.</p>
+              <p>
+                Consider your usage patterns and hand size when choosing a phone
+                screen size.
+              </p>
             </div>
           </details>
         </div>
@@ -315,52 +597,87 @@ const faqData = {
     <!-- Related Guides -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
+        >
           Related Guides
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
-          <a href="/blog/choosing-right-phone-size" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/blog/choosing-right-phone-size"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-3"
+              >
                 Phone Guide
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400"
+              >
                 How to Choose the Right Phone Size
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Complete guide to selecting the perfect phone size based on hand size and usage needs.
+                Complete guide to selecting the perfect phone size based on hand
+                size and usage needs.
               </p>
-              <span class="text-amber-600 dark:text-amber-400 text-sm font-medium">Read Guide →</span>
+              <span
+                class="text-amber-600 dark:text-amber-400 text-sm font-medium"
+                >Read Guide →</span
+              >
             </div>
           </a>
 
-          <a href="/tv-screen-size-calculator" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/tv-screen-size-calculator"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-medium mb-3"
+              >
                 Calculator Tool
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400"
+              >
                 TV Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Calculate optimal TV size and viewing distance based on THX and SMPTE standards.
+                Calculate optimal TV size and viewing distance based on THX and
+                SMPTE standards.
               </p>
-              <span class="text-amber-600 dark:text-amber-400 text-sm font-medium">Try Calculator →</span>
+              <span
+                class="text-amber-600 dark:text-amber-400 text-sm font-medium"
+                >Try Calculator →</span
+              >
             </div>
           </a>
 
-          <a href="/monitor-screen-size-calculator" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700">
+          <a
+            href="/monitor-screen-size-calculator"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
             <div class="p-6">
-              <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium mb-3">
+              <span
+                class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium mb-3"
+              >
                 Calculator Tool
               </span>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400">
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400"
+              >
                 Monitor Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Find the perfect monitor size and resolution for your desk setup and viewing distance.
+                Find the perfect monitor size and resolution for your desk setup
+                and viewing distance.
               </p>
-              <span class="text-amber-600 dark:text-amber-400 text-sm font-medium">Try Calculator →</span>
+              <span
+                class="text-amber-600 dark:text-amber-400 text-sm font-medium"
+                >Try Calculator →</span
+              >
             </div>
           </a>
         </div>
@@ -368,21 +685,33 @@ const faqData = {
     </section>
 
     <!-- CTA Section -->
-    <section class="bg-gradient-to-r from-amber-600 to-amber-700 py-12 lg:py-16">
+    <section
+      class="bg-gradient-to-r from-amber-600 to-amber-700 py-12 lg:py-16"
+    >
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
           Ready to Analyze Your Phone?
         </h2>
         <p class="text-amber-100 dark:text-amber-200 mb-8 max-w-2xl mx-auto">
-          Use our calculator above to get instant PPI and dimension analysis for any phone screen size and resolution.
+          Use our calculator above to get instant PPI and dimension analysis for
+          any phone screen size and resolution.
         </p>
         <a
           href="#calculator"
           class="inline-flex items-center gap-2 bg-white text-amber-600 font-semibold px-6 py-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-100 transition-colors"
         >
           Use Calculator Now
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
           </svg>
         </a>
       </div>
@@ -390,4 +719,8 @@ const faqData = {
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareSchema)}
+  />
 </Layout>
