@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
-import { getCollection } from 'astro:content';
 import { contentDates } from './src/site.config.ts';
 
 import react from '@astrojs/react';
@@ -10,8 +9,9 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import rehypeExternalLinks from 'rehype-external-links';
 
-// Create maps for faster date lookups
-const deviceDateMap = new Map(devices.map(d => [d.id, d.updatedAt]));
+// Create a map for faster device date lookups.
+// Blog dates will be handled directly from the entry object provided by the sitemap integration.
+const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,18 +24,14 @@ export default defineConfig({
     react(),
     mdx(),
     sitemap({
-      async serialize(page) {
+      serialize(page) {
         let pageSpecificDateStr;
         let templateDateStr;
 
-        // Rule 1: Blog Posts
-        if (page.url.includes('/blog/')) {
-          const blogSlug = page.url.split('/blog/').pop().replace(/\/$/, '');
-          if (blogSlug) {
-            const blogCollection = await getCollection('blog');
-            const blogPost = blogCollection.find(p => p.slug === blogSlug);
-            pageSpecificDateStr = blogPost?.data.pubDate;
-          }
+        // Rule 1: Blog Posts (from content collections)
+        // The sitemap integration provides the full `entry` for pages from content collections.
+        if (page.entry) {
+          pageSpecificDateStr = page.entry.data.pubDate;
           templateDateStr = contentDates.blogContent;
         }
         // Rule 2: Comparison Pages
