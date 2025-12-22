@@ -9,6 +9,7 @@ interface Props {
   ogImage?: string;
   keywords?: string;
   noindex?: boolean;
+  modifiedTime?: string; // ISO 8601 date for SEO freshness signal
 }
 
 const {
@@ -17,7 +18,8 @@ const {
   canonical,
   ogImage = '/og-image.png',
   keywords = 'screen size calculator, tv size calculator, monitor dimensions, ppi calculator, aspect ratio calculator, viewing distance calculator, projector throw distance, 4k tv size, phone screen size, iphone screen size, android screen size',
-  noindex = false
+  noindex = false,
+  modifiedTime
 } = Astro.props;
 
 // Generate the canonical URL without .html extension
@@ -87,6 +89,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <meta property="og:description" content={description} />
     <meta property="og:image" content={siteUrl + ogImage} />
     <meta property="og:site_name" content="Screen Size Calculator" />
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />

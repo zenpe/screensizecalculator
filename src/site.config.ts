@@ -16,15 +16,15 @@ export const siteConfig = {
 export const contentDates = {
   // For device pages and comparison pages.
   // Update when [deviceId]-screen-size.astro or comparison/[slug].astro templates change.
-  deviceContent: '2025-12-19', 
+  deviceContent: '2025-12-22',
 
   // For blog posts.
   // Update when BlogPost.astro or other blog templates change.
-  blogContent: '2025-12-19',
+  blogContent: '2025-12-22',
 
   // For all other static pages (homepage, calculators, etc.).
   // Update when a main static page's structure or content changes.
-  staticContent: '2025-12-19',
+  staticContent: '2025-12-22',
 };
 
 // Helper function to generate Amazon search URL with affiliate tag
