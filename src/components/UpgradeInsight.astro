@@ -1,0 +1,87 @@
+---
+/**
+ * UpgradeInsight - Shows upgrade recommendation when comparing devices of different ages
+ *
+ * Only displays when:
+ * - Both devices have release dates
+ * - Both devices are in the same category
+ * - Devices are at least 10 months apart in release date
+ */
+import { getUpgradeInsight } from '../utils/deviceAge';
+import type { Device } from '../data/devices';
+
+interface Props {
+  deviceA: Device;
+  deviceB: Device;
+}
+
+const { deviceA, deviceB } = Astro.props;
+
+const insight = getUpgradeInsight(deviceA, deviceB);
+
+if (!insight) {
+  return null;
+}
+
+// Format release date to readable format (e.g., "Sep 2024")
+const formatReleaseDate = (dateStr?: string) => {
+  if (!dateStr) return '';
+  const [year, month] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1);
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+};
+
+const newerReleaseDate = formatReleaseDate(insight.newerDevice.releasedAt);
+const olderReleaseDate = formatReleaseDate(insight.olderDevice.releasedAt);
+---
+
+<div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4 sm:p-6 border border-amber-200 dark:border-amber-800/50">
+  <div class="flex items-start gap-3 sm:gap-4">
+    <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
+      <svg
+        class="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+        />
+      </svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-base sm:text-lg font-bold text-amber-900 dark:text-amber-100 mb-1 sm:mb-2">
+        {insight.title}
+      </h3>
+      <p class="text-sm sm:text-base text-amber-800 dark:text-amber-200 leading-relaxed">
+        {insight.content}
+      </p>
+      <div class="mt-3 sm:mt-4 flex flex-wrap gap-2">
+        <a
+          href={`/${insight.newerDevice.id}-screen-size`}
+          class="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-white dark:bg-gray-800 px-2.5 py-1.5 rounded-full border border-amber-200 dark:border-amber-700 hover:border-amber-400 dark:hover:border-amber-500 transition-colors"
+        >
+          <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{insight.newerDevice.name}</span>
+          {newerReleaseDate && <span class="text-gray-500 dark:text-gray-400">({newerReleaseDate})</span>}
+        </a>
+        <a
+          href={`/${insight.olderDevice.id}-screen-size`}
+          class="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-white dark:bg-gray-800 px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+        >
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{insight.olderDevice.name}</span>
+          {olderReleaseDate && <span class="text-gray-500 dark:text-gray-400">({olderReleaseDate})</span>}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

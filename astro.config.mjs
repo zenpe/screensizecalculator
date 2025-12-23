@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
-import { contentDates } from './src/site.config.ts';
+import { contentDates, getScatteredDate } from './src/site.config.ts';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -46,13 +46,13 @@ export default defineConfig({
               pageSpecificDateStr = new Date(Math.max(...dates)).toISOString();
             }
           }
-          templateDateStr = contentDates.deviceContent;
+          templateDateStr = getScatteredDate(slug);
         }
         // Rule 3: Device Detail Pages
         else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)) {
           const deviceId = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)[1];
           pageSpecificDateStr = deviceDateMap.get(deviceId);
-          templateDateStr = contentDates.deviceContent;
+          templateDateStr = getScatteredDate(deviceId);
         }
         // Rule 4: All other (static) pages
         else {

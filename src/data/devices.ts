@@ -26,6 +26,7 @@ export interface Device {
   diagonal: number;     // Screen diagonal in inches
   ratio: number;        // Aspect ratio as decimal (e.g., 16/9 = 1.777...)
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
+  releasedAt?: string;  // Optional release date (YYYY-MM-DD) for freshness calculation
   updatedAt?: string;   // Optional date when device data was last updated (YYYY-MM-DD)
   phone?: PhoneSpecs;   // Phone-specific attributes (only for phones)
   price?: number;       // Launch/Reference price in USD
@@ -86,6 +87,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
     phone: {
       weight: 194,
@@ -106,6 +108,7 @@ export const devices: Device[] = [
     diagonal: 6.5,
     ratio: 19.6 / 9,
     resolution: '2736 x 1260',
+    releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
     phone: {
       weight: 168,
@@ -126,6 +129,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
     phone: {
       weight: 199,
@@ -146,6 +150,7 @@ export const devices: Device[] = [
     diagonal: 6.9,
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
+    releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
     phone: {
       weight: 227,
@@ -168,6 +173,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
     phone: {
       weight: 170,
@@ -188,6 +194,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
     phone: {
       weight: 199,
@@ -208,6 +215,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 19.5 / 9,
     resolution: '2622 x 1206',
+    releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
     phone: {
       weight: 199,
@@ -228,6 +236,7 @@ export const devices: Device[] = [
     diagonal: 6.9,
     ratio: 19.5 / 9,
     resolution: '2868 x 1320',
+    releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
     phone: {
       weight: 227,
@@ -250,6 +259,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
     phone: {
       weight: 171,
@@ -270,6 +280,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
     phone: {
       weight: 201,
@@ -290,6 +301,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
     phone: {
       weight: 187,
@@ -310,6 +322,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
     phone: {
       weight: 221,
@@ -332,6 +345,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
     phone: {
       weight: 172,
@@ -352,6 +366,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
+    releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
     phone: {
       weight: 203,
@@ -372,6 +387,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2556 x 1179',
+    releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
     phone: {
       weight: 206,
@@ -392,6 +408,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2796 x 1290',
+    releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
     phone: {
       weight: 240,
@@ -414,6 +431,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
     phone: {
       weight: 174,
@@ -434,6 +452,7 @@ export const devices: Device[] = [
     diagonal: 5.4,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
     phone: {
       weight: 140,
@@ -454,6 +473,7 @@ export const devices: Device[] = [
     diagonal: 6.1,
     ratio: 19.5 / 9,
     resolution: '2532 x 1170',
+    releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
     phone: {
       weight: 204,
@@ -474,6 +494,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '2778 x 1284',
+    releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
     phone: {
       weight: 238,
@@ -496,6 +517,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
     phone: {
       weight: 218,
@@ -516,6 +538,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
     phone: {
       weight: 190,
@@ -536,6 +559,7 @@ export const devices: Device[] = [
     diagonal: 6.2,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
     phone: {
       weight: 162,
@@ -558,6 +582,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 19.3 / 9,
     resolution: '3120 x 1440',
+    releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
     phone: {
       weight: 232,
@@ -578,6 +603,7 @@ export const devices: Device[] = [
     diagonal: 6.7,
     ratio: 19.5 / 9,
     resolution: '3120 x 1440',
+    releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
     phone: {
       weight: 196,
@@ -598,6 +624,7 @@ export const devices: Device[] = [
     diagonal: 6.2,
     ratio: 19.5 / 9,
     resolution: '2340 x 1080',
+    releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
     phone: {
       weight: 167,
@@ -620,6 +647,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1080 x 2424',
+    releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
     phone: {
       weight: 185,
@@ -640,6 +668,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1280 x 2856',
+    releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
     phone: {
       weight: 199,
@@ -660,6 +689,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 20 / 9,
     resolution: '1344 x 2992',
+    releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
     phone: {
       weight: 221,
@@ -682,6 +712,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '2400 x 1080',
+    releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
     phone: {
       weight: 198,
@@ -702,6 +733,7 @@ export const devices: Device[] = [
     diagonal: 6.3,
     ratio: 20 / 9,
     resolution: '1280 x 2856',
+    releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
     phone: {
       weight: 199,
@@ -722,6 +754,7 @@ export const devices: Device[] = [
     diagonal: 6.8,
     ratio: 20 / 9,
     resolution: '1344 x 2992',
+    releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
     phone: {
       weight: 221,
@@ -904,6 +937,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 4 / 3,
     resolution: '2752 x 2064',
+    releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
     price: 1299,
   },
@@ -914,6 +948,7 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 4 / 3,
     resolution: '2420 x 1668',
+    releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
     price: 999,
   },
@@ -926,6 +961,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 4 / 3,
     resolution: '2732 x 2048',
+    releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
     price: 799,
   },
@@ -936,6 +972,7 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 4 / 3,
     resolution: '2360 x 1640',
+    releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
     price: 599,
   },
@@ -948,6 +985,7 @@ export const devices: Device[] = [
     diagonal: 10.9,
     ratio: 4 / 3,
     resolution: '2360 x 1640',
+    releasedAt: '2022-10-26',
     updatedAt: '2022-10-26',
     price: 349,
   },
@@ -958,6 +996,7 @@ export const devices: Device[] = [
     diagonal: 10.2,
     ratio: 4 / 3,
     resolution: '2160 x 1620',
+    releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
     price: 329,
   },
@@ -970,6 +1009,7 @@ export const devices: Device[] = [
     diagonal: 8.3,
     ratio: 4 / 3,
     resolution: '2266 x 1488',
+    releasedAt: '2024-10-23',
     updatedAt: '2024-10-23',
     price: 499,
   },
@@ -982,6 +1022,7 @@ export const devices: Device[] = [
     diagonal: 14.6,
     ratio: 16 / 10,
     resolution: '2960 x 1848',
+    releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
     price: 1199,
   },
@@ -992,6 +1033,7 @@ export const devices: Device[] = [
     diagonal: 12.4,
     ratio: 16 / 10,
     resolution: '2800 x 1752',
+    releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
     price: 999,
   },
@@ -1002,6 +1044,7 @@ export const devices: Device[] = [
     diagonal: 11,
     ratio: 16 / 10,
     resolution: '2560 x 1600',
+    releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
     price: 799,
   },
@@ -1014,6 +1057,7 @@ export const devices: Device[] = [
     diagonal: 14.6,
     ratio: 16 / 10,
     resolution: '2960 x 1848',
+    releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
     price: 1199,
   },
@@ -1024,6 +1068,7 @@ export const devices: Device[] = [
     diagonal: 12.4,
     ratio: 16 / 10,
     resolution: '2800 x 1752',
+    releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
     price: 999,
   },
@@ -1034,6 +1079,7 @@ export const devices: Device[] = [
     diagonal: 13.1,
     ratio: 16 / 10,
     resolution: '2880 x 1800',
+    releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
     price: 599,
   },
@@ -1044,6 +1090,7 @@ export const devices: Device[] = [
     diagonal: 10.9,
     ratio: 16 / 10,
     resolution: '2880 x 1800',
+    releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
     price: 449,
   },
@@ -1056,6 +1103,7 @@ export const devices: Device[] = [
     diagonal: 13,
     ratio: 3 / 2,
     resolution: '2880 x 1920',
+    releasedAt: '2024-06-18',
     updatedAt: '2024-06-18',
     price: 999,
   },

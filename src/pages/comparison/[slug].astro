@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import ComparisonVisualizer from "../../components/ComparisonVisualizer.tsx";
 import ShareButtons from "../../components/ShareButtons.astro";
+import UpgradeInsight from "../../components/UpgradeInsight.astro";
 import {
   devices,
   getDeviceById,
@@ -14,7 +15,7 @@ import {
 import {
   getAmazonSearchUrl,
   siteConfig,
-  contentDates,
+  getScatteredDate,
 } from "../../site.config";
 import { getComparisonUrl } from "../../utils/url";
 import {
@@ -118,18 +119,19 @@ const comparisonFAQs = generateComparisonFAQ(
   secondaryDims,
 );
 
-// Calculate display date: MAX(primaryDevice.updatedAt, secondaryDevice.updatedAt, contentDates.deviceContent)
-// This ensures freshness when either device data or page template is updated
+// Calculate display date for SEO freshness
 const toISO8601 = (date: string): string => {
   if (date.includes("T")) return date;
   return `${date}T10:00:00+08:00`;
 };
 
+// Use scattered date based on comparison slug for natural distribution
+const comparisonSlug = `${deviceA.id}-vs-${deviceB.id}`;
+const scatteredDate = new Date(getScatteredDate(comparisonSlug)).getTime();
 const deviceDates = [primaryDevice.updatedAt, secondaryDevice.updatedAt]
   .filter((d): d is string => Boolean(d))
   .map((d) => new Date(d).getTime());
-const templateDate = new Date(contentDates.deviceContent).getTime();
-const allDates = [...deviceDates, templateDate];
+const allDates = [...deviceDates, scatteredDate];
 const displayDateStr = new Date(Math.max(...allDates))
   .toISOString()
   .split("T")[0];
@@ -322,11 +324,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
       <p
         class="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2 mb-4"
       >
-        Visual comparison showing how the {primaryDevice.name} ({
-          primaryDevice.diagonal
-        }") and
-        {secondaryDevice.name} ({secondaryDevice.diagonal}") screens compare in
-        actual size.
+        Visual comparison showing how the {primaryDevice.name} and {secondaryDevice.name} screens compare in actual size.
       </p>
       <div class="flex justify-center">
         <ShareButtons
@@ -537,6 +535,11 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
         </div>
       )
     }
+
+    <!-- Upgrade Insight (only shows when devices are significantly different in age) -->
+    <div class="mb-6 sm:mb-8">
+      <UpgradeInsight deviceA={primaryDevice} deviceB={secondaryDevice} />
+    </div>
 
     <!-- Which Should You Choose -->
     {
