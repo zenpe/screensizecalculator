@@ -1,5 +1,13 @@
 // Device type definitions and database for programmatic SEO comparison pages
 
+// Device data validation constraints
+const DEVICE_CONSTRAINTS = {
+  MIN_DIAGONAL: 0.5,    // Minimum 0.5 inches (smartwatch)
+  MAX_DIAGONAL: 300,    // Maximum 300 inches (large projector screen)
+  MIN_RATIO: 0.5,       // Minimum aspect ratio (2:1 portrait)
+  MAX_RATIO: 5,         // Maximum aspect ratio (5:1 ultrawide)
+} as const;
+
 // Phone-specific attributes for detailed comparisons
 export interface PhoneSpecs {
   // Physical attributes
@@ -28,8 +36,73 @@ export interface Device {
   resolution?: string;  // Optional resolution string (e.g., "2556 x 1179")
   releasedAt?: string;  // Optional release date (YYYY-MM-DD) for freshness calculation
   updatedAt?: string;   // Optional date when device data was last updated (YYYY-MM-DD)
+  expertSummary?: string; // Optional field for a unique, human-written summary
   phone?: PhoneSpecs;   // Phone-specific attributes (only for phones)
   price?: number;       // Launch/Reference price in USD
+}
+
+// Validate device data to prevent calculation errors
+export function validateDevice(device: Device): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (!device.id || device.id.trim() === '') {
+    errors.push('Device ID is required');
+  }
+
+  if (!device.name || device.name.trim() === '') {
+    errors.push('Device name is required');
+  }
+
+  if (device.diagonal <= 0) {
+    errors.push(`Invalid diagonal: ${device.diagonal}. Must be positive.`);
+  } else if (device.diagonal < DEVICE_CONSTRAINTS.MIN_DIAGONAL) {
+    errors.push(`Diagonal ${device.diagonal}" is below minimum ${DEVICE_CONSTRAINTS.MIN_DIAGONAL}"`);
+  } else if (device.diagonal > DEVICE_CONSTRAINTS.MAX_DIAGONAL) {
+    errors.push(`Diagonal ${device.diagonal}" exceeds maximum ${DEVICE_CONSTRAINTS.MAX_DIAGONAL}"`);
+  }
+
+  if (device.ratio <= 0) {
+    errors.push(`Invalid aspect ratio: ${device.ratio}. Must be positive.`);
+  } else if (device.ratio < DEVICE_CONSTRAINTS.MIN_RATIO) {
+    errors.push(`Aspect ratio ${device.ratio} is below minimum ${DEVICE_CONSTRAINTS.MIN_RATIO}`);
+  } else if (device.ratio > DEVICE_CONSTRAINTS.MAX_RATIO) {
+    errors.push(`Aspect ratio ${device.ratio} exceeds maximum ${DEVICE_CONSTRAINTS.MAX_RATIO}`);
+  }
+
+  if (device.price !== undefined && device.price < 0) {
+    errors.push(`Invalid price: ${device.price}. Must be non-negative.`);
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+// Safe calculation wrapper with validation
+function safeCalculation<T>(
+  diagonal: number,
+  ratio: number,
+  calculation: (d: number, r: number) => T,
+  fallback: T
+): T {
+  if (
+    diagonal <= 0 ||
+    diagonal > DEVICE_CONSTRAINTS.MAX_DIAGONAL ||
+    ratio <= 0 ||
+    ratio > DEVICE_CONSTRAINTS.MAX_RATIO ||
+    !Number.isFinite(diagonal) ||
+    !Number.isFinite(ratio)
+  ) {
+    return fallback;
+  }
+  try {
+    const result = calculation(diagonal, ratio);
+    // Check for NaN or Infinity in result
+    if (typeof result === 'number' && (!Number.isFinite(result) || Number.isNaN(result))) {
+      return fallback;
+    }
+    return result;
+  } catch {
+    return fallback;
+  }
 }
 
 // Parse resolution string "2556 x 1179" to { w, h }
@@ -44,7 +117,9 @@ export function parseResolution(resolution?: string): { w: number; h: number } |
 export function calculateDevicePPI(device: Device): number | null {
   const res = parseResolution(device.resolution);
   if (!res) return null;
-  return Math.sqrt(res.w * res.w + res.h * res.h) / device.diagonal;
+  if (device.diagonal <= 0 || !Number.isFinite(device.diagonal)) return null;
+  const ppi = Math.sqrt(res.w * res.w + res.h * res.h) / device.diagonal;
+  return Number.isFinite(ppi) ? ppi : null;
 }
 
 // Helper to calculate physical dimensions from diagonal and aspect ratio
@@ -52,16 +127,50 @@ export function calculateDevicePPI(device: Device): number | null {
 // With width = height × ratio, we get:
 // height = diagonal / sqrt(ratio² + 1)
 // width = height × ratio
+// Note: This returns the raw calculated dimensions where width is the longer side
+// For display purposes on portrait devices (phones), use getDisplayDimensions()
 export function calculateDimensions(diagonal: number, ratio: number): { width: number; height: number } {
-  const height = diagonal / Math.sqrt(ratio * ratio + 1);
-  const width = height * ratio;
-  return { width, height };
+  return safeCalculation(
+    diagonal,
+    ratio,
+    (d, r) => {
+      const height = d / Math.sqrt(r * r + 1);
+      const width = height * r;
+      return { width, height };
+    },
+    { width: 0, height: 0 }
+  );
+}
+
+// Get semantically correct display dimensions based on device orientation
+// For phones/tablets (portrait): height > width (long edge is height)
+// For TVs/monitors/projectors (landscape): width > height (long edge is width)
+export function getDisplayDimensions(device: Device): { width: number; height: number } {
+  const dims = calculateDimensions(device.diagonal, device.ratio);
+
+  // Portrait devices: swap so height is the longer dimension
+  if (device.category === 'phone' || device.category === 'tablet') {
+    return {
+      width: dims.height,  // short edge becomes width
+      height: dims.width,  // long edge becomes height
+    };
+  }
+
+  // Landscape devices: keep as-is (width is longer)
+  return dims;
 }
 
 // Calculate screen area in square inches
 export function calculateArea(diagonal: number, ratio: number): number {
-  const { width, height } = calculateDimensions(diagonal, ratio);
-  return width * height;
+  return safeCalculation(
+    diagonal,
+    ratio,
+    (d, r) => {
+      const { width, height } = calculateDimensions(d, r);
+      return width * height;
+    },
+    0
+  );
 }
 
 // Calculate percentage difference between two screen areas
@@ -152,6 +261,7 @@ export const devices: Device[] = [
     resolution: '2868 x 1320',
     releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
+    expertSummary: 'The iPhone 17 Pro Max features a stunning 6.9-inch Super Retina XDR display, making it ideal for users seeking the ultimate visual experience and gaming performance. Its expansive screen also significantly enhances multitasking efficiency.',
     phone: {
       weight: 227,
       battery: 4685,
@@ -175,6 +285,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
+    expertSummary: 'The iPhone 16 offers a perfectly balanced 6.1-inch display that fits comfortably in one hand while delivering crisp visuals. An excellent choice for users who prioritize portability without sacrificing screen quality.',
     phone: {
       weight: 170,
       battery: 3561,
@@ -196,6 +307,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
+    expertSummary: 'The iPhone 16 Plus delivers a spacious 6.7-inch display perfect for media consumption and extended reading sessions. Its larger battery complements the bigger screen for all-day entertainment.',
     phone: {
       weight: 199,
       battery: 4674,
@@ -217,6 +329,7 @@ export const devices: Device[] = [
     resolution: '2622 x 1206',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
+    expertSummary: 'The iPhone 16 Pro strikes the perfect balance between screen size and handling with its 6.3-inch ProMotion display. The 120Hz refresh rate ensures buttery-smooth scrolling for professionals and enthusiasts alike.',
     phone: {
       weight: 199,
       battery: 3582,
@@ -238,6 +351,7 @@ export const devices: Device[] = [
     resolution: '2868 x 1320',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
+    expertSummary: 'The iPhone 16 Pro Max boasts the largest iPhone display ever at 6.9 inches, offering an immersive canvas for creative work and cinematic viewing. Its ProMotion technology and peak brightness make it a powerhouse for HDR content.',
     phone: {
       weight: 227,
       battery: 4685,
@@ -261,6 +375,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
+    expertSummary: 'The iPhone 15 brings the Dynamic Island to the standard lineup with a vibrant 6.1-inch Super Retina XDR display. A smart upgrade for users seeking flagship features in a compact, pocket-friendly form factor.',
     phone: {
       weight: 171,
       battery: 3349,
@@ -282,6 +397,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
+    expertSummary: 'The iPhone 15 Plus combines a generous 6.7-inch display with exceptional battery life, making it the go-to choice for users who want big-screen entertainment without the Pro price tag.',
     phone: {
       weight: 201,
       battery: 4383,
@@ -303,6 +419,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
+    expertSummary: 'The iPhone 15 Pro features a lightweight titanium design with a 6.1-inch ProMotion display. Its compact size paired with pro-level features makes it ideal for one-handed power users.',
     phone: {
       weight: 187,
       battery: 3274,
@@ -324,6 +441,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
+    expertSummary: 'The iPhone 15 Pro Max delivers the ultimate big-screen iPhone experience with its 6.7-inch ProMotion display and titanium construction. Perfect for photographers and videographers who demand the best optical zoom and screen real estate.',
     phone: {
       weight: 221,
       battery: 4422,
@@ -347,6 +465,7 @@ export const devices: Device[] = [
     resolution: '2532 x 1170',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
+    expertSummary: 'The iPhone 14 offers a reliable 6.1-inch Super Retina XDR display with improved durability and crash detection. A solid choice for users who want a dependable everyday smartphone with excellent screen quality.',
     phone: {
       weight: 172,
       battery: 3279,
@@ -368,6 +487,7 @@ export const devices: Device[] = [
     resolution: '2778 x 1284',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
+    expertSummary: 'The iPhone 14 Plus introduced the large 6.7-inch display to the non-Pro lineup, offering outstanding battery life and immersive viewing. Ideal for users who want maximum screen size at a more accessible price point.',
     phone: {
       weight: 203,
       battery: 4325,
@@ -389,6 +509,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
+    expertSummary: 'The iPhone 14 Pro debuted the innovative Dynamic Island and Always-On Display on a 6.1-inch ProMotion screen. A game-changer for users who want cutting-edge features in a manageable form factor.',
     phone: {
       weight: 206,
       battery: 3200,
@@ -410,6 +531,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
+    expertSummary: 'The iPhone 14 Pro Max combines a stunning 6.7-inch ProMotion display with the Dynamic Island and exceptional battery life. The ultimate choice for power users who demand the largest screen with all pro features.',
     phone: {
       weight: 240,
       battery: 4323,
@@ -475,6 +597,7 @@ export const devices: Device[] = [
     resolution: '2532 x 1170',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
+    expertSummary: 'The iPhone 13 Pro introduced ProMotion 120Hz display technology to the 6.1-inch form factor, revolutionizing scrolling smoothness. A landmark device that brought adaptive refresh rate to iPhone for the first time.',
     phone: {
       weight: 204,
       battery: 3095,
@@ -496,6 +619,7 @@ export const devices: Device[] = [
     resolution: '2778 x 1284',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
+    expertSummary: 'The iPhone 13 Pro Max pairs a massive 6.7-inch ProMotion display with record-breaking battery life. Its combination of screen size, 120Hz smoothness, and all-day endurance made it a favorite among content creators.',
     phone: {
       weight: 238,
       battery: 4352,
@@ -519,6 +643,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
+    expertSummary: 'The Samsung Galaxy S25 Ultra delivers an unparalleled visual experience for content creators and power users with its premium Dynamic AMOLED display and ultra-high resolution. The integrated S Pen further enhances productivity.',
     phone: {
       weight: 218,
       battery: 5000,
@@ -540,6 +665,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
+    expertSummary: 'The Samsung Galaxy S25+ offers a sweet spot between size and performance with its 6.7-inch QHD+ Dynamic AMOLED display. Perfect for users who want flagship features without the Ultra bulk.',
     phone: {
       weight: 190,
       battery: 4900,
@@ -561,6 +687,7 @@ export const devices: Device[] = [
     resolution: '2340 x 1080',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
+    expertSummary: 'The Samsung Galaxy S25 packs flagship performance into a compact 6.2-inch form factor with a stunning Dynamic AMOLED display. Ideal for one-handed use without compromising on Samsung\'s premium experience.',
     phone: {
       weight: 162,
       battery: 4000,
@@ -584,6 +711,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
+    expertSummary: 'The Samsung Galaxy S24 Ultra features a brilliant 6.8-inch QHD+ display with Galaxy AI integration. Its titanium frame and built-in S Pen make it the ultimate productivity powerhouse for demanding users.',
     phone: {
       weight: 232,
       battery: 5000,
@@ -605,6 +733,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
+    expertSummary: 'The Samsung Galaxy S24+ delivers a gorgeous 6.7-inch QHD+ display with excellent outdoor visibility. A balanced choice for users seeking a large screen with flagship performance and AI features.',
     phone: {
       weight: 196,
       battery: 4900,
@@ -626,6 +755,7 @@ export const devices: Device[] = [
     resolution: '2340 x 1080',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
+    expertSummary: 'The Samsung Galaxy S24 brings Galaxy AI to a pocket-friendly 6.2-inch display with vibrant colors and smooth 120Hz refresh. The most accessible way to experience Samsung\'s latest innovations.',
     phone: {
       weight: 167,
       battery: 4000,
@@ -1108,6 +1238,25 @@ export const devices: Device[] = [
     price: 999,
   },
 ];
+
+// Build-time validation: validate all devices when module loads
+// This catches data errors early during development and build
+const validationErrors: string[] = [];
+for (const device of devices) {
+  const result = validateDevice(device);
+  if (!result.valid) {
+    validationErrors.push(`Device "${device.id}": ${result.errors.join(', ')}`);
+  }
+}
+
+if (validationErrors.length > 0) {
+  console.error('Device validation errors found:');
+  validationErrors.forEach(err => console.error(`  - ${err}`));
+  // In production build, throw to fail the build
+  if (import.meta.env.PROD) {
+    throw new Error(`Device validation failed: ${validationErrors.length} error(s) found`);
+  }
+}
 
 // Helper function to get device by ID
 export function getDeviceById(id: string): Device | undefined {

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { Device } from '../data/devices';
-import { calculateDimensions, calculateDevicePPI } from '../data/devices';
+import { calculateDimensions, getDisplayDimensions, calculateDevicePPI } from '../data/devices';
 
 interface CategoryDeviceListProps {
   devices: Device[];
@@ -417,7 +417,7 @@ export default function CategoryDeviceList({
       {/* Device Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {displayedDevices.map(device => {
-          const dims = calculateDimensions(device.diagonal, device.ratio);
+          const dims = getDisplayDimensions(device);
           const ppi = calculateDevicePPI(device);
           const resolutionStr = getResolutionString(device);
           const popular = isPopular(device);

@@ -1,22 +1,25 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Header from '../../components/Header.astro';
-import CategoryIcon from '../../components/icons/CategoryIcon.astro';
-import ComparisonSearch from '../../components/ComparisonSearch.tsx';
-import { devices, isValidComparison } from '../../data/devices';
-import { getComparisonSlug, getComparisonUrl } from '../../utils/url';
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import CategoryIcon from "../../components/icons/CategoryIcon.astro";
+import ComparisonSearch from "../../components/ComparisonSearch.tsx";
+import { devices, isValidComparison } from "../../data/devices";
+import { getComparisonSlug, getComparisonUrl } from "../../utils/url";
 
 // SEO metadata - Optimized title
-const title = 'Compare Screen Sizes - Visual Phone, TV & Monitor Comparison Tool';
-const description = 'Visual screen size comparisons for phones, monitors, TVs, and projectors. Compare iPhone, Samsung Galaxy, and popular display sizes side by side.';
-const keywords = 'screen size comparison, phone size comparison, TV size comparison, monitor comparison, iPhone vs Samsung, display size compare';
+const title =
+  "Compare Screen Sizes - Visual Phone, TV & Monitor Comparison Tool";
+const description =
+  "Visual screen size comparisons for phones, monitors, TVs, and projectors. Compare iPhone, Samsung Galaxy, and popular display sizes side by side.";
+const keywords =
+  "screen size comparison, phone size comparison, TV size comparison, monitor comparison, iPhone vs Samsung, display size compare";
 
 // Count comparisons per category
-const phoneDevices = devices.filter(d => d.category === 'phone');
-const tabletDevices = devices.filter(d => d.category === 'tablet');
-const monitorDevices = devices.filter(d => d.category === 'monitor');
-const tvDevices = devices.filter(d => d.category === 'tv');
-const projectorDevices = devices.filter(d => d.category === 'projector');
+const phoneDevices = devices.filter((d) => d.category === "phone");
+const tabletDevices = devices.filter((d) => d.category === "tablet");
+const monitorDevices = devices.filter((d) => d.category === "monitor");
+const tvDevices = devices.filter((d) => d.category === "tv");
+const projectorDevices = devices.filter((d) => d.category === "projector");
 
 const countPairs = (arr: typeof devices) => (arr.length * (arr.length - 1)) / 2;
 
@@ -27,12 +30,18 @@ const tvPairsCount = countPairs(tvDevices);
 const projectorPairsCount = countPairs(projectorDevices);
 const tvProjectorPairsCount = tvDevices.length * projectorDevices.length;
 
-const totalComparisons = phonePairsCount + tabletPairsCount + monitorPairsCount + tvPairsCount + projectorPairsCount + tvProjectorPairsCount;
+const totalComparisons =
+  phonePairsCount +
+  tabletPairsCount +
+  monitorPairsCount +
+  tvPairsCount +
+  projectorPairsCount +
+  tvProjectorPairsCount;
 
 // Generate ALL comparison pairs for search with canonical slugs
 const allComparisons: Array<{
-  a: typeof devices[0];
-  b: typeof devices[0];
+  a: (typeof devices)[0];
+  b: (typeof devices)[0];
   slug: string;
   searchText: string;
 }> = [];
@@ -46,7 +55,8 @@ for (let i = 0; i < devices.length; i++) {
         a,
         b,
         slug: getComparisonSlug(a.id, b.id),
-        searchText: `${a.name} ${b.name} ${a.id} ${b.id} ${a.category} ${b.category}`.toLowerCase(),
+        searchText:
+          `${a.name} ${b.name} ${a.id} ${b.id} ${a.category} ${b.category}`.toLowerCase(),
       });
     }
   }
@@ -55,92 +65,218 @@ for (let i = 0; i < devices.length; i++) {
 // Helper function to find the latest devices by a name filter.
 // It assumes the `devices` array is sorted with the newest devices first.
 function getLatestDevices(filter: (id: string) => boolean, count: number) {
-  return devices.filter(d => filter(d.id)).slice(0, count);
+  return devices.filter((d) => filter(d.id)).slice(0, count);
 }
 
 // --- Dynamic Popular Comparisons ---
-const latestIphoneProMax = getLatestDevices(id => id.includes('iphone') && id.includes('pro-max'), 2);
-const latestIphoneStandard = getLatestDevices(id => id.includes('iphone') && !id.includes('pro') && !id.includes('plus') && !id.includes('mini'), 2);
-const latestSamsungStandard = getLatestDevices(id => id.includes('samsung-galaxy-s') && !id.includes('ultra') && !id.includes('plus'), 1);
-const latestIphonePro = getLatestDevices(id => id.includes('iphone') && id.includes('pro') && !id.includes('max'), 1);
+const latestIphoneProMax = getLatestDevices(
+  (id) => id.includes("iphone") && id.includes("pro-max"),
+  2,
+);
+const latestIphoneStandard = getLatestDevices(
+  (id) =>
+    id.includes("iphone") &&
+    !id.includes("pro") &&
+    !id.includes("plus") &&
+    !id.includes("mini"),
+  2,
+);
+const latestSamsungStandard = getLatestDevices(
+  (id) =>
+    id.includes("samsung-galaxy-s") &&
+    !id.includes("ultra") &&
+    !id.includes("plus"),
+  1,
+);
+const latestIphonePro = getLatestDevices(
+  (id) => id.includes("iphone") && id.includes("pro") && !id.includes("max"),
+  1,
+);
 
 const dynamicPhoneComparisons = [];
 if (latestIphoneProMax.length === 2) {
-  dynamicPhoneComparisons.push({ a: latestIphoneProMax[0], b: latestIphoneProMax[1] });
+  dynamicPhoneComparisons.push({
+    a: latestIphoneProMax[0],
+    b: latestIphoneProMax[1],
+  });
 }
 if (latestIphoneStandard.length > 0 && latestSamsungStandard.length > 0) {
-  dynamicPhoneComparisons.push({ a: latestIphoneStandard[0], b: latestSamsungStandard[0] });
+  dynamicPhoneComparisons.push({
+    a: latestIphoneStandard[0],
+    b: latestSamsungStandard[0],
+  });
 }
 if (latestIphonePro.length > 0 && latestIphoneStandard.length > 0) {
-    dynamicPhoneComparisons.push({ a: latestIphonePro[0], b: latestIphoneStandard[0] });
+  dynamicPhoneComparisons.push({
+    a: latestIphonePro[0],
+    b: latestIphoneStandard[0],
+  });
 }
 
 const popularComparisons = [
   ...dynamicPhoneComparisons,
-  { aId: '65-inch-tv', bId: '55-inch-tv' },
-  { aId: '27-inch-monitor', bId: '24-inch-monitor' },
-  { aId: '120-inch-projector-screen', bId: '85-inch-tv' },
+  { aId: "65-inch-tv", bId: "55-inch-tv" },
+  { aId: "27-inch-monitor", bId: "24-inch-monitor" },
+  { aId: "120-inch-projector-screen", bId: "85-inch-tv" },
 ]
-  .map(comp => {
+  .map((comp) => {
     // Handle both object shapes (dynamic and hardcoded)
-    const deviceA = comp.a || devices.find(d => d.id === comp.aId);
-    const deviceB = comp.b || devices.find(d => d.id === comp.bId);
+    const deviceA = comp.a || devices.find((d) => d.id === comp.aId);
+    const deviceB = comp.b || devices.find((d) => d.id === comp.bId);
 
     if (!deviceA || !deviceB) return null;
-    return { a: deviceA, b: deviceB, slug: getComparisonSlug(deviceA.id, deviceB.id) };
+    return {
+      a: deviceA,
+      b: deviceB,
+      slug: getComparisonSlug(deviceA.id, deviceB.id),
+    };
   })
-  .filter(Boolean) as Array<{ a: typeof devices[0]; b: typeof devices[0]; slug: string }>;
-
+  .filter(Boolean) as Array<{
+  a: (typeof devices)[0];
+  b: (typeof devices)[0];
+  slug: string;
+}>;
 
 // --- Dynamic Quick Links ---
-const latestSamsungUltra = getLatestDevices(id => id.includes('samsung-galaxy-s') && id.includes('ultra'), 1);
+const latestSamsungUltra = getLatestDevices(
+  (id) => id.includes("samsung-galaxy-s") && id.includes("ultra"),
+  1,
+);
 
 const dynamicQuickLinks = [];
 if (latestIphoneProMax.length === 2) {
-    dynamicQuickLinks.push({ a: latestIphoneProMax[0], b: latestIphoneProMax[1], label: `${latestIphoneProMax[0].name} vs ${latestIphoneProMax[1].name}` });
+  dynamicQuickLinks.push({
+    a: latestIphoneProMax[0],
+    b: latestIphoneProMax[1],
+    label: `${latestIphoneProMax[0].name} vs ${latestIphoneProMax[1].name}`,
+  });
 }
 if (latestIphoneStandard.length === 2) {
-    dynamicQuickLinks.push({ a: latestIphoneStandard[0], b: latestIphoneStandard[1], label: `${latestIphoneStandard[0].name} vs ${latestIphoneStandard[1].name}` });
+  dynamicQuickLinks.push({
+    a: latestIphoneStandard[0],
+    b: latestIphoneStandard[1],
+    label: `${latestIphoneStandard[0].name} vs ${latestIphoneStandard[1].name}`,
+  });
 }
 if (latestIphonePro.length > 0 && latestSamsungUltra.length > 0) {
-    dynamicQuickLinks.push({ a: latestIphonePro[0], b: latestSamsungUltra[0], label: `${latestIphonePro[0].name} vs ${latestSamsungUltra[0].name}` });
+  dynamicQuickLinks.push({
+    a: latestIphonePro[0],
+    b: latestSamsungUltra[0],
+    label: `${latestIphonePro[0].name} vs ${latestSamsungUltra[0].name}`,
+  });
 }
-
 
 const quickLinks = {
   phones: dynamicQuickLinks,
   tvs: [
-    { a: '65-inch-tv', b: '55-inch-tv', label: '65" TV vs 55" TV' },
-    { a: '75-inch-tv', b: '65-inch-tv', label: '75" TV vs 65" TV' },
-    { a: '85-inch-tv', b: '75-inch-tv', label: '85" TV vs 75" TV' },
+    { a: "65-inch-tv", b: "55-inch-tv", label: '65" TV vs 55" TV' },
+    { a: "75-inch-tv", b: "65-inch-tv", label: '75" TV vs 65" TV' },
+    { a: "85-inch-tv", b: "75-inch-tv", label: '85" TV vs 75" TV' },
   ],
   monitors: [
-    { a: '27-inch-monitor', b: '24-inch-monitor', label: '27" Monitor vs 24" Monitor' },
-    { a: '32-inch-monitor', b: '27-inch-monitor', label: '32" Monitor vs 27" Monitor' },
-    { a: '34-inch-ultrawide-monitor', b: '27-inch-monitor', label: '34" Ultrawide vs 27" Monitor' },
+    {
+      a: "27-inch-monitor",
+      b: "24-inch-monitor",
+      label: '27" Monitor vs 24" Monitor',
+    },
+    {
+      a: "32-inch-monitor",
+      b: "27-inch-monitor",
+      label: '32" Monitor vs 27" Monitor',
+    },
+    {
+      a: "34-inch-ultrawide-monitor",
+      b: "27-inch-monitor",
+      label: '34" Ultrawide vs 27" Monitor',
+    },
   ],
   projectors: [
-    { a: '120-inch-projector-screen', b: '100-inch-projector-screen', label: '120" vs 100" Projector Screen' },
-    { a: '85-inch-tv', b: '100-inch-projector-screen', label: '85" TV vs 100" Projector' },
-    { a: '150-inch-projector-screen', b: '120-inch-projector-screen', label: '150" vs 120" Projector Screen' },
+    {
+      a: "120-inch-projector-screen",
+      b: "100-inch-projector-screen",
+      label: '120" vs 100" Projector Screen',
+    },
+    {
+      a: "85-inch-tv",
+      b: "100-inch-projector-screen",
+      label: '85" TV vs 100" Projector',
+    },
+    {
+      a: "150-inch-projector-screen",
+      b: "120-inch-projector-screen",
+      label: '150" vs 120" Projector Screen',
+    },
   ],
 };
 
 // --- Dynamic Category Description ---
-const latestIphoneName = latestIphoneStandard.length > 0 ? latestIphoneStandard[0].name.replace('iPhone ', '') : '';
-const latestSamsungName = latestSamsungStandard.length > 0 ? latestSamsungStandard[0].name.replace('Samsung Galaxy ', '') : '';
-const phoneDescription = `iPhone ${latestIphoneName}, ${parseInt(latestIphoneName)-1} series, Samsung ${latestSamsungName}, Google Pixel`;
+const latestIphoneName =
+  latestIphoneStandard.length > 0
+    ? latestIphoneStandard[0].name.replace("iPhone ", "")
+    : "";
+const latestSamsungName =
+  latestSamsungStandard.length > 0
+    ? latestSamsungStandard[0].name.replace("Samsung Galaxy ", "")
+    : "";
 
+// Extract numeric version from iPhone name (e.g., "16" from "16" or "16 Pro")
+// Returns the previous version number or empty string if parsing fails
+const getIphonePrevVersion = (name: string): string => {
+  const match = name.match(/^(\d+)/);
+  if (!match) return "";
+  const version = parseInt(match[1], 10);
+  return Number.isNaN(version) ? "" : String(version - 1);
+};
+const prevIphoneVersion = getIphonePrevVersion(latestIphoneName);
 
-const searchHint = `Try "${latestIphoneStandard[0]?.name}", "${latestSamsungStandard[0]?.name.replace('Samsung Galaxy ', '')}", "TV", or "Monitor"`;
+const phoneDescription = prevIphoneVersion
+  ? `iPhone ${latestIphoneName}, ${prevIphoneVersion} series, Samsung ${latestSamsungName}, Google Pixel`
+  : `iPhone ${latestIphoneName}, Samsung ${latestSamsungName}, Google Pixel`;
+
+const searchHint = `Try "${latestIphoneStandard[0]?.name}", "${latestSamsungStandard[0]?.name.replace("Samsung Galaxy ", "")}", "TV", or "Monitor"`;
 
 // Category cards data
 const categories = [
-  { name: 'Phones', category: 'phone' as const, href: '/comparison/phones', count: phonePairsCount, description: phoneDescription, color: 'from-blue-500 to-cyan-500' },
-  { name: 'Tablets', category: 'tablet' as const, href: '/comparison/tablets', count: tabletPairsCount, description: 'iPad, Galaxy Tab, Surface Pro', color: 'from-indigo-500 to-purple-500' },
-  { name: 'Monitors', category: 'monitor' as const, href: '/comparison/monitors', count: monitorPairsCount, description: '24", 27", 32" and ultrawide displays', color: 'from-purple-500 to-pink-500' },
-  { name: 'TVs', category: 'tv' as const, href: '/comparison/tvs', count: tvPairsCount, description: '43", 55", 65", 75", 85" televisions', color: 'from-green-500 to-emerald-500' },
-  { name: 'Projectors', category: 'projector' as const, href: '/comparison/projectors', count: projectorPairsCount + tvProjectorPairsCount, description: '100", 120", 150" screens + TV comparisons', color: 'from-orange-500 to-amber-500' },
+  {
+    name: "Phones",
+    category: "phone" as const,
+    href: "/comparison/phones",
+    count: phonePairsCount,
+    description: phoneDescription,
+    color: "from-blue-500 to-cyan-500",
+  },
+  {
+    name: "Tablets",
+    category: "tablet" as const,
+    href: "/comparison/tablets",
+    count: tabletPairsCount,
+    description: "iPad, Galaxy Tab, Surface Pro",
+    color: "from-indigo-500 to-purple-500",
+  },
+  {
+    name: "Monitors",
+    category: "monitor" as const,
+    href: "/comparison/monitors",
+    count: monitorPairsCount,
+    description: '24", 27", 32" and ultrawide displays',
+    color: "from-purple-500 to-pink-500",
+  },
+  {
+    name: "TVs",
+    category: "tv" as const,
+    href: "/comparison/tvs",
+    count: tvPairsCount,
+    description: '43", 55", 65", 75", 85" televisions',
+    color: "from-green-500 to-emerald-500",
+  },
+  {
+    name: "Projectors",
+    category: "projector" as const,
+    href: "/comparison/projectors",
+    count: projectorPairsCount + tvProjectorPairsCount,
+    description: '100", 120", 150" screens + TV comparisons',
+    color: "from-orange-500 to-amber-500",
+  },
 ];
 ---
 
@@ -150,16 +286,35 @@ const categories = [
   <main class="max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb Navigation -->
     <nav class="mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
-        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400" itemprop="item">
+      <ol
+        class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+        itemscope
+        itemtype="https://schema.org/BreadcrumbList"
+      >
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a
+            href="/"
+            class="hover:text-primary-600 dark:hover:text-primary-400"
+            itemprop="item"
+          >
             <span itemprop="name">Home</span>
           </a>
           <meta itemprop="position" content="1" />
         </li>
         <li class="text-gray-400">/</li>
-        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <span class="text-gray-900 dark:text-gray-100 font-medium" itemprop="name">Comparison</span>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <span
+            class="text-gray-900 dark:text-gray-100 font-medium"
+            itemprop="name">Comparison</span
+          >
           <meta itemprop="position" content="2" />
         </li>
       </ol>
@@ -167,12 +322,15 @@ const categories = [
 
     <!-- Page Header -->
     <div class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      <h1
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+      >
         Screen Size Comparisons
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Compare screen sizes visually. See how different phones, monitors, TVs, and projector screens
-        stack up against each other with our interactive overlay comparison tool.
+        Compare screen sizes visually. See how different phones, monitors, TVs,
+        and projector screens stack up against each other with our interactive
+        overlay comparison tool.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
         {totalComparisons} comparisons available
@@ -196,53 +354,61 @@ const categories = [
         Browse by Category
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {categories.map(cat => (
-          <a
-            href={cat.href}
-            class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all overflow-hidden"
-          >
-            <div class={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity`}></div>
-            <div class="relative">
-              <CategoryIcon icon={cat.category} size="lg" class="mb-3" />
-              <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                {cat.name}
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                {cat.description}
-              </p>
-              <span class="text-xs font-medium text-primary-600 dark:text-primary-400">
-                {cat.count} comparisons →
-              </span>
-            </div>
-          </a>
-        ))}
+        {
+          categories.map((cat) => (
+            <a
+              href={cat.href}
+              class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all overflow-hidden"
+            >
+              <div
+                class={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+              />
+              <div class="relative">
+                <CategoryIcon icon={cat.category} size="lg" class="mb-3" />
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                  {cat.name}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  {cat.description}
+                </p>
+                <span class="text-xs font-medium text-primary-600 dark:text-primary-400">
+                  {cat.count} comparisons →
+                </span>
+              </div>
+            </a>
+          ))
+        }
       </div>
     </section>
 
     <!-- Popular Comparisons -->
     <section class="mb-12">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+      <h2
+        class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2"
+      >
         <span class="text-amber-500">★</span> Popular Comparisons
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {popularComparisons.map(({ a, b, slug }) => (
-          <a
-            href={`/comparison/${slug}`}
-            class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-                {a.category}
-              </span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">
-                {a.diagonal}" vs {b.diagonal}"
-              </span>
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-              {a.name} vs {b.name}
-            </h3>
-          </a>
-        ))}
+        {
+          popularComparisons.map(({ a, b, slug }) => (
+            <a
+              href={`/comparison/${slug}`}
+              class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+                  {a.category}
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  {a.diagonal}" vs {b.diagonal}"
+                </span>
+              </div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                {a.name} vs {b.name}
+              </h3>
+            </a>
+          ))
+        }
       </div>
     </section>
 
@@ -254,69 +420,117 @@ const categories = [
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Phone Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5"
+        >
+          <h3
+            class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2"
+          >
             <span>📱</span> Phone Comparisons
           </h3>
           <div class="space-y-2">
-            {quickLinks.phones.map(link => (
-              <a href={`/comparison/${getComparisonSlug(link.a.id, link.b.id)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {link.label}
-              </a>
-            ))}
+            {
+              quickLinks.phones.map((link) => (
+                <a
+                  href={`/comparison/${getComparisonSlug(link.a.id, link.b.id)}`}
+                  class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
           </div>
-          <a href="/comparison/phones" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a
+            href="/comparison/phones"
+            class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+          >
             View all phone comparisons →
           </a>
         </div>
 
         <!-- TV Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5"
+        >
+          <h3
+            class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2"
+          >
             <span>📺</span> TV Comparisons
           </h3>
           <div class="space-y-2">
-            {quickLinks.tvs.map(link => (
-              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {link.label}
-              </a>
-            ))}
+            {
+              quickLinks.tvs.map((link) => (
+                <a
+                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
           </div>
-          <a href="/comparison/tvs" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a
+            href="/comparison/tvs"
+            class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+          >
             View all TV comparisons →
           </a>
         </div>
 
         <!-- Monitor Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5"
+        >
+          <h3
+            class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2"
+          >
             <span>🖥️</span> Monitor Comparisons
           </h3>
           <div class="space-y-2">
-            {quickLinks.monitors.map(link => (
-              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {link.label}
-              </a>
-            ))}
+            {
+              quickLinks.monitors.map((link) => (
+                <a
+                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
           </div>
-          <a href="/comparison/monitors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a
+            href="/comparison/monitors"
+            class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+          >
             View all monitor comparisons →
           </a>
         </div>
 
         <!-- Projector Quick Links -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5"
+        >
+          <h3
+            class="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2"
+          >
             <span>📽️</span> Projector Comparisons
           </h3>
           <div class="space-y-2">
-            {quickLinks.projectors.map(link => (
-              <a href={`/comparison/${getComparisonSlug(link.a, link.b)}`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
-                {link.label}
-              </a>
-            ))}
+            {
+              quickLinks.projectors.map((link) => (
+                <a
+                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
           </div>
-          <a href="/comparison/projectors" class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">
+          <a
+            href="/comparison/projectors"
+            class="inline-block mt-3 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+          >
             View all projector comparisons →
           </a>
         </div>
@@ -329,8 +543,17 @@ const categories = [
         href="/"
         class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         Back to Screen Size Calculator
       </a>

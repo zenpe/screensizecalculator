@@ -25,23 +25,29 @@ export default defineConfig({
     mdx(),
     sitemap({
       serialize(page) {
+        /** @type {string | undefined} */
         let pageSpecificDateStr;
+        /** @type {string | undefined} */
         let templateDateStr;
 
         // Rule 1: Blog Posts (from content collections)
         // The sitemap integration provides the full `entry` for pages from content collections.
-        if (page.entry) {
+        // @ts-ignore - entry is provided by sitemap integration for content collection pages
+        if (page.entry && page.entry.data && page.entry.data.pubDate) {
+          // @ts-ignore
           pageSpecificDateStr = page.entry.data.pubDate;
           templateDateStr = contentDates.blogContent;
         }
         // Rule 2: Comparison Pages
         else if (page.url.includes('/comparison/')) {
-          const slug = page.url.split('/comparison/').pop().replace(/\/$/, '');
+          const urlPart = page.url.split('/comparison/').pop();
+          const slug = urlPart ? urlPart.replace(/\/$/, '') : '';
           const deviceIds = slug.split('-vs-');
           if (deviceIds.length === 2) {
             const date1 = deviceDateMap.get(deviceIds[0]);
             const date2 = deviceDateMap.get(deviceIds[1]);
-            const dates = [date1, date2].filter(Boolean).map(d => new Date(d).getTime());
+            const validDates = [date1, date2].filter((d) => d !== undefined);
+            const dates = validDates.map(d => new Date(/** @type {string} */ (d)).getTime());
             if (dates.length > 0) {
               pageSpecificDateStr = new Date(Math.max(...dates)).toISOString();
             }
@@ -50,9 +56,12 @@ export default defineConfig({
         }
         // Rule 3: Device Detail Pages
         else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)) {
-          const deviceId = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)[1];
-          pageSpecificDateStr = deviceDateMap.get(deviceId);
-          templateDateStr = getScatteredDate(deviceId);
+          const match = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/);
+          const deviceId = match ? match[1] : null;
+          if (deviceId) {
+            pageSpecificDateStr = deviceDateMap.get(deviceId);
+            templateDateStr = getScatteredDate(deviceId);
+          }
         }
         // Rule 4: All other (static) pages
         else {
@@ -60,6 +69,7 @@ export default defineConfig({
         }
 
         // Combine dates and find the most recent one
+        /** @type {Date[]} */
         const datesToCompare = [];
         if (pageSpecificDateStr) datesToCompare.push(new Date(pageSpecificDateStr));
         if (templateDateStr) datesToCompare.push(new Date(templateDateStr));

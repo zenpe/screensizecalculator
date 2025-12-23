@@ -195,6 +195,7 @@ function PhoneFrame({
   showLabel = true,
   showDiagonal = true,
   physicalDims,
+  bodyDims,
 }: {
   width: number;
   height: number;
@@ -205,6 +206,7 @@ function PhoneFrame({
   showLabel?: boolean;
   showDiagonal?: boolean;
   physicalDims?: Dimensions;
+  bodyDims?: { height: number; width: number }; // Body dimensions in mm
 }) {
   const useDashed = isOverlayMode && isLarger;
   const borderColor = isLarger ? 'border-slate-400' : 'border-cyan-400';
@@ -219,8 +221,13 @@ function PhoneFrame({
   const fontSize = Math.max(Math.min(width * 0.15, 20), 12);
   const borderRadius = Math.min(width, height) * 0.1;
 
-  const heightMm = physicalDims ? (physicalDims.height * 25.4).toFixed(0) : '';
-  const widthMm = physicalDims ? (physicalDims.width * 25.4).toFixed(0) : '';
+  // Screen dimensions in mm (calculated from diagonal)
+  const screenHeightMm = physicalDims ? (physicalDims.height * 25.4).toFixed(0) : '';
+  const screenWidthMm = physicalDims ? (physicalDims.width * 25.4).toFixed(0) : '';
+
+  // Body dimensions in mm (from device data)
+  const bodyHeightMm = bodyDims ? bodyDims.height.toFixed(0) : '';
+  const bodyWidthMm = bodyDims ? bodyDims.width.toFixed(0) : '';
 
   return (
     <div className="flex flex-col items-center">
@@ -249,10 +256,15 @@ function PhoneFrame({
           <div className={`${isLarger ? 'bg-slate-600' : 'bg-slate-500'} rounded-full`} style={{ width: `${homeWidth}px`, height: `${homeHeight}px` }} />
         </div>
       </div>
-      {showLabel && physicalDims && (
+      {showLabel && (physicalDims || bodyDims) && (
         <div className={`mt-3 text-center ${textColor}`}>
           <div className="font-medium text-sm truncate max-w-[120px] sm:max-w-none">{label}</div>
-          <div className={`text-xs ${subTextColor}`}>{heightMm} × {widthMm}mm</div>
+          {bodyDims && (
+            <div className={`text-xs ${subTextColor}`}>Body: {bodyHeightMm} × {bodyWidthMm}mm</div>
+          )}
+          {physicalDims && (
+            <div className={`text-[10px] ${subTextColor} opacity-70`}>Screen: {screenHeightMm} × {screenWidthMm}mm</div>
+          )}
         </div>
       )}
     </div>
@@ -625,7 +637,7 @@ function DeviceFrame({
 
   switch (device.category) {
     case 'phone':
-      return <PhoneFrame {...commonProps} physicalDims={physicalDims} />;
+      return <PhoneFrame {...commonProps} physicalDims={physicalDims} bodyDims={device.phone?.dimensions} />;
     case 'tablet':
       // Tablet: similar to monitor but without stand
       return <MonitorFrame {...commonProps} showStand={false} />;
@@ -946,9 +958,9 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
     const isLargeScreen = ['tv', 'projector', 'monitor'].includes(deviceA.category) &&
                           ['tv', 'projector', 'monitor'].includes(deviceB.category);
 
-    // For phones, swap width/height for portrait mode
+    // For phones and tablets, swap width/height for portrait mode
     const adjustDims = (dims: Dimensions, category: string): Dimensions => {
-      if (category === 'phone') {
+      if (category === 'phone' || category === 'tablet') {
         return { width: dims.height, height: dims.width };
       }
       return dims;
@@ -1227,11 +1239,23 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
                     <span className="font-medium text-[10px] sm:text-sm truncate">{larger.device.name}</span>
                   </div>
                   <div className="text-[10px] sm:text-xs text-slate-500 truncate">
-                    {larger.device.diagonal}" · {isPhoneComparison
-                      ? `${(larger.dims.height * 25.4).toFixed(0)}×${(larger.dims.width * 25.4).toFixed(0)}mm`
-                      : `${larger.dims.width.toFixed(1)}"×${larger.dims.height.toFixed(1)}"`
-                    }
+                    {isPhoneComparison ? (
+                      <>
+                        {larger.device.phone?.dimensions ? (
+                          <>Body: {larger.device.phone.dimensions.height.toFixed(0)}×{larger.device.phone.dimensions.width.toFixed(0)}mm</>
+                        ) : (
+                          <>{larger.device.diagonal}" · {(larger.dims.height * 25.4).toFixed(0)}×{(larger.dims.width * 25.4).toFixed(0)}mm</>
+                        )}
+                      </>
+                    ) : (
+                      <>{larger.device.diagonal}" · {larger.dims.width.toFixed(1)}"×{larger.dims.height.toFixed(1)}"</>
+                    )}
                   </div>
+                  {isPhoneComparison && larger.device.phone?.dimensions && (
+                    <div className="text-[9px] sm:text-[10px] text-slate-600 truncate">
+                      Screen: {(larger.dims.height * 25.4).toFixed(0)}×{(larger.dims.width * 25.4).toFixed(0)}mm
+                    </div>
+                  )}
                   {isLargeScreenComparison && (
                     <div className="text-[10px] sm:text-xs text-slate-600 mt-0.5 sm:mt-1 hidden sm:block">
                       View: {largerDistance.min.toFixed(1)}-{largerDistance.max.toFixed(1)} ft
@@ -1244,11 +1268,23 @@ export default function ComparisonVisualizer({ deviceA, deviceB }: ComparisonVis
                     <span className="font-medium text-[10px] sm:text-sm truncate">{smaller.device.name}</span>
                   </div>
                   <div className="text-[10px] sm:text-xs text-cyan-400/70 truncate">
-                    {smaller.device.diagonal}" · {isPhoneComparison
-                      ? `${(smaller.dims.height * 25.4).toFixed(0)}×${(smaller.dims.width * 25.4).toFixed(0)}mm`
-                      : `${smaller.dims.width.toFixed(1)}"×${smaller.dims.height.toFixed(1)}"`
-                    }
+                    {isPhoneComparison ? (
+                      <>
+                        {smaller.device.phone?.dimensions ? (
+                          <>Body: {smaller.device.phone.dimensions.height.toFixed(0)}×{smaller.device.phone.dimensions.width.toFixed(0)}mm</>
+                        ) : (
+                          <>{smaller.device.diagonal}" · {(smaller.dims.height * 25.4).toFixed(0)}×{(smaller.dims.width * 25.4).toFixed(0)}mm</>
+                        )}
+                      </>
+                    ) : (
+                      <>{smaller.device.diagonal}" · {smaller.dims.width.toFixed(1)}"×{smaller.dims.height.toFixed(1)}"</>
+                    )}
                   </div>
+                  {isPhoneComparison && smaller.device.phone?.dimensions && (
+                    <div className="text-[9px] sm:text-[10px] text-cyan-600 truncate">
+                      Screen: {(smaller.dims.height * 25.4).toFixed(0)}×{(smaller.dims.width * 25.4).toFixed(0)}mm
+                    </div>
+                  )}
                   {isLargeScreenComparison && (
                     <div className="text-[10px] sm:text-xs text-cyan-600 mt-0.5 sm:mt-1 hidden sm:block">
                       View: {smallerDistance.min.toFixed(1)}-{smallerDistance.max.toFixed(1)} ft

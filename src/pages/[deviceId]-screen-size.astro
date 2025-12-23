@@ -5,13 +5,19 @@ import DeviceDetailVisualizer from "../components/DeviceDetailVisualizer";
 import ShareButtons from "../components/ShareButtons.astro";
 import {
   devices,
-  calculateDimensions,
+  getDisplayDimensions,
   calculateArea,
   calculateDevicePPI,
   type Device,
 } from "../data/devices";
-import { getAmazonSearchUrl, siteConfig, getScatteredDate } from "../site.config";
+import { getAmazonSearchUrl, siteConfig, getScatteredDate, sanitizeMetaDescription } from "../site.config";
 import { getComparisonUrl } from "../utils/url";
+import {
+  getIntroVariant,
+  getDeviceInsights,
+  getSupplementaryPhrase,
+  shuffleWithSeed,
+} from "../utils/contentVariants";
 
 // Generate pages for all devices
 export function getStaticPaths() {
@@ -24,16 +30,23 @@ export function getStaticPaths() {
 const { device } = Astro.props;
 
 // Calculate device specs
-const dims = calculateDimensions(device.diagonal, device.ratio);
+// Use getDisplayDimensions for semantically correct width/height based on device orientation
+const dims = getDisplayDimensions(device);
 const area = calculateArea(device.diagonal, device.ratio);
 const ppi = calculateDevicePPI(device);
 
 // Format numbers
 const fmt = (num: number, decimals = 1) => num.toFixed(decimals);
 
+// Generate varied content
+const introText = getIntroVariant(device, dims, area);
+const deviceInsights = getDeviceInsights(device);
+const supplementaryPhrase = getSupplementaryPhrase(device.id, device.category);
+
 // SEO metadata
 const title = `${device.name} Screen Size - Dimensions & Specifications`;
-const description = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ""}. Complete screen size guide with specs and comparisons.`;
+const rawDescription = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ""}. Complete screen size guide with specs and comparisons.`;
+const description = sanitizeMetaDescription(rawDescription);
 const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === "phone" ? `, ${device.name} size comparison` : ""}`;
 
 // Brand detection patterns - ordered by specificity (product names before brand names)
@@ -118,7 +131,7 @@ const relatedDevices = devices
 const displayRelatedDevices = relatedDevices.slice(0, 6);
 
 // Generate dynamic FAQ based on device type
-// Questions optimized to match real search patterns (based on GSC data)
+// Questions optimized to match real search patterns (based on GSC/Ahrefs data)
 const generateFAQ = (device: Device) => {
   const faqs: Array<{
     question: string;
@@ -132,13 +145,19 @@ const generateFAQ = (device: Device) => {
     answer: `${device.name} has a ${device.diagonal}" diagonal screen with dimensions of ${fmt(dims.width, 2)}" wide × ${fmt(dims.height, 2)}" tall (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm). The total screen area is ${fmt(area, 1)} square inches.`,
   });
 
-  // Question 2: What are [device] screen dimensions?
+  // Question 2: What is [device] display size? (matches "iphone 14 display size" pattern)
+  faqs.push({
+    question: `What is ${device.name} display size?`,
+    answer: `${device.name} display size is ${device.diagonal} inches diagonally, measuring ${fmt(dims.width, 2)}" wide by ${fmt(dims.height, 2)}" tall. ${device.resolution ? `The display resolution is ${device.resolution}${ppi ? ` with ${Math.round(ppi)} PPI pixel density` : ""}.` : `The screen area is ${fmt(area, 1)} square inches.`}`,
+  });
+
+  // Question 3: What are [device] screen dimensions?
   faqs.push({
     question: `What are ${device.name} screen dimensions?`,
     answer: `${device.name} screen dimensions are ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" (${fmt(dims.width * 2.54, 1)}cm × ${fmt(dims.height * 2.54, 1)}cm) with a ${device.diagonal}" diagonal. The aspect ratio is ${fmt(device.ratio, 2)}:1${device.resolution ? ` and the resolution is ${device.resolution}` : ""}.`,
   });
 
-  // Question 3: Resolution/PPI (if available)
+  // Question 4: Resolution/PPI (if available)
   if (device.resolution && ppi) {
     faqs.push({
       question: `What is ${device.name} resolution and PPI?`,
@@ -146,7 +165,7 @@ const generateFAQ = (device: Device) => {
     });
   }
 
-  // Question 4: Comparison with similar device (with internal link)
+  // Question 5: Comparison with similar device (with internal link)
   if (relatedDevices.length > 0) {
     const similar = relatedDevices[0];
     const percentDiff =
@@ -168,32 +187,451 @@ const generateFAQ = (device: Device) => {
     // "How tall is" question - only when body dimensions available
     if (device.phone?.dimensions) {
       const heightInches = (device.phone.dimensions.height / 25.4).toFixed(2);
+      const widthInches = (device.phone.dimensions.width / 25.4).toFixed(2);
       faqs.push({
         question: `How tall is ${device.name}?`,
         answer: `${device.name} is ${device.phone.dimensions.height}mm (${heightInches} inches) tall, ${device.phone.dimensions.width}mm wide, and ${device.phone.dimensions.depth}mm thick.`,
+      });
+      // Add "length" question (matches "iphone 14 plus length" pattern)
+      faqs.push({
+        question: `What is ${device.name} length?`,
+        answer: `${device.name} length (height) is ${device.phone.dimensions.height}mm or ${heightInches} inches. The width is ${device.phone.dimensions.width}mm (${widthInches}") and thickness is ${device.phone.dimensions.depth}mm.`,
       });
     }
     faqs.push({
       question: `Is ${device.name} good for one-handed use?`,
       answer: `${device.diagonal <= 6.1 ? "Yes, " + device.name + " with its " + device.diagonal + '" screen is suitable for one-handed use for most users.' : device.name + " with its " + device.diagonal + "\" screen may be challenging for one-handed use, especially for users with smaller hands. It's better suited for two-handed operation."}`,
     });
+
+    // Battery life FAQ (if battery data available)
+    if (device.phone?.battery) {
+      const batteryHours = device.phone.battery >= 4500 ? "1.5-2 days" : device.phone.battery >= 3500 ? "full day" : "moderate day";
+      faqs.push({
+        question: `How long does ${device.name} battery last?`,
+        answer: `${device.name} has a ${device.phone.battery} mAh battery, which typically provides a ${batteryHours} of use. Actual battery life varies based on screen brightness, app usage, and network conditions. ${device.phone.battery >= 4000 ? "The larger battery is ideal for heavy users and travelers." : "For heavy users, carrying a charger or power bank is recommended."}`,
+      });
+    }
+
+    // Refresh rate FAQ (if available)
+    if (device.phone?.refreshRate) {
+      const isHighRefresh = device.phone.refreshRate >= 120;
+      faqs.push({
+        question: `Is ${device.name} good for gaming?`,
+        answer: `${isHighRefresh ? `Yes, ${device.name} features a ${device.phone.refreshRate}Hz display, providing smooth animations and responsive touch input ideal for gaming.` : `${device.name} has a ${device.phone.refreshRate}Hz display, which is suitable for casual gaming.`} ${isHighRefresh ? "The high refresh rate reduces motion blur and improves competitive gaming performance." : "For competitive mobile gaming, consider models with 120Hz displays."} The ${device.diagonal}" screen provides ${device.diagonal >= 6.5 ? "an immersive gaming experience" : "a good balance of visibility and portability"}.`,
+      });
+    }
+
+    // Weight FAQ (if available)
+    if (device.phone?.weight) {
+      const weightOz = (device.phone.weight / 28.35).toFixed(1);
+      const isLight = device.phone.weight < 180;
+      faqs.push({
+        question: `How heavy is ${device.name}?`,
+        answer: `${device.name} weighs ${device.phone.weight}g (${weightOz} oz), which is ${isLight ? "relatively lightweight for comfortable extended use" : "on the heavier side, providing a premium feel but may cause fatigue during long sessions"}. ${device.phone.weight < 170 ? "It's one of the lighter options in its class." : device.phone.weight > 200 ? "The weight is due to the larger battery and display." : "The weight is typical for phones in this size category."}`,
+      });
+    }
+
+    // Outdoor visibility FAQ (if brightness data available)
+    if (device.phone?.peakBrightness) {
+      const isGoodOutdoor = device.phone.peakBrightness >= 1000;
+      faqs.push({
+        question: `Can I use ${device.name} in bright sunlight?`,
+        answer: `${isGoodOutdoor ? `Yes, ${device.name} has a peak brightness of ${device.phone.peakBrightness} nits, making it easily readable in direct sunlight.` : `${device.name} has a peak brightness of ${device.phone.peakBrightness} nits, which is adequate for most outdoor conditions but may be challenging in direct sunlight.`} ${device.phone.peakBrightness >= 2000 ? "The exceptional brightness ensures excellent visibility even on the brightest days." : device.phone.peakBrightness >= 1500 ? "You should have no issues using it outdoors." : "Consider increasing brightness manually when outdoors."}`,
+      });
+    }
+
+    // Video watching FAQ
+    faqs.push({
+      question: `Is ${device.name} good for watching videos?`,
+      answer: `${device.diagonal >= 6.5 ? `Yes, ${device.name}'s ${device.diagonal}" display provides an immersive video watching experience.` : `${device.name}'s ${device.diagonal}" screen is good for casual video watching.`} ${device.phone?.hdr ? "HDR support enhances contrast and colors for supported content." : ""} ${device.resolution ? `The ${device.resolution} resolution ensures sharp, detailed video playback.` : ""} ${device.diagonal >= 6.7 ? "The large screen is ideal for movies and streaming." : "For extended viewing sessions, consider a tablet or TV."}`,
+    });
+
   } else if (device.category === "tv") {
     const optimalDistance = device.diagonal * 1.6;
+    // Width question (matches "width of 75 inch tv" pattern)
+    faqs.push({
+      question: `What is the width of a ${device.diagonal} inch TV?`,
+      answer: `A ${device.diagonal}" TV is ${fmt(dims.width, 1)} inches (${fmt(dims.width * 2.54, 1)}cm) wide. The height is ${fmt(dims.height, 1)} inches (${fmt(dims.height * 2.54, 1)}cm). Note: These are screen dimensions only; the actual TV with bezel will be slightly larger.`,
+    });
+    // Size in inches (matches "75 tv dimensions in inches" pattern)
+    faqs.push({
+      question: `What are ${device.diagonal} inch TV dimensions in inches?`,
+      answer: `A ${device.diagonal}" TV screen measures ${fmt(dims.width, 1)}" wide × ${fmt(dims.height, 1)}" tall (${fmt(dims.width * 2.54, 0)}cm × ${fmt(dims.height * 2.54, 0)}cm). The diagonal is ${device.diagonal} inches. Total screen area is ${fmt(area, 0)} square inches.`,
+    });
     faqs.push({
       question: `How far should you sit from a ${device.diagonal} inch TV?`,
       answer: `For a ${device.diagonal}" TV, the optimal viewing distance is ${fmt(optimalDistance / 12, 1)} feet (${fmt((optimalDistance * 2.54) / 100, 1)}m). The comfortable range is ${fmt((device.diagonal * 1.2) / 12, 1)}-${fmt((device.diagonal * 2.5) / 12, 1)} feet.`,
     });
+
+    // Gaming FAQ
+    faqs.push({
+      question: `Is a ${device.diagonal}" TV good for gaming?`,
+      answer: `${device.diagonal >= 55 ? `Yes, a ${device.diagonal}" TV provides an immersive gaming experience for both console and PC gaming.` : `A ${device.diagonal}" TV is suitable for gaming, especially in smaller rooms.`} ${device.diagonal >= 65 ? "The large screen is excellent for split-screen multiplayer and open-world games." : "For competitive gaming, ensure you sit at the optimal distance to see the entire screen."} For the best gaming experience, look for features like low input lag, VRR support, and 120Hz capability.`,
+    });
+
+    // 4K content FAQ
+    if (device.diagonal >= 50) {
+      faqs.push({
+        question: `Do I need 4K content for a ${device.diagonal}" TV?`,
+        answer: `${device.diagonal >= 65 ? `Yes, 4K content is highly recommended for a ${device.diagonal}" TV to maintain image quality at typical viewing distances.` : `4K content is beneficial for a ${device.diagonal}" TV, though 1080p content still looks acceptable from normal viewing distances.`} ${device.resolution?.includes("3840") ? `This TV has 4K resolution (${device.resolution}), so it will upscale lower resolution content but native 4K provides the best experience.` : ""} Streaming services like Netflix, Disney+, and YouTube offer extensive 4K libraries.`,
+      });
+    }
+
+    // Wall mount FAQ
+    faqs.push({
+      question: `What size wall mount do I need for a ${device.diagonal}" TV?`,
+      answer: `For a ${device.diagonal}" TV, you need a wall mount rated for ${device.diagonal >= 65 ? "65-85 inches" : device.diagonal >= 50 ? "50-65 inches" : "32-55 inches"} and capable of supporting the TV's weight (typically ${device.diagonal >= 65 ? "50-80 lbs" : device.diagonal >= 50 ? "30-50 lbs" : "15-30 lbs"}). The screen is ${fmt(dims.width, 1)}" wide, so ensure you have adequate wall space. VESA mounting patterns vary by manufacturer, so check your TV's specifications.`,
+    });
+
+    // Room size FAQ
+    faqs.push({
+      question: `What room size is best for a ${device.diagonal}" TV?`,
+      answer: `A ${device.diagonal}" TV is ideal for ${device.diagonal >= 75 ? "large living rooms or dedicated home theaters (15×20 ft or larger)" : device.diagonal >= 65 ? "medium to large living rooms (12×15 ft or larger)" : device.diagonal >= 55 ? "standard living rooms (10×12 ft)" : "bedrooms or smaller spaces (under 10×12 ft)"}. The optimal viewing distance of ${fmt(optimalDistance / 12, 1)} feet should fit comfortably in your room layout.`,
+    });
+
   } else if (device.category === "tablet") {
     faqs.push({
       question: `Is ${device.name} good for reading and productivity?`,
       answer: `${device.diagonal >= 11 ? "Yes, " + device.name + " with its " + device.diagonal + '" screen is excellent for reading, note-taking, and productivity tasks with ample screen space.' : device.name + " with its " + device.diagonal + '" screen is great for reading and media consumption, though larger tablets may be better for heavy productivity work.'}`,
+    });
+
+    // Portability FAQ
+    faqs.push({
+      question: `Is ${device.name} easy to carry around?`,
+      answer: `${device.diagonal <= 8.5 ? `Yes, ${device.name} with its ${device.diagonal}" screen is highly portable and can fit in most bags or even large pockets.` : device.diagonal <= 11 ? `${device.name}'s ${device.diagonal}" screen offers a good balance of usability and portability, fitting easily in most backpacks and bags.` : `${device.name}'s ${device.diagonal}" screen prioritizes productivity over portability. It's best carried in a laptop bag or dedicated sleeve.`} ${device.diagonal <= 9 ? "It's ideal for commuting and travel." : device.diagonal >= 12 ? "Consider it a laptop replacement rather than a mobile device." : "It works well for both desk use and on-the-go."}`,
+    });
+
+    // Drawing/Note-taking FAQ
+    faqs.push({
+      question: `Is ${device.name} good for drawing and note-taking?`,
+      answer: `${device.diagonal >= 11 ? `Yes, ${device.name}'s ${device.diagonal}" screen provides ample canvas space for digital art and handwritten notes.` : `${device.name}'s ${device.diagonal}" screen is suitable for note-taking, though artists may prefer larger tablets for detailed work.`} ${device.diagonal >= 12.9 ? "The large display is excellent for professional illustration and detailed sketching." : device.diagonal >= 10.9 ? "It's a great choice for students and casual artists." : "For extensive note-taking, consider a larger model."} Pair with a compatible stylus for the best experience.`,
+    });
+
+    // Split-screen FAQ
+    if (device.diagonal >= 10) {
+      faqs.push({
+        question: `Can I use split-screen multitasking on ${device.name}?`,
+        answer: `${device.diagonal >= 11 ? `Yes, ${device.name}'s ${device.diagonal}" screen is excellent for split-screen multitasking, allowing comfortable use of two apps side by side.` : `${device.name} supports split-screen, though the ${device.diagonal}" display may feel cramped with two apps open.`} ${device.diagonal >= 12.9 ? "The large screen makes it feel like using two separate devices." : device.diagonal >= 11 ? "You can comfortably reference documents while writing or browse while watching videos." : "For heavy multitasking, consider a larger tablet."}`,
+      });
+    }
+
+    // Media consumption FAQ
+    faqs.push({
+      question: `Is ${device.name} good for watching movies?`,
+      answer: `${device.diagonal >= 11 ? `Yes, ${device.name}'s ${device.diagonal}" display provides an immersive movie-watching experience.` : `${device.name}'s ${device.diagonal}" screen is good for personal viewing, though larger tablets offer more immersion.`} ${device.ratio > 1.5 ? "The widescreen aspect ratio is well-suited for cinematic content with minimal letterboxing." : "Some widescreen content may have letterboxing due to the aspect ratio."} ${device.resolution ? `The ${device.resolution} resolution ensures sharp, detailed video playback.` : ""}`,
+    });
+
+  } else if (device.category === "monitor") {
+    const minDistance = fmt((device.diagonal * 1.5) / 12, 1);
+    const maxDistance = fmt((device.diagonal * 2) / 12, 1);
+    const isUltrawide = device.ratio > 2;
+    const isSuperUltrawide = device.ratio > 3;
+
+    faqs.push({
+      question: `What is the ideal viewing distance for a ${device.diagonal}" monitor?`,
+      answer: `For a ${device.diagonal}" monitor, the recommended viewing distance is ${minDistance}-${maxDistance} feet (${fmt(device.diagonal * 1.5 * 2.54 / 100, 1)}-${fmt(device.diagonal * 2 * 2.54 / 100, 1)}m). This ensures comfortable viewing without eye strain while maintaining sharp text readability.`,
+    });
+
+    if (device.diagonal >= 27) {
+      faqs.push({
+        question: `Is a ${device.diagonal}" monitor good for productivity?`,
+        answer: `Yes, a ${device.diagonal}" monitor is ${device.diagonal >= 32 ? "excellent" : "very good"} for productivity. It provides ${fmt(area, 0)} square inches of screen space, allowing comfortable side-by-side window arrangement for multitasking, coding, or document editing.`,
+      });
+    }
+
+    // Gaming vs Productivity FAQ
+    faqs.push({
+      question: `Is a ${device.diagonal}" monitor better for gaming or work?`,
+      answer: `A ${device.diagonal}" monitor ${device.diagonal <= 27 ? "is versatile for both gaming and work" : device.diagonal <= 32 ? "excels at productivity but is also great for immersive gaming" : "is primarily suited for productivity, though it can provide cinematic gaming experiences"}. ${device.diagonal <= 27 ? "The size allows you to see the entire screen without excessive head movement, ideal for competitive gaming." : "For fast-paced competitive games, some players prefer smaller monitors for quicker visual scanning."} ${isUltrawide ? "The ultrawide format is excellent for both immersive gaming and multitasking." : ""}`,
+    });
+
+    // Ultrawide specific FAQ
+    if (isUltrawide) {
+      faqs.push({
+        question: `What are the benefits of a ${device.diagonal}" ultrawide monitor?`,
+        answer: `A ${device.diagonal}" ultrawide monitor ${isSuperUltrawide ? "can replace a dual-monitor setup" : "provides extra horizontal workspace"} with its ${fmt(device.ratio, 1)}:1 aspect ratio. Benefits include: seamless multitasking without bezels, immersive gaming with expanded field of view, better video editing timelines, and enhanced productivity for spreadsheets and coding. ${isSuperUltrawide ? "The super ultrawide format is equivalent to two 27\" monitors side by side." : "It's ideal for users who need more horizontal space than a standard 16:9 monitor."}`,
+      });
+    }
+
+    // Desk space FAQ
+    faqs.push({
+      question: `How much desk space do I need for a ${device.diagonal}" monitor?`,
+      answer: `A ${device.diagonal}" monitor requires approximately ${fmt(dims.width + 4, 0)}" (${fmt((dims.width + 4) * 2.54, 0)}cm) of desk width for the screen plus stand. ${device.diagonal >= 32 ? "Ensure your desk is at least 30\" deep for comfortable viewing distance." : device.diagonal >= 27 ? "A standard desk depth of 24-30\" works well." : "Most standard desks will accommodate this size comfortably."} ${isUltrawide ? `The ultrawide format is ${fmt(dims.width, 1)}" wide, so measure your desk space carefully.` : ""} Consider a monitor arm to free up desk space and enable better positioning.`,
+    });
+
+    // Resolution scaling FAQ
+    if (device.resolution && ppi) {
+      faqs.push({
+        question: `Do I need to use display scaling on a ${device.diagonal}" monitor?`,
+        answer: `${ppi >= 110 ? `With ${Math.round(ppi)} PPI on a ${device.diagonal}" screen, you may want 125-150% scaling for comfortable text size, especially at typical desk distances.` : ppi >= 90 ? `At ${Math.round(ppi)} PPI, a ${device.diagonal}" monitor works well at 100% scaling for most users, though some prefer 125% for easier reading.` : `The ${Math.round(ppi)} PPI on this ${device.diagonal}" monitor means 100% scaling provides large, easily readable text.`} ${device.resolution?.includes("3840") || device.resolution?.includes("5120") ? "The high resolution allows for scaling while maintaining sharp text and UI elements." : ""}`,
+      });
+    }
+
+  } else if (device.category === "projector") {
+    const throwMin = fmt((device.diagonal * 1.5) / 12, 1);
+    const throwMax = fmt((device.diagonal * 2.5) / 12, 1);
+    faqs.push({
+      question: `What room size do I need for a ${device.diagonal}" projector screen?`,
+      answer: `For a ${device.diagonal}" projector screen, you need a viewing distance of ${throwMin}-${throwMax} feet for optimal viewing. The room should have at least ${fmt(dims.width / 12, 1)} feet of wall width and ideally controlled lighting for the best image quality.`,
+    });
+    faqs.push({
+      question: `Is a ${device.diagonal}" screen good for a home theater?`,
+      answer: `${device.diagonal >= 100 ? "Yes, a " + device.diagonal + "\" screen is ideal for a dedicated home theater, providing a truly cinematic experience." : "A " + device.diagonal + "\" screen works well for casual movie viewing, though larger screens (100\"+) provide a more immersive cinema experience."} Ensure your room can accommodate the required ${throwMin}-${throwMax} feet viewing distance.`,
+    });
+
+    // Ambient light FAQ
+    faqs.push({
+      question: `Can I use a ${device.diagonal}" projector screen with lights on?`,
+      answer: `${device.diagonal >= 120 ? `A ${device.diagonal}" screen is best used in a dark or dimly lit room for optimal image quality.` : `A ${device.diagonal}" screen can work with some ambient light, but image quality improves significantly in darker conditions.`} For rooms with windows, consider blackout curtains or an ALR (Ambient Light Rejecting) screen. ${device.diagonal >= 100 ? "Larger screens are more affected by ambient light, so light control is essential." : "Smaller screens are more forgiving with ambient light."}`,
+    });
+
+    // Projector throw distance FAQ
+    faqs.push({
+      question: `How far should the projector be from a ${device.diagonal}" screen?`,
+      answer: `The projector distance depends on its throw ratio. For a ${device.diagonal}" screen: standard throw projectors need ${fmt(device.diagonal * 1.5 / 12, 1)}-${fmt(device.diagonal * 2 / 12, 1)} feet, short throw projectors need ${fmt(device.diagonal * 0.5 / 12, 1)}-${fmt(device.diagonal * 1 / 12, 1)} feet, and ultra-short throw projectors can be placed just inches from the screen. Check your projector's specifications for exact throw ratio.`,
+    });
+
+    // Screen type FAQ
+    faqs.push({
+      question: `What type of screen is best for ${device.diagonal}" projection?`,
+      answer: `For a ${device.diagonal}" projection, consider: ${device.diagonal >= 120 ? "a fixed-frame screen for the flattest surface and best image quality in dedicated theaters" : "a retractable screen for flexibility in multi-purpose rooms, or a fixed-frame screen for dedicated spaces"}. Screen gain affects brightness—1.0-1.3 gain works for most setups, while higher gain screens help in rooms with ambient light. ${device.diagonal >= 100 ? "At this size, screen material quality significantly impacts the viewing experience." : ""}`,
     });
   }
 
   return faqs;
 };
 
-const faqs = generateFAQ(device);
+const faqs = shuffleWithSeed(generateFAQ(device), device.id);
+
+// Generate device-specific tips
+interface Tip {
+  icon: string;
+  title: string;
+  content: string;
+}
+
+const generateTips = (device: Device): Tip[] => {
+  const tips: Tip[] = [];
+
+  if (device.category === "phone") {
+    // One-handed use tip
+    if (device.diagonal <= 6.1) {
+      tips.push({
+        icon: "👋",
+        title: "One-Handed Friendly",
+        content: `With a ${device.diagonal}" screen, ${device.name} is comfortable for one-handed use. Use Reachability (swipe down on the bottom edge) to access top elements easily.`,
+      });
+    } else if (device.diagonal >= 6.5) {
+      tips.push({
+        icon: "🤲",
+        title: "Two-Handed Grip",
+        content: `The ${device.diagonal}" display is best used with two hands. Consider enabling one-handed mode in settings, or use a phone ring/grip for better control.`,
+      });
+    }
+
+    // Screen protection tip
+    tips.push({
+      icon: "🛡️",
+      title: "Screen Protection",
+      content: `Protect your ${device.diagonal}" display with a tempered glass screen protector. Look for one with 9H hardness rating and oleophobic coating to resist fingerprints.`,
+    });
+
+    // Battery optimization tip
+    if (device.phone?.battery) {
+      tips.push({
+        icon: "🔋",
+        title: "Battery Optimization",
+        content: device.phone.battery >= 4500
+          ? `Your ${device.phone.battery}mAh battery supports all-day use. Enable optimized charging to maintain battery health by charging to 80% for daily use.`
+          : `Maximize your ${device.phone.battery}mAh battery by reducing screen brightness, enabling dark mode on the OLED display, and closing background apps.`,
+      });
+    }
+
+    // Display tip based on refresh rate
+    if (device.phone?.refreshRate && device.phone.refreshRate >= 120) {
+      tips.push({
+        icon: "✨",
+        title: "Smooth Display",
+        content: `Your ${device.phone.refreshRate}Hz display provides buttery-smooth scrolling. For maximum battery life, switch to 60Hz in settings when not gaming or scrolling heavily.`,
+      });
+    }
+
+    // Outdoor visibility tip
+    if (device.phone?.peakBrightness && device.phone.peakBrightness >= 1500) {
+      tips.push({
+        icon: "☀️",
+        title: "Outdoor Visibility",
+        content: `With ${device.phone.peakBrightness} nits peak brightness, ${device.name} excels outdoors. Enable auto-brightness for optimal visibility while preserving battery.`,
+      });
+    }
+  } else if (device.category === "tv") {
+    // Viewing distance tip
+    const optimalFeet = (device.diagonal * 1.6 / 12).toFixed(1);
+    tips.push({
+      icon: "📏",
+      title: "Optimal Viewing Distance",
+      content: `For your ${device.diagonal}" TV, sit approximately ${optimalFeet} feet away for the best viewing experience. This distance provides immersion without eye strain.`,
+    });
+
+    // Room lighting tip
+    tips.push({
+      icon: "💡",
+      title: "Room Lighting",
+      content: `Avoid placing your ${device.diagonal}" TV opposite windows to reduce glare. Use bias lighting (LED strips behind the TV) to reduce eye strain during dark scenes.`,
+    });
+
+    // Calibration tip
+    tips.push({
+      icon: "🎨",
+      title: "Picture Calibration",
+      content: `Out-of-box settings are often too bright. Switch to "Cinema" or "Movie" mode for accurate colors. Disable motion smoothing (soap opera effect) for film content.`,
+    });
+
+    // Wall mount tip
+    if (device.diagonal >= 55) {
+      tips.push({
+        icon: "🔧",
+        title: "Wall Mounting",
+        content: `A ${device.diagonal}" TV should be mounted with the center at eye level when seated (typically 42-48" from floor). Use a tilting mount for flexibility.`,
+      });
+    }
+
+    // Gaming tip
+    if (device.diagonal >= 50) {
+      tips.push({
+        icon: "🎮",
+        title: "Gaming Setup",
+        content: `Enable Game Mode to reduce input lag. For ${device.diagonal}" screens, ensure your console outputs at 4K for the sharpest image at typical viewing distances.`,
+      });
+    }
+  } else if (device.category === "monitor") {
+    // Ergonomic setup tip
+    tips.push({
+      icon: "🪑",
+      title: "Ergonomic Setup",
+      content: `Position your ${device.diagonal}" monitor at arm's length (20-26 inches). The top of the screen should be at or slightly below eye level to reduce neck strain.`,
+    });
+
+    // Eye care tip
+    tips.push({
+      icon: "👁️",
+      title: "Eye Care",
+      content: `Follow the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds. Enable blue light filter in the evening to improve sleep quality.`,
+    });
+
+    // Productivity tip
+    if (device.diagonal >= 27) {
+      tips.push({
+        icon: "📊",
+        title: "Productivity Layout",
+        content: `Your ${device.diagonal}" screen supports comfortable side-by-side windows. Use Windows Snap or macOS Split View to maximize multitasking efficiency.`,
+      });
+    }
+
+    // Gaming tip
+    if (device.diagonal <= 27) {
+      tips.push({
+        icon: "🎮",
+        title: "Gaming Performance",
+        content: `A ${device.diagonal}" monitor is ideal for competitive gaming—you can see the entire screen without moving your head. Enable any "Game Mode" to reduce input lag.`,
+      });
+    }
+
+    // Ultrawide tip
+    if (device.ratio > 2) {
+      tips.push({
+        icon: "🖥️",
+        title: "Ultrawide Workflow",
+        content: `Your ultrawide ${device.diagonal}" display excels at video editing timelines, coding with multiple panels, and immersive gaming. Use virtual desktops for organized workflows.`,
+      });
+    }
+
+    // Scaling tip
+    if (ppi && ppi >= 100) {
+      tips.push({
+        icon: "🔍",
+        title: "Display Scaling",
+        content: `At ${Math.round(ppi)} PPI, consider 125% scaling for comfortable text size. This maintains sharpness while improving readability at typical desk distances.`,
+      });
+    }
+  } else if (device.category === "tablet") {
+    // Portability tip
+    if (device.diagonal <= 11) {
+      tips.push({
+        icon: "🎒",
+        title: "Portability",
+        content: `Your ${device.diagonal}" tablet fits easily in most bags. Consider a slim folio case that doubles as a stand for versatile use on the go.`,
+      });
+    } else {
+      tips.push({
+        icon: "💼",
+        title: "Carrying Solution",
+        content: `A ${device.diagonal}" tablet benefits from a dedicated sleeve or laptop-style bag. Look for cases with keyboard integration for laptop-like productivity.`,
+      });
+    }
+
+    // Stylus tip
+    tips.push({
+      icon: "✏️",
+      title: "Stylus Usage",
+      content: device.diagonal >= 11
+        ? `Your ${device.diagonal}" screen provides ample canvas for digital art and detailed notes. Pair with a compatible stylus for the best creative experience.`
+        : `A stylus enhances note-taking on your ${device.diagonal}" tablet. Look for palm rejection support for natural writing.`,
+    });
+
+    // Reading tip
+    tips.push({
+      icon: "📚",
+      title: "Reading Comfort",
+      content: `Enable Night Shift/Night Mode in the evening to reduce blue light. For extended reading, reduce brightness and consider using dark mode in reading apps.`,
+    });
+
+    // Multitasking tip
+    if (device.diagonal >= 10) {
+      tips.push({
+        icon: "🔲",
+        title: "Split-Screen Productivity",
+        content: `Your ${device.diagonal}" display supports comfortable split-screen multitasking. Drag apps from the dock to the screen edge to activate Split View.`,
+      });
+    }
+  } else if (device.category === "projector") {
+    // Room setup tip
+    tips.push({
+      icon: "🌑",
+      title: "Room Preparation",
+      content: `For best results with your ${device.diagonal}" projection, use blackout curtains and paint the wall matte white or use a proper screen. Dark walls absorb stray light.`,
+    });
+
+    // Throw distance tip
+    const throwMin = (device.diagonal * 1.5 / 12).toFixed(1);
+    const throwMax = (device.diagonal * 2 / 12).toFixed(1);
+    tips.push({
+      icon: "📐",
+      title: "Projector Placement",
+      content: `Standard throw projectors need ${throwMin}-${throwMax} feet from the screen. Consider a short-throw projector if space is limited.`,
+    });
+
+    // Screen selection tip
+    tips.push({
+      icon: "🎬",
+      title: "Screen Selection",
+      content: device.diagonal >= 120
+        ? `For a ${device.diagonal}" setup, invest in a fixed-frame screen for the flattest surface. ALR (Ambient Light Rejecting) screens help if you can't fully darken the room.`
+        : `A ${device.diagonal}" retractable screen offers flexibility for multi-purpose rooms. Ensure it's tensioned to prevent waves in the image.`,
+    });
+
+    // Audio tip
+    tips.push({
+      icon: "🔊",
+      title: "Audio Setup",
+      content: `A ${device.diagonal}" cinematic screen deserves quality audio. Consider a soundbar at minimum, or a 5.1 surround system for true home theater immersion.`,
+    });
+  }
+
+  return tips;
+};
+
+const tips = generateTips(device);
 
 // OG Image URL for this device
 const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
@@ -220,14 +658,18 @@ const productSchema = {
   },
   sku: device.id,
   mpn: device.id,
-  offers: {
-    "@type": "Offer",
-    price: device.price,
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
-    priceValidUntil: "2026-12-31",
-  },
+  ...(device.price
+    ? {
+        offers: {
+          "@type": "Offer",
+          price: device.price,
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
+          priceValidUntil: "2026-12-31",
+        },
+      }
+    : {}),
 };
 
 const toolSchema = {
@@ -409,12 +851,13 @@ const breadcrumbSchema = {
         {device.name} Screen Size
       </h1>
       <p
-        class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-3"
+        class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-4"
       >
         Complete screen size guide for the {device.name} with {device.diagonal}"
         display
       </p>
-      <div class="flex justify-center">
+
+      <div class="flex justify-center mb-4">
         <ShareButtons
           title={`${device.name} Screen Size: ${device.diagonal}" Display`}
           url={`${siteConfig.siteUrl}/${device.id}-screen-size`}
@@ -422,7 +865,7 @@ const breadcrumbSchema = {
         />
       </div>
       <p
-        class="text-xs text-gray-500 dark:text-gray-400 mt-3 flex items-center justify-center gap-1"
+        class="text-xs text-gray-500 dark:text-gray-400 mb-6 flex items-center justify-center gap-1"
       >
         <svg
           class="w-3.5 h-3.5"
@@ -444,6 +887,25 @@ const breadcrumbSchema = {
           })
         }
       </p>
+
+      {/* Expert Summary or Intro Text - show one or the other */}
+      {device.expertSummary ? (
+        <div
+          class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 sm:p-5 text-left"
+        >
+          <p class="text-emerald-800 dark:text-emerald-200 text-sm sm:text-base font-medium leading-relaxed">
+            <span class="font-bold text-emerald-900 dark:text-emerald-100">Expert Summary:</span> {device.expertSummary}
+          </p>
+        </div>
+      ) : (
+        <div
+          class="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 sm:p-5"
+        >
+          <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed text-center">
+            {introText} {supplementaryPhrase}
+          </p>
+        </div>
+      )}
     </div>
 
     <!-- Key Takeaways Summary -->
@@ -642,6 +1104,58 @@ const breadcrumbSchema = {
             </li>
           )
         }
+        {/* Phone: Video watching */}
+        {
+          device.category === "phone" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Video watching:</strong>{" "}
+                {device.diagonal >= 6.7
+                  ? "Excellent — large screen ideal for movies and streaming"
+                  : device.diagonal >= 6.3
+                    ? "Good — comfortable for casual viewing"
+                    : "Compact — better for quick clips than long sessions"}
+              </span>
+            </li>
+          )
+        }
+        {/* Phone: Outdoor visibility */}
+        {
+          device.category === "phone" && device.phone?.peakBrightness && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Outdoor use:</strong> {device.phone.peakBrightness} nits —{" "}
+                {device.phone.peakBrightness >= 2000
+                  ? "Exceptional sunlight visibility"
+                  : device.phone.peakBrightness >= 1000
+                    ? "Good readability in bright conditions"
+                    : "May struggle in direct sunlight"}
+              </span>
+            </li>
+          )
+        }
         {
           device.category === "tv" && (
             <li class="flex items-start gap-2">
@@ -663,6 +1177,78 @@ const breadcrumbSchema = {
                   : device.diagonal <= 65
                     ? "Medium to large living room (7-10 ft viewing)"
                     : "Large living room or home theater (9-14 ft viewing)"}
+              </span>
+            </li>
+          )
+        }
+        {/* TV: Gaming suitability */}
+        {
+          device.category === "tv" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Gaming:</strong>{" "}
+                {device.diagonal >= 65
+                  ? "Immersive — excellent for console and split-screen gaming"
+                  : device.diagonal >= 50
+                    ? "Good — suitable for most gaming setups"
+                    : "Compact — best for casual or close-range gaming"}
+              </span>
+            </li>
+          )
+        }
+        {/* TV: Wall mount info */}
+        {
+          device.category === "tv" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Wall space needed:</strong>{" "}
+                {fmt(dims.width + 4, 0)}" wide × {fmt(dims.height + 4, 0)}" tall minimum
+              </span>
+            </li>
+          )
+        }
+        {/* TV: 4K recommendation */}
+        {
+          device.category === "tv" && device.diagonal >= 50 && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>4K content:</strong>{" "}
+                {device.diagonal >= 65
+                  ? "Highly recommended for best picture quality"
+                  : "Beneficial but 1080p still acceptable at distance"}
               </span>
             </li>
           )
@@ -692,6 +1278,82 @@ const breadcrumbSchema = {
             </li>
           )
         }
+        {/* Monitor: Productivity rating */}
+        {
+          device.category === "monitor" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Productivity:</strong>{" "}
+                {device.diagonal >= 32
+                  ? "Excellent — ample space for multiple windows and apps"
+                  : device.diagonal >= 27
+                    ? "Very good — comfortable side-by-side window use"
+                    : "Good — suitable for focused single-task work"}
+              </span>
+            </li>
+          )
+        }
+        {/* Monitor: Gaming suitability */}
+        {
+          device.category === "monitor" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Gaming:</strong>{" "}
+                {device.diagonal <= 27
+                  ? "Optimal — easy to track action without head movement"
+                  : device.diagonal <= 32
+                    ? "Immersive — great for single-player and casual gaming"
+                    : "Cinematic — best for immersive experiences, less ideal for competitive"}
+              </span>
+            </li>
+          )
+        }
+        {/* Monitor: Ultrawide benefit */}
+        {
+          device.category === "monitor" && device.ratio > 2 && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Ultrawide benefit:</strong>{" "}
+                {device.ratio > 3
+                  ? "Can replace dual-monitor setup — seamless multitasking"
+                  : "Extra horizontal space for productivity and immersive gaming"}
+              </span>
+            </li>
+          )
+        }
         {
           device.category === "tablet" && (
             <li class="flex items-start gap-2">
@@ -717,6 +1379,84 @@ const breadcrumbSchema = {
             </li>
           )
         }
+        {/* Tablet: Portability */}
+        {
+          device.category === "tablet" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Portability:</strong>{" "}
+                {device.diagonal <= 8.5
+                  ? "Highly portable — fits in bags and large pockets"
+                  : device.diagonal <= 11
+                    ? "Portable — easy to carry in most bags"
+                    : "Less portable — best with dedicated sleeve or bag"}
+              </span>
+            </li>
+          )
+        }
+        {/* Tablet: Drawing/Note-taking */}
+        {
+          device.category === "tablet" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Drawing & notes:</strong>{" "}
+                {device.diagonal >= 12.9
+                  ? "Excellent — professional-grade canvas for artists"
+                  : device.diagonal >= 11
+                    ? "Very good — ample space for sketching and notes"
+                    : "Good for notes — limited canvas for detailed art"}
+              </span>
+            </li>
+          )
+        }
+        {/* Tablet: Split-screen */}
+        {
+          device.category === "tablet" && device.diagonal >= 10 && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Split-screen:</strong>{" "}
+                {device.diagonal >= 12.9
+                  ? "Excellent — comfortable dual-app experience"
+                  : device.diagonal >= 11
+                    ? "Good — usable for reference and multitasking"
+                    : "Limited — apps may feel cramped side-by-side"}
+              </span>
+            </li>
+          )
+        }
         {
           device.category === "projector" && (
             <li class="flex items-start gap-2">
@@ -736,6 +1476,84 @@ const breadcrumbSchema = {
                 {fmt((device.diagonal * 1.5) / 12, 1)}-
                 {fmt((device.diagonal * 2.5) / 12, 1)} feet for optimal
                 cinematic experience
+              </span>
+            </li>
+          )
+        }
+        {/* Projector: Room requirement */}
+        {
+          device.category === "projector" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Room size:</strong>{" "}
+                {device.diagonal >= 120
+                  ? "Large dedicated theater room (15×20 ft+)"
+                  : device.diagonal >= 100
+                    ? "Medium to large room (12×15 ft+)"
+                    : "Standard room (10×12 ft+)"}
+              </span>
+            </li>
+          )
+        }
+        {/* Projector: Ambient light */}
+        {
+          device.category === "projector" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Light control:</strong>{" "}
+                {device.diagonal >= 120
+                  ? "Dark room essential for best image quality"
+                  : "Dimmed room recommended, ALR screen helps with ambient light"}
+              </span>
+            </li>
+          )
+        }
+        {/* Projector: Immersion level */}
+        {
+          device.category === "projector" && (
+            <li class="flex items-start gap-2">
+              <svg
+                class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Immersion:</strong>{" "}
+                {device.diagonal >= 150
+                  ? "IMAX-like — truly cinematic home theater"
+                  : device.diagonal >= 120
+                    ? "Cinema-quality — immersive movie experience"
+                    : device.diagonal >= 100
+                      ? "Large screen feel — great for movies and sports"
+                      : "Enhanced viewing — bigger than most TVs"}
               </span>
             </li>
           )
@@ -1602,6 +2420,30 @@ const breadcrumbSchema = {
       </div>
     </div>
 
+    <!-- Deep Dive Analysis - Device-specific insights based on attributes -->
+    {deviceInsights.length > 0 && (
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+        <div class="p-6">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+            {device.name} Deep Dive
+          </h2>
+          <div class="space-y-4">
+            {deviceInsights.map((insight, index) => (
+              <div class="flex gap-3">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <span class="text-purple-600 dark:text-purple-400 text-sm font-semibold">{index + 1}</span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed pt-1">{insight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
     <!-- Browse Similar Devices -->
     {
       relatedDevices.length > 0 && (
@@ -1679,6 +2521,32 @@ const breadcrumbSchema = {
         </div>
       )
     }
+
+    <!-- Tips & Recommendations Section -->
+    {tips.length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Tips & Recommendations
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {tips.map((tip) => (
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0">{tip.icon}</span>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                    {tip.title}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {tip.content}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
 
     <!-- FAQ Section -->
     <div class="mb-8">

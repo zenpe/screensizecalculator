@@ -435,7 +435,9 @@ async function generateOGImage(device: typeof devices[0]) {
   const deviceVisualization = createDeviceVisualization(device.category, device.diagonal, visualWidth, visualHeight);
 
   // Create SVG using satori
+  // @ts-ignore - satori accepts plain objects as ReactNode-like structures
   const svg = await satori(
+    // @ts-ignore
     {
       type: 'div',
       props: {
