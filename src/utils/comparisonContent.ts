@@ -1,29 +1,41 @@
 // Utility functions for generating unique comparison content
 
-// Phone-specific attributes
-interface PhoneSpecs {
-  weight?: number;
-  battery?: number;
-  dimensions?: {
-    height: number;
-    width: number;
-    depth: number;
-  };
-  refreshRate?: number;
-  screenType?: string;
-  peakBrightness?: number;
-  hdr?: boolean;
-  alwaysOnDisplay?: boolean;
+import type { Device } from '../data/devices';
+import { hashString, selectVariant } from './contentVariants';
+
+// Pocket fit thresholds (in mm for body height, inches for screen diagonal)
+const POCKET_FIT_THRESHOLDS = {
+  BODY_HEIGHT_EASY: 155,    // < 155mm fits easily
+  BODY_HEIGHT_TIGHT: 165,   // 155-165mm tight fit
+  DIAGONAL_EASY: 6.5,       // <= 6.5" fits easily
+  DIAGONAL_TIGHT: 6.8,      // 6.5-6.8" tight fit
+} as const;
+
+// Helper to select variant based on comparison pair
+function selectComparisonVariant<T>(deviceA: Device, deviceB: Device, variants: T[]): T {
+  const seed = `${deviceA.id}-${deviceB.id}`;
+  const index = hashString(seed) % variants.length;
+  return variants[index];
 }
 
-interface Device {
-  id: string;
-  name: string;
-  diagonal: number;
-  ratio: number;
-  category: string;
-  resolution?: string;
-  phone?: PhoneSpecs;
+// Determine pocket fit based on body height (if available) or screen diagonal
+// Body height thresholds based on real-world pocket sizes:
+// - < 155mm: Fits easily in most pockets
+// - 155-165mm: Tight fit in standard pockets
+// - > 165mm: May not fit in smaller pockets
+function getPocketFit(device: Device): string {
+  // Use body height if available (more accurate)
+  if (device.phone?.dimensions?.height) {
+    const bodyHeight = device.phone.dimensions.height;
+    if (bodyHeight < POCKET_FIT_THRESHOLDS.BODY_HEIGHT_EASY) return 'Fits easily';
+    if (bodyHeight <= POCKET_FIT_THRESHOLDS.BODY_HEIGHT_TIGHT) return 'Tight fit';
+    return 'May not fit';
+  }
+
+  // Fallback to screen diagonal (less accurate)
+  if (device.diagonal <= POCKET_FIT_THRESHOLDS.DIAGONAL_EASY) return 'Fits easily';
+  if (device.diagonal <= POCKET_FIT_THRESHOLDS.DIAGONAL_TIGHT) return 'Tight fit';
+  return 'May not fit';
 }
 
 interface ComparisonDimensions {
@@ -32,7 +44,69 @@ interface ComparisonDimensions {
 }
 
 /**
+ * Generate phone-specific comparison content
+ */
+function generatePhoneSpecificContent(deviceA: Device, deviceB: Device): string {
+  const parts: string[] = [];
+
+  // Battery comparison - only mention capacity difference, avoid unreliable time estimates
+  if (deviceA.phone?.battery && deviceB.phone?.battery) {
+    const batteryDiff = Math.abs(deviceA.phone.battery - deviceB.phone.battery);
+    if (batteryDiff > 400) {
+      const biggerBattery = deviceA.phone.battery > deviceB.phone.battery ? deviceA : deviceB;
+      const smallerBattery = deviceA.phone.battery > deviceB.phone.battery ? deviceB : deviceA;
+      parts.push(`${biggerBattery.name} has a larger ${biggerBattery.phone!.battery}mAh battery compared to ${smallerBattery.phone!.battery}mAh on ${smallerBattery.name}.`);
+    }
+  }
+
+  // Weight comparison - use higher threshold (20g+)
+  if (deviceA.phone?.weight && deviceB.phone?.weight) {
+    const weightDiff = Math.abs(deviceA.phone.weight - deviceB.phone.weight);
+    if (weightDiff >= 20) {
+      const lighter = deviceA.phone.weight < deviceB.phone.weight ? deviceA : deviceB;
+      const heavier = deviceA.phone.weight < deviceB.phone.weight ? deviceB : deviceA;
+      parts.push(`${lighter.name} weighs ${lighter.phone!.weight}g, ${weightDiff}g lighter than ${heavier.name} at ${heavier.phone!.weight}g.`);
+    }
+  }
+
+  // Refresh rate comparison - only when difference is significant (30Hz+)
+  if (deviceA.phone?.refreshRate && deviceB.phone?.refreshRate) {
+    const rateDiff = Math.abs(deviceA.phone.refreshRate - deviceB.phone.refreshRate);
+    if (rateDiff >= 30) {
+      const higherRate = deviceA.phone.refreshRate > deviceB.phone.refreshRate ? deviceA : deviceB;
+      const lowerRate = deviceA.phone.refreshRate > deviceB.phone.refreshRate ? deviceB : deviceA;
+      parts.push(`${higherRate.name} has a ${higherRate.phone!.refreshRate}Hz display versus ${lowerRate.phone!.refreshRate}Hz on ${lowerRate.name}.`);
+    }
+  }
+
+  // Brightness comparison
+  if (deviceA.phone?.peakBrightness && deviceB.phone?.peakBrightness) {
+    const brightnessDiff = Math.abs(deviceA.phone.peakBrightness - deviceB.phone.peakBrightness);
+    if (brightnessDiff > 500) {
+      const brighter = deviceA.phone.peakBrightness > deviceB.phone.peakBrightness ? deviceA : deviceB;
+      parts.push(`${brighter.name} reaches ${brighter.phone!.peakBrightness} nits peak brightness for better outdoor visibility.`);
+    }
+  }
+
+  // Screen type comparison - only if meaningfully different
+  if (deviceA.phone?.screenType && deviceB.phone?.screenType && deviceA.phone.screenType !== deviceB.phone.screenType) {
+    const isOLED = (type: string) => type.includes('OLED') || type.includes('AMOLED');
+    const aIsOLED = isOLED(deviceA.phone.screenType);
+    const bIsOLED = isOLED(deviceB.phone.screenType);
+    // Only mention if one is OLED and other is LCD
+    if (aIsOLED !== bIsOLED) {
+      const oledDevice = aIsOLED ? deviceA : deviceB;
+      const lcdDevice = aIsOLED ? deviceB : deviceA;
+      parts.push(`${oledDevice.name} uses ${oledDevice.phone!.screenType} with deeper blacks, while ${lcdDevice.name} has ${lcdDevice.phone!.screenType}.`);
+    }
+  }
+
+  return parts.length > 0 ? ' ' + parts.slice(0, 2).join(' ') : '';
+}
+
+/**
  * Generate a unique 200-300 word description for a comparison
+ * Uses multiple template variants for content diversity
  */
 export function generateComparisonDescription(
   deviceA: Device,
@@ -48,54 +122,134 @@ export function generateComparisonDescription(
   const smallerArea = Math.min(areaA, areaB);
 
   const sizeDiff = Math.abs(deviceA.diagonal - deviceB.diagonal);
-  const areaDiff = ((largerArea - smallerArea) / smallerArea) * 100;
+  const areaDiff = smallerArea > 0 ? ((largerArea - smallerArea) / smallerArea) * 100 : 0;
   const widthDiff = Math.abs(dimsA.width - dimsB.width);
   const heightDiff = Math.abs(dimsA.height - dimsB.height);
 
-  let description = `When comparing the ${deviceA.name} and ${deviceB.name}, `;
+  // Opening variants
+  const openingVariants = [
+    `When comparing the ${deviceA.name} and ${deviceB.name}, `,
+    `Looking at ${deviceA.name} versus ${deviceB.name}, `,
+    `In this ${deviceA.name} vs ${deviceB.name} comparison, `,
+    `Comparing the ${deviceA.name} with the ${deviceB.name}, `,
+    `Between the ${deviceA.name} and ${deviceB.name}, `,
+  ];
 
-  // Size difference analysis
+  let description = selectComparisonVariant(deviceA, deviceB, openingVariants);
+
+  // Size difference analysis with multiple variants
   if (sizeDiff > 3) {
-    description += `there's a significant ${sizeDiff.toFixed(1)}-inch difference in diagonal screen size. `;
-    description += `The ${larger.name} measures ${larger.diagonal}" diagonally, while the ${smaller.name} comes in at ${smaller.diagonal}". `;
+    const largeDiffVariants = [
+      `there's a substantial ${sizeDiff.toFixed(1)}-inch gap in diagonal screen size. The ${larger.name} measures ${larger.diagonal}" diagonally, while the ${smaller.name} comes in at ${smaller.diagonal}". `,
+      `the screen size difference is immediately apparent at ${sizeDiff.toFixed(1)} inches. With ${larger.diagonal}" on the ${larger.name} versus ${smaller.diagonal}" on the ${smaller.name}, this is a significant jump. `,
+      `we see a ${sizeDiff.toFixed(1)}" difference in diagonal measurements—${larger.name} at ${larger.diagonal}" versus the ${smaller.name}'s ${smaller.diagonal}" display. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, largeDiffVariants);
   } else if (sizeDiff > 1) {
-    description += `the screens are relatively close in size, with a ${sizeDiff.toFixed(1)}" difference in diagonal measurement. `;
+    const mediumDiffVariants = [
+      `the screens differ by ${sizeDiff.toFixed(1)}" diagonally, a moderate but noticeable gap between ${larger.diagonal}" and ${smaller.diagonal}". `,
+      `there's a ${sizeDiff.toFixed(1)}-inch difference in diagonal size—${larger.name} at ${larger.diagonal}" versus ${smaller.name} at ${smaller.diagonal}". `,
+      `the ${sizeDiff.toFixed(1)}" diagonal difference (${larger.diagonal}" vs ${smaller.diagonal}") creates a visible size distinction. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, mediumDiffVariants);
+  } else if (sizeDiff > 0.3) {
+    const smallDiffVariants = [
+      `both devices are close in size at ${deviceA.diagonal}" and ${deviceB.diagonal}", with just ${sizeDiff.toFixed(1)}" separating them. `,
+      `the ${sizeDiff.toFixed(1)}" diagonal difference between ${deviceA.diagonal}" and ${deviceB.diagonal}" is subtle but measurable. `,
+      `screen sizes are similar—${deviceA.diagonal}" versus ${deviceB.diagonal}"—a ${sizeDiff.toFixed(1)}" gap that's hard to notice side-by-side. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, smallDiffVariants);
   } else {
-    description += `both devices feature nearly identical screen sizes at ${deviceA.diagonal}" and ${deviceB.diagonal}" respectively. `;
+    const nearlyIdenticalVariants = [
+      `both feature nearly identical screens at ${deviceA.diagonal}" and ${deviceB.diagonal}", making size a non-factor in your decision. `,
+      `the screens are virtually the same size at ${deviceA.diagonal}" and ${deviceB.diagonal}", so other factors become more important. `,
+      `with ${deviceA.diagonal}" and ${deviceB.diagonal}" diagonal measurements, the size difference is negligible. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, nearlyIdenticalVariants);
   }
 
-  // Area difference
+  // Area difference with variants
   if (areaDiff > 20) {
-    description += `In terms of actual viewing area, the ${larger.name} provides ${areaDiff.toFixed(0)}% more screen real estate, `;
-    description += `offering ${largerArea.toFixed(1)} square inches compared to ${smallerArea.toFixed(1)} square inches. `;
-  } else if (areaDiff > 5) {
-    description += `The ${larger.name} offers ${areaDiff.toFixed(0)}% more screen area, which translates to a noticeable difference in daily use. `;
-  } else {
-    description += `Both devices provide nearly identical screen areas, making them comparable in terms of viewing space. `;
+    const largeAreaVariants = [
+      `In actual viewing area, the ${larger.name} has ${areaDiff.toFixed(0)}% more screen space—${largerArea.toFixed(1)} square inches compared to ${smallerArea.toFixed(1)} square inches. `,
+      `This translates to ${areaDiff.toFixed(0)}% more usable screen space on the ${larger.name} (${largerArea.toFixed(1)} sq in vs ${smallerArea.toFixed(1)} sq in). `,
+      `The area difference is notable: ${larger.name} offers ${largerArea.toFixed(1)} square inches versus ${smallerArea.toFixed(1)} on ${smaller.name}—a ${areaDiff.toFixed(0)}% increase. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, largeAreaVariants);
+  } else if (areaDiff > 8) {
+    const mediumAreaVariants = [
+      `The ${larger.name} provides ${areaDiff.toFixed(0)}% more screen area, a difference you'll notice in daily use. `,
+      `Screen area favors the ${larger.name} by ${areaDiff.toFixed(0)}%, offering ${largerArea.toFixed(1)} vs ${smallerArea.toFixed(1)} square inches. `,
+      `With ${areaDiff.toFixed(0)}% more viewing area, the ${larger.name} gives you noticeably more content on screen. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, mediumAreaVariants);
+  } else if (areaDiff > 2) {
+    const smallAreaVariants = [
+      `Screen areas are close, with the ${larger.name} offering a modest ${areaDiff.toFixed(0)}% advantage. `,
+      `The ${areaDiff.toFixed(0)}% area difference between these displays is minimal in practice. `,
+      `Both provide similar viewing space—the ${larger.name}'s ${areaDiff.toFixed(0)}% edge is barely perceptible. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, smallAreaVariants);
   }
 
-  // Dimension specifics
-  if (widthDiff > 1 || heightDiff > 1) {
-    description += `The ${larger.name} is ${widthDiff.toFixed(1)}" wider and ${heightDiff.toFixed(1)}" taller, `;
-    description += `which can impact portability and how the device fits in your hand or on your desk. `;
-  }
+  // Dimension specifics with category-appropriate language
+  if (widthDiff > 0.5 || heightDiff > 0.5) {
+    const isTvProjectorComparison =
+      (deviceA.category === 'tv' && deviceB.category === 'projector') ||
+      (deviceA.category === 'projector' && deviceB.category === 'tv');
 
-  // Category-specific insights
-  if (deviceA.category === 'phone' || deviceB.category === 'phone') {
-    description += `For smartphone users, this size difference affects one-handed usability, pocket fit, and media consumption experience. `;
-    if (larger.diagonal > 6.5) {
-      description += `The larger ${larger.name} excels at video watching and productivity but may be challenging for one-handed use. `;
+    // Determine which device is wider (not necessarily the larger area one)
+    const widerDevice = dimsA.width > dimsB.width ? deviceA : deviceB;
+
+    if (isTvProjectorComparison) {
+      description += `Physical dimensions differ by ${widthDiff.toFixed(1)}" in width and ${heightDiff.toFixed(1)}" in height, affecting room setup and viewing distance. `;
+    } else if (deviceA.category === 'phone') {
+      const phoneImpactVariants = [
+        `The ${widthDiff.toFixed(2)}" width and ${heightDiff.toFixed(2)}" height difference affects how each phone feels in hand. `,
+        `${widerDevice.name} is ${widthDiff.toFixed(2)}" wider, which affects grip and one-handed use. `,
+        `These size differences (${widthDiff.toFixed(2)}" × ${heightDiff.toFixed(2)}") affect pocket fit and handling. `,
+      ];
+      description += selectComparisonVariant(deviceA, deviceB, phoneImpactVariants);
+    } else if (deviceA.category === 'tablet') {
+      description += `${widerDevice.name} is ${widthDiff.toFixed(1)}" wider, affecting portability and how it feels to hold. `;
+    } else if (deviceA.category === 'monitor') {
+      description += `Desk space differs by ${widthDiff.toFixed(1)}" in width, worth considering for your setup. `;
+    } else if (deviceA.category === 'tv') {
+      description += `Wall space requirements differ by ${widthDiff.toFixed(1)}" × ${heightDiff.toFixed(1)}", important for mounting. `;
     }
-    if (smaller.diagonal < 6.3) {
-      description += `The more compact ${smaller.name} offers better portability and easier one-handed operation. `;
+  }
+
+  // Category-specific insights with variants
+  if (deviceA.category === 'phone' && deviceB.category === 'phone') {
+    // Add phone-specific technical comparisons
+    description += generatePhoneSpecificContent(deviceA, deviceB);
+
+    const phoneInsightVariants = [
+      `These differences matter for one-handed use, media viewing, and how the phone fits in your pocket. `,
+      `In daily use, this affects typing comfort, video watching, and portability. `,
+      `This impacts how the phone handles in your hand and fits in your pocket. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, phoneInsightVariants);
+
+    if (larger.diagonal > 6.7) {
+      description += `The ${larger.name}'s large display is great for videos and reading but harder to use one-handed. `;
+    } else if (smaller.diagonal < 6.2) {
+      description += `The ${smaller.name}'s compact size makes it easier to use with one hand. `;
     }
   } else if (deviceA.category === 'tv' || deviceB.category === 'tv') {
-    description += `For TV viewing, this size difference significantly impacts your optimal viewing distance and room compatibility. `;
-    description += `The ${larger.name} is better suited for larger rooms with viewing distances of ${(larger.diagonal * 1.5 / 12).toFixed(1)}-${(larger.diagonal * 2.5 / 12).toFixed(1)} feet, `;
-    description += `while the ${smaller.name} works well in smaller spaces at ${(smaller.diagonal * 1.5 / 12).toFixed(1)}-${(smaller.diagonal * 2.5 / 12).toFixed(1)} feet away. `;
+    const tvInsightVariants = [
+      `For home entertainment, the ${larger.name} suits rooms with ${(larger.diagonal * 1.5 / 12).toFixed(1)}-${(larger.diagonal * 2.5 / 12).toFixed(1)} feet viewing distance, while the ${smaller.name} works at ${(smaller.diagonal * 1.5 / 12).toFixed(1)}-${(smaller.diagonal * 2.5 / 12).toFixed(1)} feet. `,
+      `Optimal viewing distance is ${(larger.diagonal * 1.5 / 12).toFixed(1)}-${(larger.diagonal * 2.5 / 12).toFixed(1)} feet for the ${larger.name} and ${(smaller.diagonal * 1.5 / 12).toFixed(1)}-${(smaller.diagonal * 2.5 / 12).toFixed(1)} feet for the ${smaller.name}—measure your room before deciding. `,
+      `Room size matters: the ${larger.name} needs ${(larger.diagonal * 1.5 / 12).toFixed(1)}+ feet viewing distance for comfortable watching, versus ${(smaller.diagonal * 1.5 / 12).toFixed(1)}+ feet for the ${smaller.name}. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, tvInsightVariants);
   } else if (deviceA.category === 'monitor' || deviceB.category === 'monitor') {
-    description += `For desktop use, the ${larger.name} provides more workspace for multitasking and productivity, `;
-    description += `while the ${smaller.name} may be more suitable for smaller desks or closer viewing distances. `;
+    const monitorInsightVariants = [
+      `For desktop productivity, the ${larger.name} provides more workspace for multitasking, while the ${smaller.name} suits smaller desks or closer viewing distances. `,
+      `The ${larger.name} accommodates more windows side-by-side, whereas the ${smaller.name} requires less desk depth and eye movement. `,
+      `Workspace needs differ: ${larger.name} for spreadsheets and multi-window workflows, ${smaller.name} for focused single-task work. `,
+    ];
+    description += selectComparisonVariant(deviceA, deviceB, monitorInsightVariants);
   }
 
   return description;
@@ -103,41 +257,153 @@ export function generateComparisonDescription(
 
 /**
  * Generate use case scenarios based on device category
+ * Uses device-specific data for more varied content
  */
 export function generateUseCaseScenarios(deviceA: Device, deviceB: Device) {
+  // Handle cross-category comparisons (TV vs Projector)
+  const isTvProjectorComparison =
+    (deviceA.category === 'tv' && deviceB.category === 'projector') ||
+    (deviceA.category === 'projector' && deviceB.category === 'tv');
+
+  if (isTvProjectorComparison) {
+    // Helper to evaluate both TV and Projector with same criteria
+    const evalDevice = (d: Device) => ({
+      smallRoom: d.diagonal < 65 ? 'Suitable' : d.diagonal < 85 ? 'Possible' : 'Too large',
+      largeRoom: d.diagonal >= 75 ? 'Excellent' : d.diagonal >= 55 ? 'Good' : 'May feel small',
+      ambientLight: d.category === 'tv' ? 'Better' : 'Needs dark room',
+      cinematic: d.diagonal >= 100 ? 'Cinema-like' : d.diagonal >= 75 ? 'Immersive' : 'Standard',
+    });
+    const evalA = evalDevice(deviceA);
+    const evalB = evalDevice(deviceB);
+
+    return [
+      {
+        icon: '🛋️',
+        title: 'Living Room Setup',
+        deviceA: evalA.smallRoom,
+        deviceB: evalB.smallRoom,
+        description: 'Standard living room with mixed lighting'
+      },
+      {
+        icon: '🎭',
+        title: 'Home Theater',
+        deviceA: evalA.largeRoom,
+        deviceB: evalB.largeRoom,
+        description: 'Dedicated theater room with controlled lighting'
+      },
+      {
+        icon: '☀️',
+        title: 'Ambient Light',
+        deviceA: evalA.ambientLight,
+        deviceB: evalB.ambientLight,
+        description: 'Performance in rooms with windows or lights on'
+      },
+      {
+        icon: '🎬',
+        title: 'Cinematic Experience',
+        deviceA: evalA.cinematic,
+        deviceB: evalB.cinematic,
+        description: 'Immersion level for movies and sports'
+      }
+    ];
+  }
+
   const category = deviceA.category;
 
   if (category === 'phone') {
-    return [
+    // More nuanced phone evaluations using actual specs
+    const evalOneHanded = (d: Device) => {
+      if (d.phone?.dimensions?.width) {
+        if (d.phone.dimensions.width < 70) return 'Easy';
+        if (d.phone.dimensions.width < 75) return 'Comfortable';
+        if (d.phone.dimensions.width < 78) return 'Manageable';
+        return 'Challenging';
+      }
+      if (d.diagonal < 6.1) return 'Easy';
+      if (d.diagonal < 6.5) return 'Comfortable';
+      if (d.diagonal < 6.7) return 'Manageable';
+      return 'Challenging';
+    };
+
+    const evalVideo = (d: Device) => {
+      let score = 0;
+      if (d.diagonal > 6.5) score += 2;
+      else if (d.diagonal > 6.2) score += 1;
+      if (d.phone?.refreshRate && d.phone.refreshRate >= 120) score += 1;
+      if (d.phone?.peakBrightness && d.phone.peakBrightness >= 1500) score += 1;
+      if (d.phone?.screenType?.includes('OLED') || d.phone?.screenType?.includes('AMOLED')) score += 1;
+      if (score >= 4) return 'Excellent';
+      if (score >= 2) return 'Very Good';
+      return 'Good';
+    };
+
+    const evalGaming = (d: Device) => {
+      let score = 0;
+      // Refresh rate scoring (mutually exclusive)
+      if (d.phone?.refreshRate && d.phone.refreshRate >= 120) score += 2;
+      else if (d.phone?.refreshRate && d.phone.refreshRate >= 90) score += 1;
+      // Screen size
+      if (d.diagonal >= 6.5) score += 1;
+      // Brightness for HDR gaming
+      if (d.phone?.peakBrightness && d.phone.peakBrightness >= 1200) score += 1;
+      if (score >= 3) return 'Excellent';
+      if (score >= 2) return 'Very Good';
+      return 'Good';
+    };
+
+    const evalBattery = (d: Device) => {
+      if (d.phone?.battery) {
+        if (d.phone.battery >= 5000) return 'All-day+';
+        if (d.phone.battery >= 4500) return 'All-day';
+        if (d.phone.battery >= 4000) return 'Full day';
+        return 'Moderate';
+      }
+      return 'Unknown';
+    };
+
+    const scenarios = [
       {
         icon: '👋',
         title: 'One-Handed Use',
-        deviceA: deviceA.diagonal < 6.5 ? 'Comfortable' : 'Challenging',
-        deviceB: deviceB.diagonal < 6.5 ? 'Comfortable' : 'Challenging',
-        description: 'Ease of reaching all corners with your thumb'
+        deviceA: evalOneHanded(deviceA),
+        deviceB: evalOneHanded(deviceB),
+        description: `Ease of reaching corners with your thumb`
       },
       {
         icon: '🎬',
         title: 'Video Watching',
-        deviceA: deviceA.diagonal > 6.5 ? 'Excellent' : 'Good',
-        deviceB: deviceB.diagonal > 6.5 ? 'Excellent' : 'Good',
-        description: 'Immersive experience for movies and videos'
+        deviceA: evalVideo(deviceA),
+        deviceB: evalVideo(deviceB),
+        description: 'Movies, streaming, and video content'
       },
       {
         icon: '👖',
         title: 'Pocket Fit',
-        deviceA: deviceA.diagonal < 6.3 ? 'Fits easily' : 'Tight fit',
-        deviceB: deviceB.diagonal < 6.3 ? 'Fits easily' : 'Tight fit',
-        description: 'How well it fits in standard pockets'
+        deviceA: getPocketFit(deviceA),
+        deviceB: getPocketFit(deviceB),
+        description: 'Comfort in jeans and jacket pockets'
       },
       {
-        icon: '📖',
-        title: 'Reading & Browsing',
-        deviceA: deviceA.diagonal > 6.4 ? 'More content visible' : 'Standard',
-        deviceB: deviceB.diagonal > 6.4 ? 'More content visible' : 'Standard',
-        description: 'Amount of text and content visible at once'
+        icon: '🎮',
+        title: 'Mobile Gaming',
+        deviceA: evalGaming(deviceA),
+        deviceB: evalGaming(deviceB),
+        description: 'Gaming performance and experience'
       }
     ];
+
+    // Add battery scenario if both have battery data
+    if (deviceA.phone?.battery && deviceB.phone?.battery) {
+      scenarios.push({
+        icon: '🔋',
+        title: 'Battery Life',
+        deviceA: evalBattery(deviceA),
+        deviceB: evalBattery(deviceB),
+        description: 'Expected usage time per charge'
+      });
+    }
+
+    return scenarios.slice(0, 4);
   } else if (category === 'tv') {
     return [
       {
@@ -231,6 +497,37 @@ export function generateUseCaseScenarios(deviceA: Device, deviceB: Device) {
         description: 'Digital note-taking and sketching'
       }
     ];
+  } else if (category === 'projector') {
+    return [
+      {
+        icon: '🎭',
+        title: 'Home Theater',
+        deviceA: deviceA.diagonal >= 120 ? 'Cinema-like' : deviceA.diagonal >= 100 ? 'Excellent' : 'Good',
+        deviceB: deviceB.diagonal >= 120 ? 'Cinema-like' : deviceB.diagonal >= 100 ? 'Excellent' : 'Good',
+        description: 'Dedicated movie room experience'
+      },
+      {
+        icon: '📐',
+        title: 'Room Size Needed',
+        deviceA: deviceA.diagonal >= 120 ? 'Large (15+ ft)' : deviceA.diagonal >= 100 ? 'Medium (12+ ft)' : 'Standard (10+ ft)',
+        deviceB: deviceB.diagonal >= 120 ? 'Large (15+ ft)' : deviceB.diagonal >= 100 ? 'Medium (12+ ft)' : 'Standard (10+ ft)',
+        description: 'Minimum viewing distance required'
+      },
+      {
+        icon: '🏠',
+        title: 'Multi-Purpose Room',
+        deviceA: deviceA.diagonal <= 100 ? 'Flexible' : 'Dedicated space',
+        deviceB: deviceB.diagonal <= 100 ? 'Flexible' : 'Dedicated space',
+        description: 'Suitability for rooms with other uses'
+      },
+      {
+        icon: '🎬',
+        title: 'Immersion Level',
+        deviceA: deviceA.diagonal >= 150 ? 'IMAX-like' : deviceA.diagonal >= 120 ? 'Cinema' : 'Large TV feel',
+        deviceB: deviceB.diagonal >= 150 ? 'IMAX-like' : deviceB.diagonal >= 120 ? 'Cinema' : 'Large TV feel',
+        description: 'How immersive the viewing experience is'
+      }
+    ];
   }
 
   return [];
@@ -238,21 +535,74 @@ export function generateUseCaseScenarios(deviceA: Device, deviceB: Device) {
 
 /**
  * Generate specific recommendations for each device
+ * Uses device-specific specs for more personalized recommendations
  */
 export function generateRecommendations(deviceA: Device, deviceB: Device, areaA: number, areaB: number) {
   const larger = areaA > areaB ? deviceA : deviceB;
   const smaller = areaA > areaB ? deviceB : deviceA;
   const largerArea = Math.max(areaA, areaB);
   const smallerArea = Math.min(areaA, areaB);
-  const areaDiff = ((largerArea - smallerArea) / smallerArea) * 100;
+  const areaDiff = smallerArea > 0 ? ((largerArea - smallerArea) / smallerArea) * 100 : 0;
 
   const recommendations = {
     larger: [] as string[],
     smaller: [] as string[]
   };
 
-  if (deviceA.category === 'phone' || deviceB.category === 'phone') {
+  if (deviceA.category === 'phone' && deviceB.category === 'phone') {
+    // Dynamic phone recommendations based on actual specs
+
     // Larger phone recommendations
+    if (larger.diagonal > 6.7) {
+      recommendations.larger.push('You prioritize screen size for media and productivity');
+      recommendations.larger.push('You typically use your phone with two hands');
+    } else if (larger.diagonal > 6.3) {
+      recommendations.larger.push('You want a balance of screen size and usability');
+      recommendations.larger.push('You enjoy watching videos and browsing on your phone');
+    } else {
+      recommendations.larger.push('You want a slightly larger screen for better visibility');
+      recommendations.larger.push('You value the extra screen space for daily tasks');
+    }
+
+    // Add spec-based recommendations for larger phone
+    if (larger.phone?.battery && smaller.phone?.battery && larger.phone.battery > smaller.phone.battery + 500) {
+      recommendations.larger.push(`You want longer battery life (${larger.phone.battery}mAh vs ${smaller.phone.battery}mAh)`);
+    }
+    if (larger.phone?.refreshRate && smaller.phone?.refreshRate && larger.phone.refreshRate > smaller.phone.refreshRate + 30) {
+      recommendations.larger.push(`You want a smoother ${larger.phone.refreshRate}Hz display`);
+    }
+    if (larger.phone?.peakBrightness && smaller.phone?.peakBrightness && larger.phone.peakBrightness > smaller.phone.peakBrightness + 500) {
+      recommendations.larger.push(`You use your phone outdoors often (${larger.phone.peakBrightness} nits)`);
+    }
+
+    // Smaller phone recommendations
+    if (smaller.diagonal < 6.1) {
+      recommendations.smaller.push('You prefer one-handed operation and portability');
+      recommendations.smaller.push('You want a phone that fits comfortably in pockets');
+    } else if (smaller.diagonal < 6.5) {
+      recommendations.smaller.push('You want a more manageable device size');
+      recommendations.smaller.push('You prefer easier one-handed use');
+    } else {
+      recommendations.smaller.push('You want a slightly more compact option');
+      recommendations.smaller.push('You prefer a lighter device for extended use');
+    }
+
+    // Add spec-based recommendations for smaller phone
+    if (smaller.phone?.weight && larger.phone?.weight && smaller.phone.weight < larger.phone.weight - 20) {
+      recommendations.smaller.push(`You prefer a lighter phone (${smaller.phone.weight}g vs ${larger.phone.weight}g)`);
+    }
+    if (smaller.phone?.battery && larger.phone?.battery && smaller.phone.battery > larger.phone.battery + 500) {
+      recommendations.smaller.push(`You want longer battery life (${smaller.phone.battery}mAh vs ${larger.phone.battery}mAh)`);
+    }
+    if (smaller.phone?.refreshRate && larger.phone?.refreshRate && smaller.phone.refreshRate > larger.phone.refreshRate + 30) {
+      recommendations.smaller.push(`You want a smoother ${smaller.phone.refreshRate}Hz display`);
+    }
+    if (smaller.phone?.dimensions?.width && larger.phone?.dimensions?.width && smaller.phone.dimensions.width < larger.phone.dimensions.width - 4) {
+      recommendations.smaller.push(`You have smaller hands (${smaller.phone.dimensions.width}mm vs ${larger.phone.dimensions.width}mm width)`);
+    }
+
+  } else if (deviceA.category === 'phone' || deviceB.category === 'phone') {
+    // Mixed category with phone - use generic phone recommendations
     if (larger.diagonal > 6.7) {
       recommendations.larger.push('You prioritize screen size for media and productivity');
       recommendations.larger.push('You typically use your phone with two hands');
@@ -266,7 +616,6 @@ export function generateRecommendations(deviceA: Device, deviceB: Device, areaA:
       recommendations.larger.push('You value the extra screen space for daily tasks');
       recommendations.larger.push('You prefer more content visible at once');
     }
-    // Smaller phone recommendations
     if (smaller.diagonal < 6.1) {
       recommendations.smaller.push('You prefer one-handed operation and portability');
       recommendations.smaller.push('You want a phone that fits comfortably in pockets');
@@ -278,7 +627,7 @@ export function generateRecommendations(deviceA: Device, deviceB: Device, areaA:
     } else {
       recommendations.smaller.push('You want a slightly more compact option');
       recommendations.smaller.push('You prefer a lighter device for extended use');
-      recommendations.smaller.push('You value the cost savings of a smaller model');
+      recommendations.smaller.push('You prefer the smaller form factor');
     }
   } else if (deviceA.category === 'tv' || deviceB.category === 'tv') {
     // Larger TV recommendations
@@ -422,8 +771,10 @@ export function generateComparisonFAQ(
   const smaller = areaA > areaB ? deviceB : deviceA;
   const largerArea = Math.max(areaA, areaB);
   const smallerArea = Math.min(areaA, areaB);
+  const largerDims = areaA > areaB ? dimsA : dimsB;
+  const smallerDims = areaA > areaB ? dimsB : dimsA;
   const sizeDiff = Math.abs(deviceA.diagonal - deviceB.diagonal);
-  const areaDiff = ((largerArea - smallerArea) / smallerArea) * 100;
+  const areaDiff = smallerArea > 0 ? ((largerArea - smallerArea) / smallerArea) * 100 : 0;
 
   // Size difference FAQ - optimized for real search patterns
   if (sizeDiff < 0.2) {
@@ -431,6 +782,12 @@ export function generateComparisonFAQ(
     faqs.push({
       question: `Are ${deviceA.name} and ${deviceB.name} the same size?`,
       answer: `Yes, ${deviceA.name} and ${deviceB.name} are nearly identical in size. Both have ${deviceA.diagonal}" diagonal screens with the same ${largerArea.toFixed(1)} square inches of viewing area. The dimensional difference is negligible at just ${sizeDiff.toFixed(2)} inches.`
+    });
+  } else if (sizeDiff < 0.5 && deviceA.category === 'phone') {
+    // Small difference for phones - still answer "same size" question but clarify
+    faqs.push({
+      question: `Are ${deviceA.name} and ${deviceB.name} the same size?`,
+      answer: `${deviceA.name} and ${deviceB.name} are very similar in size, with only a ${sizeDiff.toFixed(1)}" difference in diagonal (${larger.diagonal}" vs ${smaller.diagonal}"). The ${larger.name} is ${areaDiff.toFixed(0)}% larger in screen area, but in daily use, the size difference is minimal.`
     });
   } else {
     // Different sizes - use "how much bigger" question (no "the" - matches search patterns)
@@ -446,83 +803,111 @@ export function generateComparisonFAQ(
     if (Math.abs(deviceA.diagonal - deviceB.diagonal) > 0.3) {
       faqs.push({
         question: `Which is better for one-handed use?`,
-        answer: `The ${smaller.name} (${smaller.diagonal}") is significantly better for one-handed use. Phones under 6.3 inches can be comfortably operated with one hand, while larger phones like the ${larger.name} (${larger.diagonal}") typically require two hands for most tasks. If one-handed operation is important to you, the ${smaller.name} is the better choice.`
+        answer: `The ${smaller.name} (${smaller.diagonal}") is easier to use one-handed due to its smaller size. The ${larger.name} (${larger.diagonal}") may require two hands for some tasks, especially reaching the far corners of the screen.`
       });
     }
 
     // Pocket fit FAQ
     faqs.push({
       question: `Will both phones fit in my pocket?`,
-      answer: `Both phones will fit in standard pockets, but the ${smaller.name} will be more comfortable. The ${larger.name} measures ${Math.max(dimsA.width, dimsB.width).toFixed(2)}" wide and ${Math.max(dimsA.height, dimsB.height).toFixed(2)}" tall, which may feel bulky in tight jeans or smaller pockets. The ${smaller.name} at ${Math.min(dimsA.width, dimsB.width).toFixed(2)}" × ${Math.min(dimsA.height, dimsB.height).toFixed(2)}" offers better portability.`
+      answer: `Both phones will fit in standard pockets, but the ${smaller.name} will be more comfortable. The ${larger.name} measures ${largerDims.width.toFixed(2)}" wide and ${largerDims.height.toFixed(2)}" tall, which may feel bulky in tight jeans or smaller pockets. The ${smaller.name} at ${smallerDims.width.toFixed(2)}" × ${smallerDims.height.toFixed(2)}" offers better portability.`
     });
 
     // Media consumption FAQ
     if (areaDiff > 10) {
       faqs.push({
         question: `Which is better for watching videos?`,
-        answer: `The ${larger.name} provides a superior video watching experience with ${areaDiff.toFixed(0)}% more screen area. This extra space makes movies, YouTube videos, and streaming content more immersive. However, if you primarily watch videos in portrait mode or prefer a lighter device, the ${smaller.name} is still excellent for media consumption.`
+        answer: `The ${larger.name} offers a better video watching experience with ${areaDiff.toFixed(0)}% more screen area. This extra space makes movies and streaming content more immersive. The ${smaller.name} is still good for videos but with a smaller viewing area.`
       });
     }
 
-    // Battery comparison FAQ (phone-specific)
+    // Battery comparison FAQ (phone-specific) - use higher threshold to match generatePhoneSpecificContent
     if (deviceA.phone?.battery && deviceB.phone?.battery) {
       const batteryA = deviceA.phone.battery;
       const batteryB = deviceB.phone.battery;
       const largerBattery = batteryA > batteryB ? deviceA : deviceB;
       const smallerBattery = batteryA > batteryB ? deviceB : deviceA;
       const batteryDiff = Math.abs(batteryA - batteryB);
-      if (batteryDiff > 200) {
+      if (batteryDiff > 400) {
         faqs.push({
           question: `Which phone has better battery life?`,
-          answer: `The ${largerBattery.name} has a larger ${Math.max(batteryA, batteryB)} mAh battery compared to ${Math.min(batteryA, batteryB)} mAh on the ${smallerBattery.name}, a difference of ${batteryDiff} mAh. This typically translates to ${Math.round(batteryDiff / 500)}-${Math.round(batteryDiff / 300)} hours more screen-on time, though actual battery life depends on usage patterns, display brightness, and software optimization.`
+          answer: `The ${largerBattery.name} has a larger ${Math.max(batteryA, batteryB)}mAh battery compared to ${Math.min(batteryA, batteryB)}mAh on the ${smallerBattery.name}, a difference of ${batteryDiff}mAh. Actual battery life depends on screen size, brightness settings, processor efficiency, and usage patterns, but the larger battery generally provides longer endurance.`
         });
       }
     }
 
-    // Weight comparison FAQ (phone-specific)
+    // Weight comparison FAQ (phone-specific) - use higher threshold to match generatePhoneSpecificContent
     if (deviceA.phone?.weight && deviceB.phone?.weight) {
       const weightA = deviceA.phone.weight;
       const weightB = deviceB.phone.weight;
       const lighterPhone = weightA < weightB ? deviceA : deviceB;
       const heavierPhone = weightA < weightB ? deviceB : deviceA;
       const weightDiff = Math.abs(weightA - weightB);
-      if (weightDiff > 10) {
+      if (weightDiff >= 20) {
         faqs.push({
           question: `Which phone is lighter and easier to hold?`,
-          answer: `The ${lighterPhone.name} weighs ${Math.min(weightA, weightB)}g, which is ${weightDiff}g lighter than the ${heavierPhone.name} at ${Math.max(weightA, weightB)}g. For extended use, reading, or one-handed operation, the lighter ${lighterPhone.name} will cause less hand fatigue. However, the heavier ${heavierPhone.name} may feel more premium and substantial.`
+          answer: `The ${lighterPhone.name} weighs ${Math.min(weightA, weightB)}g, which is ${weightDiff}g lighter than the ${heavierPhone.name} at ${Math.max(weightA, weightB)}g. This difference is noticeable during extended use, reading, or one-handed operation.`
         });
       }
     }
 
-    // Refresh rate comparison FAQ (phone-specific)
+    // Refresh rate comparison FAQ (phone-specific) - use higher threshold to match generatePhoneSpecificContent
     if (deviceA.phone?.refreshRate && deviceB.phone?.refreshRate) {
       const rateA = deviceA.phone.refreshRate;
       const rateB = deviceB.phone.refreshRate;
-      if (rateA !== rateB) {
+      const rateDiff = Math.abs(rateA - rateB);
+      if (rateDiff >= 30) {
         const higherRate = rateA > rateB ? deviceA : deviceB;
         const lowerRate = rateA > rateB ? deviceB : deviceA;
         faqs.push({
-          question: `Which phone has a smoother display for gaming?`,
-          answer: `The ${higherRate.name} has a ${Math.max(rateA, rateB)}Hz display compared to ${Math.min(rateA, rateB)}Hz on the ${lowerRate.name}. The higher refresh rate provides smoother scrolling, more responsive touch input, and a better gaming experience. For competitive mobile gaming or users sensitive to motion smoothness, the ${higherRate.name} is the better choice.`
+          question: `Which phone has a smoother display?`,
+          answer: `The ${higherRate.name} has a ${Math.max(rateA, rateB)}Hz display compared to ${Math.min(rateA, rateB)}Hz on the ${lowerRate.name}. The higher refresh rate provides smoother scrolling and more responsive touch input, which is especially noticeable in gaming and fast-scrolling content.`
         });
       }
     }
 
-    // Display brightness comparison FAQ (phone-specific)
+    // Display brightness comparison FAQ (phone-specific) - use higher threshold to match generatePhoneSpecificContent
     if (deviceA.phone?.peakBrightness && deviceB.phone?.peakBrightness) {
       const brightnessA = deviceA.phone.peakBrightness;
       const brightnessB = deviceB.phone.peakBrightness;
       const brightnessDiff = Math.abs(brightnessA - brightnessB);
-      if (brightnessDiff > 200) {
+      if (brightnessDiff > 500) {
         const brighterPhone = brightnessA > brightnessB ? deviceA : deviceB;
         const dimmerPhone = brightnessA > brightnessB ? deviceB : deviceA;
         faqs.push({
           question: `Which phone is better for outdoor use?`,
-          answer: `The ${brighterPhone.name} has a peak brightness of ${Math.max(brightnessA, brightnessB)} nits compared to ${Math.min(brightnessA, brightnessB)} nits on the ${dimmerPhone.name}. The ${brightnessDiff} nits difference makes the ${brighterPhone.name} significantly easier to read in direct sunlight, making it the better choice for frequent outdoor use.`
+          answer: `The ${brighterPhone.name} has a peak brightness of ${Math.max(brightnessA, brightnessB)} nits compared to ${Math.min(brightnessA, brightnessB)} nits on the ${dimmerPhone.name}. This ${brightnessDiff} nits difference makes the ${brighterPhone.name} easier to read in direct sunlight.`
         });
       }
     }
-  } else if (deviceA.category === 'tv') {
+  }
+
+  // Handle cross-category TV vs Projector FAQ
+  const isTvProjectorComparison =
+    (deviceA.category === 'tv' && deviceB.category === 'projector') ||
+    (deviceA.category === 'projector' && deviceB.category === 'tv');
+
+  if (isTvProjectorComparison) {
+    const tvDevice = deviceA.category === 'tv' ? deviceA : deviceB;
+    const projectorDevice = deviceA.category === 'projector' ? deviceA : deviceB;
+    const projectorLarger = projectorDevice.diagonal > tvDevice.diagonal;
+    const sizeDiffPercent = Math.abs((projectorDevice.diagonal / tvDevice.diagonal - 1) * 100).toFixed(0);
+
+    faqs.push({
+      question: `Should I get a ${tvDevice.diagonal}" TV or ${projectorDevice.diagonal}" projector screen?`,
+      answer: `Choose the ${tvDevice.name} if you watch in rooms with ambient light, want always-on convenience, or prefer consistent picture quality. Choose the ${projectorDevice.name} if you have a dedicated dark room, want a true cinema experience, and don't mind setup time. ${projectorLarger ? `The projector offers ${sizeDiffPercent}% more screen size but requires controlled lighting.` : `The TV is ${sizeDiffPercent}% larger but the projector still offers a more cinematic feel in dark rooms.`}`
+    });
+
+    faqs.push({
+      question: `Which is better for a home theater setup?`,
+      answer: `For a dedicated home theater with controlled lighting, the ${projectorDevice.name} at ${projectorDevice.diagonal}" delivers a more immersive, cinema-like experience. For a multi-purpose living room where you watch TV during the day, the ${tvDevice.name} at ${tvDevice.diagonal}" offers better visibility in ambient light and requires no setup time.`
+    });
+
+    faqs.push({
+      question: `What room size do I need for each option?`,
+      answer: `The ${tvDevice.name} works in rooms as small as ${Math.round(tvDevice.diagonal * 1.2 / 12)}-${Math.round(tvDevice.diagonal * 2.5 / 12)} feet viewing distance. The ${projectorDevice.name} requires ${Math.round(projectorDevice.diagonal * 1.2 / 12)}-${Math.round(projectorDevice.diagonal * 2.5 / 12)} feet for optimal viewing, plus additional throw distance for the projector itself. Ensure your room can accommodate these distances.`
+    });
+  } else if (deviceA.category === 'tv' || deviceB.category === 'tv') {
     // Viewing distance FAQ
     const largerMinDist = (larger.diagonal * 1.2 / 12).toFixed(1);
     const largerMaxDist = (larger.diagonal * 2.5 / 12).toFixed(1);
@@ -561,7 +946,7 @@ export function generateComparisonFAQ(
     if (areaDiff > 15) {
       faqs.push({
         question: `Which is better for productivity and multitasking?`,
-        answer: `The ${larger.name} (${larger.diagonal}") is significantly better for productivity with ${areaDiff.toFixed(0)}% more screen space. This allows you to comfortably view multiple windows side-by-side, making it ideal for coding, video editing, or working with spreadsheets. The ${smaller.name} is still capable but requires more window switching or smaller text sizes.`
+        answer: `The ${larger.name} (${larger.diagonal}") is better for productivity with ${areaDiff.toFixed(0)}% more screen space. This allows you to view multiple windows side-by-side more comfortably. The ${smaller.name} works well but may require more window switching.`
       });
     }
 
@@ -584,13 +969,36 @@ export function generateComparisonFAQ(
         answer: `For books, the ${smaller.name} (${smaller.diagonal}") provides a more book-like experience and is easier to hold. For magazines, PDFs, and comics, the ${larger.name} (${larger.diagonal}") is superior as it can display full pages at readable sizes without zooming. Consider your primary reading material when choosing.`
       });
     }
+  } else if (deviceA.category === 'projector' && deviceB.category === 'projector') {
+    // Projector vs Projector specific FAQs
+    const largerMinDist = (larger.diagonal * 1.2 / 12).toFixed(1);
+    const largerMaxDist = (larger.diagonal * 2.5 / 12).toFixed(1);
+    const smallerMinDist = (smaller.diagonal * 1.2 / 12).toFixed(1);
+    const smallerMaxDist = (smaller.diagonal * 2.5 / 12).toFixed(1);
+
+    faqs.push({
+      question: `What room size do I need for each projector screen?`,
+      answer: `The ${larger.name} (${larger.diagonal}") requires a viewing distance of ${largerMinDist}-${largerMaxDist} feet for optimal viewing, suitable for dedicated home theaters. The ${smaller.name} (${smaller.diagonal}") works at ${smallerMinDist}-${smallerMaxDist} feet, making it more flexible for multi-purpose rooms.`
+    });
+
+    faqs.push({
+      question: `Which screen size provides a more cinematic experience?`,
+      answer: `The ${larger.name} at ${larger.diagonal}" provides ${areaDiff.toFixed(0)}% more viewing area, delivering a more immersive, cinema-like experience. However, the ${smaller.name} at ${smaller.diagonal}" is easier to set up and works in smaller spaces while still offering excellent movie viewing.`
+    });
+
+    if (sizeDiff > 20) {
+      faqs.push({
+        question: `Is the larger screen worth the extra wall space?`,
+        answer: `The ${larger.name} requires approximately ${(Math.max(dimsA.width, dimsB.width) / 12).toFixed(1)} feet of wall width, while the ${smaller.name} needs ${(Math.min(dimsA.width, dimsB.width) / 12).toFixed(1)} feet. If you have a dedicated theater room with adequate wall space and seating distance, the larger screen significantly enhances immersion. For multi-purpose rooms, the smaller screen offers more flexibility.`
+      });
+    }
   }
 
-  // Price consideration FAQ (general)
-  if (areaDiff > 20) {
+  // Price consideration FAQ (general) - removed specific price claims as they vary widely
+  if (areaDiff > 25) {
     faqs.push({
-      question: `Is the size difference worth the extra cost?`,
-      answer: `The ${larger.name} typically costs 15-30% more than the ${smaller.name} due to the ${areaDiff.toFixed(0)}% increase in screen area. Whether it's worth it depends on your use case: if you spend several hours daily ${deviceA.category === 'phone' ? 'on your phone' : deviceA.category === 'tv' ? 'watching TV' : deviceA.category === 'monitor' ? 'at your desk' : 'using your tablet'}, the improved experience may justify the cost. For casual use, the ${smaller.name} offers excellent value.`
+      question: `Is the larger screen worth it?`,
+      answer: `The ${larger.name} offers ${areaDiff.toFixed(0)}% more screen area than the ${smaller.name}. Whether this matters depends on your usage: if you spend several hours daily ${deviceA.category === 'phone' ? 'on your phone for videos and reading' : deviceA.category === 'tv' ? 'watching TV' : deviceA.category === 'monitor' ? 'at your desk' : 'using your tablet'}, the extra space can improve your experience. For lighter use, the ${smaller.name} may be sufficient.`
     });
   }
 
