@@ -5,7 +5,7 @@ import CategoryIcon from '../components/icons/CategoryIcon.astro';
 import { devices } from '../data/devices';
 import { siteConfig } from '../site.config';
 
-const title = 'Screen Calculators - Free Online Display Tools | PPI, Resolution, Aspect Ratio';
+const title = 'Screen Size Calculators - Free Online Display Tools | PPI, Resolution, Aspect Ratio';
 const description = 'Free online screen calculators: PPI calculator, resolution scaler, aspect ratio converter, and screen size comparators for TVs, monitors, phones, tablets, and projectors.';
 const keywords = 'screen calculator, ppi calculator, resolution calculator, aspect ratio calculator, screen size calculator, display tools, pixel density, tv size calculator, monitor calculator, tablet screen size';
 
@@ -62,12 +62,12 @@ const screenCalculators = [
 
 const toolCalculators = [
   {
-    title: 'PPI Calculator',
-    description: 'Calculate pixel density (PPI) for any display. Find if your screen is Retina-quality and compare sharpness.',
+    title: 'PPI & DPI Calculator',
+    description: 'Calculate pixel density (PPI/DPI) for any display. Find if your screen is Retina-quality and compare sharpness.',
     href: '/ppi-calculator',
     icon: 'ppi' as const,
     color: 'rose',
-    features: ['Pixel density', 'Retina check', 'Sharpness comparison'],
+    features: ['Pixel density', 'DPI calculation', 'Sharpness comparison'],
   },
   {
     title: 'Resolution Calculator',
@@ -94,7 +94,7 @@ const allCalculators = [...screenCalculators, ...toolCalculators];
 const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "name": "Screen Calculators",
+  "name": "Screen Size Calculators",
   "description": "Free online tools to calculate screen sizes, pixel density, resolution, and aspect ratios",
   "numberOfItems": allCalculators.length,
   "itemListElement": allCalculators.map((calc, index) => ({
@@ -116,7 +116,7 @@ const faqSchema = {
       "name": "What calculators are available on this site?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions."
+        "text": "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI & DPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions."
       }
     },
     {
@@ -185,7 +185,7 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
 
         <div class="text-center">
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Screen Calculators
+            Screen Size Calculators
           </h1>
           <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
             Free online tools to calculate screen sizes, pixel density, resolution, and aspect ratios for any display.

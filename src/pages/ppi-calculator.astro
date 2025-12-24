@@ -6,12 +6,13 @@ import {
   getLatestIphoneWithPPI,
   getLatestSamsungWithPPI,
 } from "../data/devices";
+import { siteConfig } from "../site.config";
 
-const title = "PPI Calculator - Calculate Pixel Density & Screen Sharpness";
+const title = "PPI Calculator & DPI Calculator - Pixel Density Tool";
 const description =
-  "Free PPI calculator. Calculate pixels per inch, find required resolution for target PPI, and compare screen sharpness across devices.";
+  "Free PPI and DPI calculator. Calculate pixels per inch for any screen, find pixel density for monitors, phones, and TVs. Compare screen sharpness instantly.";
 const keywords =
-  "ppi calculator, pixel density calculator, pixels per inch, screen sharpness, retina display, dpi calculator, screen resolution calculator";
+  "ppi calculator, dpi calculator, pixel density calculator, pixels per inch, pixel calculator, screen ppi, monitor ppi, pixel density, screen sharpness, retina display";
 
 // Get latest phone PPI data
 const latestIphone = getLatestIphoneWithPPI();
@@ -69,6 +70,30 @@ const faqData = {
         text: "For desktop monitors at typical viewing distance (24-30 inches), 100-110 PPI is acceptable, 140-160 PPI is good for sharp text, and 200+ PPI is excellent. A 27-inch 4K monitor at 163 PPI offers a great balance of sharpness and usability.",
       },
     },
+    {
+      "@type": "Question",
+      name: "What PPI do I need for gaming?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For gaming monitors at typical desk distance (2-3 feet), 100-110 PPI is the minimum for acceptable clarity. 140-165 PPI (27\" 4K or 24\" 1440p) provides excellent sharpness while maintaining good frame rates. Higher PPI requires more GPU power to maintain smooth gameplay.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is 4K worth it on a 27-inch monitor?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, 4K on a 27-inch monitor provides 163 PPI, which is excellent for sharp text and detailed images. However, you may need to use display scaling (125-150%) for comfortable reading, and you'll need a powerful GPU for gaming at native 4K resolution.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I convert DPI to PPI?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For screens, DPI and PPI are essentially the same value - no conversion needed. DPI is traditionally used for printing while PPI is used for screens. When someone says a monitor has '96 DPI', they mean 96 PPI. Our calculator works for both PPI and DPI calculations.",
+      },
+    },
   ],
 };
 
@@ -76,7 +101,7 @@ const faqData = {
 const softwareSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "PPI Calculator",
+  name: "PPI & DPI Calculator",
   applicationCategory: "UtilityApplication",
   operatingSystem: "Web Browser",
   offers: {
@@ -89,13 +114,65 @@ const softwareSchema = {
     name: "Screen Size Calculator",
   },
   description:
-    "Free online PPI calculator to calculate pixel density, find required resolution for target PPI, and compare screen sharpness across devices.",
+    "Free online PPI and DPI calculator to calculate pixel density for screens, monitors, phones, and TVs. Compare screen sharpness across devices.",
   featureList: [
     "Calculate PPI from resolution and screen size",
+    "DPI to PPI conversion",
     "Find required resolution for target PPI",
     "Compare with popular device pixel densities",
     "Visual text clarity simulation",
-    "Pixel size comparison",
+  ],
+};
+
+// HowTo Schema for step-by-step instructions
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Calculate PPI (Pixels Per Inch)",
+  description:
+    "Learn how to calculate pixel density (PPI/DPI) for any screen or find the required resolution for a target PPI.",
+  step: [
+    {
+      "@type": "HowToStep",
+      name: "Choose Your Mode",
+      text: "Select 'Calculate PPI/DPI' to find pixel density from resolution and screen size, or 'Find Resolution' to calculate the required resolution for a target PPI.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Enter Your Display Details",
+      text: "Input your screen resolution (width × height in pixels) and diagonal screen size in inches or centimeters. Use device presets for quick calculations.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "View Results and Compare",
+      text: "Get instant PPI calculation with quality rating, pixel pitch, and optimal viewing distance. Compare your display against popular devices like iPhones and MacBooks.",
+    },
+  ],
+};
+
+// Breadcrumb Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Calculators",
+      item: `${siteConfig.siteUrl}/calculators`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "PPI & DPI Calculator",
+      item: `${siteConfig.siteUrl}/ppi-calculator`,
+    },
   ],
 };
 ---
@@ -108,16 +185,71 @@ const softwareSchema = {
     <section
       class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16"
     >
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
-        >
-          PPI Calculator
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Calculate pixel density and screen sharpness. Find the perfect
-          resolution for your display.
-        </p>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb Navigation -->
+        <nav class="mb-6 overflow-x-auto" aria-label="Breadcrumb">
+          <ol
+            class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+          >
+            <li>
+              <a
+                href="/"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Home</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <a
+                href="/calculators"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Calculators</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <span class="text-gray-900 dark:text-gray-100 font-medium"
+                >PPI & DPI Calculator</span
+              >
+            </li>
+          </ol>
+        </nav>
+
+        <div class="text-center">
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+          >
+            PPI & DPI Calculator
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Free pixel density calculator for screens. Calculate PPI (pixels per inch) and DPI for monitors,
+            phones, and TVs. Find the ideal resolution for your display size.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -128,14 +260,212 @@ const softwareSchema = {
       </div>
     </section>
 
-    <!-- PPI Reference Guide -->
+    <!-- How to Use -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
+          How to Calculate PPI & DPI
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >1</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Choose Your Mode
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Select <strong>Calculate PPI/DPI</strong> to find pixel density from
+              resolution and screen size, or <strong>Find Resolution</strong> to calculate
+              required resolution for a target PPI.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >2</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Enter Display Details
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Input your screen resolution (width × height in pixels) and diagonal
+              screen size. Use device presets for quick calculations.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >3</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              View Results & Compare
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Get instant PPI calculation with quality rating, pixel pitch, and
+              optimal viewing distance. Compare against popular devices.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Use Cases -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
         >
-          PPI Reference Guide
+          When to Use This PPI & DPI Calculator
         </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div
+              class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-blue-600 dark:text-blue-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Choosing a Monitor
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Compare PPI across different monitor sizes and resolutions. Find if 1440p
+              or 4K is right for your desk setup and viewing distance.
+            </p>
+            <a
+              href="/monitor-screen-size-calculator"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Monitor size calculator
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div
+              class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Optimal Viewing Distance
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Calculate the minimum distance where pixels become invisible. Essential
+              for home theater setup and desk ergonomics.
+            </p>
+            <a
+              href="/resources/ppi-explained"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Learn about PPI
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div
+              class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-5 h-5 text-purple-600 dark:text-purple-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Gaming Display Quality
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Find the right balance between PPI and performance. Higher resolution
+              means sharper graphics but requires more GPU power.
+            </p>
+            <a
+              href="/comparison/monitors"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Compare gaming monitors
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PPI Reference Guide -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-4"
+        >
+          Pixel Density Guide: PPI & DPI Reference
+        </h2>
+        <p
+          class="text-gray-600 dark:text-gray-400 text-center mb-8 max-w-2xl mx-auto"
+        >
+          Compare pixels per inch across different screen sizes and resolutions.
+          Use this chart to find the ideal pixel density for your monitor or display.
+        </p>
 
         <div class="grid md:grid-cols-2 gap-8 mb-8">
           <!-- PPI Ratings -->
@@ -285,6 +615,8 @@ const softwareSchema = {
                 >
                 <th class="px-4 py-3 text-left text-sm font-semibold">4K PPI</th
                 >
+                <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">4K Formula</th
+                >
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -304,6 +636,9 @@ const softwareSchema = {
                 <td class="px-4 py-3 text-sm text-blue-600 dark:text-blue-400"
                   >184 PPI</td
                 >
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-500 font-mono hidden lg:table-cell"
+                  >√(3840²+2160²)÷24</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td
@@ -319,6 +654,9 @@ const softwareSchema = {
                 >
                 <td class="px-4 py-3 text-sm text-blue-600 dark:text-blue-400"
                   >163 PPI</td
+                >
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-500 font-mono hidden lg:table-cell"
+                  >√(3840²+2160²)÷27</td
                 >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -336,6 +674,9 @@ const softwareSchema = {
                   class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400"
                   >138 PPI</td
                 >
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-500 font-mono hidden lg:table-cell"
+                  >√(3840²+2160²)÷32</td
+                >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td
@@ -350,6 +691,9 @@ const softwareSchema = {
                 >
                 <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400"
                   >80 PPI</td
+                >
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-500 font-mono hidden lg:table-cell"
+                  >√(3840²+2160²)÷55</td
                 >
               </tr>
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -366,9 +710,51 @@ const softwareSchema = {
                 <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400"
                   >68 PPI</td
                 >
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-500 font-mono hidden lg:table-cell"
+                  >√(3840²+2160²)÷65</td
+                >
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Related Tools -->
+        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            Related Calculators
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Need to calculate aspect ratio or compare resolutions? Try our other free tools:
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="/resolution-calculator"
+              class="inline-flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+            >
+              Resolution Calculator
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+            <a
+              href="/aspect-ratio-calculator"
+              class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              Aspect Ratio Calculator
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+            <a
+              href="/monitor-screen-size-calculator"
+              class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              Monitor Size Calculator
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -377,7 +763,7 @@ const softwareSchema = {
     <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-          Frequently Asked Questions
+          PPI & DPI FAQ: Pixel Density Questions
         </h2>
         <div class="space-y-6">
           {
@@ -401,5 +787,13 @@ const softwareSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(howToSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
   />
 </Layout>

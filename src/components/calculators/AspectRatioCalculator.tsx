@@ -174,7 +174,7 @@ export default function AspectRatioCalculator() {
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
         <h2 className="text-xl font-semibold text-white">Aspect Ratio Calculator</h2>
         <p className="text-primary-200 text-sm mt-1">
-          Calculate ratios and convert dimensions instantly
+          Convert screen ratios and calculate image dimensions instantly
         </p>
       </div>
 

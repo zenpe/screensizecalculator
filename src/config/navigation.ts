@@ -20,14 +20,14 @@ export interface NavSection {
 
 // Calculator tools navigation
 export const calculatorLinks: NavLink[] = [
-  { href: '/tv-screen-size-calculator', label: 'TV Screen Size', shortLabel: 'TV', icon: 'tv' },
-  { href: '/monitor-screen-size-calculator', label: 'Monitor Size', shortLabel: 'Monitor', icon: 'monitor' },
-  { href: '/phone-screen-size-calculator', label: 'Phone Screen Size', shortLabel: 'Phone', icon: 'phone' },
-  { href: '/tablet-screen-size-calculator', label: 'Tablet Screen Size', shortLabel: 'Tablet', icon: 'tablet' },
-  { href: '/projector-screen-size-calculator', label: 'Projector Size', shortLabel: 'Projector', icon: 'projector' },
-  { href: '/ppi-calculator', label: 'PPI Calculator', shortLabel: 'PPI', icon: 'ppi' },
-  { href: '/aspect-ratio-calculator', label: 'Aspect Ratio', shortLabel: 'Ratio', icon: 'aspect-ratio' },
-  { href: '/resolution-calculator', label: 'Resolution', shortLabel: 'Resolution', icon: 'resolution' },
+  { href: '/tv-screen-size-calculator', label: 'TV Screen Size', shortLabel: 'TV Size', icon: 'tv' },
+  { href: '/monitor-screen-size-calculator', label: 'Monitor Screen Size', shortLabel: 'Monitor Size', icon: 'monitor' },
+  { href: '/phone-screen-size-calculator', label: 'Phone Screen Size', shortLabel: 'Phone Size', icon: 'phone' },
+  { href: '/tablet-screen-size-calculator', label: 'Tablet Screen Size', shortLabel: 'Tablet Size', icon: 'tablet' },
+  { href: '/projector-screen-size-calculator', label: 'Projector Screen Size', shortLabel: 'Projector Size', icon: 'projector' },
+  { href: '/ppi-calculator', label: 'PPI & DPI Calculator', shortLabel: 'PPI & DPI', icon: 'ppi' },
+  { href: '/aspect-ratio-calculator', label: 'Aspect Ratio Calculator', shortLabel: 'Aspect Ratio', icon: 'aspect-ratio' },
+  { href: '/resolution-calculator', label: 'Resolution Calculator', shortLabel: 'Resolution', icon: 'resolution' },
 ];
 
 // Comparison pages navigation
@@ -63,6 +63,22 @@ export const legalLinks: NavLink[] = [
   { href: '/privacy', label: 'Privacy Policy' },
   { href: '/terms', label: 'Terms of Use' },
 ];
+
+// Quick links for mobile navigation
+export const quickLinks: NavLink[] = [
+  { href: '/comparison', label: 'Compare Screen Sizes', shortLabel: 'Compare', icon: 'search', color: 'primary' },
+  { href: '/devices', label: 'Device Database', shortLabel: 'Devices', icon: 'all', color: 'violet' },
+  { href: '/calculators', label: 'All Calculators', shortLabel: 'Calculators', icon: 'ppi', color: 'amber' },
+  { href: '/blog', label: 'Blog', icon: 'blog', color: 'rose' },
+];
+
+// Quick link icon types for QuickLinkIcon component
+export const quickLinkIconMap: Record<string, string> = {
+  '/comparison': 'compare',
+  '/devices': 'devices',
+  '/calculators': 'calculator',
+  '/blog': 'blog',
+};
 
 // Footer sections configuration
 export const footerSections: NavSection[] = [

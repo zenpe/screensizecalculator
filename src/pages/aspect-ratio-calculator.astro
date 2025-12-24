@@ -4,59 +4,67 @@ import Header from "../components/Header.astro";
 import AspectRatioCalculatorComponent from "../components/calculators/AspectRatioCalculator";
 import { siteConfig } from "../site.config";
 
-const title = "Aspect Ratio Calculator - Convert & Calculate Screen Ratios";
+const title = "Aspect Ratio Calculator & Converter - Free Screen Ratio Tool";
 const description =
-  "Free aspect ratio calculator. Convert between 16:9, 21:9, 4:3 and custom ratios. Calculate dimensions from width or height, find screen ratios instantly.";
+  "Free aspect ratio calculator and converter. Calculate image ratio from width and height, convert between 16:9, 21:9, 4:3. Use our aspect ratio formula tool to find screen ratios instantly.";
 const keywords =
-  "aspect ratio calculator, screen ratio, 16:9 calculator, 21:9 ultrawide, 4:3 ratio, aspect ratio converter, screen dimensions, width height ratio, video aspect ratio";
+  "aspect ratio calculator, aspect ratio converter, screen ratio, image ratio, aspect ratio, aspect ratios, aspect ratio formula, resolution calculator, 16:9 calculator, 21:9 ultrawide, 4:3 ratio, what is aspect ratio, video aspect ratio, width height ratio";
 
 // Common aspect ratios data
 const commonRatios = [
   {
     ratio: "16:9",
     decimal: "1.778",
+    formula: "Width = Height × 1.778",
     use: "Standard widescreen TVs, monitors, YouTube videos",
     examples: "1920×1080, 2560×1440, 3840×2160",
   },
   {
     ratio: "21:9",
     decimal: "2.333",
+    formula: "Width = Height × 2.333",
     use: "Ultrawide monitors, cinematic films",
     examples: "2560×1080, 3440×1440, 5120×2160",
   },
   {
     ratio: "4:3",
     decimal: "1.333",
+    formula: "Width = Height × 1.333",
     use: "Classic TVs, iPad, presentations",
     examples: "1024×768, 1600×1200, 2048×1536",
   },
   {
     ratio: "1:1",
     decimal: "1.000",
+    formula: "Width = Height",
     use: "Instagram posts, profile pictures",
     examples: "1080×1080, 2048×2048",
   },
   {
     ratio: "9:16",
     decimal: "0.563",
+    formula: "Width = Height × 0.563",
     use: "TikTok, Instagram Reels, mobile video",
     examples: "1080×1920, 1440×2560",
   },
   {
     ratio: "3:2",
     decimal: "1.500",
+    formula: "Width = Height × 1.5",
     use: "DSLR photos, MacBook displays",
     examples: "1440×960, 2160×1440, 3000×2000",
   },
   {
     ratio: "16:10",
     decimal: "1.600",
+    formula: "Width = Height × 1.6",
     use: "MacBooks, some monitors, tablets",
     examples: "1920×1200, 2560×1600, 3840×2400",
   },
   {
     ratio: "2.39:1",
     decimal: "2.390",
+    formula: "Width = Height × 2.39",
     use: "Anamorphic widescreen cinema",
     examples: "2048×858, 4096×1716",
   },
@@ -114,6 +122,22 @@ const faqData = {
         text: "16:9 (1.778:1) is wider and more common for video content. 16:10 (1.6:1) is slightly taller, preferred for productivity as it shows more vertical content. MacBooks use 16:10.",
       },
     },
+    {
+      "@type": "Question",
+      name: "What is the aspect ratio formula?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The aspect ratio formula is: Aspect Ratio = Width ÷ Height. To calculate dimensions: Width = Height × Ratio, or Height = Width ÷ Ratio. For example, for 16:9 with height 1080: Width = 1080 × (16÷9) = 1080 × 1.778 = 1920 pixels.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What aspect ratio is best for Instagram and TikTok?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Instagram feed posts use 1:1 (square) or 4:5 (portrait). Instagram Stories and Reels use 9:16 (1080×1920). TikTok videos use 9:16 vertical format. For Instagram carousels, 1:1 at 1080×1080 pixels works best.",
+      },
+    },
   ],
 };
 
@@ -121,7 +145,7 @@ const faqData = {
 const softwareSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "Aspect Ratio Calculator",
+  name: "Aspect Ratio Calculator & Converter",
   description: description,
   applicationCategory: "UtilityApplication",
   operatingSystem: "All",
@@ -136,6 +160,58 @@ const softwareSchema = {
     name: "Screen Size Calculator",
   },
 };
+
+// HowTo Schema for step-by-step instructions
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Calculate Aspect Ratio",
+  description:
+    "Learn how to calculate aspect ratio from pixel dimensions or find missing dimensions using a known aspect ratio.",
+  step: [
+    {
+      "@type": "HowToStep",
+      name: "Choose Your Mode",
+      text: "Select 'Find Ratio' to discover the aspect ratio from pixel dimensions, or 'New Dimension' to calculate missing width/height from a known ratio.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Enter Dimensions",
+      text: "Input your width and height in pixels, or use quick presets like 16:9, 21:9, or 9:16 for common screen ratios.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Get Instant Results",
+      text: "View your aspect ratio, decimal value, and visual preview. Optionally add screen diagonal for physical size calculations.",
+    },
+  ],
+};
+
+// Breadcrumb Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Calculators",
+      item: `${siteConfig.siteUrl}/calculators`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Aspect Ratio Calculator",
+      item: `${siteConfig.siteUrl}/aspect-ratio-calculator`,
+    },
+  ],
+};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -146,16 +222,71 @@ const softwareSchema = {
     <section
       class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16"
     >
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
-        >
-          Aspect Ratio Calculator
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Calculate and convert aspect ratios. Find screen dimensions from width
-          and height.
-        </p>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb Navigation -->
+        <nav class="mb-6 overflow-x-auto" aria-label="Breadcrumb">
+          <ol
+            class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+          >
+            <li>
+              <a
+                href="/"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Home</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <a
+                href="/calculators"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Calculators</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <span class="text-gray-900 dark:text-gray-100 font-medium"
+                >Aspect Ratio Calculator</span
+              >
+            </li>
+          </ol>
+        </nav>
+
+        <div class="text-center">
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+          >
+            Aspect Ratio Calculator
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Free online aspect ratio converter. Calculate image ratio from pixels,
+            convert screen ratios, and find dimensions using our aspect ratio formula.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -166,19 +297,81 @@ const softwareSchema = {
       </div>
     </section>
 
+    <!-- How to Use -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
+          How to Calculate Aspect Ratio
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >1</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Choose Your Mode
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Select <strong>Find Ratio</strong> to discover the aspect ratio from
+              pixel dimensions, or <strong>New Dimension</strong> to calculate missing
+              width/height.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >2</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Enter Dimensions
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Input your width and height in pixels, or use quick presets like 16:9,
+              21:9, or 9:16 for common screen ratios.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >3</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Get Instant Results
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              View your aspect ratio, decimal value, and visual preview. Add screen
+              diagonal for physical size calculations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Common Aspect Ratios Reference -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2
           class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-4"
         >
-          Common Aspect Ratios Reference
+          Common Screen Ratios & Image Ratios Chart
         </h2>
         <p
           class="text-gray-600 dark:text-gray-400 text-center mb-8 max-w-2xl mx-auto"
         >
-          Quick reference guide for popular aspect ratios used in displays,
-          video, and photography
+          Complete aspect ratios reference table with formulas. Find the right screen ratio
+          for your display, video project, or image dimensions.
         </p>
 
         <div class="overflow-x-auto">
@@ -194,9 +387,12 @@ const softwareSchema = {
                   >Decimal</th
                 >
                 <th class="px-4 py-3 text-left text-sm font-semibold"
-                  >Common Use</th
+                  >Formula</th
                 >
                 <th class="px-4 py-3 text-left text-sm font-semibold"
+                  >Common Use</th
+                >
+                <th class="px-4 py-3 text-left text-sm font-semibold hidden sm:table-cell"
                   >Example Resolutions</th
                 >
               </tr>
@@ -211,10 +407,13 @@ const softwareSchema = {
                     <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       {item.decimal}
                     </td>
+                    <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono text-xs">
+                      {item.formula}
+                    </td>
                     <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       {item.use}
                     </td>
-                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-500 font-mono text-xs">
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-500 font-mono text-xs hidden sm:table-cell">
                       {item.examples}
                     </td>
                   </tr>
@@ -222,6 +421,36 @@ const softwareSchema = {
               }
             </tbody>
           </table>
+        </div>
+
+        <!-- Related Tools -->
+        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            Related Calculators
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Need to calculate pixel density or convert resolutions? Try our other free tools:
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="/resolution-calculator"
+              class="inline-flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+            >
+              Resolution Calculator
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+            <a
+              href="/ppi-calculator"
+              class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              PPI & DPI Calculator
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -232,7 +461,7 @@ const softwareSchema = {
         <h2
           class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
         >
-          When to Use This Calculator
+          When to Use This Aspect Ratio Converter
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
@@ -254,12 +483,21 @@ const softwareSchema = {
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Video Editing
+              Video Aspect Ratio
             </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Calculate the correct dimensions for YouTube (16:9), TikTok
-              (9:16), or cinema (2.39:1) formats.
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Use our aspect ratio formula to calculate dimensions for YouTube (16:9), TikTok
+              (9:16), or cinema (2.39:1) video formats.
             </p>
+            <a
+              href="/blog/what-is-aspect-ratio-guide"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Learn more about video ratios
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
             <div
@@ -280,12 +518,21 @@ const softwareSchema = {
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Image Resizing
+              Image Ratio Calculator
             </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Maintain proportions when scaling photos. Enter one dimension to
-              find the other automatically.
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Calculate image ratio and maintain proportions when resizing photos.
+              Enter width or height to find the other dimension automatically.
             </p>
+            <a
+              href="/resources/aspect-ratio-guide"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Complete aspect ratio guide
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
             <div
@@ -306,12 +553,21 @@ const softwareSchema = {
               </svg>
             </div>
             <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Display Shopping
+              Screen Ratio Comparison
             </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Compare monitor aspect ratios. See how 21:9 ultrawide differs from
-              standard 16:9 displays.
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Compare screen ratios for monitors and TVs. Convert between 21:9 ultrawide
+              and standard 16:9 display aspect ratios.
             </p>
+            <a
+              href="/monitor-screen-size-calculator"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center"
+            >
+              Monitor size calculator
+              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
           </div>
         </div>
       </div>
@@ -321,7 +577,7 @@ const softwareSchema = {
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-          Frequently Asked Questions
+          Aspect Ratio FAQ: Formulas & Conversions
         </h2>
         <div class="space-y-6">
           {
@@ -345,5 +601,13 @@ const softwareSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(howToSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
   />
 </Layout>

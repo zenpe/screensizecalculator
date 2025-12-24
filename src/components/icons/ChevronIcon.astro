@@ -1,0 +1,26 @@
+---
+// Chevron Icon component for navigation arrows
+interface Props {
+  direction?: 'down' | 'right' | 'up' | 'left';
+  class?: string;
+  size?: 'sm' | 'md';
+}
+
+const { direction = 'down', class: className = '', size = 'md' } = Astro.props;
+
+const paths: Record<string, string> = {
+  down: 'M19 9l-7 7-7-7',
+  right: 'M9 5l7 7-7 7',
+  up: 'M5 15l7-7 7 7',
+  left: 'M15 19l-7-7 7-7',
+};
+
+const sizeClasses = {
+  sm: 'w-3.5 h-3.5',
+  md: 'w-4 h-4',
+};
+---
+
+<svg class={`${sizeClasses[size]} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={paths[direction]} />
+</svg>

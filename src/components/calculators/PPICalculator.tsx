@@ -175,9 +175,9 @@ export default function PPICalculator() {
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
-        <h2 className="text-xl font-semibold text-white">PPI Calculator</h2>
+        <h2 className="text-xl font-semibold text-white">PPI & DPI Calculator</h2>
         <p className="text-primary-200 text-sm mt-1">
-          Calculate pixel density and screen sharpness
+          Calculate pixel density (PPI/DPI) for any screen or display
         </p>
       </div>
 
@@ -196,7 +196,7 @@ export default function PPICalculator() {
                   : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
               }`}
             >
-              Calculate PPI
+              Calculate PPI/DPI
             </button>
             <button
               onClick={() => setMode('findResolution')}
@@ -337,7 +337,7 @@ export default function PPICalculator() {
               {/* PPI Presets */}
               <div className="mb-5">
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
-                  Target PPI Presets
+                  Target PPI/DPI Presets
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[110, 140, 163, 220, 300, 460].map((ppi) => (
@@ -355,7 +355,7 @@ export default function PPICalculator() {
               {/* Target PPI Input */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Target PPI
+                  Target PPI/DPI
                 </label>
                 <input
                   type="number"
@@ -468,7 +468,7 @@ export default function PPICalculator() {
                   </div>
                 ) : (
                   <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-                    <p>Enter target PPI and screen size</p>
+                    <p>Enter target PPI/DPI and screen size</p>
                   </div>
                 )}
               </div>
@@ -478,7 +478,7 @@ export default function PPICalculator() {
 
         {/* Right Panel: Visualizer */}
         <div className="w-full lg:flex-1 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 p-6 min-h-[400px] lg:min-h-[500px] flex flex-col">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">PPI Visualizer</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-4">Pixel Density Visualizer</h3>
 
           <div className="flex-1 flex flex-col justify-center">
             {/* Calculate PPI Mode Visualization */}
@@ -701,7 +701,7 @@ export default function PPICalculator() {
                   <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/>
                   <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"/>
                 </svg>
-                <p>Enter values to visualize PPI</p>
+                <p>Enter values to visualize pixel density</p>
               </div>
             )}
           </div>

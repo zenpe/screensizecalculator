@@ -64,6 +64,32 @@ const softwareSchema = {
     priceCurrency: "USD",
   },
 };
+
+// Breadcrumb Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteConfig.siteUrl,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Calculators",
+      item: `${siteConfig.siteUrl}/calculators`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Resolution Calculator",
+      item: `${siteConfig.siteUrl}/resolution-calculator`,
+    },
+  ],
+};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -74,16 +100,71 @@ const softwareSchema = {
     <section
       class="bg-gradient-to-b from-primary-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 lg:py-16"
     >
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
-        >
-          Resolution Calculator
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Scale resolutions proportionally and compare pixel counts between
-          different displays.
-        </p>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb Navigation -->
+        <nav class="mb-6 overflow-x-auto" aria-label="Breadcrumb">
+          <ol
+            class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+          >
+            <li>
+              <a
+                href="/"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Home</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <a
+                href="/calculators"
+                class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >Calculators</a
+              >
+            </li>
+            <li>
+              <svg
+                class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
+            </li>
+            <li>
+              <span class="text-gray-900 dark:text-gray-100 font-medium"
+                >Resolution Calculator</span
+              >
+            </li>
+          </ol>
+        </nav>
+
+        <div class="text-center">
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+          >
+            Resolution Calculator
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Scale resolutions proportionally and compare pixel counts between
+            different displays.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -287,5 +368,9 @@ const softwareSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
   />
 </Layout>
