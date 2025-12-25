@@ -46,11 +46,11 @@ const phoneUseCases: UseCase[] = [
     proTip: 'Prioritize battery life and security features. Phones around 6.1 inches offer the best balance of screen size and pocket portability.'
   }
 ];
-const title = "Phone Size Calculator - Screen Dimensions & PPI Tool";
+const title = "Phone Screen Size Calculator - Display Dimensions & PPI";
 const description =
-  "Free phone screen size calculator. Compare iPhone vs Android dimensions, calculate PPI, and find the perfect smartphone size for your needs.";
+  "Calculate phone display size and screen dimensions. Compare iPhone vs Android display sizes, calculate PPI, and find the perfect smartphone size for your needs.";
 const keywords =
-  "phone size calculator, phone screen size calculator, iPhone screen size, Android screen size, phone dimensions, smartphone size comparison, phone PPI calculator";
+  "phone display size calculator, phone display size, phone size calculator, phone screen size calculator, iPhone screen size, Android screen size, phone dimensions, smartphone size comparison, phone PPI calculator";
 
 // FAQ Schema
 const faqData = {
@@ -282,7 +282,7 @@ const howToSchema = {
           <p
             class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
           >
-            Find the perfect phone size for your needs with detailed resolution
+            Find the perfect phone display size for your needs with detailed resolution
             and PPI analysis. Calculate screen dimensions, pixel density, and
             compare different iPhone and Android models. Perfect for understanding
             how screen size affects usability.
@@ -342,7 +342,7 @@ const howToSchema = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load initialDeviceMode="phone" />
+        <ScreenSizeCalculator client:load initialDeviceMode="phone" showTabs={false} />
       </div>
     </section>
 

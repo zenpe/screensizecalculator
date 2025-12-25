@@ -46,11 +46,11 @@ const tabletUseCases: UseCase[] = [
     proTip: 'Samsung Galaxy Tab S9 Ultra (14.6") provides the most cinematic tablet experience. Its 16:10 ratio fits widescreen content better than iPad\'s 4:3.'
   }
 ];
-const title = "Tablet Size Calculator - iPad & Android Screen Dimensions";
+const title = "Tablet Screen Size Calculator - Display Dimensions & PPI";
 const description =
-  "Free tablet screen size calculator. Compare iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro dimensions, PPI, and display specs.";
+  "Calculate tablet display size and screen dimensions. Compare iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro display sizes, PPI, and specs.";
 const keywords =
-  "tablet size calculator, tablet screen size calculator, iPad screen size, iPad Pro dimensions, iPad Air size, Samsung Galaxy Tab size, Surface Pro screen size, tablet dimensions";
+  "tablet display size calculator, tablet display size, tablet size calculator, tablet screen size calculator, iPad screen size, iPad Pro dimensions, iPad Air size, Samsung Galaxy Tab size, Surface Pro screen size, tablet dimensions";
 
 const faqData = {
   "@context": "https://schema.org",
@@ -280,7 +280,7 @@ const howToSchema = {
           <p
             class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
           >
-            Calculate screen dimensions, resolution, and PPI for iPad, Samsung
+            Calculate tablet display size, screen dimensions, resolution, and PPI for iPad, Samsung
             Galaxy Tab, Surface Pro, and other tablets. Find the perfect tablet
             size for your needs.
           </p>
@@ -338,7 +338,7 @@ const howToSchema = {
 
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load initialDeviceMode="tablet" />
+        <ScreenSizeCalculator client:load initialDeviceMode="tablet" showTabs={false} />
       </div>
     </section>
 

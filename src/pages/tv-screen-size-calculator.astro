@@ -47,11 +47,11 @@ const tvUseCases: UseCase[] = [
   }
 ];
 
-const title = "TV Size Calculator - Viewing Distance & Dimensions";
+const title = "TV Screen Size Calculator - Display Dimensions & Viewing Distance";
 const description =
-  "Free TV size to distance calculator. Find the perfect TV size for your room. Get exact screen width & height dimensions and THX recommendations for 4K TVs.";
+  "Calculate TV display size and screen dimensions with viewing distance recommendations. Find the perfect TV size for your room with THX standards for 4K TVs.";
 const keywords =
-  "tv size calculator, tv viewing distance calculator, tv size to distance calculator, optimal tv size, how far to sit from tv, best tv size for room, 4k tv viewing distance";
+  "tv display size calculator, tv display size, tv size calculator, tv viewing distance calculator, tv size to distance calculator, optimal tv size, how far to sit from tv, best tv size for room, 4k tv viewing distance";
 
 // FAQ Schema
 const faqData = {
@@ -291,7 +291,7 @@ const howToSchema = {
           <p
             class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
           >
-            Find the perfect TV size for your room with expert viewing distance
+            Find the perfect TV display size for your room with expert viewing distance
             recommendations based on THX and SMPTE standards. Calculate screen
             dimensions, optimal seating distance, and PPI for any TV size.
           </p>
@@ -350,7 +350,7 @@ const howToSchema = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load initialDeviceMode="tv" />
+        <ScreenSizeCalculator client:load initialDeviceMode="tv" showTabs={false} />
       </div>
     </section>
 

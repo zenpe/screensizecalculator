@@ -46,11 +46,11 @@ const monitorUseCases: UseCase[] = [
     proTip: 'Match your GPU power to resolution: GTX 1660 for 1080p, RTX 3070 for 1440p, RTX 4080+ for 4K gaming at high refresh rates.'
   }
 ];
-const title = "Monitor Size Calculator - Screen Dimensions & Viewing Distance";
+const title = "Monitor Screen Size Calculator - Display Dimensions & PPI";
 const description =
-  "Free monitor size calculator. Find the ideal monitor for your desk with screen dimensions, PPI analysis, and optimal viewing distance for 1440p & 4K displays.";
+  "Calculate monitor display size and screen dimensions with PPI analysis. Find the ideal monitor for your desk with optimal viewing distance for 1440p & 4K displays.";
 const keywords =
-  "monitor size calculator, monitor viewing distance calculator, monitor screen size, optimal monitor size, best monitor size for desk, 1440p monitor size, 4k monitor size calculator";
+  "monitor display size calculator, monitor display size, monitor size calculator, monitor viewing distance calculator, monitor screen size, optimal monitor size, best monitor size for desk, 1440p monitor size, 4k monitor size calculator";
 
 // FAQ Schema
 const faqData = {
@@ -290,7 +290,7 @@ const howToSchema = {
           <p
             class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6"
           >
-            Find the perfect monitor size for your desk with optimal resolution
+            Find the perfect monitor display size for your desk with optimal resolution
             recommendations. Calculate screen dimensions, PPI, and workspace area
             for any monitor size. Perfect for productivity, gaming, and creative
             work.
@@ -350,7 +350,7 @@ const howToSchema = {
     <!-- Calculator Section -->
     <section class="py-12 lg:py-16" id="calculator">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScreenSizeCalculator client:load initialDeviceMode="monitor" />
+        <ScreenSizeCalculator client:load initialDeviceMode="monitor" showTabs={false} />
       </div>
     </section>
 

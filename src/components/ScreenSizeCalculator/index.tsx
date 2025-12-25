@@ -15,9 +15,10 @@ const formatNum = (num: number, decimals: number = 2) => {
 
 interface ScreenSizeCalculatorProps {
   initialDeviceMode?: DeviceMode;
+  showTabs?: boolean;
 }
 
-export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: ScreenSizeCalculatorProps) {
+export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor', showTabs = true }: ScreenSizeCalculatorProps) {
   // Form state
   const [deviceMode, setDeviceMode] = useState<DeviceMode>(initialDeviceMode);
   const [diagonal, setDiagonal] = useState<string>(DEVICE_CONFIGS[initialDeviceMode].defaultDiagonal);
@@ -140,27 +141,29 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor' }: 
       </div>
 
       {/* Device Mode Tabs - Segmented Control */}
-      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-        <div className="flex bg-gray-200 dark:bg-gray-600 rounded-lg p-1 gap-1" role="tablist" aria-label="Device type selection">
-          {(Object.keys(DEVICE_CONFIGS) as DeviceMode[]).map((mode) => (
-            <button
-              key={mode}
-              onClick={() => handleDeviceModeChange(mode)}
-              role="tab"
-              aria-selected={deviceMode === mode}
-              aria-label={`${DEVICE_CONFIGS[mode].label} mode`}
-              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                deviceMode === mode
-                  ? `bg-white dark:bg-gray-800 ${DEVICE_CONFIGS[mode].colors.activeTab} shadow-sm`
-                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-500'
-              }`}
-            >
-              <span className="text-base" aria-hidden="true">{DEVICE_CONFIGS[mode].icon}</span>
-              <span className="hidden sm:inline">{DEVICE_CONFIGS[mode].label}</span>
-            </button>
-          ))}
+      {showTabs && (
+        <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+          <div className="flex bg-gray-200 dark:bg-gray-600 rounded-lg p-1 gap-1" role="tablist" aria-label="Device type selection">
+            {(Object.keys(DEVICE_CONFIGS) as DeviceMode[]).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => handleDeviceModeChange(mode)}
+                role="tab"
+                aria-selected={deviceMode === mode}
+                aria-label={`${DEVICE_CONFIGS[mode].label} mode`}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  deviceMode === mode
+                    ? `bg-white dark:bg-gray-800 ${DEVICE_CONFIGS[mode].colors.activeTab} shadow-sm`
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-500'
+                }`}
+              >
+                <span className="text-base" aria-hidden="true">{DEVICE_CONFIGS[mode].icon}</span>
+                <span className="hidden sm:inline">{DEVICE_CONFIGS[mode].label}</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Layout */}
       <div className="lg:flex lg:flex-row">
