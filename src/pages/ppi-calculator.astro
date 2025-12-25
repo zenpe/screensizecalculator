@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import PPICalculator from "../components/calculators/PPICalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
+import FAQSection from "../components/FAQSection.astro";
 import {
   getLatestIphoneWithPPI,
   getLatestSamsungWithPPI,
@@ -19,84 +20,44 @@ const keywords =
 const latestIphone = getLatestIphoneWithPPI();
 const latestSamsung = getLatestSamsungWithPPI();
 
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What is PPI (Pixels Per Inch)?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "PPI (Pixels Per Inch) measures pixel density - how many pixels are packed into one inch of screen. Higher PPI means sharper images and text. It's calculated by dividing the diagonal pixel count by the screen's diagonal size in inches.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What PPI is considered Retina display?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Apple defines Retina as a display where pixels are not individually distinguishable at typical viewing distance. For phones (held at ~10-12 inches), this is around 300+ PPI. For laptops (~18 inches), it's around 220 PPI. For desktop monitors (~24 inches), about 110 PPI may suffice.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate PPI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "PPI = √(width² + height²) / diagonal. For example, a 27-inch 2560×1440 monitor: √(2560² + 1440²) / 27 = 2940 / 27 ≈ 109 PPI.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the difference between PPI and DPI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "PPI (Pixels Per Inch) refers to screen display density. DPI (Dots Per Inch) traditionally refers to print resolution. For screens, PPI is the correct term, though they're often used interchangeably.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Does higher PPI mean better quality?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Higher PPI generally means sharper images, but the optimal PPI depends on viewing distance. A 55-inch 4K TV at 80 PPI looks sharp from a couch, while a phone at the same PPI would look pixelated. Match PPI to your typical viewing distance.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is a good PPI for a monitor?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For desktop monitors at typical viewing distance (24-30 inches), 100-110 PPI is acceptable, 140-160 PPI is good for sharp text, and 200+ PPI is excellent. A 27-inch 4K monitor at 163 PPI offers a great balance of sharpness and usability.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What PPI do I need for gaming?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For gaming monitors at typical desk distance (2-3 feet), 100-110 PPI is the minimum for acceptable clarity. 140-165 PPI (27\" 4K or 24\" 1440p) provides excellent sharpness while maintaining good frame rates. Higher PPI requires more GPU power to maintain smooth gameplay.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is 4K worth it on a 27-inch monitor?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, 4K on a 27-inch monitor provides 163 PPI, which is excellent for sharp text and detailed images. However, you may need to use display scaling (125-150%) for comfortable reading, and you'll need a powerful GPU for gaming at native 4K resolution.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I convert DPI to PPI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For screens, DPI and PPI are essentially the same value - no conversion needed. DPI is traditionally used for printing while PPI is used for screens. When someone says a monitor has '96 DPI', they mean 96 PPI. Our calculator works for both PPI and DPI calculations.",
-      },
-    },
-  ],
-};
+const faqs = [
+  {
+    question: "What is PPI (Pixels Per Inch)?",
+    answer: "PPI (Pixels Per Inch) measures pixel density - how many pixels are packed into one inch of screen. Higher PPI means sharper images and text. It's calculated by dividing the diagonal pixel count by the screen's diagonal size in inches.",
+  },
+  {
+    question: "What PPI is considered Retina display?",
+    answer: "Apple defines Retina as a display where pixels are not individually distinguishable at typical viewing distance. For phones (held at ~10-12 inches), this is around 300+ PPI. For laptops (~18 inches), it's around 220 PPI. For desktop monitors (~24 inches), about 110 PPI may suffice.",
+  },
+  {
+    question: "How do I calculate PPI?",
+    answer: "PPI = √(width² + height²) / diagonal. For example, a 27-inch 2560×1440 monitor: √(2560² + 1440²) / 27 = 2940 / 27 ≈ 109 PPI.",
+  },
+  {
+    question: "What is the difference between PPI and DPI?",
+    answer: "PPI (Pixels Per Inch) refers to screen display density. DPI (Dots Per Inch) traditionally refers to print resolution. For screens, PPI is the correct term, though they're often used interchangeably.",
+  },
+  {
+    question: "Does higher PPI mean better quality?",
+    answer: "Higher PPI generally means sharper images, but the optimal PPI depends on viewing distance. A 55-inch 4K TV at 80 PPI looks sharp from a couch, while a phone at the same PPI would look pixelated. Match PPI to your typical viewing distance.",
+  },
+  {
+    question: "What is a good PPI for a monitor?",
+    answer: "For desktop monitors at typical viewing distance (24-30 inches), 100-110 PPI is acceptable, 140-160 PPI is good for sharp text, and 200+ PPI is excellent. A 27-inch 4K monitor at 163 PPI offers a great balance of sharpness and usability.",
+  },
+  {
+    question: "What PPI do I need for gaming?",
+    answer: "For gaming monitors at typical desk distance (2-3 feet), 100-110 PPI is the minimum for acceptable clarity. 140-165 PPI (27\" 4K or 24\" 1440p) provides excellent sharpness while maintaining good frame rates. Higher PPI requires more GPU power to maintain smooth gameplay.",
+  },
+  {
+    question: "Is 4K worth it on a 27-inch monitor?",
+    answer: "Yes, 4K on a 27-inch monitor provides 163 PPI, which is excellent for sharp text and detailed images. However, you may need to use display scaling (125-150%) for comfortable reading, and you'll need a powerful GPU for gaming at native 4K resolution.",
+  },
+  {
+    question: "How do I convert DPI to PPI?",
+    answer: "For screens, DPI and PPI are essentially the same value - no conversion needed. DPI is traditionally used for printing while PPI is used for screens. When someone says a monitor has '96 DPI', they mean 96 PPI. Our calculator works for both PPI and DPI calculations.",
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -731,30 +692,9 @@ const breadcrumbSchema = {
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-          PPI & DPI FAQ: Pixel Density Questions
-        </h2>
-        <div class="space-y-6">
-          {
-            faqData.mainEntity.map((faq) => (
-              <details class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-sm">
-                <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
-                  {faq.name}
-                </summary>
-                <p class="mt-3 text-gray-600 dark:text-gray-300">
-                  {faq.acceptedAnswer.text}
-                </p>
-              </details>
-            ))
-          }
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} title="PPI & DPI FAQ: Pixel Density Questions" />
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

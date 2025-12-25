@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import AspectRatioCalculatorComponent from "../components/calculators/AspectRatioCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
+import FAQSection from "../components/FAQSection.astro";
 import { siteConfig } from "../site.config";
 
 const title = "Aspect Ratio Calculator & Converter - Free Screen Ratio Tool";
@@ -71,76 +72,40 @@ const commonRatios = [
   },
 ];
 
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What is aspect ratio?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Aspect ratio is the proportional relationship between width and height of a screen or image. It's expressed as two numbers separated by a colon (e.g., 16:9). Common ratios include 16:9 (widescreen), 21:9 (ultrawide), 4:3 (standard), and 1:1 (square).",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate aspect ratio from width and height?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Divide the width by the height, then find the greatest common divisor (GCD) to simplify. For example, 1920÷1080 = 1.777... The GCD of 1920 and 1080 is 120, so 1920/120 : 1080/120 = 16:9.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the most common aspect ratio for videos?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "16:9 is the most common aspect ratio for modern video content, used by YouTube, Netflix, and most streaming platforms. For vertical mobile video (TikTok, Reels), 9:16 is standard.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What aspect ratio is 1920x1080?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "1920×1080 pixels (Full HD or 1080p) has an aspect ratio of 16:9. This is the most widely used resolution for monitors, TVs, and video content.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I convert aspect ratio to pixels?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Multiply the aspect ratio values by a common factor. For 16:9 at 1080p height: width = (16/9) × 1080 = 1920. For any target dimension, use our calculator's 'New Dimension' mode.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the difference between 16:9 and 16:10?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "16:9 (1.778:1) is wider and more common for video content. 16:10 (1.6:1) is slightly taller, preferred for productivity as it shows more vertical content. MacBooks use 16:10.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the aspect ratio formula?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The aspect ratio formula is: Aspect Ratio = Width ÷ Height. To calculate dimensions: Width = Height × Ratio, or Height = Width ÷ Ratio. For example, for 16:9 with height 1080: Width = 1080 × (16÷9) = 1080 × 1.778 = 1920 pixels.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What aspect ratio is best for Instagram and TikTok?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Instagram feed posts use 1:1 (square) or 4:5 (portrait). Instagram Stories and Reels use 9:16 (1080×1920). TikTok videos use 9:16 vertical format. For Instagram carousels, 1:1 at 1080×1080 pixels works best.",
-      },
-    },
-  ],
-};
+const faqs = [
+  {
+    question: "What is aspect ratio?",
+    answer: "Aspect ratio is the proportional relationship between width and height of a screen or image. It's expressed as two numbers separated by a colon (e.g., 16:9). Common ratios include 16:9 (widescreen), 21:9 (ultrawide), 4:3 (standard), and 1:1 (square).",
+  },
+  {
+    question: "How do I calculate aspect ratio from width and height?",
+    answer: "Divide the width by the height, then find the greatest common divisor (GCD) to simplify. For example, 1920÷1080 = 1.777... The GCD of 1920 and 1080 is 120, so 1920/120 : 1080/120 = 16:9.",
+  },
+  {
+    question: "What is the most common aspect ratio for videos?",
+    answer: "16:9 is the most common aspect ratio for modern video content, used by YouTube, Netflix, and most streaming platforms. For vertical mobile video (TikTok, Reels), 9:16 is standard.",
+  },
+  {
+    question: "What aspect ratio is 1920x1080?",
+    answer: "1920×1080 pixels (Full HD or 1080p) has an aspect ratio of 16:9. This is the most widely used resolution for monitors, TVs, and video content.",
+  },
+  {
+    question: "How do I convert aspect ratio to pixels?",
+    answer: "Multiply the aspect ratio values by a common factor. For 16:9 at 1080p height: width = (16/9) × 1080 = 1920. For any target dimension, use our calculator's 'New Dimension' mode.",
+  },
+  {
+    question: "What is the difference between 16:9 and 16:10?",
+    answer: "16:9 (1.778:1) is wider and more common for video content. 16:10 (1.6:1) is slightly taller, preferred for productivity as it shows more vertical content. MacBooks use 16:10.",
+  },
+  {
+    question: "What is the aspect ratio formula?",
+    answer: "The aspect ratio formula is: Aspect Ratio = Width ÷ Height. To calculate dimensions: Width = Height × Ratio, or Height = Width ÷ Ratio. For example, for 16:9 with height 1080: Width = 1080 × (16÷9) = 1080 × 1.778 = 1920 pixels.",
+  },
+  {
+    question: "What aspect ratio is best for Instagram and TikTok?",
+    answer: "Instagram feed posts use 1:1 (square) or 4:5 (portrait). Instagram Stories and Reels use 9:16 (1080×1920). TikTok videos use 9:16 vertical format. For Instagram carousels, 1:1 at 1080×1080 pixels works best.",
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -554,30 +519,9 @@ const breadcrumbSchema = {
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-900">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-          Aspect Ratio FAQ: Formulas & Conversions
-        </h2>
-        <div class="space-y-6">
-          {
-            faqData.mainEntity.map((faq) => (
-              <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
-                  {faq.name}
-                </summary>
-                <p class="mt-3 text-gray-600 dark:text-gray-300">
-                  {faq.acceptedAnswer.text}
-                </p>
-              </details>
-            ))
-          }
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} title="Aspect Ratio FAQ: Formulas & Conversions" />
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

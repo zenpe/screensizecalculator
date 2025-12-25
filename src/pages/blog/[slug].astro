@@ -17,13 +17,13 @@ export async function getStaticPaths() {
     // Find related posts: same category first, then other recent posts
     let relatedPosts = sortedBlogs
       .filter(b => b.slug !== blog.slug && b.data.category === blog.data.category)
-      .slice(0, 2);
+      .slice(0, 3);
 
     // If not enough same-category posts, fill with other recent posts
-    if (relatedPosts.length < 2) {
+    if (relatedPosts.length < 3) {
       const otherPosts = sortedBlogs
         .filter(b => b.slug !== blog.slug && !relatedPosts.find(r => r.slug === b.slug))
-        .slice(0, 2 - relatedPosts.length);
+        .slice(0, 3 - relatedPosts.length);
       relatedPosts = [...relatedPosts, ...otherPosts];
     }
 
@@ -112,13 +112,13 @@ const hasNavigation = prevPost || nextPost;
         </nav>
       )}
 
-      <!-- Related Articles - Always 2 columns -->
+      <!-- Related Articles -->
       {relatedPosts.length > 0 && (
         <section>
           <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
             More Articles
           </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {relatedPosts.map((post) => (
               <a
                 href={`/blog/${post.slug}`}

@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
 import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import FAQSection from "../components/FAQSection.astro";
 import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
 
@@ -52,84 +53,45 @@ const description =
 const keywords =
   "tablet display size calculator, tablet display size, tablet size calculator, tablet screen size calculator, iPad screen size, iPad Pro dimensions, iPad Air size, Samsung Galaxy Tab size, Surface Pro screen size, tablet dimensions";
 
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What size iPad should I get?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'For portability, the iPad mini (8.3") or iPad 10.9" are ideal. For productivity and note-taking, the iPad Air 11" offers a good balance. For professional work, illustration, or replacing a laptop, the iPad Pro 13" or iPad Air 13" provide the most screen real estate.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How big is the iPad Pro 13 inch?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'The iPad Pro 13" has a screen measuring approximately 10.4" × 7.8" (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is about 81 square inches, making it comparable to a small laptop display.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What's the difference between iPad and Samsung Galaxy Tab aspect ratios?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "iPads use a 4:3 aspect ratio, which is better for productivity, reading, and note-taking. Samsung Galaxy Tabs use 16:10, which is wider and better for watching videos. The 4:3 ratio provides more vertical space, while 16:10 is more cinematic.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is a bigger tablet screen always better?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'Not necessarily. Larger tablets (12"+) are excellent for productivity and media but are heavier and less portable. Smaller tablets (8-10") are better for reading, casual use, and portability. Consider your primary use case when choosing a size.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the best tablet size for drawing and illustration?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'For digital artists and illustrators, 11-13 inch tablets are ideal. The iPad Pro 13" with Apple Pencil Pro or Samsung Galaxy Tab S9 Ultra provide large canvas areas. Larger screens reduce the need for constant zooming and allow more natural arm movements similar to traditional drawing.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How does tablet PPI affect display quality?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Tablet PPI (pixels per inch) determines text sharpness and image clarity. Most modern tablets have 250-330 PPI, which is sufficient for sharp text and detailed images. iPad Pro has 264 PPI while Samsung Galaxy Tab S9 Ultra has 240 PPI. Higher PPI matters most for reading small text and detailed illustration work.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What tablet size is best for watching movies?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'For movie watching, 11-14.6 inch tablets with 16:10 aspect ratio are ideal. Samsung Galaxy Tab S9 series fits widescreen content better than iPads with less letterboxing. The Galaxy Tab S9 Ultra (14.6") provides the most immersive viewing experience. Consider OLED displays for better contrast and HDR content.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can I use a tablet as a laptop replacement?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'Yes, tablets 11" and larger with keyboard accessories can replace laptops for many tasks. iPad Pro and iPad Air with Magic Keyboard, or Surface Pro with Type Cover, offer laptop-like productivity. Consider 13"+ sizes for comfortable typing and multitasking. Note that some professional software may still require a traditional laptop.',
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the best tablet size for reading ebooks and documents?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: 'For reading, 8-11 inch tablets are ideal. The iPad mini (8.3") is perfect for one-handed reading similar to a paperback book. For PDF documents and textbooks, 10-11 inch tablets display full pages without excessive zooming. The 4:3 aspect ratio of iPads better matches book proportions than wider Android tablets.',
-      },
-    },
-  ],
-};
+// FAQ data
+const faqs = [
+  {
+    question: "What size iPad should I get?",
+    answer: `<p class="mb-3">For <strong>portability</strong>, the iPad mini (8.3") or iPad 10.9" are ideal.</p><p class="mb-3">For <strong>productivity and note-taking</strong>, the iPad Air 11" offers a good balance.</p><p>For <strong>professional work, illustration, or replacing a laptop</strong>, the iPad Pro 13" or iPad Air 13" provide the most screen real estate.</p>`,
+  },
+  {
+    question: "How big is the iPad Pro 13 inch?",
+    answer: `<p class="mb-3">The iPad Pro 13" has a screen measuring approximately <strong>10.4" × 7.8"</strong> (264mm × 198mm) with a 4:3 aspect ratio.</p><p>The total screen area is about 81 square inches, making it comparable to a small laptop display.</p>`,
+  },
+  {
+    question: "What's the difference between iPad and Samsung Galaxy Tab aspect ratios?",
+    answer: `<p class="mb-3"><strong>iPads</strong> use a 4:3 aspect ratio, which is better for productivity, reading, and note-taking.</p><p><strong>Samsung Galaxy Tabs</strong> use 16:10, which is wider and better for watching videos. The 4:3 ratio provides more vertical space, while 16:10 is more cinematic.</p>`,
+  },
+  {
+    question: "Is a bigger tablet screen always better?",
+    answer: `<p class="mb-3">Not necessarily. <strong>Larger tablets (12"+)</strong> are excellent for productivity and media but are heavier and less portable.</p><p><strong>Smaller tablets (8-10")</strong> are better for reading, casual use, and portability. Consider your primary use case when choosing a size.</p>`,
+  },
+  {
+    question: "What is the best tablet size for drawing and illustration?",
+    answer: `<p class="mb-3">For digital artists and illustrators, <strong>11-13 inch tablets</strong> are ideal.</p><p>The iPad Pro 13" with Apple Pencil Pro or Samsung Galaxy Tab S9 Ultra provide large canvas areas. Larger screens reduce the need for constant zooming and allow more natural arm movements similar to traditional drawing.</p>`,
+  },
+  {
+    question: "How does tablet PPI affect display quality?",
+    answer: `<p class="mb-3">Tablet PPI (pixels per inch) determines text sharpness and image clarity. Most modern tablets have <strong>250-330 PPI</strong>, which is sufficient for sharp text and detailed images.</p><p>iPad Pro has 264 PPI while Samsung Galaxy Tab S9 Ultra has 240 PPI. Higher PPI matters most for reading small text and detailed illustration work.</p>`,
+  },
+  {
+    question: "What tablet size is best for watching movies?",
+    answer: `<p class="mb-3">For movie watching, <strong>11-14.6 inch tablets</strong> with 16:10 aspect ratio are ideal.</p><p>Samsung Galaxy Tab S9 series fits widescreen content better than iPads with less letterboxing. The Galaxy Tab S9 Ultra (14.6") provides the most immersive viewing experience. Consider OLED displays for better contrast and HDR content.</p>`,
+  },
+  {
+    question: "Can I use a tablet as a laptop replacement?",
+    answer: `<p class="mb-3">Yes, tablets <strong>11" and larger</strong> with keyboard accessories can replace laptops for many tasks.</p><p>iPad Pro and iPad Air with Magic Keyboard, or Surface Pro with Type Cover, offer laptop-like productivity. Consider 13"+ sizes for comfortable typing and multitasking. Note that some professional software may still require a traditional laptop.</p>`,
+  },
+  {
+    question: "What is the best tablet size for reading ebooks and documents?",
+    answer: `<p class="mb-3">For reading, <strong>8-11 inch tablets</strong> are ideal. The iPad mini (8.3") is perfect for one-handed reading similar to a paperback book.</p><p>For PDF documents and textbooks, 10-11 inch tablets display full pages without excessive zooming. The 4:3 aspect ratio of iPads better matches book proportions than wider Android tablets.</p>`,
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -438,340 +400,7 @@ const howToSchema = {
       </div>
     </section>
 
-    <section class="py-12 lg:py-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
-        >
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-4">
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What size iPad should I get?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <ul class="space-y-2">
-                <li>
-                  • <strong>iPad mini (8.3"):</strong> Best for portability and reading
-                </li>
-                <li>
-                  • <strong>iPad 10.9" / iPad Air 11":</strong> Great balance of size
-                  and portability
-                </li>
-                <li>
-                  • <strong>iPad Air 13" / iPad Pro 13":</strong> Best for productivity
-                  and creative work
-                </li>
-              </ul>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How big is the iPad Pro 13 inch?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p>
-                The iPad Pro 13" has a screen measuring approximately <strong
-                  >10.4" × 7.8"</strong
-                > (264mm × 198mm) with a 4:3 aspect ratio. The total screen area is
-                about 81 square inches, comparable to a small laptop display.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What's the difference between iPad and Samsung Galaxy Tab aspect
-              ratios?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <ul class="space-y-2">
-                <li>
-                  • <strong>iPad (4:3):</strong> More square, better for productivity,
-                  reading, and note-taking
-                </li>
-                <li>
-                  • <strong>Samsung Galaxy Tab (16:10):</strong> Wider, better for
-                  watching videos and multitasking with split-screen
-                </li>
-              </ul>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is a bigger tablet screen always better?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-2">Not necessarily. Consider these trade-offs:</p>
-              <ul class="space-y-1">
-                <li>
-                  • <strong>Larger (12"+):</strong> Better for productivity but heavier
-                  and less portable
-                </li>
-                <li>
-                  • <strong>Smaller (8-10"):</strong> Better for reading, casual use,
-                  and carrying around
-                </li>
-              </ul>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the best tablet size for drawing and illustration?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For digital artists and illustrators, <strong>11-13 inch tablets</strong>
-                are ideal.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>iPad Pro 13":</strong> Large canvas with Apple Pencil Pro support</li>
-                <li>• <strong>Samsung Galaxy Tab S9 Ultra:</strong> 14.6" for maximum drawing area</li>
-                <li>• <strong>Surface Pro:</strong> Runs full desktop art software</li>
-              </ul>
-              <p>
-                Larger screens reduce the need for constant zooming and allow more
-                natural arm movements similar to traditional drawing.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How does tablet PPI affect display quality?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Tablet <strong>PPI (pixels per inch)</strong> determines text sharpness
-                and image clarity.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>iPad Pro:</strong> 264 PPI (excellent sharpness)</li>
-                <li>• <strong>iPad Air/mini:</strong> 264 PPI</li>
-                <li>• <strong>Samsung Galaxy Tab S9 Ultra:</strong> 240 PPI</li>
-                <li>• <strong>Surface Pro:</strong> 267 PPI</li>
-              </ul>
-              <p>
-                Most modern tablets have 250-330 PPI, which is sufficient for sharp
-                text. Higher PPI matters most for reading small text and detailed
-                illustration work.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What tablet size is best for watching movies?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For movie watching, <strong>11-14.6 inch tablets</strong> with 16:10
-                aspect ratio are ideal.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Samsung Galaxy Tab S9 series:</strong> 16:10 fits widescreen content with less letterboxing</li>
-                <li>• <strong>Galaxy Tab S9 Ultra (14.6"):</strong> Most immersive tablet viewing experience</li>
-                <li>• <strong>iPads:</strong> 4:3 ratio has more letterboxing but excellent for HDR content</li>
-              </ul>
-              <p>
-                Consider OLED displays for better contrast and HDR content. Quad
-                speakers also enhance the movie watching experience.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Can I use a tablet as a laptop replacement?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Yes, tablets <strong>11" and larger</strong> with keyboard accessories
-                can replace laptops for many tasks.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>iPad Pro/Air + Magic Keyboard:</strong> Excellent for creative work and productivity</li>
-                <li>• <strong>Surface Pro + Type Cover:</strong> Runs full Windows desktop apps</li>
-                <li>• <strong>Samsung Galaxy Tab + Book Cover:</strong> DeX mode provides desktop-like experience</li>
-              </ul>
-              <p>
-                Consider 13"+ sizes for comfortable typing and multitasking. Note
-                that some professional software may still require a traditional laptop.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the best tablet size for reading ebooks and documents?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For reading, <strong>8-11 inch tablets</strong> are ideal depending
-                on your content type.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>iPad mini (8.3"):</strong> Perfect for one-handed reading, similar to a paperback book</li>
-                <li>• <strong>10-11" tablets:</strong> Display full PDF pages and textbooks without excessive zooming</li>
-                <li>• <strong>E-readers:</strong> Consider dedicated e-ink devices for extended reading sessions</li>
-              </ul>
-              <p>
-                The 4:3 aspect ratio of iPads better matches book proportions than
-                wider 16:10 Android tablets.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} />
 
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -905,7 +534,6 @@ const howToSchema = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

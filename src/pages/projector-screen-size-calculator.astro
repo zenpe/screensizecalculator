@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
 import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import FAQSection from "../components/FAQSection.astro";
 import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
 
@@ -52,85 +53,45 @@ const description =
 const keywords =
   "projector screen size calculator, projector throw distance calculator, projector throw ratio, short throw projector calculator, UST projector distance, projector placement calculator, throw distance formula";
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How do I calculate projector throw distance?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Use the formula: Throw Distance = Screen Width × Throw Ratio. For example, a 100-inch diagonal 16:9 screen (87 inches wide) with a 1.5 throw ratio projector needs: 87 × 1.5 = 130.5 inches (10.9 feet) throw distance.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is a good throw ratio for a projector?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Standard throw ratio (1.5-1.8) is most versatile for home theaters. Ultra short throw (0.25-0.5) is best for small rooms. Short throw (0.8-1.2) balances flexibility and price. Long throw (2.0+) is for large venues.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How far should a projector be from a 120 inch screen?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For a 120 inch screen (105 inches wide), placement distance depends on throw ratio: Ultra short throw (0.4): 3.5 feet, Short throw (0.8): 7.0 feet, Standard (1.5): 13.1 feet, Long throw (2.0): 17.5 feet.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What's the difference between short throw and ultra short throw projectors?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Ultra short throw (UST) projectors have 0.25-0.5 throw ratio and sit 8-20 inches from screen, ideal for tight spaces. Short throw projectors have 0.8-1.2 ratio and need 3-8 feet distance, offering better value than UST with good flexibility.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What screen size is best for home theater?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For home theaters, 100-120 inch screens are the most popular choice. A 100 inch screen works well for rooms 10-12 feet deep, while 120+ inches is ideal for dedicated home theater rooms with 12-15+ feet seating distance. Consider wall width and ceiling height when choosing.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can I project on a wall instead of a screen?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, but image quality will be lower than a dedicated screen. White or light gray walls work best. For optimal results, use projector screen paint (gain 1.0-1.3) on a smooth wall. A proper screen provides better contrast, color accuracy, and viewing angles.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I choose between ceiling mount and table placement?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Ceiling mounting keeps the projector out of the way and provides a cleaner setup, but requires professional installation. Table or shelf placement is easier to set up and adjust but may obstruct viewing paths. Consider lens shift capability for flexibility in either setup.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What lumens do I need for my projector?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For dark home theaters: 1,500-2,500 lumens. For rooms with some ambient light: 2,500-3,500 lumens. For bright rooms or outdoor use: 3,500+ lumens. Larger screens require more lumens. A 100 inch screen in a dark room needs about 1,500 lumens; a 150 inch screen needs 3,000+ lumens.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is lens shift and why does it matter?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Lens shift allows you to move the projected image up, down, left, or right without moving the projector itself. This provides flexibility in projector placement without causing image distortion (keystone). Vertical lens shift is common; horizontal lens shift is found on higher-end models.",
-      },
-    },
-  ],
-};
+// FAQ data
+const faqs = [
+  {
+    question: "How do I calculate projector throw distance?",
+    answer: "Use the formula: Throw Distance = Screen Width × Throw Ratio. For example, a 100-inch diagonal 16:9 screen (87 inches wide) with a 1.5 throw ratio projector needs: 87 × 1.5 = 130.5 inches (10.9 feet) throw distance.",
+  },
+  {
+    question: "What is a good throw ratio for a projector?",
+    answer: "Standard throw ratio (1.5-1.8) is most versatile for home theaters. Ultra short throw (0.25-0.5) is best for small rooms. Short throw (0.8-1.2) balances flexibility and price. Long throw (2.0+) is for large venues.",
+  },
+  {
+    question: "How far should a projector be from a 120 inch screen?",
+    answer: "For a 120 inch screen (105 inches wide), placement distance depends on throw ratio: Ultra short throw (0.4): 3.5 feet, Short throw (0.8): 7.0 feet, Standard (1.5): 13.1 feet, Long throw (2.0): 17.5 feet.",
+  },
+  {
+    question: "What's the difference between short throw and ultra short throw projectors?",
+    answer: "Ultra short throw (UST) projectors have 0.25-0.5 throw ratio and sit 8-20 inches from screen, ideal for tight spaces. Short throw projectors have 0.8-1.2 ratio and need 3-8 feet distance, offering better value than UST with good flexibility.",
+  },
+  {
+    question: "What screen size is best for home theater?",
+    answer: "For home theaters, 100-120 inch screens are the most popular choice. A 100 inch screen works well for rooms 10-12 feet deep, while 120+ inches is ideal for dedicated home theater rooms with 12-15+ feet seating distance. Consider wall width and ceiling height when choosing.",
+  },
+  {
+    question: "Can I project on a wall instead of a screen?",
+    answer: "Yes, but image quality will be lower than a dedicated screen. White or light gray walls work best. For optimal results, use projector screen paint (gain 1.0-1.3) on a smooth wall. A proper screen provides better contrast, color accuracy, and viewing angles.",
+  },
+  {
+    question: "How do I choose between ceiling mount and table placement?",
+    answer: "Ceiling mounting keeps the projector out of the way and provides a cleaner setup, but requires professional installation. Table or shelf placement is easier to set up and adjust but may obstruct viewing paths. Consider lens shift capability for flexibility in either setup.",
+  },
+  {
+    question: "What lumens do I need for my projector?",
+    answer: "For dark home theaters: 1,500-2,500 lumens. For rooms with some ambient light: 2,500-3,500 lumens. For bright rooms or outdoor use: 3,500+ lumens. Larger screens require more lumens. A 100 inch screen in a dark room needs about 1,500 lumens; a 150 inch screen needs 3,000+ lumens.",
+  },
+  {
+    question: "What is lens shift and why does it matter?",
+    answer: "Lens shift allows you to move the projected image up, down, left, or right without moving the projector itself. This provides flexibility in projector placement without causing image distortion (keystone). Vertical lens shift is common; horizontal lens shift is found on higher-end models.",
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -673,337 +634,7 @@ const howToSchema = {
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-12 lg:py-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
-        >
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-4">
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How do I calculate projector throw distance?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Use the formula: <strong
-                  >Throw Distance = Screen Width × Throw Ratio</strong>
-              </p>
-              <p class="mb-3">
-                For example, a 100-inch diagonal 16:9 screen (87 inches wide)
-                with a 1.5 throw ratio projector needs:
-              </p>
-              <p class="font-mono bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                87 × 1.5 = 130.5 inches (10.9 feet)
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is a good throw ratio for a projector?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-2">
-                <strong>Standard throw ratio (1.5-1.8)</strong> is most versatile
-                for home theaters:
-              </p>
-              <ul class="list-disc ml-6 space-y-1 mb-3">
-                <li>Best image quality per dollar</li>
-                <li>Widest selection of models</li>
-                <li>Good for 12-20 ft rooms</li>
-              </ul>
-              <p>
-                <strong>Ultra short throw (0.25-0.5)</strong> is best for small rooms.
-                <strong>Short throw (0.8-1.2)</strong> balances flexibility and price.
-                <strong>Long throw (2.0+)</strong> is for large venues.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How far should a projector be from a 120 inch screen?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For a <strong>120 inch screen</strong> (105 inches wide), placement
-                distance depends on throw ratio:
-              </p>
-              <ul class="space-y-2">
-                <li>• <strong>Ultra short throw (0.4):</strong> 3.5 feet</li>
-                <li>• <strong>Short throw (0.8):</strong> 7.0 feet</li>
-                <li>• <strong>Standard (1.5):</strong> 13.1 feet</li>
-                <li>• <strong>Long throw (2.0):</strong> 17.5 feet</li>
-              </ul>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What's the difference between short throw and ultra short throw
-              projectors?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Ultra short throw (UST)</strong> projectors have 0.25-0.5
-                throw ratio and sit <strong>8-20 inches</strong> from screen, ideal
-                for tight spaces. Can sit on TV stand below screen.
-              </p>
-              <p>
-                <strong>Short throw</strong> projectors have 0.8-1.2 ratio and need
-                <strong>3-8 feet</strong> distance, offering better value than UST
-                with good flexibility. Better for medium-sized rooms.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What screen size is best for home theater?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For home theaters, <strong>100-120 inch screens</strong> are the most
-                popular choice:
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>100 inch:</strong> Works well for rooms 10-12 feet deep</li>
-                <li>• <strong>120+ inches:</strong> Ideal for dedicated home theater rooms with 12-15+ feet seating distance</li>
-              </ul>
-              <p>
-                Consider wall width and ceiling height when choosing. A 120 inch 16:9
-                screen requires at least 9.5 feet of wall width.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Can I project on a wall instead of a screen?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Yes, but image quality will be lower than a dedicated screen.
-                <strong>White or light gray walls</strong> work best.
-              </p>
-              <p class="mb-3">
-                For optimal results, use <strong>projector screen paint</strong>
-                (gain 1.0-1.3) on a smooth wall.
-              </p>
-              <p>
-                A proper screen provides better contrast, color accuracy, and viewing
-                angles compared to bare walls.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How do I choose between ceiling mount and table placement?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Ceiling mounting</strong> keeps the projector out of the way
-                and provides a cleaner setup, but requires professional installation.
-              </p>
-              <p class="mb-3">
-                <strong>Table or shelf placement</strong> is easier to set up and
-                adjust but may obstruct viewing paths.
-              </p>
-              <p>
-                Consider <strong>lens shift capability</strong> for flexibility in
-                either setup without causing keystone distortion.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What lumens do I need for my projector?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">Lumen requirements depend on room conditions:</p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Dark home theaters:</strong> 1,500-2,500 lumens</li>
-                <li>• <strong>Rooms with some ambient light:</strong> 2,500-3,500 lumens</li>
-                <li>• <strong>Bright rooms or outdoor use:</strong> 3,500+ lumens</li>
-              </ul>
-              <p>
-                Larger screens require more lumens. A 100 inch screen in a dark room
-                needs about 1,500 lumens; a 150 inch screen needs 3,000+ lumens.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is lens shift and why does it matter?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Lens shift</strong> allows you to move the projected image up,
-                down, left, or right without moving the projector itself.
-              </p>
-              <p class="mb-3">
-                This provides flexibility in projector placement without causing image
-                distortion (keystone).
-              </p>
-              <p>
-                <strong>Vertical lens shift</strong> is common; <strong>horizontal
-                lens shift</strong> is found on higher-end models for more placement
-                options.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} />
 
     <!-- Related Guides -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
@@ -1139,7 +770,6 @@ const howToSchema = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

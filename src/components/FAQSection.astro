@@ -1,0 +1,91 @@
+---
+interface FAQ {
+  question: string;
+  answer: string;
+  link?: { url: string; text: string };
+}
+
+interface Props {
+  faqs: FAQ[];
+  title?: string;
+  showSchema?: boolean;
+  compact?: boolean;
+  class?: string;
+}
+
+const { faqs, title = "Frequently Asked Questions", showSchema = true, compact = false, class: className = "" } = Astro.props;
+
+const stripHtml = (html: string) => {
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .trim();
+};
+
+const faqSchema = showSchema && faqs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: stripHtml(faq.answer),
+    },
+  })),
+} : null;
+---
+
+{faqs.length > 0 && (
+  <section class:list={[compact ? "" : "py-12 lg:py-16", className]}>
+    <div class:list={[compact ? "" : "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"]}>
+      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
+            {title}
+          </h2>
+        </div>
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+          {faqs.map((faq) => (
+            <details class="group">
+              <summary class="flex justify-between items-center cursor-pointer p-4 sm:p-6 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                <span class="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100 pr-4">{faq.question}</span>
+                <svg
+                  class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="px-4 sm:px-6 pb-4 sm:pb-6 text-sm text-gray-600 dark:text-gray-300">
+                <span set:html={faq.answer} />
+                {faq.link && (
+                  <a
+                    href={faq.link.url}
+                    class="inline-flex items-center gap-1.5 mt-3 px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors"
+                  >
+                    {faq.link.text}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{faqSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+)}

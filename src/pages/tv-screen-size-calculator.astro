@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
 import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import FAQSection from "../components/FAQSection.astro";
 import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
 
@@ -53,93 +54,49 @@ const description =
 const keywords =
   "tv display size calculator, tv display size, tv size calculator, tv viewing distance calculator, tv size to distance calculator, optimal tv size, how far to sit from tv, best tv size for room, 4k tv viewing distance";
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How far should I sit from a 55 inch TV?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For a 55 inch 4K TV, the optimal viewing distance is 7.3 feet (2.2m) based on SMPTE standards. The comfortable range is 5.5-11.5 feet. For a more immersive THX experience, sit 5.5 feet away.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What size TV for 10 feet viewing distance?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For a 10 feet (3m) viewing distance, the recommended TV size is 60-75 inches for 4K TVs. A 65 inch TV is the sweet spot, providing optimal viewing based on THX and SMPTE standards.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is bigger TV always better?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Not always. Too large a TV for close viewing can cause eye strain and neck fatigue. Follow the THX formula: minimum distance = screen diagonal × 1.2 for 4K TVs. The maximum comfortable distance is screen diagonal × 2.5.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What's the difference between 4K and 1080p viewing distance?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "4K TVs can be viewed 25-30% closer than 1080p TVs without seeing pixels. For a 65 inch TV: 4K minimum distance is 3.9 feet, while 1080p minimum is 7.8 feet. This allows larger TVs in the same space with 4K.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the best TV size for a bedroom?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For bedrooms with 6-8 feet viewing distance, a 40-50 inch TV is ideal. If your bedroom is smaller (5-6 feet distance), choose 32-43 inches. For master bedrooms with 8-10 feet distance, 50-55 inches works well. Consider mounting height and bed position for optimal comfort.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I measure TV size correctly?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "TV size is measured diagonally from one corner of the screen to the opposite corner, excluding the bezel/frame. A 65 inch TV means 65 inches diagonally. The actual width is approximately 56.7 inches and height is 31.9 inches for a 16:9 aspect ratio TV.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What size TV is best for gaming?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For gaming, 55-65 inches is optimal for most living rooms (7-10 feet distance). Sit closer than for movies - about 4-6 feet for a 55 inch 4K TV to see game details. For competitive gaming, some prefer 27-32 inch monitors at desk distance for faster response times.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is 65 inch TV too big for my living room?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A 65 inch TV is ideal for living rooms with 8-10 feet viewing distance. If you sit closer than 6.5 feet, it may feel too large and cause neck strain. For smaller rooms (6-8 feet), consider 55 inches instead. Measure your actual seating distance before purchasing.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the ideal TV mounting height?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The ideal TV mounting height places the center of the screen at eye level when seated, typically 42-48 inches from the floor to the TV center. For a 65 inch TV, the bottom edge should be about 26-32 inches from the floor. Mounting too high causes neck strain during extended viewing.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate TV size for my room?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Use this formula: Viewing Distance (inches) ÷ 1.6 = Recommended TV Size. For example, 10 feet (120 inches) ÷ 1.6 = 75 inches. For a more immersive experience, divide by 1.2 instead. This calculator above provides instant recommendations based on industry THX and SMPTE standards.",
-      },
-    },
-  ],
-};
+// FAQ data
+const faqs = [
+  {
+    question: "How far should I sit from a 55 inch TV?",
+    answer: `<p class="mb-3">For a <strong>55 inch 4K TV</strong>, the optimal viewing distance is <strong>7.3 feet (2.2m)</strong> based on SMPTE standards. The comfortable range is 5.5-11.5 feet.</p><p>For a more immersive THX experience, sit <strong>5.5 feet</strong> away. This closer distance fills more of your field of view, similar to a cinema experience.</p>`,
+  },
+  {
+    question: "What size TV for 10 feet viewing distance?",
+    answer: `<p class="mb-3">For a <strong>10 feet (3m)</strong> viewing distance, the recommended TV size is <strong>60-75 inches</strong> for 4K TVs.</p><p>A <strong>65 inch TV</strong> is the sweet spot, providing optimal viewing based on THX and SMPTE standards. This gives you an immersive experience without requiring head movement.</p>`,
+  },
+  {
+    question: "Is bigger TV always better?",
+    answer: `<p class="mb-3">Not always. Too large a TV for close viewing can cause <strong>eye strain and neck fatigue</strong>. Follow the THX formula: minimum distance = screen diagonal × 1.2 for 4K TVs.</p><p>The maximum comfortable distance is screen diagonal × 2.5. Beyond this, you'll miss details and the viewing experience suffers.</p>`,
+  },
+  {
+    question: "What's the difference between 4K and 1080p viewing distance?",
+    answer: `<p class="mb-3">4K TVs can be viewed <strong>25-30% closer</strong> than 1080p TVs without seeing pixels.</p><p>For a 65 inch TV: 4K minimum distance is <strong>3.9 feet</strong>, while 1080p minimum is <strong>7.8 feet</strong>. This allows larger TVs in the same space with 4K resolution.</p>`,
+  },
+  {
+    question: "What is the best TV size for a bedroom?",
+    answer: `<p class="mb-3">For bedrooms with <strong>6-8 feet viewing distance</strong>, a <strong>40-50 inch TV</strong> is ideal.</p><ul class="space-y-1 mb-3"><li>• <strong>Small bedroom (5-6 feet):</strong> 32-43 inches</li><li>• <strong>Medium bedroom (6-8 feet):</strong> 40-50 inches</li><li>• <strong>Master bedroom (8-10 feet):</strong> 50-55 inches</li></ul><p>Consider mounting height and bed position for optimal comfort.</p>`,
+  },
+  {
+    question: "How do I measure TV size correctly?",
+    answer: `<p class="mb-3">TV size is measured <strong>diagonally</strong> from one corner of the screen to the opposite corner, excluding the bezel/frame.</p><p>A 65 inch TV means 65 inches diagonally. The actual width is approximately <strong>56.7 inches</strong> and height is <strong>31.9 inches</strong> for a 16:9 aspect ratio TV.</p>`,
+  },
+  {
+    question: "What size TV is best for gaming?",
+    answer: `<p class="mb-3">For gaming, <strong>55-65 inches</strong> is optimal for most living rooms (7-10 feet distance).</p><p class="mb-3">Sit closer than for movies - about <strong>4-6 feet</strong> for a 55 inch 4K TV to see game details clearly.</p><p>For competitive gaming, some prefer 27-32 inch monitors at desk distance for faster response times.</p>`,
+  },
+  {
+    question: "Is 65 inch TV too big for my living room?",
+    answer: `<p class="mb-3">A <strong>65 inch TV</strong> is ideal for living rooms with <strong>8-10 feet viewing distance</strong>.</p><p class="mb-3">If you sit closer than 6.5 feet, it may feel too large and cause neck strain. For smaller rooms (6-8 feet), consider 55 inches instead.</p><p>Measure your actual seating distance before purchasing.</p>`,
+  },
+  {
+    question: "What is the ideal TV mounting height?",
+    answer: `<p class="mb-3">The ideal TV mounting height places the <strong>center of the screen at eye level</strong> when seated, typically <strong>42-48 inches</strong> from the floor to the TV center.</p><p>For a 65 inch TV, the bottom edge should be about 26-32 inches from the floor. Mounting too high causes neck strain during extended viewing.</p>`,
+  },
+  {
+    question: "How do I calculate TV size for my room?",
+    answer: `<p class="mb-3">Use this formula: <strong>Viewing Distance (inches) ÷ 1.6 = Recommended TV Size</strong>.</p><p class="mb-3">For example, 10 feet (120 inches) ÷ 1.6 = <strong>75 inches</strong>. For a more immersive experience, divide by 1.2 instead.</p><p>This calculator above provides instant recommendations based on industry THX and SMPTE standards.</p>`,
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -549,363 +506,7 @@ const howToSchema = {
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
-        >
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-4">
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How far should I sit from a 55 inch TV?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For a <strong>55 inch 4K TV</strong>, the optimal viewing
-                distance is <strong>7.3 feet (2.2m)</strong> based on SMPTE standards.
-                The comfortable range is 5.5-11.5 feet.
-              </p>
-              <p>
-                For a more immersive THX experience, sit <strong
-                  >5.5 feet</strong
-                > away. This closer distance fills more of your field of view, similar
-                to a cinema experience.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What size TV for 10 feet viewing distance?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For a <strong>10 feet (3m)</strong> viewing distance, the recommended
-                TV size is <strong>60-75 inches</strong> for 4K TVs.
-              </p>
-              <p>
-                A <strong>65 inch TV</strong> is the sweet spot, providing optimal
-                viewing based on THX and SMPTE standards. This gives you an immersive
-                experience without requiring head movement.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is bigger TV always better?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Not always. Too large a TV for close viewing can cause <strong
-                  >eye strain and neck fatigue</strong
-                >. Follow the THX formula: minimum distance = screen diagonal ×
-                1.2 for 4K TVs.
-              </p>
-              <p>
-                The maximum comfortable distance is screen diagonal × 2.5.
-                Beyond this, you'll miss details and the viewing experience
-                suffers.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What's the difference between 4K and 1080p viewing distance?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                4K TVs can be viewed <strong>25-30% closer</strong> than 1080p TVs
-                without seeing pixels.
-              </p>
-              <p>
-                For a 65 inch TV: 4K minimum distance is <strong
-                  >3.9 feet</strong
-                >, while 1080p minimum is <strong>7.8 feet</strong>. This allows
-                larger TVs in the same space with 4K resolution.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the best TV size for a bedroom?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For bedrooms with <strong>6-8 feet viewing distance</strong>, a
-                <strong>40-50 inch TV</strong> is ideal.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Small bedroom (5-6 feet):</strong> 32-43 inches</li>
-                <li>• <strong>Medium bedroom (6-8 feet):</strong> 40-50 inches</li>
-                <li>• <strong>Master bedroom (8-10 feet):</strong> 50-55 inches</li>
-              </ul>
-              <p>
-                Consider mounting height and bed position for optimal comfort.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How do I measure TV size correctly?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                TV size is measured <strong>diagonally</strong> from one corner of the
-                screen to the opposite corner, excluding the bezel/frame.
-              </p>
-              <p>
-                A 65 inch TV means 65 inches diagonally. The actual width is
-                approximately <strong>56.7 inches</strong> and height is
-                <strong>31.9 inches</strong> for a 16:9 aspect ratio TV.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What size TV is best for gaming?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For gaming, <strong>55-65 inches</strong> is optimal for most living
-                rooms (7-10 feet distance).
-              </p>
-              <p class="mb-3">
-                Sit closer than for movies - about <strong>4-6 feet</strong> for a 55
-                inch 4K TV to see game details clearly.
-              </p>
-              <p>
-                For competitive gaming, some prefer 27-32 inch monitors at desk
-                distance for faster response times.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is 65 inch TV too big for my living room?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                A <strong>65 inch TV</strong> is ideal for living rooms with
-                <strong>8-10 feet viewing distance</strong>.
-              </p>
-              <p class="mb-3">
-                If you sit closer than 6.5 feet, it may feel too large and cause
-                neck strain. For smaller rooms (6-8 feet), consider 55 inches instead.
-              </p>
-              <p>
-                Measure your actual seating distance before purchasing.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the ideal TV mounting height?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                The ideal TV mounting height places the <strong>center of the screen
-                at eye level</strong> when seated, typically <strong>42-48 inches</strong>
-                from the floor to the TV center.
-              </p>
-              <p>
-                For a 65 inch TV, the bottom edge should be about 26-32 inches from
-                the floor. Mounting too high causes neck strain during extended viewing.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How do I calculate TV size for my room?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Use this formula: <strong>Viewing Distance (inches) ÷ 1.6 = Recommended
-                TV Size</strong>.
-              </p>
-              <p class="mb-3">
-                For example, 10 feet (120 inches) ÷ 1.6 = <strong>75 inches</strong>.
-                For a more immersive experience, divide by 1.2 instead.
-              </p>
-              <p>
-                This calculator above provides instant recommendations based on
-                industry THX and SMPTE standards.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} />
 
     <!-- Related Guides -->
     <section class="py-12 lg:py-16">
@@ -1121,7 +722,6 @@ const howToSchema = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

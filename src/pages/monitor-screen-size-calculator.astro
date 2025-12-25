@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
 import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import FAQSection from "../components/FAQSection.astro";
 import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
 
@@ -52,93 +53,49 @@ const description =
 const keywords =
   "monitor display size calculator, monitor display size, monitor size calculator, monitor viewing distance calculator, monitor screen size, optimal monitor size, best monitor size for desk, 1440p monitor size, 4k monitor size calculator";
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How far should I sit from a 27 inch monitor?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For a 27 inch 1440p monitor, the ideal viewing distance is 2.5-3.5 feet based on your screen setup and preferences. For 4K monitors, you can sit closer (2-2.5 feet) without seeing pixels. The 3-5 times diagonal rule is a good starting point: 27 inches × 3 ÷ 12 = 6.75 feet maximum distance.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What size monitor for 1080p vs 1440p vs 4K?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For 1080p: Up to 24 inches is ideal to avoid seeing pixels. For 1440p: 24-32 inches recommended. For 4K: 27 inches and up, with larger sizes (32+ inches) offering better value. At 32 inches, 1440p is sharp but 4K provides more crispness and workspace.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is bigger monitor always better?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Not always. A monitor that's too large for close desk work can cause neck strain as you turn your head to view content. Consider your desk space, viewing distance, and intended use. For general productivity, 24-27 inches is ideal. For immersive gaming or design work, 32+ inches may be better.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What's the difference between 1440p and 4K for monitor size?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "4K monitors can be viewed 41% closer than 1080p without seeing pixels, allowing larger monitors in the same space. For 27 inches: 1440p PPI ≈ 109, 4K PPI ≈ 163. For 32 inches: 1440p PPI ≈ 92, 4K PPI ≈ 138. Higher PPI means sharper text and images.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the best monitor size for programming?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For programming, 27-32 inch monitors with 1440p or 4K resolution are ideal. The extra screen real estate allows for side-by-side code windows. A 27 inch 1440p monitor offers the best balance of sharpness and workspace. Consider ultrawide monitors (34 inches) for even more horizontal space without neck strain.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is 32 inch monitor too big for desk?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A 32 inch monitor works well if your desk is at least 24-30 inches deep, allowing 2-3 feet viewing distance. At closer distances, you may need to turn your head to see corners. For shallow desks (under 24 inches), consider 27 inches instead. 32 inch is excellent for multitasking and content creation.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What monitor size is best for gaming?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For competitive gaming, 24-27 inch monitors at 1080p-1440p offer fast response times and easy visibility. For immersive gaming, 27-32 inch 1440p or 4K monitors are ideal. Ultrawide 34 inch monitors provide a cinematic experience. Match your graphics card capability to the resolution for smooth gameplay.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate monitor PPI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Monitor PPI = √(width² + height²) ÷ diagonal size. For example, a 27 inch 2560×1440 monitor: √(2560² + 1440²) ÷ 27 = 109 PPI. Higher PPI means sharper text and images. For comfortable viewing at arm's length, aim for 90-110 PPI minimum, or 140+ PPI for retina-quality sharpness.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Should I get a curved or flat monitor?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Curved monitors (1000R-1800R) reduce eye strain on larger screens (32+ inches) by keeping edges equidistant from your eyes. For 27 inches and smaller, flat monitors are fine. Curved monitors are excellent for immersive gaming and ultrawide displays but may cause slight image distortion for precise design work.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the ideal monitor height for ergonomics?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The ideal monitor height positions the top of the screen at or slightly below eye level when sitting upright. This typically means the center of the screen is about 15-20 degrees below your horizontal eye line. Use a monitor arm or stand to achieve proper height and reduce neck strain during long work sessions.",
-      },
-    },
-  ],
-};
+// FAQ data
+const faqs = [
+  {
+    question: "How far should I sit from a 27 inch monitor?",
+    answer: `<p class="mb-3">For a <strong>27 inch 1440p monitor</strong>, the ideal viewing distance is <strong>2.5-3.5 feet</strong> based on your screen setup and preferences.</p><p>For 4K monitors, you can sit closer (2-2.5 feet) without seeing pixels. The 3-5 times diagonal rule is a good starting point: 27 inches × 3 ÷ 12 = 6.75 feet maximum distance.</p>`,
+  },
+  {
+    question: "What size monitor for 1080p vs 1440p vs 4K?",
+    answer: `<p class="mb-3">For <strong>1080p</strong>: Up to 24 inches is ideal to avoid seeing pixels.</p><p class="mb-3">For <strong>1440p</strong>: 24-32 inches recommended.</p><p>For <strong>4K</strong>: 27 inches and up, with larger sizes (32+ inches) offering better value. At 32 inches, 1440p is sharp but 4K provides more crispness and workspace.</p>`,
+  },
+  {
+    question: "Is bigger monitor always better?",
+    answer: `<p class="mb-3">Not always. A monitor that's too large for close desk work can cause <strong>neck strain</strong> as you turn your head to view content.</p><p>Consider your desk space, viewing distance, and intended use. For general productivity, 24-27 inches is ideal. For immersive gaming or design work, 32+ inches may be better.</p>`,
+  },
+  {
+    question: "What's the difference between 1440p and 4K for monitor size?",
+    answer: `<p class="mb-3">4K monitors can be viewed <strong>41% closer</strong> than 1080p without seeing pixels, allowing larger monitors in the same space.</p><p>For 27 inches: 1440p PPI ≈ 109, 4K PPI ≈ 163. For 32 inches: 1440p PPI ≈ 92, 4K PPI ≈ 138. Higher PPI means sharper text and images.</p>`,
+  },
+  {
+    question: "What is the best monitor size for programming?",
+    answer: `<p class="mb-3">For programming, <strong>27-32 inch monitors</strong> with 1440p or 4K resolution are ideal. The extra screen real estate allows for side-by-side code windows.</p><p>A 27 inch 1440p monitor offers the best balance of sharpness and workspace. Consider ultrawide monitors (34 inches) for even more horizontal space without neck strain.</p>`,
+  },
+  {
+    question: "Is 32 inch monitor too big for desk?",
+    answer: `<p class="mb-3">A 32 inch monitor works well if your desk is at least <strong>24-30 inches deep</strong>, allowing 2-3 feet viewing distance.</p><p>At closer distances, you may need to turn your head to see corners. For shallow desks (under 24 inches), consider 27 inches instead. 32 inch is excellent for multitasking and content creation.</p>`,
+  },
+  {
+    question: "What monitor size is best for gaming?",
+    answer: `<p class="mb-3">For <strong>competitive gaming</strong>, 24-27 inch monitors at 1080p-1440p offer fast response times and easy visibility.</p><p class="mb-3">For <strong>immersive gaming</strong>, 27-32 inch 1440p or 4K monitors are ideal.</p><p>Ultrawide 34 inch monitors provide a cinematic experience. Match your graphics card capability to the resolution for smooth gameplay.</p>`,
+  },
+  {
+    question: "How do I calculate monitor PPI?",
+    answer: `<p class="mb-3">Monitor PPI = <strong>√(width² + height²) ÷ diagonal size</strong>.</p><p class="mb-3">For example, a 27 inch 2560×1440 monitor: √(2560² + 1440²) ÷ 27 = <strong>109 PPI</strong>.</p><p>Higher PPI means sharper text and images. For comfortable viewing at arm's length, aim for 90-110 PPI minimum, or 140+ PPI for retina-quality sharpness.</p>`,
+  },
+  {
+    question: "Should I get a curved or flat monitor?",
+    answer: `<p class="mb-3">Curved monitors (1000R-1800R) reduce eye strain on larger screens (32+ inches) by keeping edges equidistant from your eyes.</p><p>For 27 inches and smaller, flat monitors are fine. Curved monitors are excellent for immersive gaming and ultrawide displays but may cause slight image distortion for precise design work.</p>`,
+  },
+  {
+    question: "What is the ideal monitor height for ergonomics?",
+    answer: `<p class="mb-3">The ideal monitor height positions the <strong>top of the screen at or slightly below eye level</strong> when sitting upright.</p><p>This typically means the center of the screen is about 15-20 degrees below your horizontal eye line. Use a monitor arm or stand to achieve proper height and reduce neck strain during long work sessions.</p>`,
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -550,385 +507,7 @@ const howToSchema = {
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
-        >
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-4">
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How far should I sit from a 27 inch monitor?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For a <strong>27 inch 1440p monitor</strong>, the ideal viewing
-                distance is <strong>2.5-3.5 feet</strong> based on your screen setup
-                and preferences.
-              </p>
-              <p>
-                For 4K monitors, you can sit closer (2-2.5 feet) without seeing
-                pixels. The general rule is 3-5 times the diagonal for a
-                comfortable distance, though personal preference varies.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What size monitor for 1080p vs 1440p vs 4K?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">The ideal size depends on your resolution:</p>
-              <ul class="space-y-2">
-                <li>
-                  • <strong>For 1080p:</strong> Up to 24 inches is ideal to avoid
-                  seeing pixels. 21-22" is perfect.
-                </li>
-                <li>
-                  • <strong>For 1440p:</strong> 24-32 inches recommended. 27" is the
-                  sweet spot.
-                </li>
-                <li>
-                  • <strong>For 4K:</strong> 27 inches and up, with larger sizes (32+
-                  inches) offering better value.
-                </li>
-              </ul>
-              <p>
-                At 32 inches, 1440p is sharp but 4K provides more crispness and
-                workspace.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is bigger monitor always better?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Not always. A monitor that's too large for close desk work can
-                cause <strong>neck strain</strong> as you turn your head to view content.
-              </p>
-              <p>
-                Consider your desk space, viewing distance, and intended use.
-                For general productivity, 24-27 inches is ideal. For immersive
-                gaming or design work, 32+ inches may be better.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What's the difference between 1440p and 4K for monitor size?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                4K monitors can be viewed <strong>41% closer</strong> than 1080p without
-                seeing pixels, allowing larger monitors in the same space.
-              </p>
-              <ul class="space-y-2">
-                <li>
-                  • <strong>For 27 inches:</strong> 1440p PPI ≈ 109, 4K PPI ≈ 163
-                </li>
-                <li>
-                  • <strong>For 32 inches:</strong> 1440p PPI ≈ 92, 4K PPI ≈ 138
-                </li>
-              </ul>
-              <p>
-                Higher PPI means sharper text and images, which is especially
-                important for detailed design work.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the best monitor size for programming?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For programming, <strong>27-32 inch monitors</strong> with 1440p or 4K
-                resolution are ideal. The extra screen real estate allows for
-                side-by-side code windows.
-              </p>
-              <p class="mb-3">
-                A <strong>27 inch 1440p monitor</strong> offers the best balance of
-                sharpness and workspace for most developers.
-              </p>
-              <p>
-                Consider ultrawide monitors (34 inches) for even more horizontal
-                space without neck strain from multiple monitors.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is 32 inch monitor too big for desk?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                A <strong>32 inch monitor</strong> works well if your desk is at least
-                <strong>24-30 inches deep</strong>, allowing 2-3 feet viewing distance.
-              </p>
-              <p class="mb-3">
-                At closer distances, you may need to turn your head to see corners.
-                For shallow desks (under 24 inches), consider 27 inches instead.
-              </p>
-              <p>
-                32 inch is excellent for multitasking and content creation where
-                screen real estate matters more than pixel density.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What monitor size is best for gaming?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For <strong>competitive gaming</strong>, 24-27 inch monitors at 1080p-1440p
-                offer fast response times and easy visibility of the entire screen.
-              </p>
-              <p class="mb-3">
-                For <strong>immersive gaming</strong>, 27-32 inch 1440p or 4K monitors
-                provide more detail and a cinematic experience.
-              </p>
-              <p>
-                Ultrawide 34 inch monitors are excellent for racing and flight
-                simulators. Match your graphics card capability to the resolution
-                for smooth gameplay.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How do I calculate monitor PPI?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Monitor PPI = <strong>√(width² + height²) ÷ diagonal size</strong>.
-              </p>
-              <p class="mb-3">
-                For example, a 27 inch 2560×1440 monitor: √(2560² + 1440²) ÷ 27 =
-                <strong>109 PPI</strong>.
-              </p>
-              <p>
-                For comfortable viewing at arm's length, aim for 90-110 PPI minimum,
-                or 140+ PPI for retina-quality sharpness. Higher PPI means sharper
-                text and images.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Should I get a curved or flat monitor?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Curved monitors (1000R-1800R)</strong> reduce eye strain on
-                larger screens (32+ inches) by keeping edges equidistant from your eyes.
-              </p>
-              <p class="mb-3">
-                For 27 inches and smaller, <strong>flat monitors</strong> are fine and
-                often more affordable.
-              </p>
-              <p>
-                Curved monitors are excellent for immersive gaming and ultrawide
-                displays but may cause slight image distortion for precise design work.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the ideal monitor height for ergonomics?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                The ideal monitor height positions the <strong>top of the screen at
-                or slightly below eye level</strong> when sitting upright.
-              </p>
-              <p class="mb-3">
-                This typically means the center of the screen is about <strong>15-20
-                degrees below</strong> your horizontal eye line.
-              </p>
-              <p>
-                Use a monitor arm or stand to achieve proper height and reduce neck
-                strain during long work sessions.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} />
 
     <!-- Related Guides -->
     <section class="py-12 lg:py-16">
@@ -1059,7 +638,6 @@ const howToSchema = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

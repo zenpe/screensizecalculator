@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import RelatedCalculators from "../components/RelatedCalculators.astro";
 import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import FAQSection from "../components/FAQSection.astro";
 import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
 
@@ -52,85 +53,45 @@ const description =
 const keywords =
   "phone display size calculator, phone display size, phone size calculator, phone screen size calculator, iPhone screen size, Android screen size, phone dimensions, smartphone size comparison, phone PPI calculator";
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How big is a 6.1 inch phone?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A 6.1 inch phone has dimensions of approximately 5.9 x 2.8 inches (150 x 71 mm) for the screen area. This is considered a medium-sized phone, suitable for one-handed use while providing enough screen real estate for multitasking. The iPhone 14 has these dimensions.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What size phone is best for small hands?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Phones with 5.4-5.8 inch screens are ideal for small hands. Examples include the iPhone 14 Mini (5.4 inches), iPhone SE (5.4 inches), and smaller Android models. These sizes allow for comfortable one-handed use with easy reach to all screen areas.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What's the difference between phone PPI and TV PPI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Phone PPI (pixels per inch) is typically much higher than TV PPI due to closer viewing distances. Phone screens range from 300-600+ PPI (iPhone 14 Pro Max is 460 PPI), while TVs typically have 50-150 PPI. Higher PPI on phones prevents visible pixels at normal viewing distances.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Is bigger phone screen always better?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Not always. Larger screens (6.7+ inches) offer better media consumption and multitasking but may be harder to use one-handed and may not fit comfortably in smaller pockets. Consider your usage patterns and hand size when choosing a phone screen size.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is a good PPI for a phone screen?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "300+ PPI is considered 'Retina' quality where individual pixels become invisible at normal viewing distance. Most modern smartphones have 400-500+ PPI. Budget phones with 250-300 PPI are still acceptable but may show slight pixelation on close inspection.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What phone size is best for video watching?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For video watching, 6.5-6.8 inch phones with 20:9 or 21:9 aspect ratios are ideal. Larger screens like the iPhone 14 Pro Max (6.7\") or Galaxy S23 Ultra (6.8\") provide a more immersive experience. Consider OLED displays for better contrast and HDR content.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How does aspect ratio affect phone usability?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Taller aspect ratios (20:9, 21:9) make phones narrower and easier to hold one-handed while showing more content when scrolling. Wider ratios (16:9, 18:9) are better for gaming and video. Most modern phones use 19.5:9 to 20:9 for a balance of usability and media consumption.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the best phone size for gaming?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For mobile gaming, 6.5-6.8 inch phones offer the best experience with more screen real estate for controls and visuals. Look for high refresh rate displays (120Hz+) and high resolution (1440p). The iPhone 14 Pro Max, Galaxy S23 Ultra, and gaming phones like ROG Phone are popular choices.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Does phone screen size affect battery life?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, larger screens consume more power. However, larger phones typically have bigger batteries to compensate. OLED screens are more efficient than LCD for dark content. Screen brightness has the biggest impact on battery life - reducing brightness can significantly extend usage time.",
-      },
-    },
-  ],
-};
+// FAQ data
+const faqs = [
+  {
+    question: "How big is a 6.1 inch phone?",
+    answer: `<p class="mb-3">A <strong>6.1 inch phone</strong> has dimensions of approximately <strong>5.9 x 2.8 inches</strong> (150 x 71 mm) for the screen area.</p><p>This is considered a medium-sized phone, suitable for one-handed use while providing enough screen real estate for multitasking. The iPhone 14 has these dimensions.</p>`,
+  },
+  {
+    question: "What size phone is best for small hands?",
+    answer: `<p class="mb-3">Phones with <strong>5.4-5.8 inch screens</strong> are ideal for small hands.</p><p>Examples include the iPhone 14 Mini (5.4 inches), iPhone SE (5.4 inches), and smaller Android models. These sizes allow for comfortable one-handed use with easy reach to all screen areas.</p>`,
+  },
+  {
+    question: "What's the difference between phone PPI and TV PPI?",
+    answer: `<p class="mb-3">Phone PPI (pixels per inch) is typically much higher than TV PPI due to closer viewing distances.</p><p>Phone screens range from <strong>300-600+ PPI</strong> (iPhone 14 Pro Max is 460 PPI), while TVs typically have 50-150 PPI. Higher PPI on phones prevents visible pixels at normal viewing distances.</p>`,
+  },
+  {
+    question: "Is bigger phone screen always better?",
+    answer: `<p class="mb-3">Not always. Larger screens (6.7+ inches) offer better media consumption and multitasking but may be harder to use one-handed.</p><p>Consider your usage patterns and hand size when choosing a phone screen size. Larger phones may not fit comfortably in smaller pockets.</p>`,
+  },
+  {
+    question: "What is a good PPI for a phone screen?",
+    answer: `<p class="mb-3"><strong>300+ PPI</strong> is considered 'Retina' quality where individual pixels become invisible at normal viewing distance.</p><p>Most modern smartphones have 400-500+ PPI. Budget phones with 250-300 PPI are still acceptable but may show slight pixelation on close inspection.</p>`,
+  },
+  {
+    question: "What phone size is best for video watching?",
+    answer: `<p class="mb-3">For video watching, <strong>6.5-6.8 inch phones</strong> with 20:9 or 21:9 aspect ratios are ideal.</p><p>Larger screens like the iPhone 14 Pro Max (6.7") or Galaxy S23 Ultra (6.8") provide a more immersive experience. Consider OLED displays for better contrast and HDR content.</p>`,
+  },
+  {
+    question: "How does aspect ratio affect phone usability?",
+    answer: `<p class="mb-3">Taller aspect ratios (20:9, 21:9) make phones narrower and easier to hold one-handed while showing more content when scrolling.</p><p>Wider ratios (16:9, 18:9) are better for gaming and video. Most modern phones use 19.5:9 to 20:9 for a balance of usability and media consumption.</p>`,
+  },
+  {
+    question: "What is the best phone size for gaming?",
+    answer: `<p class="mb-3">For mobile gaming, <strong>6.5-6.8 inch phones</strong> offer the best experience with more screen real estate for controls and visuals.</p><p>Look for high refresh rate displays (120Hz+) and high resolution (1440p). The iPhone 14 Pro Max, Galaxy S23 Ultra, and gaming phones like ROG Phone are popular choices.</p>`,
+  },
+  {
+    question: "Does phone screen size affect battery life?",
+    answer: `<p class="mb-3">Yes, larger screens consume more power. However, larger phones typically have bigger batteries to compensate.</p><p>OLED screens are more efficient than LCD for dark content. Screen brightness has the biggest impact on battery life - reducing brightness can significantly extend usage time.</p>`,
+  },
+];
 
 // SoftwareApplication Schema for the calculator tool
 const softwareSchema = {
@@ -643,348 +604,7 @@ const howToSchema = {
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-12 lg:py-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
-          class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center"
-        >
-          Frequently Asked Questions
-        </h2>
-        <div class="space-y-4">
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How big is a 6.1 inch phone?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                A <strong>6.1 inch phone</strong> has dimensions of approximately
-                <strong>5.9 x 2.8 inches</strong> (150 x 71 mm) for the screen area.
-              </p>
-              <p>
-                This is considered a medium-sized phone, suitable for one-handed
-                use while providing enough screen real estate for multitasking.
-                The iPhone 14 has these dimensions.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What size phone is best for small hands?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Phones with 5.4-5.8 inch screens</strong> are ideal for small
-                hands:
-              </p>
-              <ul class="list-disc ml-6 space-y-1">
-                <li>iPhone 14 Mini (5.4 inches)</li>
-                <li>iPhone SE (5.4 inches)</li>
-                <li>Smaller Android models (Pixel 7a, etc.)</li>
-              </ul>
-              <p>
-                These sizes allow for comfortable one-handed use with easy reach
-                to all screen areas.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What's the difference between phone PPI and TV PPI?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>Phone PPI</strong> (pixels per inch) is typically much higher
-                than <strong>TV PPI</strong> due to closer viewing distances.
-              </p>
-              <ul class="space-y-2">
-                <li>
-                  • <strong>Phone screens:</strong> 300-600+ PPI (iPhone 14 Pro Max
-                  is 460 PPI)
-                </li>
-                <li>• <strong>TVs:</strong> 50-150 PPI</li>
-              </ul>
-              <p>
-                Higher PPI on phones prevents visible pixels at normal viewing
-                distances.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Is bigger phone screen always better?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Not always. Larger screens (6.7+ inches) offer better media
-                consumption and multitasking but may be:
-              </p>
-              <ul class="list-disc ml-6 space-y-1">
-                <li>Harder to use one-handed</li>
-                <li>Might not fit comfortably in smaller pockets</li>
-                <li>Heavier and more tiring to hold</li>
-              </ul>
-              <p>
-                Consider your usage patterns and hand size when choosing a phone
-                screen size.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is a good PPI for a phone screen?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                <strong>300+ PPI</strong> is considered "Retina" quality where individual
-                pixels become invisible at normal viewing distance.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Budget phones:</strong> 250-300 PPI (acceptable, slight pixelation on close inspection)</li>
-                <li>• <strong>Mid-range phones:</strong> 300-400 PPI (good quality)</li>
-                <li>• <strong>Flagship phones:</strong> 400-500+ PPI (excellent, beyond what eyes can distinguish)</li>
-              </ul>
-              <p>
-                Most modern smartphones exceed the 300 PPI threshold, making pixel
-                visibility a non-issue for typical usage.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What phone size is best for video watching?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For video watching, <strong>6.5-6.8 inch phones</strong> with 20:9 or 21:9
-                aspect ratios are ideal for a more immersive experience.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>iPhone 14 Pro Max (6.7"):</strong> Great for movies and streaming</li>
-                <li>• <strong>Galaxy S23 Ultra (6.8"):</strong> Large display with excellent colors</li>
-                <li>• <strong>Foldable phones:</strong> Unfold for tablet-like viewing experience</li>
-              </ul>
-              <p>
-                Consider OLED displays for better contrast and HDR content. Larger
-                screens also benefit from stereo speakers for enhanced audio.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              How does aspect ratio affect phone usability?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Aspect ratio significantly impacts how you hold and use your phone:
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Taller ratios (20:9, 21:9):</strong> Narrower phones, easier one-handed use, more content when scrolling</li>
-                <li>• <strong>Wider ratios (16:9, 18:9):</strong> Better for gaming and video, but harder to grip</li>
-                <li>• <strong>19.5:9 (most common):</strong> Good balance of usability and media consumption</li>
-              </ul>
-              <p>
-                Modern phones typically use 19.5:9 to 20:9 ratios, optimizing for
-                both scrolling content and comfortable one-handed operation.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              What is the best phone size for gaming?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                For mobile gaming, <strong>6.5-6.8 inch phones</strong> offer the best
-                experience with more screen real estate for controls and visuals.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>Display:</strong> Look for 120Hz+ refresh rate for smoother gameplay</li>
-                <li>• <strong>Resolution:</strong> 1440p provides sharp visuals without excessive GPU load</li>
-                <li>• <strong>Popular gaming phones:</strong> iPhone 14 Pro Max, Galaxy S23 Ultra, ROG Phone, RedMagic</li>
-              </ul>
-              <p>
-                Dedicated gaming phones often include shoulder triggers, enhanced
-                cooling, and optimized displays for competitive gaming.
-              </p>
-            </div>
-          </details>
-
-          <details
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
-          >
-            <summary
-              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            >
-              Does phone screen size affect battery life?
-              <svg
-                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </summary>
-            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
-              <p class="mb-3">
-                Yes, <strong>larger screens consume more power</strong>. However, larger
-                phones typically have bigger batteries to compensate.
-              </p>
-              <ul class="space-y-1 mb-3">
-                <li>• <strong>OLED vs LCD:</strong> OLED is more efficient for dark content</li>
-                <li>• <strong>Resolution impact:</strong> Higher resolution uses more power</li>
-                <li>• <strong>Refresh rate:</strong> 120Hz uses more battery than 60Hz</li>
-              </ul>
-              <p>
-                Screen brightness has the biggest impact on battery life. Reducing
-                brightness and using dark mode can significantly extend usage time
-                regardless of screen size.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
+    <FAQSection faqs={faqs} />
 
     <!-- Related Guides -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
@@ -1120,7 +740,6 @@ const howToSchema = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}

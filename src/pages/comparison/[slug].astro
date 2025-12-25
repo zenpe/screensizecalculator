@@ -4,6 +4,7 @@ import Header from "../../components/Header.astro";
 import ComparisonVisualizer from "../../components/ComparisonVisualizer.tsx";
 import ShareButtons from "../../components/ShareButtons.astro";
 import UpgradeInsight from "../../components/UpgradeInsight.astro";
+import FAQSection from "../../components/FAQSection.astro";
 import {
   devices,
   getDeviceById,
@@ -259,23 +260,6 @@ const displayDateStr = new Date(Math.max(...allDates))
   .toISOString()
   .split("T")[0];
 const lastUpdated = toISO8601(displayDateStr);
-
-// FAQ Schema for SEO
-const faqSchema =
-  comparisonFAQs.length > 0
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: comparisonFAQs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer,
-          },
-        })),
-      }
-    : null;
 
 // Breadcrumb Schema for SEO
 const breadcrumbSchema = {
@@ -1685,52 +1669,19 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
     }
 
     <!-- FAQ Section -->
-    {
-      comparisonFAQs.length > 0 && (
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
-          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">
-            Frequently Asked Questions
-          </h2>
-          <div class="space-y-3 sm:space-y-4">
-            {comparisonFAQs.map((faq, index) => (
-              <details class="group">
-                <summary class="flex justify-between items-center cursor-pointer list-none p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <h3 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 pr-2 sm:pr-4">
-                    {faq.question}
-                  </h3>
-                  <svg
-                    class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </summary>
-                <div class="px-3 sm:px-4 pt-3 sm:pt-4 pb-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {faq.answer}
-                </div>
-              </details>
-            ))}
-          </div>
-        </div>
-      )
-    }
+    <div class="mb-6 sm:mb-8">
+      <FAQSection faqs={comparisonFAQs} title="Frequently Asked Questions" compact />
+    </div>
 
     <!-- Related Comparisons -->
-    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 sm:p-6">
-      <h2
-        class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4"
-      >
-        Related Comparisons
-      </h2>
-      <div class="flex flex-wrap gap-1.5 sm:gap-2">
+    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+      <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
+          Related Comparisons
+        </h2>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="flex flex-wrap gap-1.5 sm:gap-2">
         {
           devices
             .filter(
@@ -1773,6 +1724,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
               </a>
             ))
         }
+        </div>
       </div>
     </div>
 
@@ -1799,12 +1751,6 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
     </div>
   </main>
 
-  <!-- FAQ Schema -->
-  {
-    faqSchema && (
-      <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-    )
-  }
   <!-- Breadcrumb Schema -->
   <script
     type="application/ld+json"
