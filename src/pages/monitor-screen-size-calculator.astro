@@ -2,7 +2,50 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
+import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
+
+// Use case scenarios for Monitor users
+const monitorUseCases: UseCase[] = [
+  {
+    icon: 'code',
+    title: 'Software Developers',
+    audience: 'Programmers & web developers',
+    recommendations: [
+      '27-32 inch for comfortable code viewing',
+      '1440p or 4K for crisp text rendering',
+      'Consider ultrawide for side-by-side windows',
+      '100+ PPI for extended coding sessions'
+    ],
+    proTip: 'A 27" 1440p monitor offers the ideal balance of sharpness and real estate. Enable font smoothing and use dark themes to reduce eye strain.'
+  },
+  {
+    icon: 'design',
+    title: 'Graphic Designers',
+    audience: 'UI/UX designers & digital artists',
+    recommendations: [
+      '27-32 inch 4K for detailed design work',
+      'Color-accurate display (sRGB 100%, DCI-P3)',
+      'Factory calibrated with Delta E < 2',
+      'Consider curved for reduced edge distortion'
+    ],
+    proTip: 'Invest in a monitor with hardware calibration support. USB-C connectivity simplifies cable management with laptops.'
+  },
+  {
+    icon: 'game',
+    title: 'PC Gamers',
+    audience: 'Competitive & casual gamers',
+    recommendations: [
+      '24-27 inch for competitive (fast reactions)',
+      '27-32 inch for immersive single-player',
+      '144Hz+ refresh rate for smooth gameplay',
+      '1ms response time for fast-paced games'
+    ],
+    proTip: 'Match your GPU power to resolution: GTX 1660 for 1080p, RTX 3070 for 1440p, RTX 4080+ for 4K gaming at high refresh rates.'
+  }
+];
 const title = "Monitor Size Calculator - Screen Dimensions & Viewing Distance";
 const description =
   "Free monitor size calculator. Find the ideal monitor for your desk with screen dimensions, PPI analysis, and optimal viewing distance for 1440p & 4K displays.";
@@ -46,6 +89,54 @@ const faqData = {
         text: "4K monitors can be viewed 41% closer than 1080p without seeing pixels, allowing larger monitors in the same space. For 27 inches: 1440p PPI ≈ 109, 4K PPI ≈ 163. For 32 inches: 1440p PPI ≈ 92, 4K PPI ≈ 138. Higher PPI means sharper text and images.",
       },
     },
+    {
+      "@type": "Question",
+      name: "What is the best monitor size for programming?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For programming, 27-32 inch monitors with 1440p or 4K resolution are ideal. The extra screen real estate allows for side-by-side code windows. A 27 inch 1440p monitor offers the best balance of sharpness and workspace. Consider ultrawide monitors (34 inches) for even more horizontal space without neck strain.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is 32 inch monitor too big for desk?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "A 32 inch monitor works well if your desk is at least 24-30 inches deep, allowing 2-3 feet viewing distance. At closer distances, you may need to turn your head to see corners. For shallow desks (under 24 inches), consider 27 inches instead. 32 inch is excellent for multitasking and content creation.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What monitor size is best for gaming?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For competitive gaming, 24-27 inch monitors at 1080p-1440p offer fast response times and easy visibility. For immersive gaming, 27-32 inch 1440p or 4K monitors are ideal. Ultrawide 34 inch monitors provide a cinematic experience. Match your graphics card capability to the resolution for smooth gameplay.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I calculate monitor PPI?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Monitor PPI = √(width² + height²) ÷ diagonal size. For example, a 27 inch 2560×1440 monitor: √(2560² + 1440²) ÷ 27 = 109 PPI. Higher PPI means sharper text and images. For comfortable viewing at arm's length, aim for 90-110 PPI minimum, or 140+ PPI for retina-quality sharpness.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Should I get a curved or flat monitor?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Curved monitors (1000R-1800R) reduce eye strain on larger screens (32+ inches) by keeping edges equidistant from your eyes. For 27 inches and smaller, flat monitors are fine. Curved monitors are excellent for immersive gaming and ultrawide displays but may cause slight image distortion for precise design work.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the ideal monitor height for ergonomics?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The ideal monitor height positions the top of the screen at or slightly below eye level when sitting upright. This typically means the center of the screen is about 15-20 degrees below your horizontal eye line. Use a monitor arm or stand to achieve proper height and reduce neck strain during long work sessions.",
+      },
+    },
   ],
 };
 
@@ -85,8 +176,44 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       position: 3,
-      name: "Monitor Size Calculator",
+      name: "Monitor Screen Size Calculator",
       item: `${siteConfig.siteUrl}/monitor-screen-size-calculator`,
+    },
+  ],
+};
+
+// HowTo Schema for step-by-step guide
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Find Your Perfect Monitor Size",
+  description:
+    "Learn how to choose the ideal monitor size for your desk based on resolution, PPI, and viewing distance.",
+  totalTime: "PT5M",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Measure Your Desk Space",
+      text: "Measure how much desk space you have available for your monitor. Consider bezels and any stand dimensions.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Enter Monitor Size",
+      text: "Input your desired monitor diagonal size in inches or cm. The calculator shows dimensions and resolution quality.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Select Resolution",
+      text: "Choose your monitor's resolution (1080p, 1440p, 4K) to see the optimal size range and PPI.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Review Specifications",
+      text: "Get exact width, height, area, PPI, and pixel density. Perfect for comparing different monitor sizes.",
     },
   ],
 };
@@ -148,7 +275,7 @@ const breadcrumbSchema = {
             </li>
             <li>
               <span class="text-gray-900 dark:text-gray-100 font-medium"
-                >Monitor Size Calculator</span
+                >Monitor Screen Size Calculator</span
               >
             </li>
           </ol>
@@ -319,6 +446,14 @@ const breadcrumbSchema = {
         </div>
       </div>
     </section>
+
+    <!-- Use Case Scenarios -->
+    <UseCaseScenarios
+      title="Monitor Recommendations by Use Case"
+      subtitle="Different work styles demand different monitor setups. Find the perfect display configuration for your specific needs."
+      useCases={monitorUseCases}
+      themeColor="blue"
+    />
 
     <!-- Quick Reference Guide -->
     <section class="py-12 lg:py-16">
@@ -573,6 +708,224 @@ const breadcrumbSchema = {
               </p>
             </div>
           </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What is the best monitor size for programming?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                For programming, <strong>27-32 inch monitors</strong> with 1440p or 4K
+                resolution are ideal. The extra screen real estate allows for
+                side-by-side code windows.
+              </p>
+              <p class="mb-3">
+                A <strong>27 inch 1440p monitor</strong> offers the best balance of
+                sharpness and workspace for most developers.
+              </p>
+              <p>
+                Consider ultrawide monitors (34 inches) for even more horizontal
+                space without neck strain from multiple monitors.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              Is 32 inch monitor too big for desk?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                A <strong>32 inch monitor</strong> works well if your desk is at least
+                <strong>24-30 inches deep</strong>, allowing 2-3 feet viewing distance.
+              </p>
+              <p class="mb-3">
+                At closer distances, you may need to turn your head to see corners.
+                For shallow desks (under 24 inches), consider 27 inches instead.
+              </p>
+              <p>
+                32 inch is excellent for multitasking and content creation where
+                screen real estate matters more than pixel density.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What monitor size is best for gaming?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                For <strong>competitive gaming</strong>, 24-27 inch monitors at 1080p-1440p
+                offer fast response times and easy visibility of the entire screen.
+              </p>
+              <p class="mb-3">
+                For <strong>immersive gaming</strong>, 27-32 inch 1440p or 4K monitors
+                provide more detail and a cinematic experience.
+              </p>
+              <p>
+                Ultrawide 34 inch monitors are excellent for racing and flight
+                simulators. Match your graphics card capability to the resolution
+                for smooth gameplay.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              How do I calculate monitor PPI?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                Monitor PPI = <strong>√(width² + height²) ÷ diagonal size</strong>.
+              </p>
+              <p class="mb-3">
+                For example, a 27 inch 2560×1440 monitor: √(2560² + 1440²) ÷ 27 =
+                <strong>109 PPI</strong>.
+              </p>
+              <p>
+                For comfortable viewing at arm's length, aim for 90-110 PPI minimum,
+                or 140+ PPI for retina-quality sharpness. Higher PPI means sharper
+                text and images.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              Should I get a curved or flat monitor?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                <strong>Curved monitors (1000R-1800R)</strong> reduce eye strain on
+                larger screens (32+ inches) by keeping edges equidistant from your eyes.
+              </p>
+              <p class="mb-3">
+                For 27 inches and smaller, <strong>flat monitors</strong> are fine and
+                often more affordable.
+              </p>
+              <p>
+                Curved monitors are excellent for immersive gaming and ultrawide
+                displays but may cause slight image distortion for precise design work.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What is the ideal monitor height for ergonomics?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                The ideal monitor height positions the <strong>top of the screen at
+                or slightly below eye level</strong> when sitting upright.
+              </p>
+              <p class="mb-3">
+                This typically means the center of the screen is about <strong>15-20
+                degrees below</strong> your horizontal eye line.
+              </p>
+              <p>
+                Use a monitor arm or stand to achieve proper height and reduce neck
+                strain during long work sessions.
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
@@ -624,7 +977,7 @@ const breadcrumbSchema = {
               <h3
                 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400"
               >
-                TV Size Calculator
+                TV Screen Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
                 Calculate optimal TV size and viewing distance based on THX and
@@ -660,6 +1013,16 @@ const breadcrumbSchema = {
               >
             </div>
           </a>
+        </div>
+
+        <!-- More Calculators -->
+        <div class="mt-8">
+          <RelatedCalculators
+            exclude={["monitor-screen-size-calculator"]}
+            highlight="tv-screen-size-calculator"
+            title="More Screen Calculators"
+            subtitle="Need more screen calculations? Try our other free tools:"
+          />
         </div>
       </div>
     </section>
@@ -704,5 +1067,9 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>

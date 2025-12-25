@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ResolutionCalculatorComponent from "../components/calculators/ResolutionCalculator";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
 import { siteConfig } from "../site.config";
 
 const title = "Resolution Calculator - Scale & Compare Screen Resolutions";
@@ -63,6 +64,37 @@ const softwareSchema = {
     price: "0",
     priceCurrency: "USD",
   },
+};
+
+// HowTo Schema for step-by-step instructions
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Scale and Compare Screen Resolutions",
+  description:
+    "Learn how to scale image and video resolutions proportionally and compare pixel counts between different displays.",
+  step: [
+    {
+      "@type": "HowToStep",
+      name: "Enter Your Original Resolution",
+      text: "Input your source resolution width and height in pixels. You can also select from common presets like 1080p, 4K, or 8K.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Choose Your Scaling Method",
+      text: "Select how you want to scale: by percentage (e.g., 50%, 200%), by target width, or by target height. Enable 'Lock aspect ratio' to maintain proportions.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "View Scaled Results",
+      text: "Get the new resolution dimensions instantly. Compare total pixel counts and megapixels between original and scaled resolutions.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Compare Resolutions",
+      text: "Use the comparison feature to see how different resolutions stack up. Understand the pixel difference between 1080p, 1440p, 4K, and 8K.",
+    },
+  ],
 };
 
 // Breadcrumb Schema
@@ -172,6 +204,79 @@ const breadcrumbSchema = {
     <section class="py-12 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ResolutionCalculatorComponent client:load />
+      </div>
+    </section>
+
+    <!-- How to Use -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8"
+        >
+          How to Scale and Compare Resolutions
+        </h2>
+        <div class="grid md:grid-cols-4 gap-6">
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >1</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Enter Resolution
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Input your source resolution or select a preset like 1080p, 4K, or 8K.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >2</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Choose Scale Method
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Scale by percentage, target width, or target height with aspect ratio lock.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >3</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              View Results
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Get new dimensions instantly with megapixel counts and pixel comparisons.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400"
+                >4</span
+              >
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Compare Resolutions
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              See how different resolutions compare in total pixel count and quality.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -340,6 +445,17 @@ const breadcrumbSchema = {
       </div>
     </section>
 
+    <!-- Related Calculators -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RelatedCalculators
+          exclude={["resolution-calculator"]}
+          highlight="ppi-calculator"
+          subtitle="Need to calculate pixel density or aspect ratios? Try our other free tools:"
+        />
+      </div>
+    </section>
+
     <!-- FAQ Section -->
     <section class="py-12 lg:py-16 bg-white dark:bg-gray-800">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -368,6 +484,10 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(howToSchema)}
   />
   <script
     type="application/ld+json"

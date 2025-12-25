@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import AspectRatioCalculatorComponent from "../components/calculators/AspectRatioCalculator";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
 import { siteConfig } from "../site.config";
 
 const title = "Aspect Ratio Calculator & Converter - Free Screen Ratio Tool";
@@ -424,33 +425,12 @@ const breadcrumbSchema = {
         </div>
 
         <!-- Related Tools -->
-        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">
-            Related Calculators
-          </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Need to calculate pixel density or convert resolutions? Try our other free tools:
-          </p>
-          <div class="flex flex-wrap gap-3">
-            <a
-              href="/resolution-calculator"
-              class="inline-flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-            >
-              Resolution Calculator
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
-            <a
-              href="/ppi-calculator"
-              class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            >
-              PPI & DPI Calculator
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
-          </div>
+        <div class="mt-8">
+          <RelatedCalculators
+            exclude={["aspect-ratio-calculator"]}
+            highlight="resolution-calculator"
+            subtitle="Need to calculate pixel density or convert resolutions? Try our other free tools:"
+          />
         </div>
       </div>
     </section>

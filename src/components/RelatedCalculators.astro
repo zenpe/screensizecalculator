@@ -1,0 +1,155 @@
+---
+interface Calculator {
+  slug: string;
+  name: string;
+  description: string;
+  color: "primary" | "blue" | "emerald" | "purple" | "indigo" | "amber" | "rose";
+}
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  exclude?: string[];
+  highlight?: string;
+}
+
+const {
+  title = "Related Calculators",
+  subtitle = "Need more screen calculations? Try our other free tools:",
+  exclude = [],
+  highlight
+} = Astro.props;
+
+// Central registry of all calculators
+const allCalculators: Calculator[] = [
+  {
+    slug: "ppi-calculator",
+    name: "PPI & DPI Calculator",
+    description: "Calculate pixel density for any screen size and resolution.",
+    color: "primary",
+  },
+  {
+    slug: "aspect-ratio-calculator",
+    name: "Aspect Ratio Calculator",
+    description: "Find and convert aspect ratios for images and videos.",
+    color: "blue",
+  },
+  {
+    slug: "resolution-calculator",
+    name: "Screen Resolution Calculator",
+    description: "Scale and compare screen resolutions with pixel counts.",
+    color: "purple",
+  },
+  {
+    slug: "monitor-screen-size-calculator",
+    name: "Monitor Screen Size Calculator",
+    description: "Find optimal monitor size for your desk setup.",
+    color: "blue",
+  },
+  {
+    slug: "tv-screen-size-calculator",
+    name: "TV Screen Size Calculator",
+    description: "Calculate optimal TV size and viewing distance.",
+    color: "emerald",
+  },
+  {
+    slug: "projector-screen-size-calculator",
+    name: "Projector Screen Size Calculator",
+    description: "Calculate throw distance and screen size for projectors.",
+    color: "indigo",
+  },
+  {
+    slug: "phone-screen-size-calculator",
+    name: "Phone Screen Size Calculator",
+    description: "Compare phone screen sizes and dimensions.",
+    color: "rose",
+  },
+  {
+    slug: "tablet-screen-size-calculator",
+    name: "Tablet Screen Size Calculator",
+    description: "Find the perfect tablet size for your needs.",
+    color: "amber",
+  },
+];
+
+// Filter out excluded calculators
+const calculators = allCalculators.filter(calc => !exclude.includes(calc.slug));
+
+// Color mappings for consistent styling
+const colorClasses = {
+  primary: {
+    bg: "bg-primary-50 dark:bg-primary-900/20",
+    text: "text-primary-700 dark:text-primary-300",
+    hover: "hover:bg-primary-100 dark:hover:bg-primary-900/30",
+  },
+  blue: {
+    bg: "bg-blue-50 dark:bg-blue-900/20",
+    text: "text-blue-700 dark:text-blue-300",
+    hover: "hover:bg-blue-100 dark:hover:bg-blue-900/30",
+  },
+  emerald: {
+    bg: "bg-emerald-50 dark:bg-emerald-900/20",
+    text: "text-emerald-700 dark:text-emerald-300",
+    hover: "hover:bg-emerald-100 dark:hover:bg-emerald-900/30",
+  },
+  purple: {
+    bg: "bg-purple-50 dark:bg-purple-900/20",
+    text: "text-purple-700 dark:text-purple-300",
+    hover: "hover:bg-purple-100 dark:hover:bg-purple-900/30",
+  },
+  indigo: {
+    bg: "bg-indigo-50 dark:bg-indigo-900/20",
+    text: "text-indigo-700 dark:text-indigo-300",
+    hover: "hover:bg-indigo-100 dark:hover:bg-indigo-900/30",
+  },
+  amber: {
+    bg: "bg-amber-50 dark:bg-amber-900/20",
+    text: "text-amber-700 dark:text-amber-300",
+    hover: "hover:bg-amber-100 dark:hover:bg-amber-900/30",
+  },
+  rose: {
+    bg: "bg-rose-50 dark:bg-rose-900/20",
+    text: "text-rose-700 dark:text-rose-300",
+    hover: "hover:bg-rose-100 dark:hover:bg-rose-900/30",
+  },
+};
+
+// Helper to get first calculator as highlighted (primary style)
+const getClasses = (calc: Calculator, index: number) => {
+  const isHighlighted = highlight ? calc.slug === highlight : index === 0;
+  if (isHighlighted) {
+    return colorClasses.primary;
+  }
+  return {
+    bg: "bg-gray-100 dark:bg-gray-700",
+    text: "text-gray-700 dark:text-gray-300",
+    hover: "hover:bg-gray-200 dark:hover:bg-gray-600",
+  };
+};
+---
+
+<div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+  <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+    {title}
+  </h3>
+  <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+    {subtitle}
+  </p>
+  <div class="flex flex-wrap gap-3">
+    {calculators.map((calc, index) => {
+      const classes = getClasses(calc, index);
+      return (
+        <a
+          href={`/${calc.slug}`}
+          class={`inline-flex items-center px-4 py-2 ${classes.bg} ${classes.text} rounded-lg text-sm font-medium ${classes.hover} transition-colors`}
+          title={calc.description}
+        >
+          {calc.name}
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      );
+    })}
+  </div>
+</div>

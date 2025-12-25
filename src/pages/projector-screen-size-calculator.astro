@@ -2,7 +2,50 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
+import UseCaseScenarios from "../components/UseCaseScenarios.astro";
+import type { UseCase } from "../components/UseCaseScenarios.astro";
 import { siteConfig } from "../site.config";
+
+// Use case scenarios for Projector users
+const projectorUseCases: UseCase[] = [
+  {
+    icon: 'home-theater',
+    title: 'Home Theater Enthusiasts',
+    audience: 'Movie buffs & cinema lovers',
+    recommendations: [
+      '100-150 inch screen for true cinema feel',
+      '4K laser projector for best image quality',
+      'Dedicated dark room for optimal contrast',
+      'Acoustic transparent screen for center speaker'
+    ],
+    proTip: 'Invest in a motorized screen that retracts when not in use. ALR (Ambient Light Rejecting) screens help if your room isn\'t fully dark.'
+  },
+  {
+    icon: 'presentation',
+    title: 'Business Presentations',
+    audience: 'Meeting rooms & conference spaces',
+    recommendations: [
+      '80-120 inch based on room size',
+      '3000+ lumens for lit rooms',
+      'Short throw for limited space',
+      'Wireless connectivity for easy setup'
+    ],
+    proTip: 'Choose a projector with built-in apps and wireless casting. Interactive projectors work great for collaborative meetings and brainstorming.'
+  },
+  {
+    icon: 'outdoor',
+    title: 'Outdoor Movie Nights',
+    audience: 'Backyard cinema & events',
+    recommendations: [
+      '100-150 inch inflatable or portable screen',
+      '4000+ lumens for dusk viewing',
+      'Portable design with carrying case',
+      'Built-in speakers or Bluetooth audio'
+    ],
+    proTip: 'Wait until after sunset for best image quality. Battery-powered projectors offer cord-free flexibility for truly portable outdoor setups.'
+  }
+];
 const title = "Projector Screen Size Calculator - Throw Distance & Dimensions";
 const description =
   "Free projector throw distance calculator. Calculate screen size, throw ratio, and wall dimensions for any projector setup. Works with short throw & UST.";
@@ -46,6 +89,46 @@ const faqData = {
         text: "Ultra short throw (UST) projectors have 0.25-0.5 throw ratio and sit 8-20 inches from screen, ideal for tight spaces. Short throw projectors have 0.8-1.2 ratio and need 3-8 feet distance, offering better value than UST with good flexibility.",
       },
     },
+    {
+      "@type": "Question",
+      name: "What screen size is best for home theater?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For home theaters, 100-120 inch screens are the most popular choice. A 100 inch screen works well for rooms 10-12 feet deep, while 120+ inches is ideal for dedicated home theater rooms with 12-15+ feet seating distance. Consider wall width and ceiling height when choosing.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I project on a wall instead of a screen?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, but image quality will be lower than a dedicated screen. White or light gray walls work best. For optimal results, use projector screen paint (gain 1.0-1.3) on a smooth wall. A proper screen provides better contrast, color accuracy, and viewing angles.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I choose between ceiling mount and table placement?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Ceiling mounting keeps the projector out of the way and provides a cleaner setup, but requires professional installation. Table or shelf placement is easier to set up and adjust but may obstruct viewing paths. Consider lens shift capability for flexibility in either setup.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What lumens do I need for my projector?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For dark home theaters: 1,500-2,500 lumens. For rooms with some ambient light: 2,500-3,500 lumens. For bright rooms or outdoor use: 3,500+ lumens. Larger screens require more lumens. A 100 inch screen in a dark room needs about 1,500 lumens; a 150 inch screen needs 3,000+ lumens.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is lens shift and why does it matter?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Lens shift allows you to move the projected image up, down, left, or right without moving the projector itself. This provides flexibility in projector placement without causing image distortion (keystone). Vertical lens shift is common; horizontal lens shift is found on higher-end models.",
+      },
+    },
   ],
 };
 
@@ -85,8 +168,44 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       position: 3,
-      name: "Projector Calculator",
+      name: "Projector Screen Size Calculator",
       item: `${siteConfig.siteUrl}/projector-screen-size-calculator`,
+    },
+  ],
+};
+
+// HowTo Schema for step-by-step guide
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Calculate Projector Throw Distance",
+  description:
+    "Learn how to calculate the optimal projector placement distance based on screen size and throw ratio.",
+  totalTime: "PT5M",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Enter Screen Size",
+      text: "Input your desired projection screen size (diagonal measurement in inches or cm). The calculator will show the screen width.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Select Throw Ratio",
+      text: "Choose your projector's throw ratio from the dropdown (0.5 for ultra short throw, 1.5 for standard, 2.0+ for long throw).",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Get Throw Distance",
+      text: "The calculator instantly shows the exact distance to place your projector from the screen or wall.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Check Wall Width",
+      text: "See minimum wall width required (includes 10% margin) to ensure the projection fits your space.",
     },
   ],
 };
@@ -148,7 +267,7 @@ const breadcrumbSchema = {
             </li>
             <li>
               <span class="text-gray-900 dark:text-gray-100 font-medium"
-                >Projector Calculator</span
+                >Projector Screen Size Calculator</span
               >
             </li>
           </ol>
@@ -411,6 +530,14 @@ const breadcrumbSchema = {
         </div>
       </div>
     </section>
+
+    <!-- Use Case Scenarios -->
+    <UseCaseScenarios
+      title="Projector Recommendations by Use Case"
+      subtitle="Different projection needs require different setups. Find the ideal configuration for your specific scenario."
+      useCases={projectorUseCases}
+      themeColor="indigo"
+    />
 
     <!-- Quick Reference Table -->
     <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
@@ -695,6 +822,185 @@ const breadcrumbSchema = {
               </p>
             </div>
           </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What screen size is best for home theater?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                For home theaters, <strong>100-120 inch screens</strong> are the most
+                popular choice:
+              </p>
+              <ul class="space-y-1 mb-3">
+                <li>• <strong>100 inch:</strong> Works well for rooms 10-12 feet deep</li>
+                <li>• <strong>120+ inches:</strong> Ideal for dedicated home theater rooms with 12-15+ feet seating distance</li>
+              </ul>
+              <p>
+                Consider wall width and ceiling height when choosing. A 120 inch 16:9
+                screen requires at least 9.5 feet of wall width.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              Can I project on a wall instead of a screen?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                Yes, but image quality will be lower than a dedicated screen.
+                <strong>White or light gray walls</strong> work best.
+              </p>
+              <p class="mb-3">
+                For optimal results, use <strong>projector screen paint</strong>
+                (gain 1.0-1.3) on a smooth wall.
+              </p>
+              <p>
+                A proper screen provides better contrast, color accuracy, and viewing
+                angles compared to bare walls.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              How do I choose between ceiling mount and table placement?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                <strong>Ceiling mounting</strong> keeps the projector out of the way
+                and provides a cleaner setup, but requires professional installation.
+              </p>
+              <p class="mb-3">
+                <strong>Table or shelf placement</strong> is easier to set up and
+                adjust but may obstruct viewing paths.
+              </p>
+              <p>
+                Consider <strong>lens shift capability</strong> for flexibility in
+                either setup without causing keystone distortion.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What lumens do I need for my projector?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">Lumen requirements depend on room conditions:</p>
+              <ul class="space-y-1 mb-3">
+                <li>• <strong>Dark home theaters:</strong> 1,500-2,500 lumens</li>
+                <li>• <strong>Rooms with some ambient light:</strong> 2,500-3,500 lumens</li>
+                <li>• <strong>Bright rooms or outdoor use:</strong> 3,500+ lumens</li>
+              </ul>
+              <p>
+                Larger screens require more lumens. A 100 inch screen in a dark room
+                needs about 1,500 lumens; a 150 inch screen needs 3,000+ lumens.
+              </p>
+            </div>
+          </details>
+
+          <details
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group border border-gray-100 dark:border-gray-700"
+          >
+            <summary
+              class="px-6 py-4 cursor-pointer font-semibold text-gray-900 dark:text-gray-200 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              What is lens shift and why does it matter?
+              <svg
+                class="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-6 pb-4 text-gray-700 dark:text-gray-300">
+              <p class="mb-3">
+                <strong>Lens shift</strong> allows you to move the projected image up,
+                down, left, or right without moving the projector itself.
+              </p>
+              <p class="mb-3">
+                This provides flexibility in projector placement without causing image
+                distortion (keystone).
+              </p>
+              <p>
+                <strong>Vertical lens shift</strong> is common; <strong>horizontal
+                lens shift</strong> is found on higher-end models for more placement
+                options.
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
@@ -747,7 +1053,7 @@ const breadcrumbSchema = {
               <h3
                 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
               >
-                TV Size Calculator
+                TV Screen Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
                 Calculate optimal TV size and viewing distance based on THX and
@@ -773,7 +1079,7 @@ const breadcrumbSchema = {
               <h3
                 class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
               >
-                Monitor Size Calculator
+                Monitor Screen Size Calculator
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
                 Find the perfect monitor size and resolution for your desk setup
@@ -785,6 +1091,16 @@ const breadcrumbSchema = {
               >
             </div>
           </a>
+        </div>
+
+        <!-- More Calculators -->
+        <div class="mt-8">
+          <RelatedCalculators
+            exclude={["projector-screen-size-calculator"]}
+            highlight="tv-screen-size-calculator"
+            title="More Screen Calculators"
+            subtitle="Need more screen calculations? Try our other free tools:"
+          />
         </div>
       </div>
     </section>
@@ -831,5 +1147,9 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
+  />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>
