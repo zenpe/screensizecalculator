@@ -20,6 +20,7 @@ import {
   siteConfig,
   templateVersions,
   sanitizeMetaDescription,
+  shouldIndexComparison,
 } from "../../site.config";
 import { getComparisonUrl } from "../../utils/url";
 import {
@@ -63,6 +64,9 @@ const { deviceA, deviceB } = Astro.props;
 // Comparison slug for consistent hashing
 const comparisonSlug = `${deviceA.id}-vs-${deviceB.id}`;
 
+// Check if this comparison should be indexed by search engines
+const shouldIndex = shouldIndexComparison(comparisonSlug);
+
 // Helper: format device name with size (only if name doesn't already contain the size)
 const formatDeviceWithSize = (device: typeof deviceA) => {
   const sizeStr = `${device.diagonal}"`;
@@ -97,7 +101,15 @@ const formatNum = (num: number, decimals = 1) => num.toFixed(decimals);
 
 // SEO metadata
 const title = `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`;
-const rawDescription = `Compare screen sizes between ${primaryDevice.name} (${primaryDevice.diagonal}") and ${secondaryDevice.name} (${secondaryDevice.diagonal}"). See visual overlay comparison and exact dimensions.`;
+
+// Category-aware meta description for better CTR
+const isLargeScreenComparison = ['tv', 'monitor', 'projector'].includes(primaryDevice.category) ||
+  ['tv', 'monitor', 'projector'].includes(secondaryDevice.category);
+
+const rawDescription = isLargeScreenComparison
+  ? `Compare ${primaryDevice.name} vs ${secondaryDevice.name} screen size with true-to-scale room view. See how ${primaryDevice.diagonal}" vs ${secondaryDevice.diagonal}" displays look in your space.`
+  : `Compare ${primaryDevice.name} vs ${secondaryDevice.name} screen size with interactive visual overlay. See ${primaryDevice.diagonal}" vs ${secondaryDevice.diagonal}" side-by-side.`;
+
 const description = sanitizeMetaDescription(rawDescription);
 const keywords = `${primaryDevice.name} vs ${secondaryDevice.name}, screen size comparison, ${primaryDevice.name} screen size, ${secondaryDevice.name} screen size, display comparison`;
 
@@ -364,6 +376,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
   keywords={keywords}
   ogImage={`/og/${primaryDevice.id}.png`}
   modifiedTime={lastUpdated}
+  noindex={!shouldIndex}
 >
   <Header />
 

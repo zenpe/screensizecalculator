@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
-import { templateVersions } from './src/site.config.ts';
+import { templateVersions, indexedComparisons } from './src/site.config.ts';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -30,6 +30,14 @@ export default defineConfig({
     react(),
     mdx(),
     sitemap({
+      filter: (page) => {
+        // Exclude noindex comparison pages from sitemap
+        if (page.includes('/comparison/') && page.includes('-vs-')) {
+          const slug = page.split('/comparison/').pop()?.replace(/\/$/, '') || '';
+          return indexedComparisons.has(slug);
+        }
+        return true;
+      },
       serialize(page) {
         /** @type {string | null} */
         let lastmod = null;
