@@ -70,6 +70,14 @@ const PADDING_MOBILE = 40;
 const PADDING_DESKTOP = 60;
 const ACTUAL_SIZE_THRESHOLD = 0.95; // Can show actual size if scale >= 95%
 
+// SSR default values
+const SSR_DEFAULTS = {
+  containerWidth: 600,
+  containerHeight: 400,
+  isMobile: false,
+  ppi: 96,
+};
+
 interface DeviceDetailVisualizerProps {
   device: Device;
   relatedDevices: Device[];
@@ -89,7 +97,10 @@ const SingleDeviceView = memo(function SingleDeviceView({
 }) {
   const gradientId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [containerSize, setContainerSize] = useState({
+    width: SSR_DEFAULTS.containerWidth,
+    height: SSR_DEFAULTS.containerHeight
+  });
   const [isReady, setIsReady] = useState(false); // Track when measurements are ready
   const [isPanMode, setIsPanMode] = useState(false);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
@@ -134,10 +145,6 @@ const SingleDeviceView = memo(function SingleDeviceView({
 
   // Calculate scale to fit container
   const { scale, canShowActualSize } = useMemo(() => {
-    if (containerSize.width === 0 || containerSize.height === 0) {
-      return { scale: 0.5, canShowActualSize: false }; // Default while loading
-    }
-
     // Guard against invalid dimensions
     if (actualWidthPx <= 0 || actualHeightPx <= 0) {
       return { scale: 0.5, canShowActualSize: false };
@@ -304,13 +311,11 @@ const SingleDeviceView = memo(function SingleDeviceView({
       >
         {/* Device SVG */}
         <div
-          className="absolute left-1/2 top-1/2"
+          className="absolute left-1/2 top-1/2 transition-all duration-300 ease-out"
           style={{
             transform: isPanMode
               ? `translate(calc(-50% + ${panOffset.x}px), calc(-50% + ${panOffset.y}px))`
               : 'translate(-50%, -50%)',
-            opacity: isReady ? 1 : 0,
-            transition: 'opacity 200ms ease-out',
           }}
         >
           {isPortraitDevice ? (
@@ -505,10 +510,8 @@ export default function DeviceDetailVisualizer({
     };
   }, [isModalOpen, closeModal]);
 
-  // Show skeleton during SSR and initial hydration
-  if (!isHydrated) {
-    return <DeviceVisualizerSkeleton isMobile={isMobile} />;
-  }
+  // Transition class for smooth hydration
+  const transitionClass = isHydrated ? 'transition-all duration-300 ease-out' : '';
 
   return (
     <div className="w-full">
@@ -568,10 +571,10 @@ export default function DeviceDetailVisualizer({
       </div>
 
       {/* Visualization Area - Single device view only */}
-      <div className={`bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 rounded-xl w-full p-3 sm:p-4 md:p-6 ${
+      <div className={`bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 rounded-xl w-full p-3 sm:p-4 md:p-6 ${transitionClass} ${
         isMobile ? 'min-h-[350px]' : 'min-h-[500px]'
       }`}>
-        <div className={`w-full ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}>
+        <div className={`w-full ${transitionClass} ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}>
           <SingleDeviceView
             device={device}
             ppi={calibratedPpi}
