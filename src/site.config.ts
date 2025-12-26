@@ -91,16 +91,16 @@ export const indexedComparisons = new Set([
   'iphone-17-air-vs-iphone-17-pro',            // 2 clicks, 558 impressions
 
   // === iPhone cross-generation (adjacent) ===
+  // Note: slugs must be alphabetically sorted (e.g., iphone-13 < iphone-14)
+  'iphone-13-vs-iphone-14',
   'iphone-13-vs-iphone-15',
-  'iphone-14-vs-iphone-13',
-  'iphone-15-vs-iphone-14',
+  'iphone-14-vs-iphone-15',
   'iphone-15-vs-iphone-16',                    // 3 clicks, 634 impressions
-  'iphone-16-vs-iphone-15',
-  'iphone-16-pro-vs-iphone-15-pro',
-  'iphone-16-pro-max-vs-iphone-15-pro-max',
-  'iphone-17-vs-iphone-16',
-  'iphone-17-pro-vs-iphone-16-pro',
-  'iphone-17-pro-max-vs-iphone-16-pro-max',
+  'iphone-15-pro-vs-iphone-16-pro',
+  'iphone-15-pro-max-vs-iphone-16-pro-max',
+  'iphone-16-vs-iphone-17',
+  'iphone-16-pro-vs-iphone-17-pro',
+  'iphone-16-pro-max-vs-iphone-17-pro-max',
 
   // === Cross-brand comparisons (iPhone vs Samsung) ===
   'iphone-17-vs-samsung-galaxy-s25',           // 5 clicks, 309 impressions
