@@ -2,8 +2,8 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
-import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug } from '../../../utils/url';
+import { devices } from '../../../data/devices';
+import { generateCategoryPairs, toSearchItems } from '../../../utils/comparison';
 
 // SEO metadata
 const title = 'TV Screen Size Comparison - 55" vs 65" vs 75" vs 85" Visual Guide';
@@ -14,20 +14,9 @@ const keywords = 'TV size comparison, 55 vs 65 inch TV, 65 vs 75 inch TV, televi
 // Get all TV devices
 const tvDevices = devices.filter(d => d.category === 'tv');
 
-// Generate comparison pairs with pre-computed search text
-const comparisonPairs = [];
-for (let i = 0; i < tvDevices.length; i++) {
-  for (let j = i + 1; j < tvDevices.length; j++) {
-    const a = tvDevices[i];
-    const b = tvDevices[j];
-    comparisonPairs.push({
-      a,
-      b,
-      slug: getComparisonSlug(a.id, b.id),
-      searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
-    });
-  }
-}
+// Generate comparison pairs using shared utility
+const comparisonPairs = generateCategoryPairs(devices, 'tv');
+const searchItems = toSearchItems(comparisonPairs);
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -63,8 +52,7 @@ for (let i = 0; i < tvDevices.length; i++) {
     <div class="mb-12">
       <ComparisonSearch
         client:load
-        devices={tvDevices}
-        comparisons={comparisonPairs}
+        comparisons={searchItems}
         placeholder="Search TV comparisons (e.g. 65-inch, 75-inch OLED)..."
         searchHint="Try '65-inch' or 'OLED'"
       />
@@ -79,9 +67,10 @@ for (let i = 0; i < tvDevices.length; i++) {
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            comparisonPairs.map(({ a, b, slug }, index) => (
+            comparisonPairs.map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < comparisonPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >

@@ -2,8 +2,8 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
-import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug } from '../../../utils/url';
+import { devices } from '../../../data/devices';
+import { generateCategoryPairs, generateCrossCategoryPairs, toSearchItems } from '../../../utils/comparison';
 
 // SEO metadata
 const title = 'Projector Screen Size Comparisons - 100" vs 120" vs 150" vs TV';
@@ -15,36 +15,12 @@ const keywords =
 // Get all projector and TV devices
 const projectorDevices = devices.filter(d => d.category === 'projector');
 const tvDevices = devices.filter(d => d.category === 'tv');
-const searchDevices = [...projectorDevices, ...tvDevices];
 
-// Generate projector vs projector pairs
-const projectorPairsRaw = [];
-for (let i = 0; i < projectorDevices.length; i++) {
-  for (let j = i + 1; j < projectorDevices.length; j++) {
-    projectorPairsRaw.push({ a: projectorDevices[i], b: projectorDevices[j] });
-  }
-}
-
-// Generate TV vs projector pairs (cross-category)
-const tvVsProjectorPairsRaw = [];
-for (const tv of tvDevices) {
-  for (const projector of projectorDevices) {
-    tvVsProjectorPairsRaw.push({ a: tv, b: projector });
-  }
-}
-
-// Combine all pairs and add searchText for the search component
-const allPairsRaw = [...projectorPairsRaw, ...tvVsProjectorPairsRaw];
-const comparisonPairs = allPairsRaw.map(({ a, b }) => ({
-  a,
-  b,
-  slug: getComparisonSlug(a.id, b.id),
-  searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
-}));
-
-// For display, separate them again
-const projectorPairs = comparisonPairs.filter(p => p.a.category === 'projector' && p.b.category === 'projector');
-const tvVsProjectorPairs = comparisonPairs.filter(p => p.a.category !== p.b.category);
+// Generate comparison pairs using shared utilities
+const projectorPairs = generateCategoryPairs(devices, 'projector');
+const tvVsProjectorPairs = generateCrossCategoryPairs(devices, 'tv', 'projector');
+const comparisonPairs = [...projectorPairs, ...tvVsProjectorPairs];
+const searchItems = toSearchItems(comparisonPairs);
 
 const totalPairs = comparisonPairs.length;
 ---
@@ -80,8 +56,7 @@ const totalPairs = comparisonPairs.length;
     <div class="mb-12">
       <ComparisonSearch
         client:load
-        devices={searchDevices}
-        comparisons={comparisonPairs}
+        comparisons={searchItems}
         placeholder="Search projector vs TV (e.g. 120-inch, 85-inch TV)..."
         searchHint="Try '120-inch' or '85-inch TV'"
       />
@@ -96,9 +71,10 @@ const totalPairs = comparisonPairs.length;
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            projectorPairs.map(({ a, b, slug }, index) => (
+            projectorPairs.map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
@@ -132,9 +108,10 @@ const totalPairs = comparisonPairs.length;
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            tvVsProjectorPairs.map(({ a, b, slug }, index) => (
+            tvVsProjectorPairs.map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >

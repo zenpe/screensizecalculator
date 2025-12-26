@@ -1,25 +1,30 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import type { Device } from '../data/devices';
 
-interface ComparisonPair {
-  a: Device;
-  b: Device;
-  slug: string;
-  searchText: string; // Pre-computed for faster search
+/**
+ * Lightweight search item - only contains data needed for search and display
+ * This significantly reduces the serialized data size in HTML
+ */
+export interface SearchItem {
+  searchText: string;  // Pre-computed lowercase text for matching
+  href: string;        // Link URL
+  rel?: 'nofollow';    // SEO attribute
+  label: string;       // Display text (e.g., "iPhone 16 vs Samsung S24")
+  subtitle: string;    // Secondary text (e.g., "6.1" vs 6.7" • phone")
+  icon: string;        // Emoji icon
 }
 
 interface ComparisonSearchProps {
-  devices: Device[];
-  comparisons: ComparisonPair[];
+  comparisons: SearchItem[];
   placeholder?: string;
   searchHint?: string;
+  maxResults?: number;  // Limit search results for performance
 }
 
 export default function ComparisonSearch({
-  devices,
   comparisons,
   placeholder,
   searchHint,
+  maxResults = 50,
 }: ComparisonSearchProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -32,13 +37,19 @@ export default function ComparisonSearch({
     if (!query.trim()) return [];
 
     const searchTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const results: SearchItem[] = [];
 
-    return comparisons
-      .filter(comp => {
-        const text = comp.searchText;
-        return searchTerms.every(term => text.includes(term));
-      })
-  }, [query, comparisons]);
+    for (const comp of comparisons) {
+      if (results.length >= maxResults) break;
+
+      const text = comp.searchText;
+      if (searchTerms.every(term => text.includes(term))) {
+        results.push(comp);
+      }
+    }
+
+    return results;
+  }, [query, comparisons, maxResults]);
 
   // Reset selected index when results change
   useEffect(() => {
@@ -63,7 +74,7 @@ export default function ComparisonSearch({
       case 'Enter':
         e.preventDefault();
         if (filteredResults[selectedIndex]) {
-          window.location.href = `/comparison/${filteredResults[selectedIndex].slug}`;
+          window.location.href = filteredResults[selectedIndex].href;
         }
         break;
       case 'Escape':
@@ -88,17 +99,6 @@ export default function ComparisonSearch({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Get category icon
-  const getCategoryIcon = (category: Device['category']) => {
-    switch (category) {
-      case 'phone': return '📱';
-      case 'monitor': return '🖥️';
-      case 'tv': return '📺';
-      case 'projector': return '📽️';
-      default: return '📺';
-    }
-  };
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
@@ -164,9 +164,10 @@ export default function ComparisonSearch({
           {filteredResults.length > 0 ? (
             <ul className="py-2 max-h-[400px] overflow-y-auto">
               {filteredResults.map((result, index) => (
-                <li key={result.slug}>
+                <li key={result.href}>
                   <a
-                    href={`/comparison/${result.slug}`}
+                    href={result.href}
+                    rel={result.rel}
                     className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                       index === selectedIndex
                         ? 'bg-primary-50 dark:bg-primary-900/30'
@@ -177,14 +178,14 @@ export default function ComparisonSearch({
                     onMouseEnter={() => setSelectedIndex(index)}
                   >
                     <span className="text-xl flex-shrink-0">
-                      {getCategoryIcon(result.a.category)}
+                      {result.icon}
                     </span>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
-                        {result.a.name} vs {result.b.name}
+                        {result.label}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {result.a.diagonal}" vs {result.b.diagonal}" • {result.a.category}
+                        {result.subtitle}
                       </p>
                     </div>
                     <svg

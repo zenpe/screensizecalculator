@@ -66,7 +66,7 @@ export const legalLinks: NavLink[] = [
 
 // Quick links for mobile navigation
 export const quickLinks: NavLink[] = [
-  { href: '/comparison', label: 'Compare Screen Sizes', shortLabel: 'Compare', icon: 'search', color: 'primary' },
+  { href: '/compare', label: 'Compare Tool', shortLabel: 'Compare', icon: 'search', color: 'primary' },
   { href: '/devices', label: 'Device Database', shortLabel: 'Devices', icon: 'all', color: 'violet' },
   { href: '/calculators', label: 'All Calculators', shortLabel: 'Calculators', icon: 'ppi', color: 'amber' },
   { href: '/blog', label: 'Blog', icon: 'blog', color: 'rose' },
@@ -74,7 +74,7 @@ export const quickLinks: NavLink[] = [
 
 // Quick link icon types for QuickLinkIcon component
 export const quickLinkIconMap: Record<string, string> = {
-  '/comparison': 'compare',
+  '/compare': 'compare',
   '/devices': 'devices',
   '/calculators': 'calculator',
   '/blog': 'blog',

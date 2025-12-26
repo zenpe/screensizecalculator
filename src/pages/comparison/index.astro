@@ -4,7 +4,8 @@ import Header from "../../components/Header.astro";
 import CategoryIcon from "../../components/icons/CategoryIcon.astro";
 import ComparisonSearch from "../../components/ComparisonSearch.tsx";
 import { devices, isValidComparison } from "../../data/devices";
-import { getComparisonSlug, getComparisonUrl } from "../../utils/url";
+import { getComparisonSlug, getComparisonLink } from "../../utils/url";
+import { generateComparisonPairs, toSearchItems } from "../../utils/comparison";
 
 // SEO metadata - Optimized title
 const title =
@@ -38,29 +39,9 @@ const totalComparisons =
   projectorPairsCount +
   tvProjectorPairsCount;
 
-// Generate ALL comparison pairs for search with canonical slugs
-const allComparisons: Array<{
-  a: (typeof devices)[0];
-  b: (typeof devices)[0];
-  slug: string;
-  searchText: string;
-}> = [];
-
-for (let i = 0; i < devices.length; i++) {
-  for (let j = i + 1; j < devices.length; j++) {
-    const a = devices[i];
-    const b = devices[j];
-    if (isValidComparison(a.category, b.category)) {
-      allComparisons.push({
-        a,
-        b,
-        slug: getComparisonSlug(a.id, b.id),
-        searchText:
-          `${a.name} ${b.name} ${a.id} ${b.id} ${a.category} ${b.category}`.toLowerCase(),
-      });
-    }
-  }
-}
+// Generate ALL comparison pairs for search using shared utility
+const allComparisons = generateComparisonPairs(devices);
+const searchItems = toSearchItems(allComparisons);
 
 // Helper function to find the latest devices by a name filter.
 // It assumes the `devices` array is sorted with the newest devices first.
@@ -125,16 +106,21 @@ const popularComparisons = [
     const deviceB = comp.b || devices.find((d) => d.id === comp.bId);
 
     if (!deviceA || !deviceB) return null;
+    const linkData = getComparisonLink(deviceA.id, deviceB.id);
     return {
       a: deviceA,
       b: deviceB,
       slug: getComparisonSlug(deviceA.id, deviceB.id),
+      href: linkData.href,
+      rel: linkData.rel,
     };
   })
   .filter(Boolean) as Array<{
   a: (typeof devices)[0];
   b: (typeof devices)[0];
   slug: string;
+  href: string;
+  rel?: 'nofollow';
 }>;
 
 // --- Dynamic Quick Links ---
@@ -167,12 +153,18 @@ if (latestIphonePro.length > 0 && latestSamsungUltra.length > 0) {
 }
 
 const quickLinks = {
-  phones: dynamicQuickLinks,
+  phones: dynamicQuickLinks.map(link => {
+    const linkData = getComparisonLink(link.a.id, link.b.id);
+    return { ...link, href: linkData.href, rel: linkData.rel };
+  }),
   tvs: [
     { a: "65-inch-tv", b: "55-inch-tv", label: '65" TV vs 55" TV' },
     { a: "75-inch-tv", b: "65-inch-tv", label: '75" TV vs 65" TV' },
     { a: "85-inch-tv", b: "75-inch-tv", label: '85" TV vs 75" TV' },
-  ],
+  ].map(link => {
+    const linkData = getComparisonLink(link.a, link.b);
+    return { ...link, href: linkData.href, rel: linkData.rel };
+  }),
   monitors: [
     {
       a: "27-inch-monitor",
@@ -189,7 +181,10 @@ const quickLinks = {
       b: "27-inch-monitor",
       label: '34" Ultrawide vs 27" Monitor',
     },
-  ],
+  ].map(link => {
+    const linkData = getComparisonLink(link.a, link.b);
+    return { ...link, href: linkData.href, rel: linkData.rel };
+  }),
   projectors: [
     {
       a: "120-inch-projector-screen",
@@ -206,7 +201,10 @@ const quickLinks = {
       b: "120-inch-projector-screen",
       label: '150" vs 120" Projector Screen',
     },
-  ],
+  ].map(link => {
+    const linkData = getComparisonLink(link.a, link.b);
+    return { ...link, href: linkData.href, rel: linkData.rel };
+  }),
 };
 
 // --- Dynamic Category Description ---
@@ -341,8 +339,7 @@ const categories = [
     <section class="mb-12">
       <ComparisonSearch
         client:load
-        devices={devices}
-        comparisons={allComparisons}
+        comparisons={searchItems}
         placeholder={`Search any comparison (e.g. ${latestIphoneProMax[0]?.name}, 65-inch TV)...`}
         searchHint={searchHint}
       />
@@ -390,9 +387,10 @@ const categories = [
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
-          popularComparisons.map(({ a, b, slug }) => (
+          popularComparisons.map(({ a, b, href, rel }) => (
             <a
-              href={`/comparison/${slug}`}
+              href={href}
+              rel={rel}
               class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
             >
               <div class="flex items-center justify-between mb-2">
@@ -432,7 +430,8 @@ const categories = [
             {
               quickLinks.phones.map((link) => (
                 <a
-                  href={`/comparison/${getComparisonSlug(link.a.id, link.b.id)}`}
+                  href={link.href}
+                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -461,7 +460,8 @@ const categories = [
             {
               quickLinks.tvs.map((link) => (
                 <a
-                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  href={link.href}
+                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -490,7 +490,8 @@ const categories = [
             {
               quickLinks.monitors.map((link) => (
                 <a
-                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  href={link.href}
+                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -519,7 +520,8 @@ const categories = [
             {
               quickLinks.projectors.map((link) => (
                 <a
-                  href={`/comparison/${getComparisonSlug(link.a, link.b)}`}
+                  href={link.href}
+                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}

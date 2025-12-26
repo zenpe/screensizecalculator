@@ -2,8 +2,8 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
-import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug } from '../../../utils/url';
+import { devices } from '../../../data/devices';
+import { generateCategoryPairs, toSearchItems } from '../../../utils/comparison';
 
 // SEO metadata
 const title = 'Monitor Screen Size Comparisons - 24" vs 27" vs 32" vs Ultrawide';
@@ -15,20 +15,9 @@ const keywords =
 // Get all monitor devices
 const monitorDevices = devices.filter(d => d.category === 'monitor');
 
-// Generate comparison pairs with pre-computed search text
-const comparisonPairs = [];
-for (let i = 0; i < monitorDevices.length; i++) {
-  for (let j = i + 1; j < monitorDevices.length; j++) {
-    const a = monitorDevices[i];
-    const b = monitorDevices[j];
-    comparisonPairs.push({
-      a,
-      b,
-      slug: getComparisonSlug(a.id, b.id),
-      searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
-    });
-  }
-}
+// Generate comparison pairs using shared utility
+const comparisonPairs = generateCategoryPairs(devices, 'monitor');
+const searchItems = toSearchItems(comparisonPairs);
 
 // Group: Standard (16:9) vs Standard
 const standardMonitors = monitorDevices.filter(d => d.ratio === 16 / 9);
@@ -75,8 +64,7 @@ const ultrawideComparisons = comparisonPairs.filter(
     <div class="mb-12">
       <ComparisonSearch
         client:load
-        devices={monitorDevices}
-        comparisons={comparisonPairs}
+        comparisons={searchItems}
         placeholder="Search monitor comparisons (e.g. 27-inch, 34-inch ultrawide)..."
         searchHint="Try '27-inch' or 'ultrawide'"
       />
@@ -91,9 +79,10 @@ const ultrawideComparisons = comparisonPairs.filter(
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            standardVsStandard.map(({ a, b, slug }, index) => (
+            standardVsStandard.map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < standardVsStandard.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
@@ -125,9 +114,10 @@ const ultrawideComparisons = comparisonPairs.filter(
           </h2>
           <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {ultrawideComparisons.map(({ a, b, slug }, index) => (
+              {ultrawideComparisons.map(({ a, b, href, rel }, index) => (
                 <a
-                  href={`/comparison/${slug}`}
+                  href={href}
+                  rel={rel}
                   class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                   ${index < ultrawideComparisons.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
                 >

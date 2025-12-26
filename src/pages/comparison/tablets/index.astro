@@ -3,36 +3,25 @@ import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
-import { getComparisonSlug } from '../../../utils/url';
+import { generateCategoryPairs, toSearchItems, type ComparisonPair } from '../../../utils/comparison';
 
 const title = 'Tablet Screen Size Comparison - iPad vs Samsung Galaxy Tab vs Surface Pro';
 const description = 'Compare tablet screen sizes with interactive visual overlay. See iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro side-by-side.';
 const keywords = 'tablet screen size comparison, iPad vs Samsung, iPad Pro vs iPad Air, tablet display comparison, tablet size compare';
 
 const tabletDevices = devices.filter(d => d.category === 'tablet');
-const comparisonPairs: { a: typeof tabletDevices[0]; b: typeof tabletDevices[0]; slug: string; searchText: string }[] = [];
-for (let i = 0; i < tabletDevices.length; i++) {
-  for (let j = i + 1; j < tabletDevices.length; j++) {
-    const a = tabletDevices[i];
-    const b = tabletDevices[j];
-    comparisonPairs.push({
-      a,
-      b,
-      slug: getComparisonSlug(a.id, b.id),
-      searchText: `${a.name} ${b.name}`.toLowerCase(),
-    });
-  }
-}
+const comparisonPairs = generateCategoryPairs(devices, 'tablet');
+const searchItems = toSearchItems(comparisonPairs);
 
 const isIpad = (id: string) => id.includes('ipad');
 const isSamsung = (id: string) => id.includes('samsung');
 const isSurface = (id: string) => id.includes('surface');
 
 const groupFilters = {
-  ipadVsIpad: (p: any) => isIpad(p.a.id) && isIpad(p.b.id),
-  samsungVsSamsung: (p: any) => isSamsung(p.a.id) && isSamsung(p.b.id),
-  ipadVsSamsung: (p: any) => (isIpad(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIpad(p.b.id)),
-  ipadVsSurface: (p: any) => (isIpad(p.a.id) && isSurface(p.b.id)) || (isSurface(p.a.id) && isIpad(p.b.id)),
+  ipadVsIpad: (p: ComparisonPair) => isIpad(p.a.id) && isIpad(p.b.id),
+  samsungVsSamsung: (p: ComparisonPair) => isSamsung(p.a.id) && isSamsung(p.b.id),
+  ipadVsSamsung: (p: ComparisonPair) => (isIpad(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIpad(p.b.id)),
+  ipadVsSurface: (p: ComparisonPair) => (isIpad(p.a.id) && isSurface(p.b.id)) || (isSurface(p.a.id) && isIpad(p.b.id)),
 };
 
 const ipadVsIpadPairs = comparisonPairs.filter(groupFilters.ipadVsIpad);
@@ -88,8 +77,7 @@ const DISPLAY_LIMIT = 15;
     <div class="mb-12">
       <ComparisonSearch
         client:load
-        devices={tabletDevices}
-        comparisons={comparisonPairs}
+        comparisons={searchItems}
         placeholder="Search comparisons (e.g. iPad Pro, Galaxy Tab)..."
         searchHint="Try 'iPad Pro' or 'Galaxy Tab'"
       />
@@ -103,9 +91,10 @@ const DISPLAY_LIMIT = 15;
         </h2>
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                   ${index < section.pairs.slice(0, DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                 `}
@@ -118,9 +107,10 @@ const DISPLAY_LIMIT = 15;
           {section.pairs.length > DISPLAY_LIMIT && (
             <div id={`hidden-${section.id}`} class="hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 dark:border-gray-700">
-                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
                   <a
-                    href={`/comparison/${slug}`}
+                    href={href}
+                    rel={rel}
                     class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                       ${index < section.pairs.slice(DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                     `}

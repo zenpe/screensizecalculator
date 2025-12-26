@@ -2,8 +2,8 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
-import { devices, type Device } from '../../../data/devices';
-import { getComparisonSlug } from '../../../utils/url';
+import { devices } from '../../../data/devices';
+import { generateCategoryPairs, toSearchItems, type ComparisonPair } from '../../../utils/comparison';
 
 // SEO metadata
 const title = 'Phone Screen Size Comparison - iPhone vs Samsung vs Pixel';
@@ -13,21 +13,9 @@ const keywords =
   'phone size comparison, phone screen size comparison, compare phone sizes, iPhone vs Android size, phone dimensions comparison, smartphone size comparison';
 
 // --- Data Fetching and Processing ---
-
 const phoneDevices = devices.filter(d => d.category === 'phone');
-const comparisonPairs = [];
-for (let i = 0; i < phoneDevices.length; i++) {
-  for (let j = i + 1; j < phoneDevices.length; j++) {
-    const a = phoneDevices[i];
-    const b = phoneDevices[j];
-    comparisonPairs.push({
-      a,
-      b,
-      slug: getComparisonSlug(a.id, b.id),
-      searchText: `${a.name} ${b.name} ${a.brand} ${b.brand}`.toLowerCase(),
-    });
-  }
-}
+const comparisonPairs = generateCategoryPairs(devices, 'phone');
+const searchItems = toSearchItems(comparisonPairs);  // Lightweight data for search component
 
 // --- Dynamic Search Placeholders ---
 const latestIphone = phoneDevices.find(p => p.id.includes('iphone') && !p.id.includes('pro') && !p.id.includes('plus') && !p.id.includes('mini'));
@@ -41,12 +29,12 @@ const isSamsung = (id: string) => id.includes('samsung');
 const isGoogle = (id: string) => id.includes('google-pixel');
 
 const groupFilters = {
-  iphoneVsIphone: (p: any) => isIphone(p.a.id) && isIphone(p.b.id),
-  samsungVsSamsung: (p: any) => isSamsung(p.a.id) && isSamsung(p.b.id),
-  googleVsGoogle: (p: any) => isGoogle(p.a.id) && isGoogle(p.b.id),
-  iphoneVsSamsung: (p: any) => (isIphone(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIphone(p.b.id)),
-  iphoneVsGoogle: (p: any) => (isIphone(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isIphone(p.b.id)),
-  samsungVsGoogle: (p: any) => (isSamsung(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isSamsung(p.b.id)),
+  iphoneVsIphone: (p: ComparisonPair) => isIphone(p.a.id) && isIphone(p.b.id),
+  samsungVsSamsung: (p: ComparisonPair) => isSamsung(p.a.id) && isSamsung(p.b.id),
+  googleVsGoogle: (p: ComparisonPair) => isGoogle(p.a.id) && isGoogle(p.b.id),
+  iphoneVsSamsung: (p: ComparisonPair) => (isIphone(p.a.id) && isSamsung(p.b.id)) || (isSamsung(p.a.id) && isIphone(p.b.id)),
+  iphoneVsGoogle: (p: ComparisonPair) => (isIphone(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isIphone(p.b.id)),
+  samsungVsGoogle: (p: ComparisonPair) => (isSamsung(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isSamsung(p.b.id)),
 };
 
 const iphoneVsIphonePairs = comparisonPairs.filter(groupFilters.iphoneVsIphone);
@@ -112,8 +100,7 @@ const DISPLAY_LIMIT = 15;
     <div class="mb-12">
       <ComparisonSearch
         client:load
-        devices={phoneDevices}
-        comparisons={comparisonPairs}
+        comparisons={searchItems}
         placeholder={placeholder}
         searchHint={searchHint}
       />
@@ -129,9 +116,10 @@ const DISPLAY_LIMIT = 15;
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Initially visible items */}
-            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                   ${index < section.pairs.slice(0, DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                 `}
@@ -145,9 +133,10 @@ const DISPLAY_LIMIT = 15;
           {section.pairs.length > DISPLAY_LIMIT && (
             <div id={`hidden-${section.id}`} class="hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 dark:border-gray-700">
-                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, slug }, index) => (
+                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
                   <a
-                    href={`/comparison/${slug}`}
+                    href={href}
+                    rel={rel}
                     class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                       ${index < section.pairs.slice(DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                     `}

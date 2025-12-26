@@ -1,0 +1,266 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import FAQSection from "../components/FAQSection.astro";
+import CompareClient from "../components/CompareClient";
+
+// Check if URL has comparison parameters
+const url = Astro.url;
+const hasParams = url.searchParams.has('a') || url.searchParams.has('b');
+
+// SEO metadata
+// - No params (tool entry page): index, follow - we want this discoverable
+// - With params (dynamic result): noindex - prevent index bloat
+const title = "Screen Size Comparison Tool - Compare Any Two Displays Side by Side";
+const description = "Free screen size comparison tool. Compare iPhone vs Samsung, TV sizes (55 vs 65 vs 75 inch), monitor dimensions, and tablet screens with visual overlay. See actual size difference instantly.";
+const keywords = "screen size comparison tool, compare screen sizes, display size comparison, iPhone vs Samsung size, TV size comparison 55 vs 65, monitor size compare, tablet screen comparison, phone size comparison tool, compare display dimensions, screen area calculator";
+
+// FAQ data
+const faqs = [
+  {
+    question: "Can I compare devices from different categories?",
+    answer: "You can compare devices within the same category (phone vs phone, TV vs TV) and also TVs with projectors. Cross-category comparisons like phone vs TV are not supported as they serve different use cases."
+  },
+  {
+    question: "How is screen area calculated?",
+    answer: "Screen area is calculated using the diagonal measurement and aspect ratio. We use the formula: width × height, where dimensions are derived from the diagonal and ratio using the Pythagorean theorem."
+  },
+  {
+    question: "What does the \"Fit Ratio\" mean?",
+    answer: "The fit ratio shows how many of the smaller screen would fit inside the larger one. For example, a 2.0x fit ratio means the larger screen has twice the area of the smaller one."
+  },
+  {
+    question: "Is the visual comparison to scale?",
+    answer: "Yes, the visual comparison maintains accurate proportions between the two devices. While the absolute size on your screen depends on your display, the relative sizes are always accurate."
+  },
+  {
+    question: "Why does a larger diagonal not always mean more screen area?",
+    answer: "Screen area depends on both diagonal size and aspect ratio. A 6.7-inch phone with a 19.5:9 ratio has less area than a 6.5-inch phone with 16:9 ratio because the narrower aspect ratio reduces total surface area despite the larger diagonal."
+  },
+  {
+    question: "How do I decide between a 55-inch and 65-inch TV?",
+    answer: "Consider your viewing distance and room size. A 65-inch TV has about 40% more screen area than a 55-inch. For optimal viewing, sit 6-8 feet from a 55-inch or 8-10 feet from a 65-inch TV. Use our comparison tool to visualize the actual size difference."
+  },
+  {
+    question: "What's the difference between PPI and screen size?",
+    answer: "Screen size (diagonal) measures physical dimensions, while PPI (pixels per inch) measures pixel density. A smaller phone can have higher PPI than a large TV. Higher PPI means sharper images at close viewing distances, which matters more for phones than TVs."
+  },
+  {
+    question: "Can I share my comparison results?",
+    answer: "Yes! When you select two devices, the URL updates automatically with your comparison. Simply copy the URL from your browser's address bar to share the exact comparison with others."
+  },
+  {
+    question: "How accurate is the device data?",
+    answer: "Our database includes official specifications from manufacturers for screen diagonal, resolution, and aspect ratio. We regularly update the database with new device releases to ensure accuracy."
+  },
+  {
+    question: "Why compare screen sizes before buying?",
+    answer: "Diagonal measurements can be misleading. Two screens with the same diagonal but different aspect ratios have different areas. Visual comparison helps you understand the actual size difference, especially when upgrading phones or choosing between TV sizes."
+  }
+];
+---
+
+<Layout title={title} description={description} keywords={keywords} noindex={hasParams}>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+    <!-- Breadcrumb Navigation -->
+    <nav class="mb-4 sm:mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <li>
+          <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a>
+        </li>
+        <li>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </li>
+        <li>
+          <a href="/comparison" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Comparisons</a>
+        </li>
+        <li>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </li>
+        <li class="font-semibold text-gray-900 dark:text-gray-100">Compare Tool</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        Screen Size Comparison Tool
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Compare any two device screens side by side. Select device types and models to see visual size comparison with detailed specifications.
+      </p>
+    </div>
+
+    <!-- React component -->
+    <CompareClient client:load />
+
+    <!-- How to Use Section -->
+    <section class="mt-10 bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        How to Use This Tool
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="text-primary-600 dark:text-primary-400 font-bold text-sm">1</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">Select Device A</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Choose a device type (phone, tablet, TV, etc.) and select a specific model.</p>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="text-cyan-600 dark:text-cyan-400 font-bold text-sm">2</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">Select Device B</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Pick another device to compare. The type auto-matches for valid comparisons.</p>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="text-amber-600 dark:text-amber-400 font-bold text-sm">3</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">View Results</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">See visual overlay, size difference percentage, and detailed specs comparison.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What You Can Compare Section -->
+    <section class="mt-8 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        What You Can Compare
+      </h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">📱</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Phones</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">iPhone vs Samsung, Pixel vs OnePlus, and all major smartphone models.</p>
+          <a href="/comparison/phones" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse phone comparisons →</a>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">📺</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">TVs</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">55" vs 65" vs 75" vs 85" - see the actual size difference before buying.</p>
+          <a href="/comparison/tvs" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse TV comparisons →</a>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">🖥️</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Monitors</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">24" vs 27" vs 32", ultrawide vs standard, gaming vs productivity.</p>
+          <a href="/comparison/monitors" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse monitor comparisons →</a>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">📱</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Tablets</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">iPad Pro vs iPad Air, Samsung Galaxy Tab, Surface Pro comparisons.</p>
+          <a href="/comparison/tablets" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse tablet comparisons →</a>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">📽️</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Projectors</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">100" vs 120" vs 150" projection screens for home theater setup.</p>
+          <a href="/comparison/projectors" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse projector comparisons →</a>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xl">🔄</span>
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Cross-Category</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">TV vs Projector - decide between a large TV or projection screen.</p>
+          <a href="/comparison" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">Browse all comparisons →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Compare Screen Sizes Section -->
+    <section class="mt-8 bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        Why Compare Screen Sizes?
+      </h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
+          <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Diagonal vs Actual Size</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Screen diagonal measurements can be misleading. A 6.7" phone with 19.5:9 aspect ratio has less screen area than a 6.5" phone with 16:9 ratio.
+          </p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
+          <div class="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Make Informed Decisions</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Before upgrading your phone, buying a new TV, or choosing a monitor, see exactly how much bigger the new screen will be.
+          </p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
+          <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Visual Comparison</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Numbers alone don't tell the full story. Our visual overlay shows screens at true-to-scale proportions.
+          </p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
+          <div class="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Detailed Specifications</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Beyond size, compare resolution, pixel density (PPI), aspect ratio, and physical dimensions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <FAQSection faqs={faqs} compact={true} class="mt-8" />
+
+    <!-- Back Link -->
+    <div class="mt-8 text-center">
+      <a
+        href="/comparison"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Browse All Comparisons
+      </a>
+    </div>
+  </main>
+</Layout>

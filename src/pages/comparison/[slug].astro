@@ -9,10 +9,8 @@ import {
   devices,
   getDeviceById,
   isValidComparison,
-  calculateDimensions,
   getDisplayDimensions,
   calculateArea,
-  calculatePercentageDifference,
   calculateDevicePPI,
 } from "../../data/devices";
 import {
@@ -20,7 +18,7 @@ import {
   siteConfig,
   templateVersions,
   sanitizeMetaDescription,
-  shouldIndexComparison,
+  indexedComparisons,
 } from "../../site.config";
 import { getComparisonUrl } from "../../utils/url";
 import {
@@ -31,28 +29,28 @@ import {
 } from "../../utils/comparisonContent";
 import { shuffleWithSeed } from "../../utils/contentVariants";
 
-// Generate valid comparison pairs with alphabetical deduplication (SEO: single canonical URL)
+// Generate ONLY whitelisted comparison pages (non-whitelisted use /compare dynamic page)
 export function getStaticPaths() {
   const paths = [];
 
-  for (let i = 0; i < devices.length; i++) {
-    for (let j = i + 1; j < devices.length; j++) {
-      const deviceA = devices[i];
-      const deviceB = devices[j];
+  for (const slug of indexedComparisons) {
+    const [idA, idB] = slug.split('-vs-');
+    const deviceA = getDeviceById(idA);
+    const deviceB = getDeviceById(idB);
 
-      // Check if this comparison is valid based on category rules
-      if (isValidComparison(deviceA.category, deviceB.category)) {
-        // Enforce alphabetical order for URL slug to prevent duplicates
-        const [first, second] =
-          deviceA.id < deviceB.id ? [deviceA, deviceB] : [deviceB, deviceA];
-
-        const slug = `${first.id}-vs-${second.id}`;
-        paths.push({
-          params: { slug },
-          props: { deviceA: first, deviceB: second },
-        });
-      }
+    // Skip if either device doesn't exist
+    if (!deviceA || !deviceB) {
+      console.warn(`[comparison] Skipping ${slug}: device not found`);
+      continue;
     }
+
+    // Verify alphabetical order
+    const [first, second] = deviceA.id < deviceB.id ? [deviceA, deviceB] : [deviceB, deviceA];
+
+    paths.push({
+      params: { slug },
+      props: { deviceA: first, deviceB: second },
+    });
   }
 
   return paths;
@@ -63,9 +61,6 @@ const { deviceA, deviceB } = Astro.props;
 
 // Comparison slug for consistent hashing
 const comparisonSlug = `${deviceA.id}-vs-${deviceB.id}`;
-
-// Check if this comparison should be indexed by search engines
-const shouldIndex = shouldIndexComparison(comparisonSlug);
 
 // Helper: format device name with size (only if name doesn't already contain the size)
 const formatDeviceWithSize = (device: typeof deviceA) => {
@@ -376,7 +371,6 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
   keywords={keywords}
   ogImage={`/og/${primaryDevice.id}.png`}
   modifiedTime={lastUpdated}
-  noindex={!shouldIndex}
 >
   <Header />
 

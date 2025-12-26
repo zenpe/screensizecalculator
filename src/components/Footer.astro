@@ -1,6 +1,6 @@
 ---
 // Footer component with comprehensive navigation
-import { getComparisonSlug } from '../utils/url';
+import { getComparisonLink } from '../utils/url';
 import { devices } from '../data/devices';
 import CategoryIcon from './icons/CategoryIcon.astro';
 import {
@@ -38,7 +38,7 @@ if (latestIphone && latestSamsungUltra) {
   });
 }
 
-// Combine and map to final structure
+// Combine and map to final structure with SEO-aware links
 const popularComparisons = [
   phoneComparisons[0],
   { id1: '65-inch-tv', id2: '55-inch-tv', text: '65" vs 55" TV' },
@@ -47,10 +47,13 @@ const popularComparisons = [
   { id1: '120-inch-projector-screen', id2: '85-inch-tv', text: '120" Projector vs 85" TV' },
   { id1: '75-inch-tv', id2: '65-inch-tv', text: '75" vs 65" TV' },
 ].filter(Boolean)
-.map(({ id1, id2, text }) => ({
-  url: `/comparison/${getComparisonSlug(id1, id2)}`,
-  text
-}));
+.map(({ id1, id2, text }) => {
+  const linkData = getComparisonLink(id1, id2);
+  return {
+    ...linkData,
+    text
+  };
+});
 
 // Organization Schema for SEO
 const organizationSchema = {
@@ -180,13 +183,22 @@ const organizationSchema = {
         <h3 class="text-sm font-semibold text-white">Popular Comparisons</h3>
       </div>
       <div class="flex flex-wrap gap-2">
-        {popularComparisons.map(({ url, text }) => (
-          <a
-            href={url}
-            class="px-3 py-2 bg-gray-800/60 hover:bg-gray-700 border border-gray-700/50 hover:border-gray-600 rounded-lg text-xs text-gray-300 hover:text-white transition-all"
-          >
-            {text}
-          </a>
+        {popularComparisons.map(({ href, rel, isStatic, text }) => (
+          isStatic ? (
+            <a
+              href={href}
+              class="px-3 py-2 bg-gray-800/60 hover:bg-gray-700 border border-gray-700/50 hover:border-gray-600 rounded-lg text-xs text-gray-300 hover:text-white transition-all"
+            >
+              {text}
+            </a>
+          ) : (
+            <span
+              data-href={href}
+              class="px-3 py-2 bg-gray-800/60 hover:bg-gray-700 border border-gray-700/50 hover:border-gray-600 rounded-lg text-xs text-gray-300 hover:text-white transition-all cursor-pointer js-compare-link"
+            >
+              {text}
+            </span>
+          )
         ))}
       </div>
     </div>
@@ -220,6 +232,28 @@ const organizationSchema = {
     const backToTopBtn = document.getElementById('back-to-top');
     backToTopBtn?.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Handle JS-only comparison links (link obfuscation for non-whitelisted)
+    document.querySelectorAll('.js-compare-link').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const href = (e.currentTarget as HTMLElement).dataset.href;
+        if (href) {
+          // Support ctrl/cmd+click for new tab
+          if ((e as MouseEvent).ctrlKey || (e as MouseEvent).metaKey) {
+            window.open(href, '_blank');
+          } else {
+            window.location.href = href;
+          }
+        }
+      });
+      // Support middle-click for new tab
+      el.addEventListener('auxclick', (e) => {
+        if ((e as MouseEvent).button === 1) {
+          const href = (e.currentTarget as HTMLElement).dataset.href;
+          if (href) window.open(href, '_blank');
+        }
+      });
     });
   </script>
 </footer>

@@ -4,7 +4,7 @@ import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import FAQSection from "../components/FAQSection.astro";
 import { devices } from "../data/devices";
-import { getComparisonSlug } from "../utils/url";
+import { getComparisonSlug, getComparisonLink } from "../utils/url";
 import { siteConfig } from "../site.config";
 
 const title =
@@ -91,7 +91,8 @@ const popularComparisons = [
   .map(({ a, b, label }) => {
     const deviceA = devices.find((d) => d.id === a);
     const deviceB = devices.find((d) => d.id === b);
-    return { slug: getComparisonSlug(a, b), label, deviceA, deviceB };
+    const linkData = getComparisonLink(a, b);
+    return { slug: getComparisonSlug(a, b), href: linkData.href, rel: linkData.rel, label, deviceA, deviceB };
   })
   .filter((p) => p.deviceA && p.deviceB);
 
@@ -264,9 +265,10 @@ const breadcrumbData = {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {
-            popularComparisons.map(({ slug, label, deviceA, deviceB }) => (
+            popularComparisons.map(({ href, rel, label, deviceA, deviceB }) => (
               <a
-                href={`/comparison/${slug}`}
+                href={href}
+                rel={rel}
                 class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
               >
                 <div class="flex items-center justify-between mb-2">
