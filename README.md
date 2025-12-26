@@ -8,37 +8,46 @@ npm create astro@latest -- --template basics
 
 ## 📅 Page Date Logic (SEO)
 
-页面更新日期用于 Schema.org `dateModified` 和 OG `article:modified_time`。
+页面更新日期用于 Schema.org `dateModified`、OG `article:modified_time` 和 Sitemap `lastmod`。
 
-### 各页面类型日期策略
+### 日期策略
 
-| 页面类型 | 日期来源 | 文件 |
-|----------|----------|------|
-| 设备页 | `MAX(device.updatedAt, 分散日期)` | `[deviceId]-screen-size.astro` |
-| 比较页 | `MAX(两设备updatedAt, 分散日期)` | `comparison/[slug].astro` |
-| 博客页 | frontmatter `pubDate`/`updatedDate` | `BlogPost.astro` |
-| 静态页 | `contentDates.staticContent` (仅sitemap) | `astro.config.mjs` |
-
-### 分散日期算法 (`src/site.config.ts`)
-
-避免所有页面日期相同，基于页面ID生成分散日期：
+采用 **模板版本日期** 作为保底，内容日期优先的策略：
 
 ```
-基准 = 周一（动态选择）
-偏移 = hash(pageId) % 7  → 0-6天
-日期 = MIN(基准 + 偏移, 今天)
+最终日期 = MAX(内容日期, 模板版本日期)
 ```
 
-**基准选择：**
-- 周一~周三构建 → 用上周一（日期距今 2-10 天）
-- 周四~周日构建 → 用本周一（日期距今 0-6 天）
+### 各页面类型日期来源
+
+| 页面类型 | 日期计算 | 相关文件 |
+|----------|----------|----------|
+| 设备详情页 | `MAX(device.updatedAt, templateVersions.deviceTemplate)` | `[deviceId]-screen-size.astro` |
+| 对比页 | `MAX(deviceA.updatedAt, deviceB.updatedAt, templateVersions.comparisonTemplate)` | `comparison/[slug].astro` |
+| 博客页 | `MAX(updatedDate \|\| pubDate, templateVersions.blogTemplate)` | `BlogPost.astro` |
+| 静态页 | `templateVersions.staticPages` | `astro.config.mjs` |
 
 ### 配置项 (`src/site.config.ts`)
 
-| 配置 | 用途 |
-|------|------|
-| `contentDates.blogContent` | 博客页 sitemap lastmod |
-| `contentDates.staticContent` | 静态页 sitemap lastmod |
+```typescript
+export const templateVersions = {
+  deviceTemplate: '2025-12-26',      // 设备详情页模板版本
+  comparisonTemplate: '2025-12-26',  // 对比页模板版本
+  blogTemplate: '2025-12-26',        // 博客模板版本
+  staticPages: '2025-12-26',         // 静态页版本
+};
+```
+
+### 何时更新模板版本日期
+
+- **修改模板布局/结构**时：更新对应的模板版本日期
+- **修改设备数据**时：更新 `device.updatedAt` 字段
+- **修改博客内容**时：更新 frontmatter 中的 `updatedDate`
+
+### 日期处理流程
+
+1. **页面渲染**：计算 `MAX(内容日期, 模板日期)` 用于 Schema.org 和 OG 标签
+2. **Sitemap 生成**：`astro.config.mjs` 中的 `serialize` 函数使用相同逻辑计算 `lastmod`
 
 ---
 

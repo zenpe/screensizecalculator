@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
-import { contentDates, getScatteredDate } from './src/site.config.ts';
+import { templateVersions } from './src/site.config.ts';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -10,8 +10,14 @@ import mdx from '@astrojs/mdx';
 import rehypeExternalLinks from 'rehype-external-links';
 
 // Create a map for faster device date lookups.
-// Blog dates will be handled directly from the entry object provided by the sitemap integration.
 const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
+
+// Helper: get the latest date from multiple date strings
+function getLatestDate(...dates) {
+  const validDates = dates.filter(d => d).map(d => new Date(d).getTime());
+  if (validDates.length === 0) return null;
+  return new Date(Math.max(...validDates)).toISOString();
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,57 +31,43 @@ export default defineConfig({
     mdx(),
     sitemap({
       serialize(page) {
-        /** @type {string | undefined} */
-        let pageSpecificDateStr;
-        /** @type {string | undefined} */
-        let templateDateStr;
+        /** @type {string | null} */
+        let lastmod = null;
 
         // Rule 1: Blog Posts (from content collections)
-        // The sitemap integration provides the full `entry` for pages from content collections.
         // @ts-ignore - entry is provided by sitemap integration for content collection pages
         if (page.entry && page.entry.data && page.entry.data.pubDate) {
           // @ts-ignore
-          pageSpecificDateStr = page.entry.data.pubDate;
-          templateDateStr = contentDates.blogContent;
+          const contentDate = page.entry.data.updatedDate || page.entry.data.pubDate;
+          lastmod = getLatestDate(contentDate, templateVersions.blogTemplate);
         }
         // Rule 2: Comparison Pages
         else if (page.url.includes('/comparison/')) {
           const urlPart = page.url.split('/comparison/').pop();
           const slug = urlPart ? urlPart.replace(/\/$/, '') : '';
           const deviceIds = slug.split('-vs-');
+
           if (deviceIds.length === 2) {
             const date1 = deviceDateMap.get(deviceIds[0]);
             const date2 = deviceDateMap.get(deviceIds[1]);
-            const validDates = [date1, date2].filter((d) => d !== undefined);
-            const dates = validDates.map(d => new Date(/** @type {string} */ (d)).getTime());
-            if (dates.length > 0) {
-              pageSpecificDateStr = new Date(Math.max(...dates)).toISOString();
-            }
+            lastmod = getLatestDate(date1, date2, templateVersions.comparisonTemplate);
+          } else {
+            lastmod = getLatestDate(templateVersions.comparisonTemplate);
           }
-          templateDateStr = getScatteredDate(slug);
         }
         // Rule 3: Device Detail Pages
         else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)) {
           const match = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/);
           const deviceId = match ? match[1] : null;
-          if (deviceId) {
-            pageSpecificDateStr = deviceDateMap.get(deviceId);
-            templateDateStr = getScatteredDate(deviceId);
-          }
+          const deviceDate = deviceId ? deviceDateMap.get(deviceId) : null;
+          lastmod = getLatestDate(deviceDate, templateVersions.deviceTemplate);
         }
         // Rule 4: All other (static) pages
         else {
-          templateDateStr = contentDates.staticContent;
+          lastmod = getLatestDate(templateVersions.staticPages);
         }
 
-        // Combine dates and find the most recent one
-        /** @type {Date[]} */
-        const datesToCompare = [];
-        if (pageSpecificDateStr) datesToCompare.push(new Date(pageSpecificDateStr));
-        if (templateDateStr) datesToCompare.push(new Date(templateDateStr));
-
-        if (datesToCompare.length > 0) {
-          const lastmod = new Date(Math.max(...datesToCompare.map(d => d.getTime()))).toISOString();
+        if (lastmod) {
           return {
             url: page.url,
             lastmod: lastmod,

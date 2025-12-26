@@ -18,7 +18,7 @@ import {
 import {
   getAmazonSearchUrl,
   siteConfig,
-  getScatteredDate,
+  templateVersions,
   sanitizeMetaDescription,
 } from "../../site.config";
 import { getComparisonUrl } from "../../utils/url";
@@ -250,12 +250,12 @@ const toISO8601 = (date: string): string => {
   return `${date}T10:00:00+08:00`;
 };
 
-// Use scattered date based on comparison slug for natural distribution
-const scatteredDate = new Date(getScatteredDate(comparisonSlug)).getTime();
+// Use template version date as fallback, device dates take priority if newer
+const templateDate = new Date(templateVersions.comparisonTemplate).getTime();
 const deviceDates = [primaryDevice.updatedAt, secondaryDevice.updatedAt]
   .filter((d): d is string => Boolean(d))
   .map((d) => new Date(d).getTime());
-const allDates = [...deviceDates, scatteredDate];
+const allDates = [...deviceDates, templateDate];
 const displayDateStr = new Date(Math.max(...allDates))
   .toISOString()
   .split("T")[0];

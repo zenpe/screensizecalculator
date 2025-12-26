@@ -71,49 +71,20 @@ export function validateMetaDescription(description: string): { valid: boolean; 
   return { valid: true };
 }
 
-// Generate a deterministic offset (0-6 days) based on string hash
-function getDateOffset(id: string): number {
-  let hash = 0;
-  for (const char of id) hash = ((hash << 5) - hash) + char.charCodeAt(0);
-  return Math.abs(hash) % 7;
-}
+// Template version dates - update ONLY when you actually modify the templates
+// These serve as fallback dates, actual content dates take priority if newer
+export const templateVersions = {
+  // Device detail page ([deviceId]-screen-size.astro)
+  deviceTemplate: '2025-12-26',
 
-// Get Monday as base date
-// Mon-Wed: use last week's Monday (ensures 4-10 days spread)
-// Thu-Sun: use this week's Monday (ensures 0-6 days spread)
-function getBaseMonday(): Date {
-  const today = new Date();
-  const day = today.getDay(); // 0=Sun, 1=Mon, ...
-  const daysSinceMonday = (day + 6) % 7; // Mon=0, Tue=1, ..., Sun=6
+  // Comparison page (comparison/[slug].astro)
+  comparisonTemplate: '2025-12-26',
 
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - daysSinceMonday);
+  // Blog post template (BlogPost.astro)
+  blogTemplate: '2025-12-26',
 
-  // Mon(0), Tue(1), Wed(2) → use last week's Monday
-  if (daysSinceMonday <= 2) {
-    monday.setDate(monday.getDate() - 7);
-  }
-
-  return monday;
-}
-
-// Get scattered date for a page, ensuring it doesn't exceed today
-export function getScatteredDate(pageId: string): string {
-  const baseDate = getBaseMonday();
-  const offset = getDateOffset(pageId);
-  baseDate.setDate(baseDate.getDate() + offset);
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const finalDate = baseDate > today ? today : baseDate;
-  return finalDate.toISOString().split('T')[0];
-}
-
-// Content dates for sitemap (blog and static pages)
-export const contentDates = {
-  blogContent: '2025-12-22',
-  staticContent: '2025-12-22',
+  // Static pages (homepage, calculators, etc.)
+  staticPages: '2025-12-26',
 };
 
 // Helper function to generate Amazon search URL with affiliate tag

@@ -11,7 +11,7 @@ import {
   calculateDevicePPI,
   type Device,
 } from "../data/devices";
-import { getAmazonSearchUrl, siteConfig, getScatteredDate, sanitizeMetaDescription } from "../site.config";
+import { getAmazonSearchUrl, siteConfig, templateVersions, sanitizeMetaDescription } from "../site.config";
 import { getComparisonUrl } from "../utils/url";
 import {
   getIntroVariant,
@@ -109,11 +109,11 @@ const toISO8601 = (date: string): string => {
   return `${date}T10:00:00+08:00`;
 };
 
-// Calculate display date: MAX(device.updatedAt, scattered template date)
+// Calculate display date: MAX(device.updatedAt, template version date)
 // This ensures freshness when either device data or page template is updated
 const deviceDate = device.updatedAt ? new Date(device.updatedAt).getTime() : 0;
-const scatteredDate = new Date(getScatteredDate(device.id)).getTime();
-const displayDateStr = new Date(Math.max(deviceDate, scatteredDate))
+const templateDate = new Date(templateVersions.deviceTemplate).getTime();
+const displayDateStr = new Date(Math.max(deviceDate, templateDate))
   .toISOString()
   .split("T")[0];
 const lastUpdated = toISO8601(displayDateStr);
