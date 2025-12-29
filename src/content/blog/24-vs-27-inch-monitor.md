@@ -62,7 +62,7 @@ However, 1080p on 24" is starting to feel dated. If budget allows, consider a **
 ### 27-Inch Monitors
 
 A 27-inch monitor really shines at **1440p (2560x1440)** or higher:
-- **109 PPI at 1440p** - Sweet spot for clarity
+- **109 PPI at 1440p** - Good balance for clarity
 - **163 PPI at 4K** - Extremely sharp
 
 **Avoid 1080p on 27"** - At 82 PPI, individual pixels become visible, making text appear fuzzy and images less crisp.
@@ -160,7 +160,7 @@ Your sitting distance significantly impacts which size feels comfortable:
 |----------|------------------|
 | **Under 2 ft** | 24" (27" may feel too large) |
 | **2-2.5 ft** | 24" or 27" |
-| **2.5-3.5 ft** | 27" (sweet spot) |
+| **2.5-3.5 ft** | 27" (recommended) |
 | **Over 3.5 ft** | 27" or larger |
 
 **Pro Tip:** Measure your current desk setup before deciding. If you sit very close, a 27" monitor might require uncomfortable head movement to see corners.
@@ -177,7 +177,7 @@ Your sitting distance significantly impacts which size feels comfortable:
 ### Mid-Range ($200-350)
 
 - **24" 1440p:** Great value, sharp display
-- **27" 1440p:** Sweet spot for most users
+- **27" 1440p:** Popular choice for most users
 
 ### Premium ($350+)
 

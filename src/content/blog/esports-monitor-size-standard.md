@@ -99,14 +99,14 @@ Every tournament uses identical monitors for competitive integrity.
 | **Eye travel distance** | Minimal | 12% more |
 | **Peripheral info** | In focus | May be peripheral |
 
-### Reaction Time Impact
+### Reaction Time Considerations
 
-Studies suggest larger screens can add **10-30ms** to reaction times due to:
-- Increased eye movement
+Larger screens may affect reaction times due to:
+- Increased eye movement distance
 - More visual information to process
-- Greater physical mouse distances
+- Greater physical mouse travel
 
-In esports, 30ms is the difference between winning and losing.
+The exact impact varies by player and game type, but professional players consistently choose smaller screens for twitch-based games.
 
 ---
 

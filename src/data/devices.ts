@@ -198,6 +198,7 @@ export const devices: Device[] = [
     resolution: '2622 x 1206',
     releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
+    expertSummary: 'Apple finally brings 90Hz to the base iPhone after years of user complaints about 60Hz. The 0.2-inch screen increase over iPhone 16 is subtle, but the smoother scrolling is immediately noticeable. Worth upgrading from iPhone 13 or older; iPhone 15/16 users should weigh whether 90Hz alone justifies the cost.',
     phone: {
       weight: 194,
       battery: 3850,
@@ -219,6 +220,7 @@ export const devices: Device[] = [
     resolution: '2736 x 1260',
     releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
+    expertSummary: 'At just 5.5mm thick, the iPhone 17 Air is Apple\'s thinnest phone ever—but that comes with trade-offs. The 3200mAh battery is smaller than the standard iPhone 17, so heavy users may need to charge by evening. Best suited for those who prioritize aesthetics and pocket comfort over all-day battery life.',
     phone: {
       weight: 168,
       battery: 3200,
@@ -240,6 +242,7 @@ export const devices: Device[] = [
     resolution: '2622 x 1206',
     releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
+    expertSummary: 'The iPhone 17 Pro maintains the 6.3-inch sweet spot that debuted with iPhone 16 Pro. If you\'re choosing between this and the Pro Max, consider: the Pro fits in more pockets and is easier to use one-handed, while the Pro Max offers better battery life and a larger canvas for video editing.',
     phone: {
       weight: 199,
       battery: 3900,
@@ -261,7 +264,7 @@ export const devices: Device[] = [
     resolution: '2868 x 1320',
     releasedAt: '2025-09-10',
     updatedAt: '2025-09-10',
-    expertSummary: 'The iPhone 17 Pro Max features a stunning 6.9-inch Super Retina XDR display, making it ideal for users seeking the ultimate visual experience and gaming performance. Its expansive screen also significantly enhances multitasking efficiency.',
+    expertSummary: 'The 6.9-inch display is genuinely massive—great for split-screen multitasking and watching movies, but challenging for one-handed use. The 227g weight is noticeable in a shirt pocket. Ideal for users who treat their phone as a primary content consumption device; less practical for those who text while walking.',
     phone: {
       weight: 227,
       battery: 4685,
@@ -285,7 +288,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
-    expertSummary: 'The iPhone 16 offers a perfectly balanced 6.1-inch display that fits comfortably in one hand while delivering crisp visuals. An excellent choice for users who prioritize portability without sacrificing screen quality.',
+    expertSummary: 'The iPhone 16 maintains the 6.1-inch size that Apple has used since iPhone 12. At this diagonal, the phone fits most hands comfortably while still offering enough screen for reading and video. The 60Hz display is the main limitation—noticeable if you\'ve used 120Hz phones, less so if you haven\'t.',
     phone: {
       weight: 170,
       battery: 3561,
@@ -307,7 +310,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
-    expertSummary: 'The iPhone 16 Plus delivers a spacious 6.7-inch display perfect for media consumption and extended reading sessions. Its larger battery complements the bigger screen for all-day entertainment.',
+    expertSummary: 'The 6.7-inch Plus model exists for users who want a big screen without paying Pro prices. The 4674mAh battery is larger than the Pro Max, which partially compensates for the less efficient 60Hz display. Two-handed use is required for most tasks; consider the Pro if you also want 120Hz.',
     phone: {
       weight: 199,
       battery: 4674,
@@ -329,7 +332,7 @@ export const devices: Device[] = [
     resolution: '2622 x 1206',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
-    expertSummary: 'The iPhone 16 Pro strikes the perfect balance between screen size and handling with its 6.3-inch ProMotion display. The 120Hz refresh rate ensures buttery-smooth scrolling for professionals and enthusiasts alike.',
+    expertSummary: 'The iPhone 16 Pro grew from 6.1 to 6.3 inches compared to the 15 Pro—a subtle but noticeable increase. The 120Hz ProMotion display makes a real difference in daily use, especially when scrolling. At 199g, it\'s heavier than the base model but lighter than the Pro Max.',
     phone: {
       weight: 199,
       battery: 3582,
@@ -351,7 +354,7 @@ export const devices: Device[] = [
     resolution: '2868 x 1320',
     releasedAt: '2024-09-20',
     updatedAt: '2024-09-20',
-    expertSummary: 'The iPhone 16 Pro Max boasts the largest iPhone display ever at 6.9 inches, offering an immersive canvas for creative work and cinematic viewing. Its ProMotion technology and peak brightness make it a powerhouse for HDR content.',
+    expertSummary: 'At 6.9 inches, the 16 Pro Max is Apple\'s largest phone to date. The screen grew 0.2 inches from the 15 Pro Max, pushing the body dimensions to 163mm tall. The 227g weight is noticeable—this is not a phone for small hands or tight pockets. Battery life is the best in the iPhone lineup.',
     phone: {
       weight: 227,
       battery: 4685,
@@ -375,7 +378,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
-    expertSummary: 'The iPhone 15 brings the Dynamic Island to the standard lineup with a vibrant 6.1-inch Super Retina XDR display. A smart upgrade for users seeking flagship features in a compact, pocket-friendly form factor.',
+    expertSummary: 'The iPhone 15 brought Dynamic Island to the non-Pro lineup and switched to USB-C. The 6.1-inch screen is identical in size to the 14, but the new contoured edges make it feel slightly thinner in hand. Still stuck at 60Hz, which is increasingly noticeable as competitors move to higher refresh rates.',
     phone: {
       weight: 171,
       battery: 3349,
@@ -397,7 +400,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
-    expertSummary: 'The iPhone 15 Plus combines a generous 6.7-inch display with exceptional battery life, making it the go-to choice for users who want big-screen entertainment without the Pro price tag.',
+    expertSummary: 'The 15 Plus offers the largest battery in the iPhone 15 lineup at 4383mAh. The 6.7-inch screen matches the Pro Max in size but not in refresh rate—still 60Hz. A reasonable choice if screen size and battery matter more than ProMotion, but the price gap to the 16 Plus is often small.',
     phone: {
       weight: 201,
       battery: 4383,
@@ -419,7 +422,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
-    expertSummary: 'The iPhone 15 Pro features a lightweight titanium design with a 6.1-inch ProMotion display. Its compact size paired with pro-level features makes it ideal for one-handed power users.',
+    expertSummary: 'The 15 Pro introduced titanium to the iPhone lineup, dropping weight to 187g from the 14 Pro\'s 206g. The 6.1-inch size remained unchanged, but the lighter build makes a noticeable difference during extended use. The Action Button replaced the mute switch for the first time.',
     phone: {
       weight: 187,
       battery: 3274,
@@ -441,7 +444,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2023-09-22',
     updatedAt: '2023-09-22',
-    expertSummary: 'The iPhone 15 Pro Max delivers the ultimate big-screen iPhone experience with its 6.7-inch ProMotion display and titanium construction. Perfect for photographers and videographers who demand the best optical zoom and screen real estate.',
+    expertSummary: 'The 15 Pro Max was the only iPhone 15 with the 5x telephoto lens—Apple reserved it as a Max exclusive. The 6.7-inch display and titanium frame weigh 221g, lighter than the 14 Pro Max. If you need the longest zoom and largest screen, this was the only option until the 16 Pro Max.',
     phone: {
       weight: 221,
       battery: 4422,
@@ -465,7 +468,7 @@ export const devices: Device[] = [
     resolution: '2532 x 1170',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
-    expertSummary: 'The iPhone 14 offers a reliable 6.1-inch Super Retina XDR display with improved durability and crash detection. A solid choice for users who want a dependable everyday smartphone with excellent screen quality.',
+    expertSummary: 'The iPhone 14 was essentially an iPhone 13 with satellite SOS and crash detection. The 6.1-inch display and A15 chip were unchanged. At this point, it\'s hard to recommend over newer models unless heavily discounted. The notch design looks dated compared to Dynamic Island on newer iPhones.',
     phone: {
       weight: 172,
       battery: 3279,
@@ -487,7 +490,7 @@ export const devices: Device[] = [
     resolution: '2778 x 1284',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
-    expertSummary: 'The iPhone 14 Plus introduced the large 6.7-inch display to the non-Pro lineup, offering outstanding battery life and immersive viewing. Ideal for users who want maximum screen size at a more accessible price point.',
+    expertSummary: 'The 14 Plus was Apple\'s first attempt at a large non-Pro iPhone since the iPhone 8 Plus. The 6.7-inch screen and 4325mAh battery delivered strong battery life, but sales were disappointing—many buyers preferred the Pro Max at a similar price. The Plus line continued, but this model is now dated.',
     phone: {
       weight: 203,
       battery: 4325,
@@ -509,7 +512,7 @@ export const devices: Device[] = [
     resolution: '2556 x 1179',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
-    expertSummary: 'The iPhone 14 Pro debuted the innovative Dynamic Island and Always-On Display on a 6.1-inch ProMotion screen. A game-changer for users who want cutting-edge features in a manageable form factor.',
+    expertSummary: 'The 14 Pro introduced Dynamic Island and Always-On Display to iPhone. The 6.1-inch screen kept the same size as the 13 Pro, but the new pill-shaped cutout changed how notifications work. At 206g, it was heavier than the titanium 15 Pro that followed.',
     phone: {
       weight: 206,
       battery: 3200,
@@ -531,7 +534,7 @@ export const devices: Device[] = [
     resolution: '2796 x 1290',
     releasedAt: '2022-09-16',
     updatedAt: '2022-09-16',
-    expertSummary: 'The iPhone 14 Pro Max combines a stunning 6.7-inch ProMotion display with the Dynamic Island and exceptional battery life. The ultimate choice for power users who demand the largest screen with all pro features.',
+    expertSummary: 'The 14 Pro Max was the heaviest iPhone ever at 240g—a weight Apple reduced significantly with titanium in the 15 Pro Max. The 6.7-inch display with Dynamic Island and Always-On was impressive at launch, but the stainless steel frame feels dated compared to newer titanium models.',
     phone: {
       weight: 240,
       battery: 4323,
@@ -555,6 +558,7 @@ export const devices: Device[] = [
     resolution: '2532 x 1170',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
+    expertSummary: 'Still a capable device in 2024, the iPhone 13 offers the same 6.1-inch screen size as newer models at a significantly lower price. The 60Hz display feels dated compared to ProMotion models, but for casual users who primarily browse and message, the difference is less noticeable than spec sheets suggest.',
     phone: {
       weight: 174,
       battery: 3227,
@@ -576,6 +580,7 @@ export const devices: Device[] = [
     resolution: '2340 x 1080',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
+    expertSummary: 'The last of its kind—Apple discontinued the Mini line after this model. At 5.4 inches, it\'s the only modern iPhone that truly fits small hands and tight pockets. Battery life is the main compromise; expect to charge by late afternoon with heavy use. A collector\'s item for compact phone enthusiasts.',
     phone: {
       weight: 140,
       battery: 2406,
@@ -597,7 +602,7 @@ export const devices: Device[] = [
     resolution: '2532 x 1170',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
-    expertSummary: 'The iPhone 13 Pro introduced ProMotion 120Hz display technology to the 6.1-inch form factor, revolutionizing scrolling smoothness. A landmark device that brought adaptive refresh rate to iPhone for the first time.',
+    expertSummary: 'The 13 Pro was the first iPhone with 120Hz ProMotion. The 6.1-inch display size matched the 12 Pro, but the adaptive refresh rate was a significant upgrade. No longer sold by Apple, but refurbished units offer good value if you can accept the notch instead of Dynamic Island.',
     phone: {
       weight: 204,
       battery: 3095,
@@ -619,7 +624,7 @@ export const devices: Device[] = [
     resolution: '2778 x 1284',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
-    expertSummary: 'The iPhone 13 Pro Max pairs a massive 6.7-inch ProMotion display with record-breaking battery life. Its combination of screen size, 120Hz smoothness, and all-day endurance made it a favorite among content creators.',
+    expertSummary: 'The 13 Pro Max combined the first 120Hz iPhone display with a 4352mAh battery—the largest in any iPhone at the time. The 6.7-inch screen and 238g weight made it substantial in hand. Battery life was genuinely impressive, often lasting into a second day with moderate use.',
     phone: {
       weight: 238,
       battery: 4352,
@@ -643,7 +648,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
-    expertSummary: 'The Samsung Galaxy S25 Ultra delivers an unparalleled visual experience for content creators and power users with its premium Dynamic AMOLED display and ultra-high resolution. The integrated S Pen further enhances productivity.',
+    expertSummary: 'The S25 Ultra finally addresses the sharp corners that made previous Ultras uncomfortable to hold. At 218g, it\'s lighter than the S24 Ultra despite the same 6.8-inch screen. The S Pen remains a key differentiator from iPhone—if you take handwritten notes or sign documents frequently, no other flagship matches this functionality.',
     phone: {
       weight: 218,
       battery: 5000,
@@ -665,7 +670,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
-    expertSummary: 'The Samsung Galaxy S25+ offers a sweet spot between size and performance with its 6.7-inch QHD+ Dynamic AMOLED display. Perfect for users who want flagship features without the Ultra bulk.',
+    expertSummary: 'The S25+ is the overlooked middle child—same QHD+ resolution as the Ultra but without the S Pen or telephoto camera. At $300 less than the Ultra, it\'s worth considering if you\'ve never used the S Pen on previous Samsung phones. The 190g weight makes a noticeable difference during extended use.',
     phone: {
       weight: 190,
       battery: 4900,
@@ -687,7 +692,7 @@ export const devices: Device[] = [
     resolution: '2340 x 1080',
     releasedAt: '2025-02-07',
     updatedAt: '2025-02-07',
-    expertSummary: 'The Samsung Galaxy S25 packs flagship performance into a compact 6.2-inch form factor with a stunning Dynamic AMOLED display. Ideal for one-handed use without compromising on Samsung\'s premium experience.',
+    expertSummary: 'At 6.2 inches, the base S25 is one of the few compact Android flagships still available. The 1080p resolution is a step down from the Plus and Ultra, but at this screen size, the difference is barely perceptible. Best choice for users switching from older iPhones who want a similar hand feel.',
     phone: {
       weight: 162,
       battery: 4000,
@@ -711,7 +716,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
-    expertSummary: 'The Samsung Galaxy S24 Ultra features a brilliant 6.8-inch QHD+ display with Galaxy AI integration. Its titanium frame and built-in S Pen make it the ultimate productivity powerhouse for demanding users.',
+    expertSummary: 'The S24 Ultra introduced titanium to Samsung\'s lineup, but at 232g it\'s noticeably heavier than the S25 Ultra. The sharp corners dig into palms during extended use—a design flaw Samsung corrected in the S25. Still excellent value if bought discounted; the 6.8-inch QHD+ display and S Pen haven\'t changed.',
     phone: {
       weight: 232,
       battery: 5000,
@@ -733,7 +738,7 @@ export const devices: Device[] = [
     resolution: '3120 x 1440',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
-    expertSummary: 'The Samsung Galaxy S24+ delivers a gorgeous 6.7-inch QHD+ display with excellent outdoor visibility. A balanced choice for users seeking a large screen with flagship performance and AI features.',
+    expertSummary: 'The S24+ was Samsung\'s first phone with Galaxy AI features like Circle to Search and Live Translate. The 6.7-inch QHD+ display is identical in specs to the S25+, making this a smart buy at current discounted prices. Skip if you need the latest Snapdragon chip; consider if AI features matter more than raw performance.',
     phone: {
       weight: 196,
       battery: 4900,
@@ -755,7 +760,7 @@ export const devices: Device[] = [
     resolution: '2340 x 1080',
     releasedAt: '2024-01-31',
     updatedAt: '2024-01-31',
-    expertSummary: 'The Samsung Galaxy S24 brings Galaxy AI to a pocket-friendly 6.2-inch display with vibrant colors and smooth 120Hz refresh. The most accessible way to experience Samsung\'s latest innovations.',
+    expertSummary: 'The compact S24 proved there\'s still demand for smaller flagships. At 6.2 inches with 1080p, it\'s the right choice for users who find modern phones too large. Seven years of updates promised. The Exynos chip in some regions runs warmer than Snapdragon—check your market before buying.',
     phone: {
       weight: 167,
       battery: 4000,
@@ -779,6 +784,7 @@ export const devices: Device[] = [
     resolution: '1080 x 2424',
     releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
+    expertSummary: 'Google\'s base Pixel now matches the Pro in screen size at 6.3 inches, eliminating the old compromise of choosing a smaller display for a lower price. The real differentiator is now camera hardware and RAM, not screen real estate. Best value for users who prioritize Google\'s AI features over telephoto lenses.',
     phone: {
       weight: 185,
       battery: 4500,
@@ -800,6 +806,7 @@ export const devices: Device[] = [
     resolution: '1280 x 2856',
     releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
+    expertSummary: 'The Pixel 10 Pro keeps the compact 6.3-inch form factor while packing a higher resolution display than the standard model. Unlike Samsung and Apple, Google offers the same screen size across Pro tiers—choose based on camera needs, not hand size. The 20:9 aspect ratio makes it narrower than iPhones despite similar diagonal measurements.',
     phone: {
       weight: 199,
       battery: 4700,
@@ -821,6 +828,7 @@ export const devices: Device[] = [
     resolution: '1344 x 2992',
     releasedAt: '2025-08-20',
     updatedAt: '2025-08-20',
+    expertSummary: 'The XL variant is for users who want the largest Pixel screen available. At 6.8 inches with a 20:9 ratio, it\'s tall and narrow—great for scrolling social media, less ideal for watching widescreen video. The 5200mAh battery is the largest in the Pixel lineup, easily lasting a full day of heavy use.',
     phone: {
       weight: 221,
       battery: 5200,
@@ -844,6 +852,7 @@ export const devices: Device[] = [
     resolution: '2400 x 1080',
     releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
+    expertSummary: 'The Pixel 9 marked Google\'s shift to a more premium design language with flat edges and a redesigned camera bar. The 6.3-inch display is a sweet spot for one-handed use while still being comfortable for reading. Seven years of OS updates make it a long-term investment despite the mid-range resolution.',
     phone: {
       weight: 198,
       battery: 4700,
@@ -865,6 +874,7 @@ export const devices: Device[] = [
     resolution: '1280 x 2856',
     releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
+    expertSummary: 'For the first time, Google offered a compact Pro option. The 6.3-inch Pixel 9 Pro shares its screen size with the base model but adds a telephoto lens and higher resolution display. If you want Pro camera features without a large phone, this is your only Pixel option—and one of few in the entire market.',
     phone: {
       weight: 199,
       battery: 4700,
@@ -886,6 +896,7 @@ export const devices: Device[] = [
     resolution: '1344 x 2992',
     releasedAt: '2024-08-22',
     updatedAt: '2024-08-22',
+    expertSummary: 'The Pixel 9 Pro XL competes with iPhone Pro Max and Galaxy Ultra at 6.8 inches. The tall 20:9 aspect ratio means letterboxing on most video content, but works well for scrolling feeds and reading. The 5060mAh battery comfortably lasts a full day; light users may stretch to evening the next day.',
     phone: {
       weight: 221,
       battery: 5060,
@@ -909,6 +920,7 @@ export const devices: Device[] = [
     diagonal: 24,
     ratio: 16 / 9,
     resolution: '1920 x 1080',
+    expertSummary: 'The 24-inch 1080p monitor remains the workhorse of office environments. At typical desk distances (60-70cm), pixel density is acceptable for document work, though text appears noticeably sharper on higher-resolution alternatives. Best for budget setups, secondary displays, or users who prioritize high refresh rates for gaming over resolution.',
   },
   {
     id: '27-inch-monitor',
@@ -917,6 +929,7 @@ export const devices: Device[] = [
     diagonal: 27,
     ratio: 16 / 9,
     resolution: '2560 x 1440',
+    expertSummary: 'The 27-inch 1440p combination has become the gold standard for productivity. At this size, 1440p delivers roughly 109 PPI—sharp enough that individual pixels are invisible at arm\'s length, yet UI elements remain comfortably sized without scaling. Requires a desk depth of at least 60cm for comfortable viewing.',
   },
   {
     id: '32-inch-monitor',
@@ -925,6 +938,7 @@ export const devices: Device[] = [
     diagonal: 32,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'At 32 inches, 4K resolution becomes practical—you get the pixel density benefits without needing aggressive UI scaling. However, this size demands a deeper desk (70cm+) and may cause neck strain if positioned too close. Ideal for video editors, photographers, and developers who need to see more code without scrolling.',
   },
   {
     id: '34-inch-ultrawide-monitor',
@@ -933,6 +947,7 @@ export const devices: Device[] = [
     diagonal: 34,
     ratio: 21 / 9,
     resolution: '3440 x 1440',
+    expertSummary: 'The 34-inch ultrawide replaces a dual-monitor setup without the bezel gap. The 21:9 aspect ratio is perfect for side-by-side document comparison and timeline-based editing software. Gaming support varies—some titles stretch or add black bars. Curved panels are common at this size and reduce edge distortion.',
   },
   {
     id: '38-inch-ultrawide-monitor',
@@ -941,6 +956,7 @@ export const devices: Device[] = [
     diagonal: 38,
     ratio: 21 / 9,
     resolution: '3840 x 1600',
+    expertSummary: 'The 38-inch ultrawide offers more vertical space than 34-inch models, making it better for spreadsheets and coding where vertical real estate matters. The higher 1600p resolution means sharper text than 1440p ultrawides. Expect to pay a premium—this size sits in the professional/prosumer tier.',
   },
   {
     id: '49-inch-super-ultrawide-monitor',
@@ -949,6 +965,7 @@ export const devices: Device[] = [
     diagonal: 49,
     ratio: 32 / 9,
     resolution: '5120 x 1440',
+    expertSummary: 'Equivalent to two 27-inch 1440p monitors side by side, but without the center bezel. The 32:9 aspect ratio is extreme—most content won\'t fill the screen, and you\'ll rely heavily on window management software. Excellent for financial traders, video editors with long timelines, or simulation gaming with triple-monitor-style immersion.',
   },
 
   // ============================================
@@ -961,6 +978,7 @@ export const devices: Device[] = [
     diagonal: 43,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 43-inch TV is ideal for bedrooms, small apartments, or as a secondary screen. At 4K resolution, you can sit as close as 1.5 meters without seeing pixels. Often overlooked in favor of larger sizes, but the right choice when wall space or viewing distance is limited. OLED options are rare at this size.',
   },
   {
     id: '50-inch-tv',
@@ -969,6 +987,7 @@ export const devices: Device[] = [
     diagonal: 50,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 50-inch size hits a practical sweet spot for medium-sized living rooms with 2-2.5 meter viewing distances. It\'s large enough to be immersive for movies but won\'t dominate a room. This size often offers the best value—manufacturers compete heavily here, driving prices down.',
   },
   {
     id: '55-inch-tv',
@@ -977,6 +996,7 @@ export const devices: Device[] = [
     diagonal: 55,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The most popular TV size globally, 55 inches works well in most living rooms at 2-3 meter viewing distances. This is where you\'ll find the widest selection of panel technologies (OLED, QLED, Mini LED) and price points. If unsure, 55 inches is rarely a wrong choice for typical homes.',
   },
   {
     id: '65-inch-tv',
@@ -985,6 +1005,7 @@ export const devices: Device[] = [
     diagonal: 65,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 65-inch TV has become the new standard for dedicated home theater setups. Optimal viewing distance is 2.5-3.5 meters. At this size, the difference between budget and premium panels becomes more apparent—consider investing in better HDR performance and local dimming if your room allows light control.',
   },
   {
     id: '70-inch-tv',
@@ -993,6 +1014,7 @@ export const devices: Device[] = [
     diagonal: 70,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 70-inch size is relatively uncommon—most manufacturers jump from 65 to 75 inches. If you find a 70-inch model, it\'s often a budget-friendly option for those who want something larger than 65 inches but can\'t justify the price jump to 75. Selection is limited compared to standard sizes.',
   },
   {
     id: '75-inch-tv',
@@ -1001,6 +1023,7 @@ export const devices: Device[] = [
     diagonal: 75,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'At 75 inches, you\'re entering true home cinema territory. Requires 3-4 meters of viewing distance for comfortable watching. Wall mounting is strongly recommended—stands for TVs this size are often unstable and take up significant floor space. Delivery and installation logistics become a real consideration.',
   },
   {
     id: '77-inch-tv',
@@ -1009,6 +1032,7 @@ export const devices: Device[] = [
     diagonal: 77,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 77-inch size exists primarily in the OLED segment, where manufacturing constraints make 75-inch panels impractical. If you\'re shopping for a large OLED, 77 inches is your main option between 65 and 83 inches. The 2-inch difference from 75-inch LCD models is negligible in practice.',
   },
   {
     id: '85-inch-tv',
@@ -1017,6 +1041,7 @@ export const devices: Device[] = [
     diagonal: 85,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'An 85-inch TV transforms a living room into a cinema. Requires 4+ meters of viewing distance and careful consideration of room lighting—reflections become more problematic at this size. Professional delivery is essential; these TVs rarely fit through standard doorways without careful maneuvering.',
   },
   {
     id: '98-inch-tv',
@@ -1025,6 +1050,7 @@ export const devices: Device[] = [
     diagonal: 98,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 98-inch TV is a statement piece that rivals entry-level projector setups in size. At this scale, 4K resolution is essential—anything less would show visible pixels at reasonable viewing distances. Consider whether a projector might offer better value; 98-inch TVs command premium prices and require dedicated wall space.',
   },
 
   // ============================================
@@ -1037,6 +1063,7 @@ export const devices: Device[] = [
     diagonal: 100,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 100-inch screen is the entry point for serious home theater projection. At this size, even 1080p projectors deliver acceptable image quality from typical seating distances (3-4 meters). Room light control becomes critical—even modest ambient light washes out the image. A good starting point before committing to larger screens.',
   },
   {
     id: '120-inch-projector-screen',
@@ -1045,6 +1072,7 @@ export const devices: Device[] = [
     diagonal: 120,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'The 120-inch screen is the most popular size for dedicated home theaters. It delivers genuine cinema-scale immersion while remaining achievable in rooms with 4-5 meter throw distances. At this size, 4K resolution becomes noticeably sharper than 1080p. Requires a completely dark room for optimal HDR performance.',
   },
   {
     id: '150-inch-projector-screen',
@@ -1053,6 +1081,7 @@ export const devices: Device[] = [
     diagonal: 150,
     ratio: 16 / 9,
     resolution: '3840 x 2160',
+    expertSummary: 'A 150-inch screen approaches commercial cinema scale and requires a dedicated room with 5+ meter throw distance and complete light control. At this size, projector brightness (measured in lumens) becomes the limiting factor—budget at least 3000 lumens for acceptable HDR. Screen material quality significantly impacts the final image.',
   },
 
   // ============================================
@@ -1069,6 +1098,7 @@ export const devices: Device[] = [
     resolution: '2752 x 2064',
     releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
+    expertSummary: 'The 13-inch iPad Pro with M4 chip and tandem OLED display is Apple\'s most capable tablet ever. The 4:3 aspect ratio provides more usable space for creative apps than widescreen alternatives. At this size, it genuinely competes with laptops for productivity—but the $1299+ price demands serious consideration of whether iPadOS meets your workflow needs.',
     price: 1299,
   },
   {
@@ -1080,6 +1110,7 @@ export const devices: Device[] = [
     resolution: '2420 x 1668',
     releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
+    expertSummary: 'The 11-inch iPad Pro offers the same M4 power as its larger sibling in a more portable package. The tandem OLED display is stunning, but the smaller canvas makes detailed illustration work more challenging. Best for users who prioritize portability and plan to use the iPad primarily handheld rather than with a keyboard.',
     price: 999,
   },
 
@@ -1093,6 +1124,7 @@ export const devices: Device[] = [
     resolution: '2732 x 2048',
     releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
+    expertSummary: 'The 13-inch iPad Air brings the large-screen experience to a more accessible price point. You lose the Pro\'s OLED display and ProMotion, but gain a capable M2 chip and the same screen real estate. The smart choice for students and professionals who need the size but can\'t justify Pro pricing.',
     price: 799,
   },
   {
@@ -1104,6 +1136,7 @@ export const devices: Device[] = [
     resolution: '2360 x 1640',
     releasedAt: '2024-05-15',
     updatedAt: '2024-05-15',
+    expertSummary: 'The 11-inch iPad Air hits the sweet spot for most users—powerful enough for demanding apps, portable enough for daily carry, and priced reasonably. The M2 chip handles everything from note-taking to video editing. Consider this before the Pro unless you specifically need ProMotion or the OLED display.',
     price: 599,
   },
 
@@ -1117,6 +1150,7 @@ export const devices: Device[] = [
     resolution: '2360 x 1640',
     releasedAt: '2022-10-26',
     updatedAt: '2022-10-26',
+    expertSummary: 'The base iPad finally adopted the modern design language with USB-C and a larger 10.9-inch display. It\'s the entry point to the iPad ecosystem, capable of handling everyday tasks, streaming, and light creative work. The A14 chip shows its age in demanding apps, but for web browsing and media consumption, it remains excellent value.',
     price: 349,
   },
   {
@@ -1128,6 +1162,7 @@ export const devices: Device[] = [
     resolution: '2160 x 1620',
     releasedAt: '2021-09-24',
     updatedAt: '2021-09-24',
+    expertSummary: 'The last iPad with the classic home button design and Lightning port. While dated, the 10.2-inch display remains perfectly adequate for reading, video calls, and basic productivity. Often available at steep discounts, making it the budget king for families and education. Don\'t expect software updates much longer.',
     price: 329,
   },
 
@@ -1141,6 +1176,7 @@ export const devices: Device[] = [
     resolution: '2266 x 1488',
     releasedAt: '2024-10-23',
     updatedAt: '2024-10-23',
+    expertSummary: 'The iPad mini occupies a unique niche—too large for a pocket, too small for serious productivity, but perfect for specific use cases. Pilots, medical professionals, and field workers love its portability. The 8.3-inch screen is ideal for reading and note-taking in tight spaces. The A17 Pro chip is overkill for most mini users.',
     price: 499,
   },
 
@@ -1154,6 +1190,7 @@ export const devices: Device[] = [
     resolution: '2960 x 1848',
     releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
+    expertSummary: 'At 14.6 inches, the Tab S11 Ultra is Samsung\'s laptop replacement. The 16:10 aspect ratio favors video content and split-screen multitasking over the iPad\'s document-friendly 4:3. DeX mode transforms it into a desktop experience. The notch housing dual cameras is polarizing—great for video calls, distracting for content consumption.',
     price: 1199,
   },
   {
@@ -1165,6 +1202,7 @@ export const devices: Device[] = [
     resolution: '2800 x 1752',
     releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
+    expertSummary: 'The Tab S11+ offers a more manageable 12.4-inch screen without the Ultra\'s notch. It\'s the Goldilocks option in Samsung\'s lineup—large enough for productivity, portable enough for couch use. The AMOLED display rivals iPad Pro for color accuracy. S Pen included, unlike Apple\'s separate Pencil purchase.',
     price: 999,
   },
   {
@@ -1176,6 +1214,7 @@ export const devices: Device[] = [
     resolution: '2560 x 1600',
     releasedAt: '2025-09-04',
     updatedAt: '2025-09-04',
+    expertSummary: 'The base Tab S11 competes directly with iPad Air at 11 inches. Samsung\'s 16:10 ratio means slightly more width for video but less height for documents compared to iPad\'s 4:3. Android\'s flexibility is both a strength and weakness—more customization options, but tablet-optimized apps remain less polished than iPadOS.',
     price: 799,
   },
 
@@ -1189,6 +1228,7 @@ export const devices: Device[] = [
     resolution: '2960 x 1848',
     releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
+    expertSummary: 'The Tab S10 Ultra introduced Galaxy AI features to Samsung\'s tablet lineup. The massive 14.6-inch Dynamic AMOLED display excels at multitasking with up to three apps visible simultaneously. Weight (718g) makes extended handheld use tiring—this tablet lives on desks and stands.',
     price: 1199,
   },
   {
@@ -1200,6 +1240,7 @@ export const devices: Device[] = [
     resolution: '2800 x 1752',
     releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
+    expertSummary: 'The Tab S10+ balances screen size with portability better than the Ultra. At 12.4 inches, it\'s still large enough for serious work but light enough (571g) for reading in bed. The 120Hz AMOLED display is excellent for both productivity and entertainment. A strong iPad Pro 12.9 alternative for Android users.',
     price: 999,
   },
   {
@@ -1211,6 +1252,7 @@ export const devices: Device[] = [
     resolution: '2880 x 1800',
     releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
+    expertSummary: 'The FE+ brings a large 13.1-inch screen to a mid-range price point. It lacks the flagship\'s 120Hz refresh rate (90Hz instead) and premium build, but delivers 90% of the experience at 50% of the Ultra\'s price. Best for users who prioritize screen size over cutting-edge specs.',
     price: 599,
   },
   {
@@ -1222,6 +1264,7 @@ export const devices: Device[] = [
     resolution: '2880 x 1800',
     releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
+    expertSummary: 'Samsung\'s budget-friendly 10.9-inch tablet offers surprising value with its high-resolution display and S Pen support. The smaller size makes it more portable than its siblings. Ideal for students and casual users who want Samsung\'s ecosystem without flagship pricing.',
     price: 449,
   },
 
@@ -1235,6 +1278,7 @@ export const devices: Device[] = [
     resolution: '2880 x 1920',
     releasedAt: '2024-06-18',
     updatedAt: '2024-06-18',
+    expertSummary: 'The Surface Pro 11 runs full Windows 11, making it the only tablet here that\'s truly a laptop replacement. The 3:2 aspect ratio is ideal for productivity—more vertical space than 16:9 or 16:10 alternatives. The Snapdragon X Elite chip offers excellent battery life but may have compatibility issues with legacy x86 software.',
     price: 999,
   },
 ];

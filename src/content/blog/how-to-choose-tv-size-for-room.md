@@ -8,7 +8,7 @@ author: 'Screen Size Calculator Team'
 
 Choosing the right TV size is one of the most important decisions when upgrading your home entertainment system. Too small, and you'll squint at details. Too large, and you'll experience eye strain and a distorted viewing experience. This comprehensive guide will help you find the perfect TV size for your room.
 
-## The Golden Rule: Viewing Distance
+## Viewing Distance: The Key Factor
 
 The most critical factor in choosing TV size is your **viewing distance**—how far you sit from the screen.
 
@@ -20,7 +20,7 @@ The most critical factor in choosing TV size is your **viewing distance**—how 
 | **SMPTE** | Size × 1.6 | 7.3 ft (2.2m) | Living rooms |
 | **Comfortable** | Size × 1.0–2.5 | 4.6–11.5 ft | Flexible |
 
-> **Pro Tip:** For 4K TVs, you can sit closer than these recommendations without seeing pixels. The extra detail means closer viewing is actually beneficial!
+> **Note:** For 4K TVs, you can sit closer than these recommendations without seeing pixels. The extra detail means closer viewing is actually beneficial!
 
 ---
 
@@ -47,7 +47,7 @@ The most critical factor in choosing TV size is your **viewing distance**—how 
 - Best for bedrooms, dorm rooms, kitchens
 - Avoid going larger than 50" to prevent overwhelming the space
 
-**Best picks:** 43" is the sweet spot for small rooms
+**Best picks:** 43" works well for small rooms
 
 ### Medium Rooms (12×15 ft / 3.6×4.5m)
 
@@ -128,7 +128,7 @@ For rooms with various seating:
 
 ### TV Placement Height
 
-**The Golden Rule:** Center of TV should be at seated eye level (42-48" from floor)
+**Recommended:** Center of TV should be at seated eye level (42-48" from floor)
 
 | Situation | Height Recommendation |
 |-----------|----------------------|
