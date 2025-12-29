@@ -92,15 +92,15 @@ export const indexedComparisons = new Set([
 
   // === iPhone cross-generation (adjacent) ===
   // Note: slugs must be alphabetically sorted (e.g., iphone-13 < iphone-14)
-  'iphone-13-vs-iphone-14',
-  'iphone-13-vs-iphone-15',
-  'iphone-14-vs-iphone-15',
+  // 'iphone-13-vs-iphone-14',
+  // 'iphone-13-vs-iphone-15',
+  // 'iphone-14-vs-iphone-15',
   'iphone-15-vs-iphone-16',                    // 3 clicks, 634 impressions
-  'iphone-15-pro-vs-iphone-16-pro',
-  'iphone-15-pro-max-vs-iphone-16-pro-max',
+  // 'iphone-15-pro-vs-iphone-16-pro',
+  // 'iphone-15-pro-max-vs-iphone-16-pro-max',
   'iphone-16-vs-iphone-17',
-  'iphone-16-pro-vs-iphone-17-pro',
-  'iphone-16-pro-max-vs-iphone-17-pro-max',
+  // 'iphone-16-pro-vs-iphone-17-pro',
+  // 'iphone-16-pro-max-vs-iphone-17-pro-max',
 
   // === Cross-brand comparisons (iPhone vs Samsung) ===
   'iphone-17-vs-samsung-galaxy-s25',           // 5 clicks, 309 impressions
@@ -141,10 +141,10 @@ export const shouldIndexComparison = (slug: string): boolean => indexedCompariso
 // These serve as fallback dates, actual content dates take priority if newer
 export const templateVersions = {
   // Device detail page ([deviceId]-screen-size.astro)
-  deviceTemplate: '2025-12-26',
+  deviceTemplate: '2025-12-29',
 
   // Comparison page (comparison/[slug].astro)
-  comparisonTemplate: '2025-12-26',
+  comparisonTemplate: '2025-12-29',
 
   // Blog post template (BlogPost.astro)
   blogTemplate: '2025-12-26',
