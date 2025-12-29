@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
 import CategoryIcon from "../../components/icons/CategoryIcon.astro";
 import ComparisonSearch from "../../components/ComparisonSearch.tsx";
 import { devices, isValidComparison } from "../../data/devices";
@@ -279,7 +278,6 @@ const categories = [
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <Header />
 
   <main class="max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb Navigation -->

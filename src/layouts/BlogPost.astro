@@ -1,6 +1,5 @@
 ---
 import Layout from './Layout.astro';
-import Header from '../components/Header.astro';
 import { siteConfig } from '../site.config';
 
 interface Props {
@@ -91,8 +90,6 @@ const breadcrumbData = {
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <Header />
-
   <!-- Reading Progress Bar -->
   <div id="reading-progress" class="fixed top-14 left-0 h-0.5 bg-primary-500 z-40 transition-all duration-100 pointer-events-none" style="width: 0%"></div>
 

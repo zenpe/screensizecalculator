@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import FAQSection from "../components/FAQSection.astro";
 import { devices } from "../data/devices";
@@ -201,8 +200,6 @@ const breadcrumbData = {
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <Header />
-
   <main class="flex-1">
     <!-- Hero Section -->
     <section

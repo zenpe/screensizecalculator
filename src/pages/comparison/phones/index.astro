@@ -1,6 +1,5 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import Header from '../../../components/Header.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, toSearchItems, type ComparisonPair } from '../../../utils/comparison';
@@ -68,7 +67,6 @@ const DISPLAY_LIMIT = 15;
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <Header />
 
   <main class="max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb -->

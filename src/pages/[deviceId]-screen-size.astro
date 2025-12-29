@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
 import DeviceDetailVisualizer from "../components/DeviceDetailVisualizer";
 import FAQSection from "../components/FAQSection.astro";
 import {
@@ -753,7 +752,6 @@ const breadcrumbSchema = {
   ogImage={`/og/${device.id}.png`}
   modifiedTime={lastUpdated}
 >
-  <Header />
 
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb Navigation -->

@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
 import ComparisonVisualizer from "../../components/ComparisonVisualizer";
 import UpgradeInsight from "../../components/UpgradeInsight.astro";
 import FAQSection from "../../components/FAQSection.astro";
@@ -371,7 +370,6 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
   ogImage={`/og/${primaryDevice.id}.png`}
   modifiedTime={lastUpdated}
 >
-  <Header />
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
     <!-- Breadcrumb Navigation -->

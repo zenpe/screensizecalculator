@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Header from '../../components/Header.astro';
 import { getCollection } from 'astro:content';
 
 const title = 'Screen Size Guide & Blog - TV, Monitor & Projector Buying Tips';
@@ -21,7 +20,6 @@ function estimateReadTime(content: string) {
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
-  <Header />
 
   <main class="flex-1">
     <!-- Hero Section -->
