@@ -325,6 +325,12 @@ const itemListSchema = {
           colorBg={colors.bg}
           defaultSort={category === 'phones' || category === 'tablets' ? 'brand' : 'size-desc'}
         />
+        <!-- Static links for SEO crawlers -->
+        <nav class="sr-only" aria-label="All devices list">
+          {categoryDevices.map(d => (
+            <a href={`/${d.id}-screen-size`}>{d.name}</a>
+          ))}
+        </nav>
       </div>
     </section>
 
