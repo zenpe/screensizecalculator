@@ -31,6 +31,10 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => {
+        // Exclude utility/legal pages from sitemap
+        if (page.includes('/404') || page.includes('/terms') || page.includes('/privacy')) {
+          return false;
+        }
         // Exclude noindex comparison pages from sitemap
         if (page.includes('/comparison/') && page.includes('-vs-')) {
           const slug = page.split('/comparison/').pop()?.replace(/\/$/, '') || '';
