@@ -1,7 +1,8 @@
 ---
 title: 'The Esports Monitor Size Standard: Why Pros Use 24-inch Displays'
-description: 'Discover the esports monitor size standard and why professional gamers prefer 24-inch screens. Learn how size, refresh rate, and response time impact competitive play.'
+description: 'Discover the esports monitor size standard and why pro gamers prefer 24-inch screens. Learn how size, refresh rate, and response time impact competitive play.'
 pubDate: '2025-12-05'
+updatedDate: '2026-01-04'
 category: 'Gaming Monitor'
 author: 'Screen Size Calculator Team'
 ---

@@ -1,7 +1,8 @@
 ---
 title: 'What is Aspect Ratio? Complete Guide to 16:9, 21:9, 4:3 and More'
-description: 'Understand aspect ratios explained simply. Learn the differences between 16:9, 21:9, 4:3, and other common ratios for TVs, monitors, phones, and video production.'
+description: 'Understand aspect ratios explained simply. Learn the differences between 16:9, 21:9, 4:3 and other common ratios for TVs, monitors, phones, and video.'
 pubDate: '2025-12-16'
+updatedDate: '2026-01-04'
 category: 'Display Basics'
 author: 'Screen Size Calculator Team'
 keywords: 'aspect ratio, 16:9 aspect ratio, 21:9 ultrawide, 4:3 aspect ratio, screen aspect ratio, video aspect ratio, aspect ratio calculator'

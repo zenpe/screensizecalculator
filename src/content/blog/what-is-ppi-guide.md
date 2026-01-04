@@ -1,7 +1,8 @@
 ---
-title: 'What is PPI (Pixels Per Inch)? How to Calculate and Why It Matters for Monitors'
+title: 'What is PPI (Pixels Per Inch)? Calculate & Why It Matters'
 description: 'Complete guide to PPI for monitors and displays. Learn how to calculate PPI, why it affects image clarity, and find the optimal PPI for your screen size.'
 pubDate: '2025-12-08'
+updatedDate: '2026-01-04'
 category: 'Display Technology'
 author: 'Screen Size Calculator Team'
 ---

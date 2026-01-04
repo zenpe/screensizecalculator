@@ -1,7 +1,8 @@
 ---
-title: '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It in 2025?'
+title: '4K vs 8K TVs: Viewing Distance Comparison & Is 8K Worth It?'
 description: 'Detailed comparison of 4K and 8K resolution TVs with optimal viewing distances, PPI analysis, and whether 8K is worth the investment based on visual acuity.'
 pubDate: '2025-12-02'
+updatedDate: '2026-01-04'
 category: 'Display Technology'
 author: 'Screen Size Calculator Team'
 ---
