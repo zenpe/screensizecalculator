@@ -1,5 +1,5 @@
 ---
-title: 'Best Monitor Size for Video Editing: Professional Guide 2025'
+title: 'Best Monitor Size for Video Editing: Professional Guide'
 description: 'Find the ideal monitor size for video editing. Expert recommendations on screen size, resolution, color accuracy, and panel type for professional video production.'
 pubDate: '2025-12-12'
 category: 'Monitor Guide'

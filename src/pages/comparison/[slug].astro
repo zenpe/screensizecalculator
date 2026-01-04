@@ -92,8 +92,35 @@ const percentLarger =
 // Format number helper
 const formatNum = (num: number, decimals = 1) => num.toFixed(decimals);
 
+// Generate SEO-friendly title with automatic length control
+function generateComparisonTitle(deviceA: typeof primaryDevice, deviceB: typeof secondaryDevice, maxLength = 70) {
+  const fullSuffix = " Screen Size Comparison";
+  const shortSuffix = " Size Comparison";
+
+  const fullTitle = `${deviceA.name} vs ${deviceB.name}${fullSuffix}`;
+  if (fullTitle.length <= maxLength) return fullTitle;
+
+  // Shorten brand names to fit within limit
+  const shortenName = (name: string) => name
+    .replace("Samsung Galaxy ", "")
+    .replace("Google Pixel ", "Pixel ")
+    .replace("-inch ", '" ')
+    .replace(" Projector Screen", " Projector");
+
+  // Try with original names but short suffix (preserve full device names)
+  const shortSuffixTitle = `${deviceA.name} vs ${deviceB.name}${shortSuffix}`;
+  if (shortSuffixTitle.length <= maxLength) return shortSuffixTitle;
+
+  // Try with shortened names but full suffix (preserve "Screen Size Comparison")
+  const shortNamesTitle = `${shortenName(deviceA.name)} vs ${shortenName(deviceB.name)}${fullSuffix}`;
+  if (shortNamesTitle.length <= maxLength) return shortNamesTitle;
+
+  // Last resort: shortened names + short suffix
+  return `${shortenName(deviceA.name)} vs ${shortenName(deviceB.name)}${shortSuffix}`;
+}
+
 // SEO metadata
-const title = `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`;
+const title = generateComparisonTitle(primaryDevice, secondaryDevice);
 
 // Category-aware meta description for better CTR
 const isLargeScreenComparison = ['tv', 'monitor', 'projector'].includes(primaryDevice.category) ||
@@ -346,7 +373,7 @@ const productSchema = {
 
 const toolSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "WebApplication",
   name: `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`,
   description: description,
   dateModified: lastUpdated,

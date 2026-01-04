@@ -1,5 +1,5 @@
 ---
-title: 'How Far Should You Sit From an 8K TV? The Optimal Viewing Distance Chart'
+title: 'How Far Should You Sit From an 8K TV? Viewing Distance Guide'
 description: 'Complete guide to 8K TV viewing distances with detailed charts. Learn why 8K requires closer seating to see the difference and find your optimal distance.'
 pubDate: '2025-12-08'
 category: 'Display Technology'
