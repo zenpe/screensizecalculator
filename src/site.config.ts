@@ -5,7 +5,7 @@ export const siteConfig = {
 
   // Amazon Affiliate Program
   amazon: {
-    enabled: false, // Set to true to enable Amazon affiliate links
+    enabled: true, // Set to true to enable Amazon affiliate links
     affiliateTag: 'screensizecal-20',
     baseUrl: 'https://www.amazon.com',
   },
