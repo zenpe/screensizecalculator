@@ -1,131 +1,76 @@
-# Astro Starter Kit: Basics
+# Screen Size Calculator
 
-```sh
-npm create astro@latest -- --template basics
-```
+A static site for visual screen size comparison and calculation tools, built with Astro + React + Tailwind CSS.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Live**: https://screensizecalculators.com
 
-## 📅 Page Date Logic (SEO)
-
-页面更新日期用于 Schema.org `dateModified`、OG `article:modified_time` 和 Sitemap `lastmod`。
-
-### 日期策略
-
-采用 **模板版本日期** 作为保底，内容日期优先的策略：
+## Project Structure
 
 ```
-最终日期 = MAX(内容日期, 模板版本日期)
+src/
+├── components/           # UI components (Astro + React islands)
+│   ├── ComparisonVisualizer/   # Interactive overlay/side-by-side views
+│   ├── ScreenSizeCalculator/   # Main calculator with calibration
+│   ├── calculators/            # PPI, aspect ratio, resolution calculators
+│   ├── icons/                  # SVG icon components
+│   └── shared/                 # Shared UI primitives
+├── config/
+│   └── navigation.ts     # Nav bar configuration
+├── content/
+│   └── blog/             # MDX blog posts
+├── data/
+│   ├── devices.ts        # 69 devices (phones, tablets, monitors, TVs, projectors)
+│   └── comparison-signals.json  # GSC impression data for demand scoring
+├── layouts/
+│   ├── Layout.astro      # Base layout (SEO meta, schema, dark mode)
+│   └── BlogPost.astro    # Blog post layout
+├── pages/
+│   ├── index.astro                  # Homepage
+│   ├── [deviceId]-screen-size.astro # Device detail pages (68 pages)
+│   ├── compare.astro                # Interactive compare tool (noindex)
+│   ├── comparison/
+│   │   ├── [slug].astro             # Static comparison pages (~781 pairs)
+│   │   ├── index.astro              # Comparison hub
+│   │   ├── phones/index.astro       # Phone comparisons hub
+│   │   ├── tablets/index.astro      # Tablet comparisons hub
+│   │   ├── monitors/index.astro     # Monitor comparisons hub
+│   │   ├── tvs/index.astro          # TV comparisons hub
+│   │   └── projectors/index.astro   # Projector comparisons hub
+│   ├── blog/                        # Blog index + [slug]
+│   ├── devices/                     # Device listing by category
+│   ├── resources/                   # Guides (common sizes, PPI, aspect ratio)
+│   └── *-calculator.astro           # Calculator tool pages
+├── utils/
+│   ├── comparison-scoring/          # Scoring engine (see below)
+│   ├── comparison.ts                # Pair generation utilities
+│   ├── comparisonContent.ts         # Dynamic content generation for comparison pages
+│   ├── contentVariants.ts           # Deterministic content variation via seed hashing
+│   ├── calculations.ts              # Screen math (PPI, area, dimensions)
+│   ├── deviceAge.ts                 # Device age/release date helpers
+│   └── url.ts                       # URL generation and slug canonicalization
+├── site.config.ts         # Site-wide config (SEO, affiliate, scoring rules)
+└── styles/
+    └── global.css         # Tailwind base styles
+scripts/
+├── generate-og-images.ts  # OG image generation via Satori + Sharp
+└── push-to-google.ts      # Google Indexing API submission
 ```
 
-### 各页面类型日期来源
+## Commands
 
-| 页面类型 | 日期计算 | 相关文件 |
-|----------|----------|----------|
-| 设备详情页 | `MAX(device.updatedAt, templateVersions.deviceTemplate)` | `[deviceId]-screen-size.astro` |
-| 对比页 | `MAX(deviceA.updatedAt, deviceB.updatedAt, templateVersions.comparisonTemplate)` | `comparison/[slug].astro` |
-| 博客页 | `MAX(updatedDate \|\| pubDate, templateVersions.blogTemplate)` | `BlogPost.astro` |
-| 静态页 | `templateVersions.staticPages` | `astro.config.mjs` |
-
-### 配置项 (`src/site.config.ts`)
-
-```typescript
-export const templateVersions = {
-  deviceTemplate: '2025-12-26',      // 设备详情页模板版本
-  comparisonTemplate: '2025-12-26',  // 对比页模板版本
-  blogTemplate: '2025-12-26',        // 博客模板版本
-  staticPages: '2025-12-26',         // 静态页版本
-};
-```
-
-### 何时更新模板版本日期
-
-- **修改模板布局/结构**时：更新对应的模板版本日期
-- **修改设备数据**时：更新 `device.updatedAt` 字段
-- **修改博客内容**时：更新 frontmatter 中的 `updatedDate`
-
-### 日期处理流程
-
-1. **页面渲染**：计算 `MAX(内容日期, 模板日期)` 用于 Schema.org 和 OG 标签
-2. **Sitemap 生成**：`astro.config.mjs` 中的 `serialize` 函数使用相同逻辑计算 `lastmod`
-
----
-
-## 🔀 Comparison / Compare 共存规则（SEO）
-
-为了兼顾 SEO 收录和工具覆盖，`/comparison` 与 `/compare` 采用分工模式：
-
-### 1) 页面职责
-
-- `comparison`（静态页，SEO landing page）  
-  URL: `/comparison/a-vs-b`  
-  用途：唯一可索引的对比落地页，参与排名。
-- `compare`（动态工具页，full coverage）  
-  URL: `/compare?a=a&b=b`  
-  用途：仅承接交互查询，不参与排名。
-
-### 2) 索引规则
-
-- 所有合法 `comparison` 静态页：`index,follow`，进入 sitemap。
-- `compare`（含参数）：`noindex,follow`，不进入 sitemap。
-
-### 3) 唯一 URL 规则（防重复）
-
-- 同一设备组合只能有一个 SEO URL：`/comparison/a-vs-b`。
-- 设备 ID 必须按字母序归一化（canonical pair），避免重复 URL。
-
-### 4) 内链规则
-
-- 站内所有对比链接统一指向 `/comparison/a-vs-b`。
-- 内部链接不要加 `nofollow`，避免阻断站内权重传递。
-
-### 5) Sitemap 规则
-
-- 提交核心静态页 + 全部可索引 `comparison` 页。
-- `privacy`、`terms`、`404`、`compare` 不进 sitemap。
-
----
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-| `npm run generate:og`     | Generate Open Graph images for all pages         |
-| `npm run push:google`     | Push sitemap or specific URLs to Google Indexing |
-
-## 🛠 Custom Scripts
+| Command | Action |
+|:--|:--|
+| `npm install` | Install dependencies |
+| `npm run dev` | Dev server at `localhost:4321` |
+| `npm run build` | Production build to `./dist/` |
+| `npm run preview` | Preview production build locally |
+| `npm run astro ...` | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI |
+| `npm run generate:og` | Generate OG images for all pages |
+| `npm run push:google` | Push URLs to Google Indexing API |
 
 ### Google Indexing (`push:google`)
+
 Automate URL submission to Google Search Console for faster indexing.
 
 - **Default (Sitemap)**: Parses `dist/` for sitemaps and pushes the top 200 most recently updated URLs.
@@ -144,6 +89,114 @@ Automate URL submission to Google Search Console for faster indexing.
 > [!NOTE]
 > Authentication requires the Service Account JSON key located in `scripts/`.
 
-## 👀 Want to learn more?
+## Comparison / Compare
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Two distinct page types serve different purposes:
+
+| | `/comparison/a-vs-b` | `/compare?a=...&b=...` |
+|--|--|--|
+| Type | Static (SSG) | Dynamic tool page |
+| SEO | Selectively indexed via scoring engine | `noindex` always |
+| Sitemap | Only indexed pairs included | Excluded |
+| Content | Rich (FAQ, specs, expert summary) | Interactive tool only |
+
+All internal links use the canonical `/comparison/a-vs-b` format with device IDs in alphabetical order. Do not add `nofollow` to internal comparison links — it blocks PageRank flow.
+
+### Sitemap Rules
+
+- All indexed `comparison` pages + core static pages are included.
+- `privacy`, `terms`, `404`, `compare` are excluded from sitemap.
+
+## Comparison Scoring Engine
+
+`src/utils/comparison-scoring/` controls which comparison pages get indexed.
+
+### How It Works
+
+1. **Hard rules** filter out invalid pairs (missing data, self-comparison, non-canonical slug, invalid category cross)
+2. **Scorers** evaluate each valid pair on a 0-1 scale, weighted per track profile
+3. **Quota + threshold** selection: pairs are ranked by score, capped by category quota, filtered by track threshold
+4. **Duplicate penalty** prevents one device from dominating the index
+5. **Per-device cap** limits how many indexed pairs any single device can appear in
+
+### Tracks
+
+| Track | When | Description |
+|--|--|--|
+| `model` | Both devices are named models (iPhone, Samsung, iPad, Pixel, Surface) | Emphasizes intent, generation, demand |
+| `sizeProfile` | Both are generic sizes (65" TV, 27" Monitor) | Emphasizes intent, scene, completeness |
+| `mixed` | One model + one size profile | Stricter threshold (70 vs 55/50) |
+
+### Scorers
+
+| Scorer | What it measures |
+|--|--|
+| `intent` | Purchase decision relevance (cross-brand, same-gen, flagship tier, adjacent sizes) |
+| `generation` | Release year proximity (same year = 1.0, 1yr gap = 0.85, ...) |
+| `demand` | GSC impression data (log-normalized); neutral default when no data |
+| `completeness` | Data richness (resolution, phone specs, price, expert summary) |
+| `recency` | How recent the newer device is (6mo = 1.0, decaying to 0.08) |
+| `quality` | Content quality (expert summary length, spec completeness) |
+| `scene` | Usage scenario match (same category, TV vs projector, size similarity) |
+
+### Configuration (`src/site.config.ts`)
+
+```typescript
+comparisonIndexConfig = {
+  enabled: true,          // false = shadow mode (all indexed, scores still computed)
+  thresholds: { model: 55, sizeProfile: 50, mixed: 70 },
+  categoryQuotas: { phone: 200, tablet: 60, monitor: 15, tv: 36, projector: 3, 'projector-tv': 27 },
+  selectionPolicy: {
+    maxIndexedPerDevice: { model: 8, sizeProfile: 12, mixed: 4 },
+    duplicatePenalty: { startsAfter: 6, perExtra: 2, max: 12 },
+  },
+  pinnedSlugs: [],        // Force-index specific slugs
+  profiles: { ... },      // Per-track scorer weights (must sum to 100)
+}
+```
+
+### Build Artifacts
+
+- `dist/score-report.json` — Full scoring report with per-pair breakdown, generated on every build
+- Pages with `shouldIndex: false` get `<meta name="robots" content="noindex">` and are excluded from sitemap
+
+### Hub Page Behavior
+
+Category hub pages (phones, tablets, etc.) only list indexed pairs in their link sections. The search component receives all pairs so users can find any comparison.
+
+## Page Date Logic (SEO)
+
+Page dates drive Schema.org `dateModified`, OG `article:modified_time`, and Sitemap `lastmod`:
+
+```
+Final date = MAX(content date, template version date)
+```
+
+| Page Type | Date Calculation |
+|--|--|
+| Device detail | `MAX(device.updatedAt, templateVersions.deviceTemplate)` |
+| Comparison | `MAX(deviceA.updatedAt, deviceB.updatedAt, templateVersions.comparisonTemplate)` |
+| Blog | `MAX(updatedDate \|\| pubDate, templateVersions.blogTemplate)` |
+| Static pages | `templateVersions.staticPages` |
+
+Update template version dates in `src/site.config.ts` only when you modify the actual template markup.
+
+### When to Update Dates
+
+- **Modify template layout/structure** → update the corresponding `templateVersions.*` date
+- **Modify device data** → update `device.updatedAt` field in `devices.ts`
+- **Modify blog content** → update `updatedDate` in frontmatter
+
+### Processing Flow
+
+1. **Page rendering**: computes `MAX(content date, template date)` for Schema.org and OG tags
+2. **Sitemap generation**: `astro.config.mjs` `serialize` function uses the same logic for `lastmod`
+
+## Tech Stack
+
+- **Framework**: Astro 5 (static SSG)
+- **UI**: React 19 (interactive islands), Tailwind CSS 4
+- **Content**: MDX blog posts
+- **Build tools**: Satori + Sharp (OG images), tsx (scripts)
+- **Testing**: Vitest (unit), CJS post-build scripts (regression)
+- **APIs**: Google Indexing API, Amazon Associates

@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, toSearchItems } from '../../../utils/comparison';
+import { shouldIndexComparison } from '../../../utils/comparison-scoring';
 
 // SEO metadata
 const title = 'Monitor Screen Size Comparisons - 24" vs 27" vs 32" vs Ultrawide';
@@ -16,16 +17,17 @@ const monitorDevices = devices.filter(d => d.category === 'monitor');
 
 // Generate comparison pairs using shared utility
 const comparisonPairs = generateCategoryPairs(devices, 'monitor');
+const indexedPairs = comparisonPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);
 
 // Group: Standard (16:9) vs Standard
 const standardMonitors = monitorDevices.filter(d => d.ratio === 16 / 9);
 const ultrawideMonitors = monitorDevices.filter(d => d.ratio !== 16 / 9);
 
-const standardVsStandard = comparisonPairs.filter(
+const standardVsStandard = indexedPairs.filter(
   p => standardMonitors.some(m => m.id === p.a.id) && standardMonitors.some(m => m.id === p.b.id),
 );
-const ultrawideComparisons = comparisonPairs.filter(
+const ultrawideComparisons = indexedPairs.filter(
   p => ultrawideMonitors.some(m => m.id === p.a.id) || ultrawideMonitors.some(m => m.id === p.b.id),
 );
 ---
@@ -54,7 +56,7 @@ const ultrawideComparisons = comparisonPairs.filter(
         exactly how different monitor sizes compare.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {comparisonPairs.length} monitor comparisons available
+        {indexedPairs.length} featured / {comparisonPairs.length} total comparisons
       </p>
     </div>
 

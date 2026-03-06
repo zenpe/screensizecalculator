@@ -83,7 +83,7 @@ export const quickLinkIconMap: Record<string, string> = {
 // Footer sections configuration
 export const footerSections: NavSection[] = [
   { title: 'Calculators', links: calculatorLinks },
-  { title: 'Compare Sizes', links: comparisonLinks },
+  { title: 'Comparisons', links: comparisonLinks },
   { title: 'Resources', links: resourceLinks },
 ];
 

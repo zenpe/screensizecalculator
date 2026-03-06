@@ -71,8 +71,70 @@ export function validateMetaDescription(description: string): { valid: boolean; 
   return { valid: true };
 }
 
-// Comparison indexing policy:
-// All valid comparison pairs are generated as static /comparison/{slug} pages.
+// Comparison indexing policy — rule engine + tiered quotas
+export const comparisonIndexConfig = {
+  version: '1.0',
+  enabled: true,
+
+  thresholds: {
+    model: 55,
+    sizeProfile: 50,
+    mixed: 70,
+  },
+
+  categoryQuotas: {
+    phone: 200,
+    tablet: 60,
+    monitor: 15,
+    tv: 36,
+    projector: 3,
+    'projector-tv': 27,
+  },
+
+  // Keep critical comparison URLs indexed even if score/quotas are tight.
+  pinnedSlugs: [] as string[],
+
+  // Limit matrix explosion from one device linking to too many near-duplicate pairs.
+  selectionPolicy: {
+    maxIndexedPerDevice: {
+      model: 12,
+      sizeProfile: 12,
+      mixed: 4,
+    },
+    duplicatePenalty: {
+      startsAfter: 8,
+      perExtra: 1,
+      max: 8,
+    },
+  },
+
+  modelPrefixes: ['iphone', 'ipad', 'samsung', 'google-pixel', 'surface'],
+
+  profiles: {
+    model: [
+      { scorer: 'intent', weight: 30 },
+      { scorer: 'generation', weight: 20 },
+      { scorer: 'demand', weight: 5 },
+      { scorer: 'completeness', weight: 15 },
+      { scorer: 'recency', weight: 20 },
+      { scorer: 'quality', weight: 10 },
+    ],
+    sizeProfile: [
+      { scorer: 'intent', weight: 35 },
+      { scorer: 'scene', weight: 25 },
+      { scorer: 'completeness', weight: 20 },
+      { scorer: 'demand', weight: 10 },
+      { scorer: 'quality', weight: 10 },
+    ],
+    mixed: [
+      { scorer: 'intent', weight: 30 },
+      { scorer: 'scene', weight: 25 },
+      { scorer: 'completeness', weight: 20 },
+      { scorer: 'demand', weight: 10 },
+      { scorer: 'quality', weight: 15 },
+    ],
+  },
+} as const;
 
 // Template version dates - update ONLY when you actually modify the templates
 // These serve as fallback dates, actual content dates take priority if newer

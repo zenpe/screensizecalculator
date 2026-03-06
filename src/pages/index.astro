@@ -4,6 +4,7 @@ import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import FAQSection from "../components/FAQSection.astro";
 import { devices } from "../data/devices";
 import { getComparisonSlug, getComparisonLink } from "../utils/url";
+import { shouldIndexComparison } from "../utils/comparison-scoring";
 import { siteConfig } from "../site.config";
 
 const title =
@@ -93,7 +94,8 @@ const popularComparisons = [
     const linkData = getComparisonLink(a, b);
     return { slug: getComparisonSlug(a, b), href: linkData.href, label, deviceA, deviceB };
   })
-  .filter((p) => p.deviceA && p.deviceB);
+  .filter((p) => p.deviceA && p.deviceB)
+  .filter((p) => shouldIndexComparison(p.slug));
 
 // --- Popular Devices (for SEO internal linking) ---
 // Based on Ahrefs search volume data

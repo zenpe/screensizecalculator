@@ -1,8 +1,9 @@
 ---
 // Footer component with comprehensive navigation
-import { getComparisonLink } from '../utils/url';
+import { getComparisonLink, getComparisonSlug } from '../utils/url';
 import { devices } from '../data/devices';
 import CategoryIcon from './icons/CategoryIcon.astro';
+import { shouldIndexComparison } from '../utils/comparison-scoring';
 import {
   calculatorLinks,
   comparisonLinks,
@@ -49,11 +50,14 @@ const popularComparisons = [
 ].filter(Boolean)
 .map(({ id1, id2, text }) => {
   const linkData = getComparisonLink(id1, id2);
+  const slug = getComparisonSlug(id1, id2);
   return {
     href: linkData.href,
-    text
+    text,
+    slug,
   };
-});
+})
+.filter(({ slug }) => shouldIndexComparison(slug));
 
 // Organization Schema for SEO
 const organizationSchema = {
@@ -126,9 +130,9 @@ const organizationSchema = {
         </ul>
       </nav>
 
-      <!-- Compare Column -->
-      <nav aria-label="Size comparisons">
-        <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Compare Sizes</h3>
+      <!-- Comparisons Column -->
+      <nav aria-label="Comparisons">
+        <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Comparisons</h3>
         <ul class="space-y-3">
           {comparisonLinks.slice(1).map(link => (
             <li>

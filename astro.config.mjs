@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
 import { templateVersions } from './src/site.config.ts';
+import { shouldIndexComparison } from './src/utils/comparison-scoring/index.ts';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -39,6 +40,14 @@ export default defineConfig({
           page.includes('/compare')
         ) {
           return false;
+        }
+        // Exclude noindexed comparison pages from sitemap
+        if (page.includes('/comparison/') && !page.endsWith('/comparison')) {
+          const slug = page.split('/comparison/').pop()?.replace(/\/$/, '');
+          const hubSlugs = ['phones', 'tablets', 'monitors', 'tvs', 'projectors'];
+          if (slug && !hubSlugs.includes(slug)) {
+            return shouldIndexComparison(slug);
+          }
         }
         return true;
       },

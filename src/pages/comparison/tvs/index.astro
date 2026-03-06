@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, toSearchItems } from '../../../utils/comparison';
+import { shouldIndexComparison } from '../../../utils/comparison-scoring';
 
 // SEO metadata
 const title = 'TV Screen Size Comparison - 55" vs 65" vs 75" vs 85" Visual Guide';
@@ -15,6 +16,7 @@ const tvDevices = devices.filter(d => d.category === 'tv');
 
 // Generate comparison pairs using shared utility
 const comparisonPairs = generateCategoryPairs(devices, 'tv');
+const indexedPairs = comparisonPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);
 ---
 
@@ -42,7 +44,7 @@ const searchItems = toSearchItems(comparisonPairs);
         TV sizes to make the right choice for your living room.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {comparisonPairs.length} TV comparisons available
+        {indexedPairs.length} featured / {comparisonPairs.length} total comparisons
       </p>
     </div>
 
@@ -60,16 +62,16 @@ const searchItems = toSearchItems(comparisonPairs);
     <section class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
         All TV Size Comparisons
-        <span class="text-sm font-normal text-gray-500">({comparisonPairs.length})</span>
+        <span class="text-sm font-normal text-gray-500">({indexedPairs.length})</span>
       </h2>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            comparisonPairs.map(({ a, b, href }, index) => (
+            indexedPairs.map(({ a, b, href }, index) => (
               <a
                 href={href}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < comparisonPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+                ${index < indexedPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
                 <span class="text-sm text-gray-700 dark:text-gray-300">
                   {a.name} vs {b.name}

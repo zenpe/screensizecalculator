@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, toSearchItems, type ComparisonPair } from '../../../utils/comparison';
+import { shouldIndexComparison } from '../../../utils/comparison-scoring';
 
 // SEO metadata
 const title = 'Phone Screen Size Comparison - iPhone vs Samsung vs Pixel';
@@ -14,6 +15,7 @@ const keywords =
 // --- Data Fetching and Processing ---
 const phoneDevices = devices.filter(d => d.category === 'phone');
 const comparisonPairs = generateCategoryPairs(devices, 'phone');
+const indexedPairs = comparisonPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);  // Lightweight data for search component
 
 // --- Dynamic Search Placeholders ---
@@ -36,12 +38,12 @@ const groupFilters = {
   samsungVsGoogle: (p: ComparisonPair) => (isSamsung(p.a.id) && isGoogle(p.b.id)) || (isGoogle(p.a.id) && isSamsung(p.b.id)),
 };
 
-const iphoneVsIphonePairs = comparisonPairs.filter(groupFilters.iphoneVsIphone);
-const samsungVsSamsungPairs = comparisonPairs.filter(groupFilters.samsungVsSamsung);
-const googleVsGooglePairs = comparisonPairs.filter(groupFilters.googleVsGoogle);
-const iphoneVsSamsungPairs = comparisonPairs.filter(groupFilters.iphoneVsSamsung);
-const iphoneVsGooglePairs = comparisonPairs.filter(groupFilters.iphoneVsGoogle);
-const samsungVsGooglePairs = comparisonPairs.filter(groupFilters.samsungVsGoogle);
+const iphoneVsIphonePairs = indexedPairs.filter(groupFilters.iphoneVsIphone);
+const samsungVsSamsungPairs = indexedPairs.filter(groupFilters.samsungVsSamsung);
+const googleVsGooglePairs = indexedPairs.filter(groupFilters.googleVsGoogle);
+const iphoneVsSamsungPairs = indexedPairs.filter(groupFilters.iphoneVsSamsung);
+const iphoneVsGooglePairs = indexedPairs.filter(groupFilters.iphoneVsGoogle);
+const samsungVsGooglePairs = indexedPairs.filter(groupFilters.samsungVsGoogle);
 
 const allGroupedPairs = new Set([
     ...iphoneVsIphonePairs,
@@ -51,7 +53,7 @@ const allGroupedPairs = new Set([
     ...iphoneVsGooglePairs,
     ...samsungVsGooglePairs
 ]);
-const otherPairs = comparisonPairs.filter(p => !allGroupedPairs.has(p));
+const otherPairs = indexedPairs.filter(p => !allGroupedPairs.has(p));
 
 const comparisonSections = [
   { title: 'iPhone vs iPhone', pairs: iphoneVsIphonePairs, id: 'iphone-v-iphone' },
@@ -90,7 +92,7 @@ const DISPLAY_LIMIT = 15;
         screen area with our interactive overlay tool.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {comparisonPairs.length} phone comparisons available
+        {indexedPairs.length} featured / {comparisonPairs.length} total comparisons
       </p>
     </div>
 

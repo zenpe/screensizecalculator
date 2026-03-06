@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, generateCrossCategoryPairs, toSearchItems } from '../../../utils/comparison';
+import { shouldIndexComparison } from '../../../utils/comparison-scoring';
 
 // SEO metadata
 const title = 'Projector Screen Size Comparisons - 100" vs 120" vs 150" vs TV';
@@ -19,9 +20,12 @@ const tvDevices = devices.filter(d => d.category === 'tv');
 const projectorPairs = generateCategoryPairs(devices, 'projector');
 const tvVsProjectorPairs = generateCrossCategoryPairs(devices, 'tv', 'projector');
 const comparisonPairs = [...projectorPairs, ...tvVsProjectorPairs];
+const indexedProjectorPairs = projectorPairs.filter(p => shouldIndexComparison(p.slug));
+const indexedTvVsProjectorPairs = tvVsProjectorPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);
 
 const totalPairs = comparisonPairs.length;
+const indexedPairs = indexedProjectorPairs.length + indexedTvVsProjectorPairs.length;
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -47,7 +51,7 @@ const totalPairs = comparisonPairs.length;
         Compare projector screen sizes visually. See how different projection screen sizes compare, and whether a
         projector or large TV is right for your home theater setup.
       </p>
-      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">{totalPairs} comparisons available</p>
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">{indexedPairs} featured / {totalPairs} total comparisons</p>
     </div>
 
     <!-- Search Component -->
@@ -64,16 +68,16 @@ const totalPairs = comparisonPairs.length;
     <section class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
         Projector Screen Comparisons
-        <span class="text-sm font-normal text-gray-500">({projectorPairs.length})</span>
+        <span class="text-sm font-normal text-gray-500">({indexedProjectorPairs.length})</span>
       </h2>
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            projectorPairs.map(({ a, b, href }, index) => (
+            indexedProjectorPairs.map(({ a, b, href }, index) => (
               <a
                 href={href}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+                ${index < indexedProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
                 <span class="text-sm text-gray-700 dark:text-gray-300">
                   {a.name} vs {b.name}
@@ -97,7 +101,7 @@ const totalPairs = comparisonPairs.length;
     <section class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
         TV vs Projector
-        <span class="text-sm font-normal text-gray-500">({tvVsProjectorPairs.length})</span>
+        <span class="text-sm font-normal text-gray-500">({indexedTvVsProjectorPairs.length})</span>
       </h2>
       <p class="text-gray-600 dark:text-gray-400 mb-4 text-sm">
         Deciding between a large TV and a projector? Compare sizes directly to see the difference.
@@ -105,11 +109,11 @@ const totalPairs = comparisonPairs.length;
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            tvVsProjectorPairs.map(({ a, b, href }, index) => (
+            indexedTvVsProjectorPairs.map(({ a, b, href }, index) => (
               <a
                 href={href}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
-                ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
+                ${index < indexedTvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
                 <span class="text-sm text-gray-700 dark:text-gray-300">
                   {a.name} vs {b.name}

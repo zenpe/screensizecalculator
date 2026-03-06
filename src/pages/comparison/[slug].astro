@@ -16,7 +16,7 @@ import {
   templateVersions,
   sanitizeMetaDescription,
 } from "../../site.config";
-import { getComparisonUrl } from "../../utils/url";
+import { getComparisonSlug, getComparisonUrl } from "../../utils/url";
 import {
   generateComparisonDescription,
   generateUseCaseScenarios,
@@ -24,6 +24,7 @@ import {
   generateComparisonFAQ,
 } from "../../utils/comparisonContent";
 import { shuffleWithSeed } from "../../utils/contentVariants";
+import { shouldIndexComparison } from "../../utils/comparison-scoring";
 
 // Generate all valid comparison pages with canonical alphabetical ordering.
 export function getStaticPaths() {
@@ -59,6 +60,7 @@ const { deviceA, deviceB } = Astro.props;
 
 // Comparison slug for consistent hashing
 const comparisonSlug = `${deviceA.id}-vs-${deviceB.id}`;
+const isNoindex = !shouldIndexComparison(comparisonSlug);
 
 // Helper: format device name with size (only if name doesn't already contain the size)
 const formatDeviceWithSize = (device: typeof deviceA) => {
@@ -84,6 +86,32 @@ const primaryArea = Math.max(areaA, areaB);
 const secondaryArea = Math.min(areaA, areaB);
 const primaryDims = primaryDevice === deviceA ? dimsA : dimsB;
 const secondaryDims = secondaryDevice === deviceA ? dimsA : dimsB;
+
+const buildIndexedRelatedComparisons = (
+  baseDevice: typeof deviceA,
+  limit = 6,
+) =>
+  devices
+    .filter(
+      (d) =>
+        d.id !== primaryDevice.id &&
+        d.id !== secondaryDevice.id &&
+        isValidComparison(baseDevice.category, d.category),
+    )
+    .map((d) => {
+      const slug = getComparisonSlug(baseDevice.id, d.id);
+      return {
+        device: d,
+        slug,
+        href: getComparisonUrl(baseDevice.id, d.id),
+      };
+    })
+    .filter((item) => shouldIndexComparison(item.slug))
+    .slice(0, limit);
+
+const relatedPrimaryComparisons = buildIndexedRelatedComparisons(primaryDevice);
+const relatedSecondaryComparisons =
+  buildIndexedRelatedComparisons(secondaryDevice);
 
 // Calculate percentage difference (with zero protection)
 const percentLarger =
@@ -395,6 +423,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
   keywords={keywords}
   ogImage={`/og/${primaryDevice.id}.png`}
   modifiedTime={lastUpdated}
+  noindex={isNoindex}
 >
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
@@ -1697,59 +1726,42 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
     </div>
 
     <!-- Related Comparisons -->
-    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-      <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
-          Related Comparisons
-        </h2>
-      </div>
-      <div class="p-4 sm:p-6">
-        <div class="flex flex-wrap gap-1.5 sm:gap-2">
-        {
-          devices
-            .filter(
-              (d) =>
-                d.id !== primaryDevice.id &&
-                d.id !== secondaryDevice.id &&
-                isValidComparison(primaryDevice.category, d.category),
-            )
-            .slice(0, 6)
-            .map((d) => (
+    {(relatedPrimaryComparisons.length > 0 ||
+      relatedSecondaryComparisons.length > 0) && (
+      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
+            Related Comparisons
+          </h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="flex flex-wrap gap-1.5 sm:gap-2">
+            {relatedPrimaryComparisons.map(({ device: related, href }) => (
               <a
-                href={getComparisonUrl(primaryDevice.id, d.id)}
+                href={href}
                 class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
               >
                 <span class="hidden sm:inline">
-                  {primaryDevice.name} vs {d.name}
+                  {primaryDevice.name} vs {related.name}
                 </span>
-                <span class="sm:hidden">vs {d.name}</span>
+                <span class="sm:hidden">vs {related.name}</span>
               </a>
-            ))
-        }
-        {
-          devices
-            .filter(
-              (d) =>
-                d.id !== primaryDevice.id &&
-                d.id !== secondaryDevice.id &&
-                isValidComparison(secondaryDevice.category, d.category),
-            )
-            .slice(0, 6)
-            .map((d) => (
+            ))}
+            {relatedSecondaryComparisons.map(({ device: related, href }) => (
               <a
-                href={getComparisonUrl(secondaryDevice.id, d.id)}
+                href={href}
                 class="px-2 sm:px-3 py-1 sm:py-1.5 bg-white dark:bg-gray-700 rounded-lg text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 dark:hover:text-primary-400 border border-gray-200 dark:border-gray-600 transition-colors"
               >
                 <span class="hidden sm:inline">
-                  {secondaryDevice.name} vs {d.name}
+                  {secondaryDevice.name} vs {related.name}
                 </span>
-                <span class="sm:hidden">vs {d.name}</span>
+                <span class="sm:hidden">vs {related.name}</span>
               </a>
-            ))
-        }
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    )}
 
     <!-- Back to Calculator -->
     <div class="mt-8 text-center">

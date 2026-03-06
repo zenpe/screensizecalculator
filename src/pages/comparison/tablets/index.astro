@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import ComparisonSearch from '../../../components/ComparisonSearch';
 import { devices } from '../../../data/devices';
 import { generateCategoryPairs, toSearchItems, type ComparisonPair } from '../../../utils/comparison';
+import { shouldIndexComparison } from '../../../utils/comparison-scoring';
 
 const title = 'Tablet Screen Size Comparison - iPad vs Samsung vs Surface';
 const description = 'Compare tablet screen sizes with interactive visual overlay. See iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro side-by-side.';
@@ -10,6 +11,7 @@ const keywords = 'tablet screen size comparison, iPad vs Samsung, iPad Pro vs iP
 
 const tabletDevices = devices.filter(d => d.category === 'tablet');
 const comparisonPairs = generateCategoryPairs(devices, 'tablet');
+const indexedPairs = comparisonPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);
 
 const isIpad = (id: string) => id.includes('ipad');
@@ -23,10 +25,10 @@ const groupFilters = {
   ipadVsSurface: (p: ComparisonPair) => (isIpad(p.a.id) && isSurface(p.b.id)) || (isSurface(p.a.id) && isIpad(p.b.id)),
 };
 
-const ipadVsIpadPairs = comparisonPairs.filter(groupFilters.ipadVsIpad);
-const samsungVsSamsungPairs = comparisonPairs.filter(groupFilters.samsungVsSamsung);
-const ipadVsSamsungPairs = comparisonPairs.filter(groupFilters.ipadVsSamsung);
-const ipadVsSurfacePairs = comparisonPairs.filter(groupFilters.ipadVsSurface);
+const ipadVsIpadPairs = indexedPairs.filter(groupFilters.ipadVsIpad);
+const samsungVsSamsungPairs = indexedPairs.filter(groupFilters.samsungVsSamsung);
+const ipadVsSamsungPairs = indexedPairs.filter(groupFilters.ipadVsSamsung);
+const ipadVsSurfacePairs = indexedPairs.filter(groupFilters.ipadVsSurface);
 
 const allGroupedPairs = new Set([
   ...ipadVsIpadPairs,
@@ -34,7 +36,7 @@ const allGroupedPairs = new Set([
   ...ipadVsSamsungPairs,
   ...ipadVsSurfacePairs,
 ]);
-const otherPairs = comparisonPairs.filter(p => !allGroupedPairs.has(p));
+const otherPairs = indexedPairs.filter(p => !allGroupedPairs.has(p));
 
 const comparisonSections = [
   { title: 'iPad vs iPad', pairs: ipadVsIpadPairs, id: 'ipad-v-ipad' },
@@ -68,7 +70,7 @@ const DISPLAY_LIMIT = 15;
         Compare tablet screen sizes visually. See how iPad, Samsung Galaxy Tab, and Surface Pro tablets compare in actual screen area.
       </p>
       <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">
-        {comparisonPairs.length} tablet comparisons available
+        {indexedPairs.length} featured / {comparisonPairs.length} total comparisons
       </p>
     </div>
 
