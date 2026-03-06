@@ -114,10 +114,9 @@ const DISPLAY_LIMIT = 15;
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Initially visible items */}
-            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
+            {section.pairs.slice(0, DISPLAY_LIMIT).map(({ a, b, href }, index) => (
               <a
                 href={href}
-                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                   ${index < section.pairs.slice(0, DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                 `}
@@ -131,10 +130,9 @@ const DISPLAY_LIMIT = 15;
           {section.pairs.length > DISPLAY_LIMIT && (
             <div id={`hidden-${section.id}`} class="hidden">
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 dark:border-gray-700">
-                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, href, rel }, index) => (
+                {section.pairs.slice(DISPLAY_LIMIT).map(({ a, b, href }, index) => (
                   <a
                     href={href}
-                    rel={rel}
                     class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between border-gray-200 dark:border-gray-700
                       ${index < section.pairs.slice(DISPLAY_LIMIT).length - 1 ? 'border-b sm:border-b-0 sm:border-r' : ''}
                     `}

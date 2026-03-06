@@ -3,13 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import FAQSection from "../components/FAQSection.astro";
 import CompareClient from "../components/CompareClient";
 
-// Check if URL has comparison parameters
-const url = Astro.url;
-const hasParams = url.searchParams.has('a') || url.searchParams.has('b');
-
 // SEO metadata
-// - No params (tool entry page): index, follow - we want this discoverable
-// - With params (dynamic result): noindex - prevent index bloat
+// /compare is a tool-only page and should not be indexed.
 const title = "Screen Size Comparison Tool - Compare Any Two Displays Side by Side";
 const description = "Free screen size comparison tool. Compare iPhone vs Samsung, TV sizes (55 vs 65 vs 75 inch), monitors and tablets with visual overlay.";
 const keywords = "screen size comparison tool, compare screen sizes, display size comparison, iPhone vs Samsung size, TV size comparison 55 vs 65, monitor size compare, tablet screen comparison, phone size comparison tool, compare display dimensions, screen area calculator";
@@ -59,7 +54,7 @@ const faqs = [
 ];
 ---
 
-<Layout title={title} description={description} keywords={keywords} noindex={hasParams}>
+<Layout title={title} description={description} keywords={keywords} noindex={true}>
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
     <!-- Breadcrumb Navigation -->

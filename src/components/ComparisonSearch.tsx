@@ -7,7 +7,6 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 export interface SearchItem {
   searchText: string;  // Pre-computed lowercase text for matching
   href: string;        // Link URL
-  rel?: 'nofollow';    // SEO attribute
   label: string;       // Display text (e.g., "iPhone 16 vs Samsung S24")
   subtitle: string;    // Secondary text (e.g., "6.1" vs 6.7" • phone")
   icon: string;        // Emoji icon
@@ -167,7 +166,6 @@ export default function ComparisonSearch({
                 <li key={result.href}>
                   <a
                     href={result.href}
-                    rel={result.rel}
                     className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                       index === selectedIndex
                         ? 'bg-primary-50 dark:bg-primary-900/30'

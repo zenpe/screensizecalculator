@@ -69,10 +69,9 @@ const totalPairs = comparisonPairs.length;
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            projectorPairs.map(({ a, b, href, rel }, index) => (
+            projectorPairs.map(({ a, b, href }, index) => (
               <a
                 href={href}
-                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < projectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
@@ -106,10 +105,9 @@ const totalPairs = comparisonPairs.length;
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            tvVsProjectorPairs.map(({ a, b, href, rel }, index) => (
+            tvVsProjectorPairs.map(({ a, b, href }, index) => (
               <a
                 href={href}
-                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < tvVsProjectorPairs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >

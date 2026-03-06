@@ -15,7 +15,6 @@ export interface ComparisonPair {
   b: Device;
   slug: string;
   href: string;
-  rel?: 'nofollow';
   searchText: string;
 }
 
@@ -46,7 +45,6 @@ export function toSearchItem(pair: ComparisonPair): SearchItem {
   return {
     searchText: pair.searchText,
     href: pair.href,
-    rel: pair.rel,
     label: `${pair.a.name} vs ${pair.b.name}`,
     subtitle: `${pair.a.diagonal}" vs ${pair.b.diagonal}" • ${pair.a.category}`,
     icon: CATEGORY_ICONS[pair.a.category] || '📺',
@@ -90,7 +88,6 @@ export function generateComparisonPairs(
         b,
         slug: getComparisonSlug(a.id, b.id),
         href: linkData.href,
-        rel: linkData.rel,
         searchText: generateSearchText(a, b),
       });
     }
@@ -134,7 +131,6 @@ export function generateCrossCategoryPairs(
         b,
         slug: getComparisonSlug(a.id, b.id),
         href: linkData.href,
-        rel: linkData.rel,
         searchText: generateSearchText(a, b),
       });
     }

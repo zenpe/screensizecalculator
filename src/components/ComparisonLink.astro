@@ -1,12 +1,8 @@
 ---
 /**
- * ComparisonLink - SEO-aware comparison link component
+ * ComparisonLink - canonical internal comparison link component
  *
- * - Whitelisted comparisons: normal <a> link (passes PageRank)
- * - Non-whitelisted comparisons: <a rel="nofollow"> (doesn't pass PageRank)
- *
- * Use this for content areas (articles, related items, etc.)
- * For global areas (footer, sidebar), use ComparisonButton instead.
+ * All internal comparison links should point to /comparison/{slug}.
  */
 import { getComparisonLink } from '../utils/url';
 
@@ -17,9 +13,9 @@ interface Props {
 }
 
 const { idA, idB, class: className } = Astro.props;
-const { href, rel } = getComparisonLink(idA, idB);
+const { href } = getComparisonLink(idA, idB);
 ---
 
-<a href={href} rel={rel} class={className}>
+<a href={href} class={className}>
   <slot />
 </a>

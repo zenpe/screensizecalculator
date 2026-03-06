@@ -626,7 +626,6 @@ export default function DeviceDetailVisualizer({
               <div className="flex items-center gap-2">
                 <a
                   href={comparisonLinkData.href}
-                  rel={comparisonLinkData.rel}
                   className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-slate-300 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-all"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -664,7 +663,6 @@ export default function DeviceDetailVisualizer({
             <div className="sm:hidden flex justify-center py-3 bg-slate-800/50 border-t border-slate-700/50">
               <a
                 href={comparisonLinkData.href}
-                rel={comparisonLinkData.rel}
                 className="flex items-center gap-1.5 px-4 py-2 text-sm text-primary-400 hover:text-primary-300 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

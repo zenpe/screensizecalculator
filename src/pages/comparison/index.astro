@@ -111,7 +111,6 @@ const popularComparisons = [
       b: deviceB,
       slug: getComparisonSlug(deviceA.id, deviceB.id),
       href: linkData.href,
-      rel: linkData.rel,
     };
   })
   .filter(Boolean) as Array<{
@@ -119,7 +118,6 @@ const popularComparisons = [
   b: (typeof devices)[0];
   slug: string;
   href: string;
-  rel?: 'nofollow';
 }>;
 
 // --- Dynamic Quick Links ---
@@ -154,7 +152,7 @@ if (latestIphonePro.length > 0 && latestSamsungUltra.length > 0) {
 const quickLinks = {
   phones: dynamicQuickLinks.map(link => {
     const linkData = getComparisonLink(link.a.id, link.b.id);
-    return { ...link, href: linkData.href, rel: linkData.rel };
+    return { ...link, href: linkData.href };
   }),
   tvs: [
     { a: "65-inch-tv", b: "55-inch-tv", label: '65" TV vs 55" TV' },
@@ -162,7 +160,7 @@ const quickLinks = {
     { a: "85-inch-tv", b: "75-inch-tv", label: '85" TV vs 75" TV' },
   ].map(link => {
     const linkData = getComparisonLink(link.a, link.b);
-    return { ...link, href: linkData.href, rel: linkData.rel };
+    return { ...link, href: linkData.href };
   }),
   monitors: [
     {
@@ -182,7 +180,7 @@ const quickLinks = {
     },
   ].map(link => {
     const linkData = getComparisonLink(link.a, link.b);
-    return { ...link, href: linkData.href, rel: linkData.rel };
+    return { ...link, href: linkData.href };
   }),
   projectors: [
     {
@@ -202,7 +200,7 @@ const quickLinks = {
     },
   ].map(link => {
     const linkData = getComparisonLink(link.a, link.b);
-    return { ...link, href: linkData.href, rel: linkData.rel };
+    return { ...link, href: linkData.href };
   }),
 };
 
@@ -385,10 +383,9 @@ const categories = [
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
-          popularComparisons.map(({ a, b, href, rel }) => (
+          popularComparisons.map(({ a, b, href }) => (
             <a
               href={href}
-              rel={rel}
               class="group bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
             >
               <div class="flex items-center justify-between mb-2">
@@ -429,7 +426,6 @@ const categories = [
               quickLinks.phones.map((link) => (
                 <a
                   href={link.href}
-                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -459,7 +455,6 @@ const categories = [
               quickLinks.tvs.map((link) => (
                 <a
                   href={link.href}
-                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -489,7 +484,6 @@ const categories = [
               quickLinks.monitors.map((link) => (
                 <a
                   href={link.href}
-                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}
@@ -519,7 +513,6 @@ const categories = [
               quickLinks.projectors.map((link) => (
                 <a
                   href={link.href}
-                  rel={link.rel}
                   class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   {link.label}

@@ -51,6 +51,41 @@ export const templateVersions = {
 
 ---
 
+## 🔀 Comparison / Compare 共存规则（SEO）
+
+为了兼顾 SEO 收录和工具覆盖，`/comparison` 与 `/compare` 采用分工模式：
+
+### 1) 页面职责
+
+- `comparison`（静态页，SEO landing page）  
+  URL: `/comparison/a-vs-b`  
+  用途：唯一可索引的对比落地页，参与排名。
+- `compare`（动态工具页，full coverage）  
+  URL: `/compare?a=a&b=b`  
+  用途：仅承接交互查询，不参与排名。
+
+### 2) 索引规则
+
+- 所有合法 `comparison` 静态页：`index,follow`，进入 sitemap。
+- `compare`（含参数）：`noindex,follow`，不进入 sitemap。
+
+### 3) 唯一 URL 规则（防重复）
+
+- 同一设备组合只能有一个 SEO URL：`/comparison/a-vs-b`。
+- 设备 ID 必须按字母序归一化（canonical pair），避免重复 URL。
+
+### 4) 内链规则
+
+- 站内所有对比链接统一指向 `/comparison/a-vs-b`。
+- 内部链接不要加 `nofollow`，避免阻断站内权重传递。
+
+### 5) Sitemap 规则
+
+- 提交核心静态页 + 全部可索引 `comparison` 页。
+- `privacy`、`terms`、`404`、`compare` 不进 sitemap。
+
+---
+
 ## 🚀 Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:

@@ -77,10 +77,9 @@ const ultrawideComparisons = comparisonPairs.filter(
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {
-            standardVsStandard.map(({ a, b, href, rel }, index) => (
+            standardVsStandard.map(({ a, b, href }, index) => (
               <a
                 href={href}
-                rel={rel}
                 class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                 ${index < standardVsStandard.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
               >
@@ -112,10 +111,9 @@ const ultrawideComparisons = comparisonPairs.filter(
           </h2>
           <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {ultrawideComparisons.map(({ a, b, href, rel }, index) => (
+              {ultrawideComparisons.map(({ a, b, href }, index) => (
                 <a
                   href={href}
-                  rel={rel}
                   class={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between
                   ${index < ultrawideComparisons.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700' : ''}`}
                 >

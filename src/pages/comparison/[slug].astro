@@ -5,7 +5,6 @@ import UpgradeInsight from "../../components/UpgradeInsight.astro";
 import FAQSection from "../../components/FAQSection.astro";
 import {
   devices,
-  getDeviceById,
   isValidComparison,
   getDisplayDimensions,
   calculateArea,
@@ -16,7 +15,6 @@ import {
   siteConfig,
   templateVersions,
   sanitizeMetaDescription,
-  indexedComparisons,
 } from "../../site.config";
 import { getComparisonUrl } from "../../utils/url";
 import {
@@ -27,28 +25,30 @@ import {
 } from "../../utils/comparisonContent";
 import { shuffleWithSeed } from "../../utils/contentVariants";
 
-// Generate ONLY whitelisted comparison pages (non-whitelisted use /compare dynamic page)
+// Generate all valid comparison pages with canonical alphabetical ordering.
 export function getStaticPaths() {
   const paths = [];
+  const seen = new Set();
 
-  for (const slug of indexedComparisons) {
-    const [idA, idB] = slug.split('-vs-');
-    const deviceA = getDeviceById(idA);
-    const deviceB = getDeviceById(idB);
+  for (let i = 0; i < devices.length; i++) {
+    for (let j = i + 1; j < devices.length; j++) {
+      const deviceA = devices[i];
+      const deviceB = devices[j];
 
-    // Skip if either device doesn't exist
-    if (!deviceA || !deviceB) {
-      console.warn(`[comparison] Skipping ${slug}: device not found`);
-      continue;
+      if (!isValidComparison(deviceA.category, deviceB.category)) continue;
+
+      const [first, second] =
+        deviceA.id < deviceB.id ? [deviceA, deviceB] : [deviceB, deviceA];
+      const slug = `${first.id}-vs-${second.id}`;
+
+      if (seen.has(slug)) continue;
+      seen.add(slug);
+
+      paths.push({
+        params: { slug },
+        props: { deviceA: first, deviceB: second },
+      });
     }
-
-    // Verify alphabetical order
-    const [first, second] = deviceA.id < deviceB.id ? [deviceA, deviceB] : [deviceB, deviceA];
-
-    paths.push({
-      params: { slug },
-      props: { deviceA: first, deviceB: second },
-    });
   }
 
   return paths;

@@ -71,71 +71,8 @@ export function validateMetaDescription(description: string): { valid: boolean; 
   return { valid: true };
 }
 
-// High-value comparison pages whitelist (keep SEO indexing)
-// Other comparison pages will be noindex to avoid thin content penalty
-// Based on GSC data analysis (28-day: 2025-12-26)
-export const indexedComparisons = new Set([
-  // === iPhone 17 comparisons (P0 - highest traffic) ===
-  'iphone-13-vs-iphone-17',                    // 5 clicks, 1358 impressions
-  'iphone-16-plus-vs-iphone-17',               // 5 clicks, 1337 impressions
-  'iphone-16-vs-iphone-17-pro-max',            // 4 clicks, 1165 impressions
-  'iphone-13-vs-iphone-17-pro',                // 5 clicks, 950 impressions
-  'iphone-16-pro-vs-iphone-17',                // 4 clicks, 906 impressions
-  'iphone-13-pro-max-vs-iphone-17-pro',        // 5 clicks, 812 impressions
-  'iphone-15-vs-iphone-17',                    // 1 click, 749 impressions
-  'iphone-15-vs-iphone-17-pro',                // 1 click, 894 impressions
-  'iphone-15-pro-vs-iphone-17-pro',            // 3 clicks, 532 impressions
-  'iphone-13-vs-iphone-17-pro-max',            // 4 clicks, 458 impressions
-  'iphone-16-vs-iphone-17-air',                // 2 clicks, 408 impressions
-  'iphone-16-pro-max-vs-iphone-17-air',        // 3 clicks, 314 impressions
-  'iphone-17-air-vs-iphone-17-pro',            // 2 clicks, 558 impressions
-
-  // === iPhone cross-generation (adjacent) ===
-  // Note: slugs must be alphabetically sorted (e.g., iphone-13 < iphone-14)
-  // 'iphone-13-vs-iphone-14',
-  // 'iphone-13-vs-iphone-15',
-  // 'iphone-14-vs-iphone-15',
-  'iphone-15-vs-iphone-16',                    // 3 clicks, 634 impressions
-  // 'iphone-15-pro-vs-iphone-16-pro',
-  // 'iphone-15-pro-max-vs-iphone-16-pro-max',
-  'iphone-16-vs-iphone-17',
-  // 'iphone-16-pro-vs-iphone-17-pro',
-  // 'iphone-16-pro-max-vs-iphone-17-pro-max',
-
-  // === Cross-brand comparisons (iPhone vs Samsung) ===
-  'iphone-17-vs-samsung-galaxy-s25',           // 5 clicks, 309 impressions
-  'iphone-17-vs-samsung-galaxy-s25-ultra',     // 4 clicks, 157 impressions
-  'iphone-17-pro-vs-samsung-galaxy-s25-ultra', // 2 clicks, 117 impressions
-  'iphone-17-pro-max-vs-samsung-galaxy-s25',   // 3 clicks, 131 impressions
-
-  // === Samsung comparisons ===
-  'samsung-galaxy-s24-vs-samsung-galaxy-s25',
-  'samsung-galaxy-s24-ultra-vs-samsung-galaxy-s25-ultra',
-  'samsung-galaxy-s25-vs-samsung-galaxy-s25-ultra', // 3 clicks, 839 impressions
-  'samsung-galaxy-s25-vs-samsung-galaxy-s25-plus',  // 2 clicks, 337 impressions
-
-  // === Monitor comparisons ===
-  '24-inch-monitor-vs-27-inch-monitor',
-  '24-inch-monitor-vs-34-inch-ultrawide-monitor', // 2 clicks, 141 impressions
-  '27-inch-monitor-vs-32-inch-monitor',
-  '27-inch-monitor-vs-34-inch-ultrawide-monitor',
-  '32-inch-monitor-vs-34-inch-ultrawide-monitor', // 4 clicks, 160 impressions
-  '34-inch-ultrawide-monitor-vs-49-inch-super-ultrawide-monitor', // 2 clicks, 65 impressions
-
-  // === TV comparisons ===
-  '43-inch-tv-vs-55-inch-tv',
-  '55-inch-tv-vs-65-inch-tv',
-  '55-inch-tv-vs-75-inch-tv',
-  '65-inch-tv-vs-75-inch-tv',
-  '65-inch-tv-vs-85-inch-tv',                  // 2 clicks, 133 impressions
-  '75-inch-tv-vs-85-inch-tv',
-
-  // === Projector comparisons ===
-  '100-inch-projector-screen-vs-120-inch-projector-screen',
-  '120-inch-projector-screen-vs-150-inch-projector-screen', // 2 clicks, 31 impressions
-]);
-
-export const shouldIndexComparison = (slug: string): boolean => indexedComparisons.has(slug);
+// Comparison indexing policy:
+// All valid comparison pairs are generated as static /comparison/{slug} pages.
 
 // Template version dates - update ONLY when you actually modify the templates
 // These serve as fallback dates, actual content dates take priority if newer
