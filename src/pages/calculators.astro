@@ -86,6 +86,48 @@ const toolCalculators = [
   },
 ];
 
+const scenarioGuides = [
+  {
+    title: 'Living Room TV Setup',
+    description: 'Start with sofa-to-TV distance, then validate whether you should buy 55", 65", or 75".',
+    href: '/tv-screen-size-calculator',
+    ctaLabel: 'Open TV calculator',
+    icon: 'tv' as const,
+    color: 'blue',
+    steps: ['Enter viewing distance', 'Check recommended TV range', 'Open a size-vs-size comparison'],
+    links: [
+      { label: 'Distance Chart', href: '/blog/tv-size-by-viewing-distance-chart' },
+      { label: '55" vs 65" TV', href: '/comparison/55-inch-tv-vs-65-inch-tv' },
+    ],
+  },
+  {
+    title: 'Desk Monitor Planning',
+    description: 'Choose monitor size by desk depth, work style, and whether you use single or dual displays.',
+    href: '/monitor-screen-size-calculator',
+    ctaLabel: 'Open Monitor calculator',
+    icon: 'monitor' as const,
+    color: 'purple',
+    steps: ['Measure desk depth', 'Match use case to size', 'Validate with ratio and resolution'],
+    links: [
+      { label: 'Monitor Size Guide', href: '/blog/choosing-right-monitor-size' },
+      { label: 'Aspect Ratio Calculator', href: '/aspect-ratio-calculator' },
+    ],
+  },
+  {
+    title: 'Phone Size Decision',
+    description: 'Compare hand feel, readability, and pocket comfort before choosing compact vs large phones.',
+    href: '/phone-screen-size-calculator',
+    ctaLabel: 'Open Phone calculator',
+    icon: 'phone' as const,
+    color: 'green',
+    steps: ['Pick candidate models', 'Compare width/height side by side', 'Confirm readability and one-hand use'],
+    links: [
+      { label: 'How to Measure Screen Size', href: '/blog/how-to-measure-screen-size-tv-monitor-phone' },
+      { label: 'Compare Phones', href: '/comparison/phones' },
+    ],
+  },
+];
+
 // All calculators for Schema
 const allCalculators = [...screenCalculators, ...toolCalculators];
 
@@ -289,6 +331,60 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
                 ))}
               </div>
             </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Scenario Picker -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            Choose a Calculator by Scenario
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400">
+            Start from your real usage situation, then jump to the best-fit tool and guide.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          {scenarioGuides.map((scenario) => (
+            <div class={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm ${colorClasses[scenario.color].border}`}>
+              <div class="flex items-start gap-4">
+                <div class={`w-11 h-11 rounded-lg ${colorClasses[scenario.color].bg} flex items-center justify-center flex-shrink-0`}>
+                  <CategoryIcon icon={scenario.icon} size="lg" color={colorClasses[scenario.color].text} useSvg />
+                </div>
+                <div class="min-w-0">
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {scenario.title}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {scenario.description}
+                  </p>
+                </div>
+              </div>
+
+              <ul class="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                {scenario.steps.map((step) => (
+                  <li class="flex items-start gap-2">
+                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-gray-400 dark:bg-gray-500"></span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-wrap gap-3 text-sm">
+                <a href={scenario.href} class="font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+                  {scenario.ctaLabel}
+                </a>
+                {scenario.links.map((link) => (
+                  <a href={link.href} class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:underline">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

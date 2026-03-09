@@ -1,7 +1,8 @@
 ---
-title: 'How to Choose the Right TV Size for Your Room - Complete 2025 Guide'
+title: 'How to Choose the Right TV Size for Your Room - Complete Guide'
 description: 'Expert guide to selecting the perfect TV size based on room dimensions, viewing distance, resolution, and seating arrangement. Includes THX and SMPTE.'
 pubDate: '2025-12-01'
+updatedDate: '2026-03-09'
 category: 'TV Buying Guide'
 author: 'Screen Size Calculator Team'
 ---
@@ -34,6 +35,14 @@ The most critical factor in choosing TV size is your **viewing distance**—how 
 | **8-10 ft** (2.4-3m) | 60-75" | 50-60" |
 | **10-12 ft** (3-3.6m) | 75-85" | 60-75" |
 | **12+ ft** (3.6m+) | 85"+ or projector | 75"+ |
+
+Need a faster recommendation by sofa distance? Use our focused [TV size by viewing distance chart](/blog/tv-size-by-viewing-distance-chart).
+
+Popular size comparisons:
+
+- [55" TV vs 65" TV](/comparison/55-inch-tv-vs-65-inch-tv)
+- [65" TV vs 75" TV](/comparison/65-inch-tv-vs-75-inch-tv)
+- [75" TV vs 85" TV](/comparison/75-inch-tv-vs-85-inch-tv)
 
 ---
 
@@ -207,4 +216,4 @@ The perfect TV size balances **room dimensions**, **viewing distance**, and **re
 
 > **Our Best Advice:** When between two sizes, choose the larger one. In 15+ years of home theater consulting, we've never heard someone say "I wish I got a smaller TV."
 
-**Ready to calculate your perfect TV size?** Use our free [TV Size Calculator](/#calculator) with personalized viewing distance recommendations based on THX and SMPTE standards.
+**Ready to calculate your perfect TV size?** Use our free [TV Screen Size Calculator](/tv-screen-size-calculator) with personalized viewing distance recommendations based on THX and SMPTE standards.
