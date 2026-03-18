@@ -1,8 +1,8 @@
 ---
-title: "TV Size by Viewing Distance Chart"
-description: "Find the best TV size for your viewing distance with a practical chart. Compare 55, 65, 75, and 85-inch TVs for room size and seating distance."
+title: "TV Size by Viewing Distance Chart (2026)"
+description: "Use this TV size by viewing distance chart to match your seating distance with the right screen size, viewing angle, and practical room setup recommendations."
 pubDate: "2026-03-12"
-updatedDate: "2026-03-12"
+updatedDate: "2026-03-18"
 category: "TV Buying Guide"
 author: "Screen Size Calculator Team"
 keywords: "tv size by distance, viewing distance chart, 55 vs 65 tv, 65 vs 75 tv, best tv size for room"
