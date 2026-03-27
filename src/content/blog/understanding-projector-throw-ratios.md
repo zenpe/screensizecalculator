@@ -2,6 +2,7 @@
 title: 'Projector Throw Ratios Guide - Distance Calculations'
 description: 'Master projector throw ratios and calculate perfect placement distance for your home theater. Includes ultra short throw, standard, and long throw guides.'
 pubDate: '2025-12-02'
+updatedDate: '2026-03-27'
 category: 'Projector Guide'
 author: 'Screen Size Calculator Team'
 ---
@@ -121,7 +122,7 @@ Throw Ratio = Throw Distance ÷ Image Width
 
 ### Method 2: Using Our Calculator
 
-Want an instant answer? Use our **[Projector Calculator](/#calculator)** (switch to Projector mode):
+Want an instant answer? Use our **[Projector Screen Size Calculator](/projector-screen-size-calculator#calculator)** (switch to Projector mode):
 
 1. Enter desired screen size
 2. Select throw ratio from dropdown
@@ -136,6 +137,14 @@ Want an instant answer? Use our **[Projector Calculator](/#calculator)** (switch
 | 120" (105" wide) | 42" (3.5 ft) | 84" (7.0 ft) | 158" (13.1 ft) | 210" (17.5 ft) |
 | 150" (131" wide) | 52" (4.4 ft) | 105" (8.7 ft) | 197" (16.4 ft) | 262" (21.8 ft) |
 | 200" (174" wide) | 70" (5.8 ft) | 140" (11.6 ft) | 261" (21.8 ft) | 348" (29 ft) |
+
+## Related Projector Decisions
+
+If your main question is not placement but **what size screen actually fits your room**, read [100 vs 120 vs 150 Inch Projector Screen](/blog/100-vs-120-vs-150-inch-projector-screen).
+
+If the room doubles as a daily family room, compare the real trade-offs in [TV vs Projector for Living Room](/blog/tv-vs-projector-for-living-room).
+
+You can also jump straight to the [Projector comparison hub](/comparison/projectors) or the [Projector Screen Size Calculator](/projector-screen-size-calculator#calculator).
 
 ## Zoom Range and Flexibility
 
@@ -289,7 +298,7 @@ Most brands provide online calculators:
 - Sony Projection Distance Tool
 
 ### Our Universal Calculator
-**[Use our Projector Calculator](/#calculator)** for any projector:
+**[Use our Projector Screen Size Calculator](/projector-screen-size-calculator#calculator)** for any projector:
 1. Switch to Projector mode
 2. Enter screen size
 3. Select throw ratio (or enter custom)
@@ -349,4 +358,4 @@ Understanding throw ratio is essential for projector success. The formula is sim
 
 ---
 
-**Ready to calculate your exact throw distance?** Use our free [Projector Throw Calculator](/#calculator) with instant distance calculations and wall width requirements.
+**Ready to calculate your exact throw distance?** Use our free [Projector Screen Size Calculator](/projector-screen-size-calculator#calculator) with instant distance calculations and wall width requirements.

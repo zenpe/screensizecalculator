@@ -1,4 +1,6 @@
 // @ts-check
+import { readdirSync, readFileSync } from 'node:fs';
+import { basename, extname, join } from 'node:path';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
@@ -12,6 +14,41 @@ import rehypeExternalLinks from 'rehype-external-links';
 
 // Create a map for faster device date lookups.
 const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
+const blogContentDir = join(process.cwd(), 'src', 'content', 'blog');
+
+function getFrontmatterDate(frontmatter, field) {
+  const match = frontmatter.match(new RegExp(`^\\s*${field}:\\s*["']?([0-9]{4}-[0-9]{2}-[0-9]{2})["']?\\s*$`, 'm'));
+  return match ? match[1] : null;
+}
+
+function getBlogDateMap() {
+  const map = new Map();
+
+  for (const entry of readdirSync(blogContentDir, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+
+    const extension = extname(entry.name).toLowerCase();
+    if (!['.md', '.mdx'].includes(extension)) continue;
+
+    const fileContent = readFileSync(join(blogContentDir, entry.name), 'utf8');
+    const frontmatterMatch = fileContent.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!frontmatterMatch) continue;
+
+    const frontmatter = frontmatterMatch[1];
+    const pubDate = getFrontmatterDate(frontmatter, 'pubDate');
+    const updatedDate = getFrontmatterDate(frontmatter, 'updatedDate');
+    const contentDate = updatedDate || pubDate;
+
+    if (contentDate) {
+      map.set(basename(entry.name, extension), contentDate);
+    }
+  }
+
+  return map;
+}
+
+const blogDateMap = getBlogDateMap();
+const latestBlogDate = getLatestDate(...blogDateMap.values());
 
 // Helper: get the latest date from multiple date strings
 function getLatestDate(...dates) {
@@ -54,13 +91,17 @@ export default defineConfig({
       serialize(page) {
         /** @type {string | null} */
         let lastmod = null;
+        const blogSlugMatch = page.url.match(/\/blog\/([^/?#]+)\/?$/);
 
-        // Rule 1: Blog Posts (from content collections)
-        // @ts-ignore - entry is provided by sitemap integration for content collection pages
-        if (page.entry && page.entry.data && page.entry.data.pubDate) {
-          // @ts-ignore
-          const contentDate = page.entry.data.updatedDate || page.entry.data.pubDate;
+        // Rule 1: Blog Posts (from blog content frontmatter)
+        if (blogSlugMatch) {
+          const slug = blogSlugMatch[1];
+          const contentDate = blogDateMap.get(slug);
           lastmod = getLatestDate(contentDate, templateVersions.blogTemplate);
+        }
+        // Rule 1b: Blog index page
+        else if (page.url.match(/\/blog\/?$/)) {
+          lastmod = getLatestDate(latestBlogDate, templateVersions.blogTemplate);
         }
         // Rule 2: Comparison Pages
         else if (page.url.includes('/comparison/')) {
@@ -77,8 +118,8 @@ export default defineConfig({
           }
         }
         // Rule 3: Device Detail Pages
-        else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/)) {
-          const match = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size/);
+        else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size\/?$/)) {
+          const match = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size\/?$/);
           const deviceId = match ? match[1] : null;
           const deviceDate = deviceId ? deviceDateMap.get(deviceId) : null;
           lastmod = getLatestDate(deviceDate, templateVersions.deviceTemplate);

@@ -7,13 +7,12 @@ interface Props {
   description: string;
   pubDate: string;
   updatedDate?: string;
-  author?: string;
   category?: string;
   readingTime?: number;
   keywords?: string;
 }
 
-const { title, description, pubDate, updatedDate, author = "Screen Size Calculator Team", category = "Guide", readingTime, keywords: customKeywords } = Astro.props;
+const { title, description, pubDate, updatedDate, category = "Guide", readingTime, keywords: customKeywords } = Astro.props;
 const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
@@ -26,6 +25,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 }) : null;
 
 const estimatedReadingTime = readingTime || 5;
+const organizationAuthor = 'Screen Size Calculator';
 
 const keywords = customKeywords || (() => {
   const categoryKeywords: Record<string, string> = {
@@ -50,11 +50,11 @@ const articleData = {
   ...(updatedDate && { "dateModified": updatedDate }),
   "author": {
     "@type": "Organization",
-    "name": author
+    "name": organizationAuthor
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Screen Size Calculator",
+    "name": organizationAuthor,
     "logo": {
       "@type": "ImageObject",
       "url": `${siteConfig.siteUrl}/logo.png`
