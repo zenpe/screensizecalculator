@@ -177,7 +177,7 @@ Final date = MAX(content date, template version date)
 | Device detail | `MAX(device.updatedAt, templateVersions.deviceTemplate)` |
 | Comparison | `MAX(deviceA.updatedAt, deviceB.updatedAt, templateVersions.comparisonTemplate)` |
 | Blog | `MAX(updatedDate \|\| pubDate, templateVersions.blogTemplate)` |
-| Static pages | `templateVersions.staticPages` |
+| Static pages | `MAX(page updatedDate, templateVersions.staticPages)` |
 
 Update template version dates in `src/site.config.ts` only when you modify the actual template markup.
 
@@ -186,6 +186,7 @@ Update template version dates in `src/site.config.ts` only when you modify the a
 - **Modify template layout/structure** → update the corresponding `templateVersions.*` date
 - **Modify device data** → update `device.updatedAt` field in `devices.ts`
 - **Modify blog content** → update `updatedDate` in frontmatter
+- **Modify a static `.astro` page's content** → update that page's `const updatedDate = 'YYYY-MM-DD'`
 
 ### Processing Flow
 
