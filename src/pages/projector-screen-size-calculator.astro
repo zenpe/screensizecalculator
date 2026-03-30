@@ -51,6 +51,34 @@ const description =
   "Free projector throw distance calculator. Calculate screen size, throw ratio, and wall dimensions for any projector setup. Works with short throw & UST.";
 const keywords =
   "projector screen size calculator, projector throw distance calculator, projector throw ratio, short throw projector calculator, UST projector distance, projector placement calculator, throw distance formula";
+const updatedDate = '2026-03-30';
+
+const roomSizeQuickPicks = [
+  {
+    room: '10-12 ft room',
+    size: '100"',
+    fit: 'Best starting point for mixed-use living rooms and first projector setups.',
+    standardThrow: '10.9 ft',
+  },
+  {
+    room: '12-15 ft room',
+    size: '100" to 120"',
+    fit: 'Best balance when movie nights matter and the room can get dark.',
+    standardThrow: '10.9-13.1 ft',
+  },
+  {
+    room: '15-18 ft room',
+    size: '120"',
+    fit: 'Stronger immersion without pushing the room as hard as 150".',
+    standardThrow: '13.1 ft',
+  },
+  {
+    room: '18+ ft room',
+    size: '120" to 150"',
+    fit: 'Large dark rooms can justify 150" if brightness is strong enough.',
+    standardThrow: '13.1-16.4 ft',
+  },
+];
 
 // FAQ data
 const faqs = [
@@ -89,6 +117,14 @@ const faqs = [
   {
     question: "What is lens shift and why does it matter?",
     answer: "Lens shift allows you to move the projected image up, down, left, or right without moving the projector itself. This provides flexibility in projector placement without causing image distortion (keystone). Vertical lens shift is common; horizontal lens shift is found on higher-end models.",
+  },
+  {
+    question: "What projector screen size fits a 12 foot room?",
+    answer: "For many 12 foot rooms, 100 inches is the safest starting point. A 120 inch screen can still work with careful seating and the right throw ratio, but 100 inches is more forgiving for brightness, wall width, and multipurpose living-room use.",
+  },
+  {
+    question: "Is 150 inch too big for a living room?",
+    answer: "Often yes. A 150 inch screen usually needs a larger room, better light control, and a brighter projector. In many standard living rooms, 100 or 120 inches is a more practical choice.",
   },
 ];
 
@@ -171,7 +207,7 @@ const howToSchema = {
 };
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
 
   <main class="flex-1">
     <!-- Hero Section -->
@@ -394,6 +430,32 @@ const howToSchema = {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Best Projector Size by Room Depth -->
+    <section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 text-center">
+          Best Projector Size by Room Depth
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 text-center max-w-3xl mx-auto mb-8">
+          Use these fast picks before you fine-tune your setup. For a deeper breakdown, read
+          <a href="/blog/100-vs-120-vs-150-inch-projector-screen" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">100 vs 120 vs 150 Inch Projector Screen</a>
+          and
+          <a href="/blog/tv-vs-projector-for-living-room" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">TV vs Projector for Living Room</a>.
+        </p>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {roomSizeQuickPicks.map((pick) => (
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+              <div class="text-sm font-medium text-indigo-600 dark:text-indigo-400 mb-2">{pick.room}</div>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{pick.size}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{pick.fit}</p>
+              <div class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-500">Standard throw reference</div>
+              <div class="mt-1 font-semibold text-gray-900 dark:text-gray-200">{pick.standardThrow}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -644,6 +706,58 @@ const howToSchema = {
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <a
+            href="/blog/tv-vs-projector-for-living-room"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
+            <div class="p-6">
+              <span
+                class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-medium mb-3"
+              >
+                Buying Guide
+              </span>
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+              >
+                TV vs Projector for Living Room
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                Practical trade-offs for brightness, convenience, movie nights,
+                and big-screen value in a real family room.
+              </p>
+              <span
+                class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                >Read Guide →</span
+              >
+            </div>
+          </a>
+
+          <a
+            href="/blog/100-vs-120-vs-150-inch-projector-screen"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
+          >
+            <div class="p-6">
+              <span
+                class="inline-block px-3 py-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full text-xs font-medium mb-3"
+              >
+                Size Guide
+              </span>
+              <h3
+                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+              >
+                100 vs 120 vs 150 Inch Projector Screen
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                Room-depth, wall-width, and throw-distance guidance for choosing
+                the right projector size.
+              </p>
+              <span
+                class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                >Read Guide →</span
+              >
+            </div>
+          </a>
+
+          <a
             href="/blog/understanding-projector-throw-ratios"
             class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
           >
@@ -659,64 +773,12 @@ const howToSchema = {
                 Understanding Projector Throw Ratios
               </h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Complete guide to throw ratios with formulas, projector
-                categories, and room planning tips.
+                Placement formulas, projector categories, and room-planning tips
+                for accurate setup.
               </p>
               <span
                 class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
                 >Read Guide →</span
-              >
-            </div>
-          </a>
-
-          <a
-            href="/tv-screen-size-calculator"
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
-          >
-            <div class="p-6">
-              <span
-                class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-medium mb-3"
-              >
-                Calculator Tool
-              </span>
-              <h3
-                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-              >
-                TV Screen Size Calculator
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Calculate optimal TV size and viewing distance based on THX and
-                SMPTE standards.
-              </p>
-              <span
-                class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
-                >Try Calculator →</span
-              >
-            </div>
-          </a>
-
-          <a
-            href="/monitor-screen-size-calculator"
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group border border-gray-100 dark:border-gray-700"
-          >
-            <div class="p-6">
-              <span
-                class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium mb-3"
-              >
-                Calculator Tool
-              </span>
-              <h3
-                class="text-lg font-bold text-gray-900 dark:text-gray-200 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-              >
-                Monitor Screen Size Calculator
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Find the perfect monitor size and resolution for your desk setup
-                and viewing distance.
-              </p>
-              <span
-                class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
-                >Try Calculator →</span
               >
             </div>
           </a>
@@ -781,3 +843,5 @@ const howToSchema = {
     set:html={JSON.stringify(howToSchema)}
   />
 </Layout>
+
+

@@ -15,9 +15,15 @@ import rehypeExternalLinks from 'rehype-external-links';
 // Create a map for faster device date lookups.
 const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
 const blogContentDir = join(process.cwd(), 'src', 'content', 'blog');
+const staticPagesDir = join(process.cwd(), 'src', 'pages');
 
 function getFrontmatterDate(frontmatter, field) {
   const match = frontmatter.match(new RegExp(`^\\s*${field}:\\s*["']?([0-9]{4}-[0-9]{2}-[0-9]{2})["']?\\s*$`, 'm'));
+  return match ? match[1] : null;
+}
+
+function getConstDate(fileContent, field) {
+  const match = fileContent.match(new RegExp(`(?:^|\\n)\\s*const\\s+${field}\\s*=\\s*["']([0-9]{4}-[0-9]{2}-[0-9]{2})["']\\s*;?`, 'm'));
   return match ? match[1] : null;
 }
 
@@ -48,6 +54,7 @@ function getBlogDateMap() {
 }
 
 const blogDateMap = getBlogDateMap();
+const staticPageDateMap = getStaticPageDateMap();
 const latestBlogDate = getLatestDate(...blogDateMap.values());
 
 // Helper: get the latest date from multiple date strings
@@ -55,6 +62,52 @@ function getLatestDate(...dates) {
   const validDates = dates.filter(d => d).map(d => new Date(d).getTime());
   if (validDates.length === 0) return null;
   return new Date(Math.max(...validDates)).toISOString();
+}
+
+function getStaticPageDateMap() {
+  const map = new Map();
+
+  function walk(dir) {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        continue;
+      }
+
+      if (!entry.isFile() || extname(entry.name).toLowerCase() !== '.astro') continue;
+
+      const relativePath = fullPath.slice(staticPagesDir.length + 1).replace(/\\/g, '/');
+      if (relativePath.includes('[')) continue;
+
+      const fileContent = readFileSync(fullPath, 'utf8');
+      const updatedDate = getConstDate(fileContent, 'updatedDate');
+      if (!updatedDate) continue;
+
+      map.set(getStaticPageRoute(relativePath), updatedDate);
+    }
+  }
+
+  walk(staticPagesDir);
+  return map;
+}
+
+function getStaticPageRoute(relativePath) {
+  const normalized = relativePath.replace(/\\/g, '/').replace(/\.astro$/, '');
+  if (normalized === 'index') return '/';
+  if (normalized.endsWith('/index')) return `/${normalized.slice(0, -'/index'.length)}`;
+  return `/${normalized}`;
+}
+
+function getPagePath(url) {
+  try {
+    const pathname = new URL(url).pathname.replace(/\/$/, '');
+    return pathname || '/';
+  } catch {
+    const pathname = url.replace(/^https?:\/\/[^/]+/i, '').replace(/\/$/, '');
+    return pathname || '/';
+  }
 }
 
 // https://astro.build/config
@@ -126,7 +179,11 @@ export default defineConfig({
         }
         // Rule 4: All other (static) pages
         else {
-          lastmod = getLatestDate(templateVersions.staticPages);
+          const pagePath = getPagePath(page.url);
+          lastmod = getLatestDate(
+            staticPageDateMap.get(pagePath),
+            templateVersions.staticPages
+          );
         }
 
         if (lastmod) {

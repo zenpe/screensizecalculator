@@ -2,7 +2,7 @@
 title: "TV vs Projector for Living Room: Which Is Better?"
 description: "Compare TVs and projectors for living rooms with real trade-offs for brightness, setup, gaming, sound, and screen size so you can choose the right setup."
 pubDate: "2026-03-27"
-updatedDate: "2026-03-27"
+updatedDate: "2026-03-29"
 category: "Projector Guide"
 author: "Screen Size Calculator Team"
 keywords: "tv vs projector for living room, projector or tv for living room, 85 inch tv vs projector, living room home theater, bright room projector"
@@ -82,3 +82,4 @@ If you are still unsure, go in this order:
 4. Read [100 vs 120 vs 150 Inch Projector Screen](/blog/100-vs-120-vs-150-inch-projector-screen)
 
 For most living rooms, the right answer is the one that matches how the room is actually used, not the one with the biggest screen on paper.
+

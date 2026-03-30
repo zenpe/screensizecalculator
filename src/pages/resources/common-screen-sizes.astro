@@ -1,9 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const title = 'Common Screen Sizes Guide - TVs, Monitors, and Phones';
-const description = 'Complete guide to common screen sizes for TVs, monitors, and phones. Find standard dimensions, aspect ratios, and resolution recommendations.';
-const keywords = 'common screen sizes, standard tv sizes, monitor screen sizes, phone screen sizes, screen dimensions guide, display sizes comparison';
+const title = 'Common Screen Sizes Guide - TVs, Projectors, Monitors, and Phones';
+const description = 'Complete guide to common screen sizes for TVs, projectors, monitors, laptops, and phones. Find standard dimensions, room-fit guidance, and resolution recommendations.';
+const keywords = 'common screen sizes, standard tv sizes, projector screen sizes, monitor screen sizes, phone screen sizes, screen dimensions guide';
+const updatedDate = '2026-03-29';
 
 // FAQ Schema
 const faqData = {
@@ -16,6 +17,14 @@ const faqData = {
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "The most common TV screen sizes are 43\", 55\", 65\", and 75\" for living rooms. Smaller sizes like 32\" and 40\" are popular for bedrooms, while larger sizes like 85\"+ are for dedicated home theaters. The 55\"-65\" range represents the sweet spot for most living rooms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the most common projector screen sizes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The most common projector screen sizes for home use are 100\", 120\", and 150\". 100\" is the safest fit for mixed-use living rooms, 120\" is a popular home theater sweet spot, and 150\" usually needs a larger dark room and a brighter projector."
       }
     },
     {
@@ -46,7 +55,7 @@ const faqData = {
 };
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
 
   <main class="flex-1">
     <!-- Hero Section -->
@@ -56,7 +65,7 @@ const faqData = {
           Common Screen Sizes Guide
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
-          Complete reference to standard screen sizes across all device categories. Find the most popular dimensions for TVs, monitors, laptops, and phones with practical recommendations.
+          Complete reference to standard screen sizes across all device categories. Find the most popular dimensions for TVs, projectors, monitors, laptops, and phones with practical recommendations.
         </p>
       </div>
     </section>
@@ -102,6 +111,53 @@ const faqData = {
         <p class="mt-6 text-gray-600 dark:text-gray-400 text-center">
           The 55\"-65\" range is the most popular for standard living rooms, offering an optimal balance of immersion and practical screen size.
         </p>
+      </div>
+    </section>
+
+    <!-- Common Projector Sizes -->
+    <section class="py-12 lg:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+          Common Projector Screen Sizes
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
+            <thead class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold">Screen Size</th>
+                <th class="px-6 py-4 text-left font-semibold">Best Room Type</th>
+                <th class="px-6 py-4 text-left font-semibold">Typical Standard Throw</th>
+                <th class="px-6 py-4 text-left font-semibold">Notes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">100\"</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Mixed-use living room</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">About 10.9 ft at 1.5 throw ratio</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Best starting point for a first projector setup</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">120\"</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Movie-first home theater</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">About 13.1 ft at 1.5 throw ratio</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Strong sweet spot when the room can get dark</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">150\"</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">Large dedicated theater</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">About 16.4 ft at 1.5 throw ratio</td>
+                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Needs more room depth, brightness, and light control</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
+          <p class="text-indigo-900 dark:text-indigo-200 text-center">
+            Need help choosing projector size? Read <a href="/blog/100-vs-120-vs-150-inch-projector-screen" class="font-semibold underline underline-offset-2">100 vs 120 vs 150 Inch Projector Screen</a>
+            or calculate your room fit with the <a href="/projector-screen-size-calculator" class="font-semibold underline underline-offset-2">Projector Screen Size Calculator</a>.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -284,10 +340,14 @@ const faqData = {
             When selecting a screen size, consider your usage patterns, available space, and viewing distance. 
             The most important factor is choosing a size that fits your specific needs and environment.
           </p>
-          <div class="mt-6 grid md:grid-cols-3 gap-4 text-sm">
+          <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div class="bg-gray-700 rounded-lg p-4">
               <h3 class="font-semibold mb-2">TVs</h3>
-              <p>Match to room size and viewing distance</p>
+              <p>Match to room size, light level, and viewing distance</p>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+              <h3 class="font-semibold mb-2">Projectors</h3>
+              <p>Choose by room depth, throw distance, and light control</p>
             </div>
             <div class="bg-gray-700 rounded-lg p-4">
               <h3 class="font-semibold mb-2">Monitors</h3>
@@ -383,3 +443,4 @@ const faqData = {
 
   <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>
+
