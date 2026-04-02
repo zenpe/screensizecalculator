@@ -1,28 +1,36 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
-import { getCollection } from 'astro:content';
+import BlogPost from "../../layouts/BlogPost.astro";
+import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
-  const blogs = await getCollection('blog');
+  const blogs = await getCollection("blog");
 
   // Sort blogs by date
-  const sortedBlogs = blogs.sort((a, b) =>
-    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+  const sortedBlogs = blogs.sort(
+    (a, b) =>
+      new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
   );
 
   return sortedBlogs.map((blog, index) => {
     const prevPost = index > 0 ? sortedBlogs[index - 1] : null;
-    const nextPost = index < sortedBlogs.length - 1 ? sortedBlogs[index + 1] : null;
+    const nextPost =
+      index < sortedBlogs.length - 1 ? sortedBlogs[index + 1] : null;
 
     // Find related posts: same category first, then other recent posts
     let relatedPosts = sortedBlogs
-      .filter(b => b.slug !== blog.slug && b.data.category === blog.data.category)
+      .filter(
+        (b) => b.slug !== blog.slug && b.data.category === blog.data.category,
+      )
       .slice(0, 3);
 
     // If not enough same-category posts, fill with other recent posts
     if (relatedPosts.length < 3) {
       const otherPosts = sortedBlogs
-        .filter(b => b.slug !== blog.slug && !relatedPosts.find(r => r.slug === b.slug))
+        .filter(
+          (b) =>
+            b.slug !== blog.slug &&
+            !relatedPosts.find((r) => r.slug === b.slug),
+        )
         .slice(0, 3 - relatedPosts.length);
       relatedPosts = [...relatedPosts, ...otherPosts];
     }
@@ -59,84 +67,111 @@ const hasNavigation = prevPost || nextPost;
   <footer slot="footer" class="not-prose">
     <!-- Navigation & Related in unified container -->
     <div class="space-y-8">
-
       <!-- Prev/Next Navigation - Always show both slots -->
-      {hasNavigation && (
-        <nav class="grid grid-cols-2 gap-4" aria-label="Article navigation">
-          <div>
-            {prevPost ? (
-              <a
-                href={`/blog/${prevPost.slug}`}
-                class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
-              >
-                <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Previous
+      {
+        hasNavigation && (
+          <nav class="grid grid-cols-2 gap-4" aria-label="Article navigation">
+            <div>
+              {prevPost ? (
+                <a
+                  href={`/blog/${prevPost.slug}`}
+                  class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
+                >
+                  <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
+                    <svg
+                      class="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                    Previous
+                  </div>
+                  <div class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
+                    {prevPost.data.title}
+                  </div>
+                </a>
+              ) : (
+                <div class="h-full p-4 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                  <span class="text-xs text-gray-400 dark:text-gray-500">
+                    No previous article
+                  </span>
                 </div>
-                <div class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                  {prevPost.data.title}
-                </div>
-              </a>
-            ) : (
-              <div class="h-full p-4 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                <span class="text-xs text-gray-400 dark:text-gray-500">No previous article</span>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div>
-            {nextPost ? (
-              <a
-                href={`/blog/${nextPost.slug}`}
-                class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all text-right"
-              >
-                <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                  Next
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
+            <div>
+              {nextPost ? (
+                <a
+                  href={`/blog/${nextPost.slug}`}
+                  class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all text-right"
+                >
+                  <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
+                    Next
+                    <svg
+                      class="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                  <div class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
+                    {nextPost.data.title}
+                  </div>
+                </a>
+              ) : (
+                <div class="h-full p-4 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                  <span class="text-xs text-gray-400 dark:text-gray-500">
+                    No next article
+                  </span>
                 </div>
-                <div class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                  {nextPost.data.title}
-                </div>
-              </a>
-            ) : (
-              <div class="h-full p-4 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                <span class="text-xs text-gray-400 dark:text-gray-500">No next article</span>
-              </div>
-            )}
-          </div>
-        </nav>
-      )}
+              )}
+            </div>
+          </nav>
+        )
+      }
 
       <!-- Related Articles -->
-      {relatedPosts.length > 0 && (
-        <section>
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-            More Articles
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {relatedPosts.map((post) => (
-              <a
-                href={`/blog/${post.slug}`}
-                class="group p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
-              >
-                <div class="text-xs text-primary-600 dark:text-primary-400 font-medium mb-1.5">
-                  {post.data.category}
-                </div>
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 mb-1.5">
-                  {post.data.title}
-                </h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                  {post.data.description}
-                </p>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
+      {
+        relatedPosts.length > 0 && (
+          <section>
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
+              More Articles
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {relatedPosts.map((post) => (
+                <a
+                  href={`/blog/${post.slug}`}
+                  class="group p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
+                >
+                  <div class="text-xs text-primary-600 dark:text-primary-400 font-medium mb-1.5">
+                    {post.data.category}
+                  </div>
+                  <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 mb-1.5">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                    {post.data.description}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
       <!-- Back to Blog -->
       <div class="text-center pt-4">
@@ -144,8 +179,17 @@ const hasNavigation = prevPost || nextPost;
           href="/blog"
           class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
           View all articles
         </a>

@@ -24,3 +24,4 @@ pnpm-debug.log*
 .idea/
 scripts/indexing-state.json
 .ace-tool/
+seo-8week-schedule.csv
