@@ -144,6 +144,45 @@ const indexedRelatedComparisons = relatedComparisons.filter(
 // For display in "Browse Similar" section (limited to 6)
 const displayRelatedComparisons = relatedComparisons.slice(0, 6);
 
+type PhoneHandlingLevel = "easy" | "moderate" | "challenging";
+
+const getPhoneHandlingLevel = (
+  device: Device,
+): PhoneHandlingLevel | null => {
+  if (device.category !== "phone") return null;
+  if (device.diagonal <= 6.1) return "easy";
+  if (device.diagonal >= 6.7) return "challenging";
+  return "moderate";
+};
+
+const getPhoneHandlingFaqAnswer = (device: Device): string => {
+  const handlingLevel = getPhoneHandlingLevel(device);
+
+  if (handlingLevel === "easy") {
+    return `Yes, ${device.name} with its ${device.diagonal}" screen is suitable for one-handed use for most users.`;
+  }
+
+  if (handlingLevel === "moderate") {
+    return `${device.name} sits in the middle of the modern phone-size range. Some users may still manage quick one-handed tasks on its ${device.diagonal}" screen, but it is less effortless than compact phones and often more comfortable with two hands for longer sessions.`;
+  }
+
+  return `${device.name} with its ${device.diagonal}" screen may be challenging for one-handed use, especially for users with smaller hands. It's better suited for two-handed operation.`;
+};
+
+const getPhoneHandlingLabel = (device: Device): string => {
+  const handlingLevel = getPhoneHandlingLevel(device);
+
+  if (handlingLevel === "easy") {
+    return "Easy — compact size suitable for most users";
+  }
+
+  if (handlingLevel === "moderate") {
+    return "Moderate — manageable for users with average-sized hands";
+  }
+
+  return "Challenging — better suited for two-handed operation";
+};
+
 // Generate dynamic FAQ based on device type
 // Questions optimized to match real search patterns (based on GSC/Ahrefs data)
 const generateFAQ = (device: Device) => {
@@ -226,7 +265,7 @@ const generateFAQ = (device: Device) => {
     }
     faqs.push({
       question: `Is ${device.name} good for one-handed use?`,
-      answer: `${device.diagonal <= 6.1 ? "Yes, " + device.name + " with its " + device.diagonal + '" screen is suitable for one-handed use for most users.' : device.name + " with its " + device.diagonal + "\" screen may be challenging for one-handed use, especially for users with smaller hands. It's better suited for two-handed operation."}`,
+      answer: getPhoneHandlingFaqAnswer(device),
     });
 
     // Battery life FAQ (if battery data available)
@@ -436,18 +475,31 @@ interface Tip {
   content: string;
 }
 
+interface ScenarioDecisionLink {
+  href: string;
+  label: string;
+}
+
+interface ScenarioDecisionCard {
+  title: string;
+  summary: string;
+  links: ScenarioDecisionLink[];
+}
+
 const generateTips = (device: Device): Tip[] => {
   const tips: Tip[] = [];
 
   if (device.category === "phone") {
+    const handlingLevel = getPhoneHandlingLevel(device);
+
     // One-handed use tip
-    if (device.diagonal <= 6.1) {
+    if (handlingLevel === "easy") {
       tips.push({
         icon: "👋",
         title: "One-Handed Friendly",
         content: `With a ${device.diagonal}" screen, ${device.name} is comfortable for one-handed use. Use Reachability (swipe down on the bottom edge) to access top elements easily.`,
       });
-    } else if (device.diagonal >= 6.5) {
+    } else if (handlingLevel === "challenging") {
       tips.push({
         icon: "🤲",
         title: "Two-Handed Grip",
@@ -658,6 +710,105 @@ const generateTips = (device: Device): Tip[] => {
 };
 
 const tips = generateTips(device);
+
+const getPhoneScenarioDecisionCards = (
+  device: Device,
+): ScenarioDecisionCard[] => {
+  if (device.category !== "phone") return [];
+
+  const battery = device.phone?.battery;
+  const weight = device.phone?.weight;
+  const refreshRate = device.phone?.refreshRate;
+
+  const isCompact = device.diagonal <= 6.1;
+  const isLarge = device.diagonal >= 6.7;
+  const isHeavy = typeof weight === "number" && weight > 200;
+  const isLight = typeof weight === "number" && weight <= 180;
+  const hasLargeBattery = typeof battery === "number" && battery >= 4500;
+  const hasBalancedBattery = typeof battery === "number" && battery >= 3500;
+  const isIphoneProLine =
+    device.id.includes("iphone") && device.id.includes("pro");
+  const isMainstreamPhoneSize =
+    device.diagonal >= 6.0 && device.diagonal <= 6.8;
+
+  let carrySummary = `${device.name} sits in the middle of the phone-size range. It should feel easier to carry than larger phones while still giving you more screen room than compact models.`;
+
+  if (isCompact && isLight) {
+    carrySummary = `${device.name} leans portable. At ${device.diagonal}" and ${weight}g, it should be easier to pocket and more manageable one-handed than larger phones.`;
+  } else if (isCompact) {
+    carrySummary = `${device.name} still leans portable because of its ${device.diagonal}" size. It should feel easier to manage one-handed than larger phones, even if case thickness and accessories affect the final feel.`;
+  } else if (isLarge || isHeavy) {
+    carrySummary = `${device.name} leans toward screen size over easy carry. It is more likely to feel best with two hands and more noticeable in pockets than smaller phones.`;
+  }
+
+  let screenSummary = `${device.name} looks more like a balanced daily phone than an endurance-first model. If long video sessions or maximum battery life matter most, compare it with larger models before buying.`;
+
+  if (isLarge && hasLargeBattery) {
+    screenSummary = `${device.name} is a strong fit for video, reading, navigation, and long days away from a charger. The larger body supports both more screen area and stronger battery headroom.`;
+  } else if (isLarge) {
+    screenSummary = `${device.name} leans screen-first. The larger display should help with video, reading, and gaming, but battery expectations still depend on your usage pattern.`;
+  } else if (hasLargeBattery) {
+    screenSummary = `${device.name} has battery capacity that should suit heavier daily use better than smaller-battery phones, even though it is not in the largest screen class.`;
+  } else if (hasBalancedBattery && typeof refreshRate === "number" && refreshRate >= 120) {
+    screenSummary = `${device.name} still looks balanced overall, but the ${refreshRate}Hz display should make scrolling and interaction feel smoother than standard-refresh phones.`;
+  }
+
+  let compareSummary = `Use the links below to compare ${device.name} with nearby alternatives and keep the decision grounded in real dimensions, carry comfort, and battery expectations.`;
+
+  if (isIphoneProLine) {
+    compareSummary = `If your real question is size trade-off inside Apple's Pro lineup, compare this model against the next size up or down before deciding.`;
+  } else if (isMainstreamPhoneSize) {
+    compareSummary = `If you are deciding between mainstream phone sizes, compare this model against smaller and larger options before locking in your choice.`;
+  }
+
+  const compareLinks: ScenarioDecisionLink[] = [
+    { href: "/blog/choosing-right-phone-size", label: "Choose the right phone size" },
+    { href: "/comparison/phones", label: "Browse phone comparisons" },
+  ];
+
+  if (isMainstreamPhoneSize) {
+    compareLinks.unshift({
+      href: "/blog/6-1-vs-6-7-phone-size-real-life",
+      label: "See 6.1 vs 6.7 in real life",
+    });
+  }
+
+  if (isIphoneProLine) {
+    compareLinks.unshift({
+      href: "/blog/is-iphone-pro-max-worth-upgrade",
+      label: "See Pro vs Pro Max trade-offs",
+    });
+  }
+
+  return [
+    {
+      title: "Daily Carry",
+      summary: carrySummary,
+      links: [{ href: "/blog/choosing-right-phone-size", label: "Read the full phone-size guide" }],
+    },
+    {
+      title: "Screen and Battery",
+      summary: screenSummary,
+      links: [
+        {
+          href: isMainstreamPhoneSize
+            ? "/blog/6-1-vs-6-7-phone-size-real-life"
+            : "/comparison/phones",
+          label: isMainstreamPhoneSize
+            ? "Compare smaller vs larger phone sizes"
+            : "Compare this phone with other models",
+        },
+      ],
+    },
+    {
+      title: "Compare Next",
+      summary: compareSummary,
+      links: compareLinks,
+    },
+  ];
+};
+
+const phoneScenarioDecisionCards = getPhoneScenarioDecisionCards(device);
 
 // OG Image URL for this device
 const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
@@ -911,6 +1062,46 @@ const breadcrumbSchema = {
       )}
     </div>
 
+    {
+      phoneScenarioDecisionCards.length > 0 && (
+        <section class="mb-8">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
+            <div class="mb-5">
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Scenario Decision Guide
+              </h2>
+              <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                Use these quick checks to decide whether {device.name} fits easier daily carry, bigger-screen use, or a size-up comparison before you buy.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {phoneScenarioDecisionCards.map((card) => (
+                <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-4 sm:p-5">
+                  <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    {card.title}
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                    {card.summary}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {card.links.map((link) => (
+                      <a
+                        href={link.href}
+                        class="inline-flex items-center rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 text-xs sm:text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
     <!-- Key Takeaways Summary -->
     <div
       class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 sm:p-6 mb-8"
@@ -1023,11 +1214,7 @@ const breadcrumbSchema = {
               </svg>
               <span>
                 <strong>One-handed use:</strong>{" "}
-                {device.diagonal <= 6.1
-                  ? "Easy — compact size suitable for most users"
-                  : device.diagonal <= 6.5
-                    ? "Moderate — manageable for users with average-sized hands"
-                    : "Challenging — better suited for two-handed operation"}
+                {getPhoneHandlingLabel(device)}
               </span>
             </li>
           )

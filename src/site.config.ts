@@ -140,7 +140,7 @@ export const comparisonIndexConfig = {
 // These serve as fallback dates, actual content dates take priority if newer
 export const templateVersions = {
   // Device detail page ([deviceId]-screen-size.astro)
-  deviceTemplate: '2025-12-29',
+  deviceTemplate: '2026-04-16',
 
   // Comparison page (comparison/[slug].astro)
   comparisonTemplate: '2025-12-29',
