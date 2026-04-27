@@ -12,7 +12,7 @@ export const siteConfig = {
 
   // Amazon Affiliate Program
   amazon: {
-    enabled: true, // Set to true to enable Amazon affiliate links
+    enabled: false, // Set to true to enable Amazon affiliate links
     affiliateTag: 'screensizecal-20',
     baseUrl: 'https://www.amazon.com',
   },
@@ -192,12 +192,20 @@ export const templateVersions = {
 
 // Helper function to generate Amazon search URL with affiliate tag
 export function getAmazonSearchUrl(keyword: string): string {
+  if (!siteConfig.amazon.enabled) {
+    return '';
+  }
+
   const { affiliateTag, baseUrl } = siteConfig.amazon;
   return `${baseUrl}/s?tag=${affiliateTag}&k=${encodeURIComponent(keyword)}`;
 }
 
 // Helper function to generate Amazon URL with affiliate tag
 export function getAmazonUrl(path: string = ''): string {
+  if (!siteConfig.amazon.enabled) {
+    return '';
+  }
+
   const { affiliateTag, baseUrl } = siteConfig.amazon;
   const separator = path.includes('?') ? '&' : '?';
   return `${baseUrl}${path}${separator}tag=${affiliateTag}`;

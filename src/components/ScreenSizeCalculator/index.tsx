@@ -124,11 +124,11 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor', sh
         };
       }
       default:
-        return { url: 'https://www.amazon.com', label: 'Shop on Amazon' };
+        return { url: '', label: 'Shop' };
     }
   };
 
-  const amazonInfo = getAmazonInfo();
+  const amazonInfo = siteConfig.amazon.enabled ? getAmazonInfo() : null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden" role="application" aria-label="Screen size calculator with TV viewing distance and projector throw distance">
@@ -449,7 +449,7 @@ export default function ScreenSizeCalculator({ initialDeviceMode = 'monitor', sh
                 )}
 
                 {/* Amazon CTA */}
-                {siteConfig.amazon.enabled && (
+                {amazonInfo && (
                   <a
                     href={amazonInfo.url}
                     target="_blank"

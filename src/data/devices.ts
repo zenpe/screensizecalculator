@@ -1320,7 +1320,7 @@ export const devices: Device[] = [
     resolution: '2880 x 1800',
     releasedAt: '2024-09-26',
     updatedAt: '2024-09-26',
-    expertSummary: 'The FE+ brings a large 13.1-inch screen to a mid-range price point. It lacks the flagship\'s 120Hz refresh rate (90Hz instead) and premium build, but delivers 90% of the experience at 50% of the Ultra\'s price. Best for users who prioritize screen size over cutting-edge specs.',
+    expertSummary: 'The FE+ brings a large 13.1-inch screen to a mid-range price point. It lacks the flagship\'s 120Hz refresh rate (90Hz instead) and premium build, but delivers 90% of the experience at 50% of the Ultra\'s price. Best for users who prioritize screen size over top-end specs.',
     price: 599,
   },
   {

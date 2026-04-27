@@ -53,12 +53,18 @@ const fmt = (num: number, decimals = 1) => num.toFixed(decimals);
 const introText = getIntroVariant(device, dims, area);
 const deviceInsights = getDeviceInsights(device);
 const supplementaryPhrase = getSupplementaryPhrase(device.id, device.category);
+const pageHeading =
+  device.category === "projector" ? `${device.name} Size` : `${device.name} Screen Size`;
+const guideLabel =
+  device.category === "projector" ? "projector screen size guide" : "screen size guide";
+const primaryKeyword =
+  device.category === "projector" ? `${device.name} size` : `${device.name} screen size`;
 
 // SEO metadata
-const title = `${device.name} Screen Size - Dimensions & Specifications`;
+const title = `${pageHeading} - Dimensions & Specifications`;
 const rawDescription = `${device.name} has a ${device.diagonal}" display with ${fmt(dims.width, 2)}" × ${fmt(dims.height, 2)}" dimensions${device.resolution ? ` and ${device.resolution} resolution` : ""}. Complete screen size guide with specs and comparisons.`;
 const description = sanitizeMetaDescription(rawDescription);
-const keywords = `${device.name} screen size, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === "phone" ? `, ${device.name} size comparison` : ""}`;
+const keywords = `${primaryKeyword}, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === "phone" ? `, ${device.name} size comparison` : ""}`;
 
 // Brand detection patterns - ordered by specificity (product names before brand names)
 const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
@@ -1146,7 +1152,7 @@ const productSchema = {
 const toolSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: `${device.name} Screen Size Calculator`,
+  name: `${pageHeading} Calculator`,
   description: description,
   dateModified: lastUpdated,
   applicationCategory: "UtilityApplication",
@@ -1427,12 +1433,12 @@ const breadcrumbSchema = {
       <h1
         class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4"
       >
-        {device.name} Screen Size
+        {pageHeading}
       </h1>
       <p
         class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-4"
       >
-        Complete screen size guide for the {device.name} with {device.diagonal}"
+        Complete {guideLabel} for the {device.name} with {device.diagonal}"
         display
       </p>
 

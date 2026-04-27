@@ -200,7 +200,7 @@ The pixels are **half the size** on 8K. To see this difference, you need to be c
 2. **Sitting very close** (under 5 feet from 65-75" screen)
 3. **Professional work** requiring native 8K
 4. **Future-proofing** for 10+ year ownership
-5. **Budget unlimited** and want cutting-edge tech
+5. **Budget unlimited** and want the newest TV panel tech
 
 ### Choose 4K If:
 
