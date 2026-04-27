@@ -178,16 +178,16 @@ export const comparisonIndexConfig = {
 // These serve as fallback dates, actual content dates take priority if newer
 export const templateVersions = {
   // Device detail page ([deviceId]-screen-size.astro)
-  deviceTemplate: '2026-04-16',
+  deviceTemplate: '2026-04-27',
 
   // Comparison page (comparison/[slug].astro)
   comparisonTemplate: '2025-12-29',
 
   // Blog post template (BlogPost.astro)
-  blogTemplate: '2025-12-26',
+  blogTemplate: '2026-04-27',
 
   // Static pages (homepage, calculators, etc.)
-  staticPages: '2025-12-26',
+  staticPages: '2026-04-27',
 };
 
 // Helper function to generate Amazon search URL with affiliate tag

@@ -1,0 +1,4 @@
+# Deprecated comparison SEO pages are intentionally removed from the static build.
+# Hosts that support Netlify-style _redirects should return 410 Gone for these URLs.
+/comparison/* /410.html 410
+/comparison /410.html 410
