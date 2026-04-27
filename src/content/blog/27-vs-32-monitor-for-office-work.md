@@ -1,5 +1,5 @@
 ---
-title: "27 vs 32 Inch Monitor for Work: Which Size Is Better for Office Productivity?"
+title: "27 vs 32 Inch Monitor for Work: Which Size Is Better?"
 description: "Comparing 27 vs 32 inch monitors for office work, spreadsheets, reading, and multitasking. See desk-depth, resolution, viewing-distance, and productivity trade-offs."
 pubDate: "2026-04-01"
 updatedDate: "2026-04-01"

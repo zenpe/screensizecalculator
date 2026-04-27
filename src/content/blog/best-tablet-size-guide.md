@@ -2,6 +2,7 @@
 title: 'Best Tablet Size for Reading, Drawing & Kids: Complete Guide'
 description: 'Not sure what tablet size to buy? Compare 7-13 inch tablets for reading, drawing, kids, and productivity. Size charts and expert recommendations included.'
 pubDate: '2025-12-20'
+updatedDate: '2026-04-27'
 category: 'Tablet Guide'
 author: 'Screen Size Calculator Team'
 keywords: 'tablet size guide, best tablet size, tablet for reading, tablet for drawing, tablet for kids, iPad size comparison, tablet screen size, what size tablet should I buy, tablet size comparison'

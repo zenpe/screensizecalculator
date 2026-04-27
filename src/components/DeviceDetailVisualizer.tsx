@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useLayoutEffect, useRef, lazy, Suspense, memo, useId, useCallback } from 'react';
 import type { Device } from '../data/devices';
 import { calculateDimensions } from '../data/devices';
-import { getComparisonLink } from '../utils/url';
+import { getComparisonLink, getDevicePageUrl } from '../utils/url';
 import ScreenCalibration, { getStoredCalibration, getEffectivePpi } from './ScreenCalibration';
 
 // Lazy load ComparisonVisualizer only when needed
@@ -598,6 +598,10 @@ export default function DeviceDetailVisualizer({
       {/* Full Screen Comparison Modal */}
       {isModalOpen && compareDevice && (() => {
         const comparisonLinkData = getComparisonLink(device.id, compareDevice.id);
+        const fullPageHref = comparisonLinkData.isStatic
+          ? comparisonLinkData.href
+          : getDevicePageUrl(compareDevice.id);
+        const fullPageLabel = comparisonLinkData.isStatic ? 'Full Page' : 'View Device';
         return (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md animate-fadeIn"
@@ -625,13 +629,13 @@ export default function DeviceDetailVisualizer({
               </div>
               <div className="flex items-center gap-2">
                 <a
-                  href={comparisonLinkData.href}
+                  href={fullPageHref}
                   className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-slate-300 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-all"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                  Full Page
+                  {fullPageLabel}
                 </a>
                 <button
                   onClick={closeModal}
@@ -662,13 +666,13 @@ export default function DeviceDetailVisualizer({
             {/* Modal Footer - Mobile link */}
             <div className="sm:hidden flex justify-center py-3 bg-slate-800/50 border-t border-slate-700/50">
               <a
-                href={comparisonLinkData.href}
+                href={fullPageHref}
                 className="flex items-center gap-1.5 px-4 py-2 text-sm text-primary-400 hover:text-primary-300 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
-                Open Full Page
+                Open {fullPageLabel}
               </a>
             </div>
           </div>

@@ -26,8 +26,8 @@ import {
   getIntroVariant,
   getDeviceInsights,
   getSupplementaryPhrase,
-  shuffleWithSeed,
 } from "../utils/contentVariants";
+import { getDeviceSeoRecommendation } from "../data/deviceSeoRecommendations";
 
 // Generate pages for all devices
 export function getStaticPaths() {
@@ -195,14 +195,16 @@ const getPhoneHandlingLabel = (device: Device): string => {
   return "Challenging — better suited for two-handed operation";
 };
 
-// Generate dynamic FAQ based on device type
-// Questions optimized to match real search patterns (based on GSC/Ahrefs data)
+interface FAQItem {
+  question: string;
+  answer: string;
+  link?: { url: string; text: string };
+}
+
+// Generate dynamic FAQ based on device type.
+// Questions are later prioritized so final pages avoid repeating the same size answer.
 const generateFAQ = (device: Device) => {
-  const faqs: Array<{
-    question: string;
-    answer: string;
-    link?: { url: string; text: string };
-  }> = [];
+  const faqs: FAQItem[] = [];
 
   // Question 1: How big is [device]? (no "the" - matches search pattern)
   faqs.push({
@@ -478,7 +480,76 @@ const generateFAQ = (device: Device) => {
   return faqs;
 };
 
-const faqs = shuffleWithSeed(generateFAQ(device), device.id);
+const selectFaqsForQuality = (allFaqs: FAQItem[], device: Device): FAQItem[] => {
+  const selected: FAQItem[] = [];
+  const used = new Set<string>();
+
+  const add = (match: (faq: FAQItem) => boolean) => {
+    const faq = allFaqs.find((item) => match(item) && !used.has(item.question));
+    if (!faq) return;
+    selected.push(faq);
+    used.add(faq.question);
+  };
+
+  const q = (faq: FAQItem) => faq.question.toLowerCase();
+  const deviceName = device.name.toLowerCase();
+
+  if (device.category === "phone") {
+    add((faq) => q(faq) === `how big is ${deviceName}?`);
+    add((faq) => q(faq).startsWith(`how tall is ${deviceName}`));
+    add((faq) => q(faq).includes("one-handed"));
+    add((faq) => q(faq).includes("battery"));
+    add((faq) => q(faq).includes("watching videos"));
+    add((faq) => q(faq).includes("bright sunlight"));
+    add((faq) => q(faq).startsWith(`how does ${deviceName} compare`));
+  } else if (device.category === "tv") {
+    add((faq) => q(faq).startsWith("what is the width"));
+    add((faq) => q(faq).startsWith("how far should you sit"));
+    add((faq) => q(faq).startsWith("what room size"));
+    add((faq) => q(faq).includes("good for gaming"));
+    add((faq) => q(faq).startsWith("do i need 4k"));
+    add((faq) => q(faq).startsWith("what size wall mount"));
+    add((faq) => q(faq).startsWith(`how does ${deviceName} compare`));
+  } else if (device.category === "tablet") {
+    add((faq) => q(faq) === `how big is ${deviceName}?`);
+    add((faq) => q(faq).includes("easy to carry"));
+    add((faq) => q(faq).includes("reading and productivity"));
+    add((faq) => q(faq).includes("drawing and note-taking"));
+    add((faq) => q(faq).includes("split-screen"));
+    add((faq) => q(faq).includes("watching movies"));
+    add((faq) => q(faq).startsWith(`how does ${deviceName} compare`));
+  } else if (device.category === "monitor") {
+    add((faq) => q(faq) === `how big is ${deviceName}?`);
+    add((faq) => q(faq).startsWith("what is the ideal viewing distance"));
+    add((faq) => q(faq).includes("good for productivity"));
+    add((faq) => q(faq).includes("better for gaming or work"));
+    add((faq) => q(faq).includes("benefits of") && q(faq).includes("ultrawide"));
+    add((faq) => q(faq).startsWith("how much desk space"));
+    add((faq) => q(faq).startsWith("do i need to use display scaling"));
+    add((faq) => q(faq).startsWith(`how does ${deviceName} compare`));
+  } else if (device.category === "projector") {
+    add((faq) => q(faq) === `how big is ${deviceName}?`);
+    add((faq) => q(faq).startsWith("what room size"));
+    add((faq) => q(faq).includes("good for a home theater"));
+    add((faq) => q(faq).includes("with lights on"));
+    add((faq) => q(faq).startsWith("how far should the projector"));
+    add((faq) => q(faq).startsWith("what type of screen"));
+    add((faq) => q(faq).startsWith(`how does ${deviceName} compare`));
+  }
+
+  for (const faq of allFaqs) {
+    if (selected.length >= 7) break;
+    if (used.has(faq.question)) continue;
+    if (q(faq).includes("display size") || q(faq).includes("screen dimensions")) continue;
+    if (device.category === "phone" && q(faq).includes("length")) continue;
+    selected.push(faq);
+    used.add(faq.question);
+  }
+
+  return selected.slice(0, 7);
+};
+
+const faqs = selectFaqsForQuality(generateFAQ(device), device);
 
 // Generate device-specific tips
 interface Tip {
@@ -825,7 +896,214 @@ const getPhoneScenarioDecisionCards = (
   ];
 };
 
-const phoneScenarioDecisionCards = getPhoneScenarioDecisionCards(device);
+const getMonitorScenarioDecisionCards = (
+  device: Device,
+): ScenarioDecisionCard[] => {
+  if (device.category !== "monitor") return [];
+
+  const isCompact = device.diagonal <= 24;
+  const isDeskFriendly = device.diagonal <= 27;
+  const isLarge4kClass = device.diagonal >= 32 && device.ratio < 2;
+  const isUltrawide = device.ratio > 2;
+
+  return [
+    {
+      title: "Desk Fit",
+      summary: isCompact
+        ? `${device.name} is a safe fit for smaller desks, secondary-screen setups, and users who want the whole display easy to scan without much head movement.`
+        : isDeskFriendly
+          ? `${device.name} should fit most normal desks well, especially if you sit around arm's length from the screen.`
+          : `${device.name} needs more desk depth and more careful positioning. It can feel excellent for work, but it is less forgiving if the screen sits too close.`,
+      links: [
+        { href: "/blog/monitor-viewing-distance-chart", label: "Check monitor viewing distance" },
+      ],
+    },
+    {
+      title: "Resolution Fit",
+      summary: isLarge4kClass
+        ? `${device.name} is in the size range where 4K becomes practical for sharp text, creative work, and dense layouts without making everything too tiny.`
+        : isUltrawide
+          ? `${device.name} is about horizontal workspace more than raw sharpness. It is strongest for timelines, side-by-side windows, and multitasking.`
+          : `${device.name} works best when resolution and scaling match your work style. For many users, this size pairs well with 1080p or 1440p depending on distance.`,
+      links: [
+        { href: "/blog/is-1440p-worth-it-on-27-inch-monitor", label: "See 1440p monitor guidance" },
+        { href: "/ppi-calculator", label: "Calculate pixel density" },
+      ],
+    },
+    {
+      title: "Work Style",
+      summary: isUltrawide
+        ? `${device.name} is strongest if your workflow benefits from two or three windows side by side, such as coding, spreadsheets, video editing, or dashboards.`
+        : `${device.name} is a practical choice when you want a straightforward monitor size for office work, gaming, browsing, and general productivity.`,
+      links: [
+        {
+          href: isUltrawide
+            ? "/blog/34-inch-ultrawide-vs-32-inch-4k-for-productivity"
+            : "/blog/27-vs-32-monitor-for-office-work",
+          label: isUltrawide
+            ? "Compare ultrawide vs 4K productivity"
+            : "Compare 27 vs 32 for office work",
+        },
+      ],
+    },
+  ];
+};
+
+const getTvScenarioDecisionCards = (
+  device: Device,
+): ScenarioDecisionCard[] => {
+  if (device.category !== "tv") return [];
+
+  const minDistanceFeet = (device.diagonal * 1.2) / 12;
+  const immersiveDistanceFeet = (device.diagonal * 1.6) / 12;
+  const isBedroomSize = device.diagonal <= 55;
+  const isLivingRoomSize = device.diagonal >= 65 && device.diagonal <= 75;
+  const isHuge = device.diagonal >= 85;
+
+  return [
+    {
+      title: "Room Fit",
+      summary: isBedroomSize
+        ? `${device.name} is a practical size for bedrooms, apartments, and shorter seating distances where a very large TV would dominate the room.`
+        : isLivingRoomSize
+          ? `${device.name} sits in the main living-room range. It should feel immersive without requiring a dedicated theater space.`
+          : `${device.name} is a large-screen choice that needs enough wall width, seating distance, and delivery space to make sense.`,
+      links: [
+        { href: "/blog/best-tv-size-for-bedroom-apartment", label: "TV size for bedroom or apartment" },
+      ],
+    },
+    {
+      title: "Viewing Distance",
+      summary: `For ${device.name}, a practical seating range is roughly ${fmt(minDistanceFeet, 1)} to ${fmt(immersiveDistanceFeet, 1)} feet, depending on how immersive you want movies, sports, or games to feel.`,
+      links: [
+        { href: "/blog/tv-size-by-viewing-distance-chart", label: "Use the TV distance chart" },
+        { href: "/tv-screen-size-calculator", label: "Calculate TV dimensions" },
+      ],
+    },
+    {
+      title: "Upgrade Logic",
+      summary: isHuge
+        ? `${device.name} is for users who want a cinema-scale picture without switching to projection. Check wall width and room lighting before choosing it.`
+        : `${device.name} is worth comparing against the next size up or down because the screen-area jump between TV sizes is often larger than the diagonal number suggests.`,
+      links: [
+        {
+          href: isHuge
+            ? "/blog/tv-vs-projector-for-living-room"
+            : "/blog/55-vs-65-vs-75-tv-size-at-8-10-feet",
+          label: isHuge ? "Compare TV vs projector" : "Compare 55 vs 65 vs 75 inch TVs",
+        },
+      ],
+    },
+  ];
+};
+
+const getTabletScenarioDecisionCards = (
+  device: Device,
+): ScenarioDecisionCard[] => {
+  if (device.category !== "tablet") return [];
+
+  const isSmall = device.diagonal < 10;
+  const isBalanced = device.diagonal >= 10 && device.diagonal < 12;
+  const isLarge = device.diagonal >= 12;
+
+  return [
+    {
+      title: "Handheld Use",
+      summary: isSmall
+        ? `${device.name} is best when portability and handheld reading matter more than maximum workspace.`
+        : isBalanced
+          ? `${device.name} is a balanced tablet size for reading, notes, streaming, browsing, and light productivity.`
+          : `${device.name} is large enough to feel more like a compact laptop or drawing canvas, but it is less comfortable for long handheld sessions.`,
+      links: [
+        { href: "/blog/best-tablet-size-guide", label: "Read the tablet size guide" },
+      ],
+    },
+    {
+      title: "Creative and Work Fit",
+      summary: isLarge
+        ? `${device.name} gives you more room for drawing, split-screen apps, keyboard use, and document work. It makes the most sense if the tablet often sits on a desk or stand.`
+        : `${device.name} is easier to carry and hold, but heavy drawing, split-screen, or keyboard workflows may feel tighter than on larger tablets.`,
+      links: [
+        { href: "/tablet-screen-size-calculator", label: "Calculate tablet dimensions" },
+      ],
+    },
+    {
+      title: "Compare Next",
+      summary: `Before choosing ${device.name}, compare it with both a smaller and larger tablet class so the trade-off between carry comfort and workspace is clear.`,
+      links: [
+        { href: "/devices/tablets", label: "Browse tablet sizes" },
+        { href: "/resources/common-screen-sizes", label: "See common screen sizes" },
+      ],
+    },
+  ];
+};
+
+const getProjectorScenarioDecisionCards = (
+  device: Device,
+): ScenarioDecisionCard[] => {
+  if (device.category !== "projector") return [];
+
+  const minRoomDepth = (device.diagonal * 1.2) / 12;
+  const isStarter = device.diagonal <= 100;
+  const isTheaterSweetSpot = device.diagonal === 120;
+  const isDedicatedRoom = device.diagonal >= 150;
+
+  return [
+    {
+      title: "Room Requirement",
+      summary: isStarter
+        ? `${device.name} is the safest projector-screen size for mixed-use rooms and first projector setups.`
+        : isTheaterSweetSpot
+          ? `${device.name} is the common home-theater target when the room has enough seating distance and light control.`
+          : `${device.name} needs a dedicated room mindset: enough wall width, seating depth, brightness, and strong light control.`,
+      links: [
+        { href: "/blog/100-vs-120-vs-150-inch-projector-screen", label: "Compare 100 vs 120 vs 150 inch screens" },
+      ],
+    },
+    {
+      title: "Viewing Distance",
+      summary: `Plan for roughly ${fmt(minRoomDepth, 1)} feet or more of viewing distance before ${device.name} starts to feel comfortable rather than overwhelming.`,
+      links: [
+        { href: "/projector-screen-size-calculator", label: "Calculate projector screen size" },
+      ],
+    },
+    {
+      title: "Setup Risk",
+      summary: isDedicatedRoom
+        ? `${device.name} can look cinematic, but brightness, throw distance, and ambient light become the limiting factors.`
+        : `${device.name} is easier to make work than larger screens, but throw ratio and room light still matter more than the diagonal size alone.`,
+      links: [
+        { href: "/blog/understanding-projector-throw-ratios", label: "Understand projector throw ratios" },
+        { href: "/blog/tv-vs-projector-for-living-room", label: "Compare TV vs projector" },
+      ],
+    },
+  ];
+};
+
+const getScenarioDecisionCards = (device: Device): ScenarioDecisionCard[] => {
+  if (device.category === "phone") return getPhoneScenarioDecisionCards(device);
+  if (device.category === "monitor") return getMonitorScenarioDecisionCards(device);
+  if (device.category === "tv") return getTvScenarioDecisionCards(device);
+  if (device.category === "tablet") return getTabletScenarioDecisionCards(device);
+  if (device.category === "projector") return getProjectorScenarioDecisionCards(device);
+  return [];
+};
+
+const getScenarioDecisionIntro = (device: Device): string => {
+  const introByCategory: Record<Device["category"], string> = {
+    phone: `Use these quick checks to decide whether ${device.name} fits easier daily carry, bigger-screen use, or a size-up comparison before you buy.`,
+    monitor: `Use these quick checks to decide whether ${device.name} fits your desk depth, resolution expectations, and daily work style.`,
+    tv: `Use these quick checks to decide whether ${device.name} fits your room, seating distance, and upgrade expectations.`,
+    tablet: `Use these quick checks to decide whether ${device.name} fits handheld reading, creative work, or productivity use.`,
+    projector: `Use these quick checks to decide whether ${device.name} fits your room depth, throw distance, and light-control limits.`,
+  };
+
+  return introByCategory[device.category];
+};
+
+const scenarioDecisionCards = getScenarioDecisionCards(device);
+const scenarioDecisionIntro = getScenarioDecisionIntro(device);
+const deviceSeoRecommendation = getDeviceSeoRecommendation(device.id);
 
 // OG Image URL for this device
 const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
@@ -905,6 +1183,129 @@ const CATEGORY_NAMES: Record<string, string> = {
   tablet: "Tablets",
   projector: "Projectors",
 };
+
+const CATEGORY_PATHS: Record<Device["category"], string> = {
+  phone: "/devices/phones",
+  tv: "/devices/tvs",
+  monitor: "/devices/monitors",
+  tablet: "/devices/tablets",
+  projector: "/devices/projectors",
+};
+
+const CALCULATOR_PATHS: Record<Device["category"], { href: string; label: string }> = {
+  phone: { href: "/phone-screen-size-calculator", label: "Phone screen size calculator" },
+  tv: { href: "/tv-screen-size-calculator", label: "TV screen size calculator" },
+  monitor: { href: "/monitor-screen-size-calculator", label: "Monitor screen size calculator" },
+  tablet: { href: "/tablet-screen-size-calculator", label: "Tablet screen size calculator" },
+  projector: { href: "/projector-screen-size-calculator", label: "Projector screen size calculator" },
+};
+
+const GUIDE_LINKS = {
+  phoneChoosing: { href: "/blog/choosing-right-phone-size", label: "Choose the right phone size" },
+  phoneSizeRange: { href: "/blog/6-1-vs-6-7-phone-size-real-life", label: "6.1 vs 6.7 inch phone size" },
+  phoneProMax: { href: "/blog/is-iphone-pro-max-worth-upgrade", label: "Pro vs Pro Max trade-offs" },
+  monitorViewing: { href: "/blog/monitor-viewing-distance-chart", label: "Monitor viewing distance chart" },
+  monitor24Vs27: { href: "/blog/24-vs-27-inch-monitor", label: "24 vs 27 inch monitor" },
+  monitor27Vs32: { href: "/blog/27-vs-32-monitor-for-office-work", label: "27 vs 32 inch monitor" },
+  monitor1440p: { href: "/blog/is-1440p-worth-it-on-27-inch-monitor", label: "1440p on 27 inch monitors" },
+  monitorUltrawide: { href: "/blog/34-inch-ultrawide-vs-32-inch-4k-for-productivity", label: "Ultrawide vs 32 inch 4K" },
+  monitorDual: { href: "/blog/ultrawide-vs-dual-monitor-setup", label: "Ultrawide vs dual monitors" },
+  tvViewing: { href: "/blog/tv-size-by-viewing-distance-chart", label: "TV size by viewing distance" },
+  tvMidSize: { href: "/blog/55-vs-65-vs-75-tv-size-at-8-10-feet", label: "55 vs 65 vs 75 inch TV" },
+  tvRoom: { href: "/blog/how-to-choose-tv-size-for-room", label: "Choose TV size for your room" },
+  tvBedroom: { href: "/blog/best-tv-size-for-bedroom-apartment", label: "Best TV size for bedrooms" },
+  tv8k: { href: "/blog/8k-tv-viewing-distance-guide", label: "8K TV viewing distance" },
+  tvProjector: { href: "/blog/tv-vs-projector-for-living-room", label: "TV vs projector" },
+  tabletSize: { href: "/blog/best-tablet-size-guide", label: "Best tablet size guide" },
+  commonSizes: { href: "/resources/common-screen-sizes", label: "Common screen sizes" },
+  ppiExplained: { href: "/resources/ppi-explained", label: "PPI explained" },
+  projectorSizes: { href: "/blog/100-vs-120-vs-150-inch-projector-screen", label: "100 vs 120 vs 150 inch screen" },
+  projectorThrow: { href: "/blog/understanding-projector-throw-ratios", label: "Projector throw ratios" },
+} satisfies Record<string, ScenarioDecisionLink>;
+
+const uniqueGuideLinks = (links: ScenarioDecisionLink[]): ScenarioDecisionLink[] => {
+  const seen = new Set<string>();
+  return links.filter((link) => {
+    if (seen.has(link.href)) return false;
+    seen.add(link.href);
+    return true;
+  });
+};
+
+const getDeviceGuideLinks = (device: Device): ScenarioDecisionLink[] => {
+  const isLargePhone = device.diagonal >= 6.7 || /pro-max|ultra|plus/i.test(device.id);
+  const isUltrawideMonitor = device.category === "monitor" && device.ratio >= 21 / 9;
+
+  if (device.category === "phone") {
+    return uniqueGuideLinks(
+      isLargePhone
+        ? [GUIDE_LINKS.phoneProMax, GUIDE_LINKS.phoneSizeRange, GUIDE_LINKS.phoneChoosing]
+        : [GUIDE_LINKS.phoneChoosing, GUIDE_LINKS.phoneSizeRange, CALCULATOR_PATHS.phone]
+    );
+  }
+
+  if (device.category === "monitor") {
+    if (isUltrawideMonitor) {
+      return uniqueGuideLinks([GUIDE_LINKS.monitorUltrawide, GUIDE_LINKS.monitorDual, GUIDE_LINKS.monitorViewing]);
+    }
+
+    if (device.diagonal <= 24) {
+      return uniqueGuideLinks([GUIDE_LINKS.monitor24Vs27, GUIDE_LINKS.monitorViewing, GUIDE_LINKS.monitor1440p]);
+    }
+
+    if (device.diagonal <= 27) {
+      return uniqueGuideLinks([GUIDE_LINKS.monitorViewing, GUIDE_LINKS.monitor27Vs32, GUIDE_LINKS.monitor1440p]);
+    }
+
+    return uniqueGuideLinks([GUIDE_LINKS.monitor27Vs32, GUIDE_LINKS.monitorUltrawide, GUIDE_LINKS.monitorViewing]);
+  }
+
+  if (device.category === "tv") {
+    if (device.diagonal >= 85) {
+      return uniqueGuideLinks([GUIDE_LINKS.tvProjector, GUIDE_LINKS.tv8k, GUIDE_LINKS.tvViewing]);
+    }
+
+    if (device.diagonal <= 55) {
+      return uniqueGuideLinks([GUIDE_LINKS.tvBedroom, GUIDE_LINKS.tvViewing, GUIDE_LINKS.tvRoom]);
+    }
+
+    return uniqueGuideLinks([GUIDE_LINKS.tvMidSize, GUIDE_LINKS.tvViewing, GUIDE_LINKS.tvRoom]);
+  }
+
+  if (device.category === "tablet") {
+    if (device.diagonal >= 12) {
+      return uniqueGuideLinks([GUIDE_LINKS.tabletSize, CALCULATOR_PATHS.tablet, GUIDE_LINKS.ppiExplained]);
+    }
+
+    return uniqueGuideLinks([GUIDE_LINKS.tabletSize, GUIDE_LINKS.commonSizes, GUIDE_LINKS.ppiExplained]);
+  }
+
+  return uniqueGuideLinks([GUIDE_LINKS.projectorSizes, GUIDE_LINKS.projectorThrow, GUIDE_LINKS.tvProjector]);
+};
+
+const seoLinkSections = [
+  {
+    title: "Browse this category",
+    links: [
+      {
+        href: CATEGORY_PATHS[device.category],
+        label: `All ${CATEGORY_NAMES[device.category] || "Devices"}`,
+      },
+      CALCULATOR_PATHS[device.category],
+    ],
+  },
+  {
+    title: "Related guides",
+    links: getDeviceGuideLinks(device),
+  },
+  {
+    title: "Nearby devices",
+    links: relatedDevices.slice(0, 6).map((related) => ({
+      href: `/${related.id}-screen-size`,
+      label: `${related.name} (${related.diagonal}")`,
+    })),
+  },
+].filter((section) => section.links.length > 0);
 
 // Breadcrumb Schema - using siteUrl from config
 const breadcrumbSchema = {
@@ -1080,7 +1481,7 @@ const breadcrumbSchema = {
     </div>
 
     {
-      phoneScenarioDecisionCards.length > 0 && (
+      scenarioDecisionCards.length > 0 && (
         <section class="mb-8">
           <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
             <div class="mb-5">
@@ -1088,12 +1489,12 @@ const breadcrumbSchema = {
                 Scenario Decision Guide
               </h2>
               <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                Use these quick checks to decide whether {device.name} fits easier daily carry, bigger-screen use, or a size-up comparison before you buy.
+                {scenarioDecisionIntro}
               </p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {phoneScenarioDecisionCards.map((card) => (
+              {scenarioDecisionCards.map((card) => (
                 <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-4 sm:p-5">
                   <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     {card.title}
@@ -1114,6 +1515,82 @@ const breadcrumbSchema = {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      deviceSeoRecommendation && (
+        <section class="mb-8">
+          <div class="rounded-2xl border border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-amber-950/30 dark:via-gray-800 dark:to-orange-950/20 p-5 sm:p-6 shadow-lg">
+            <div class="mb-5">
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 dark:text-amber-300 mb-2">
+                Buying fit check
+              </p>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Should You Choose {device.name}?
+              </h2>
+              <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                A quick editorial check for the real-world trade-offs behind this screen size.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
+              <div class="rounded-xl bg-white/80 dark:bg-gray-900/50 border border-emerald-200 dark:border-emerald-800 p-4">
+                <h3 class="text-base font-semibold text-emerald-800 dark:text-emerald-200 mb-3">
+                  Choose it if
+                </h3>
+                <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  {deviceSeoRecommendation.choose.map((item) => (
+                    <li class="flex gap-2">
+                      <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="rounded-xl bg-white/80 dark:bg-gray-900/50 border border-rose-200 dark:border-rose-800 p-4">
+                <h3 class="text-base font-semibold text-rose-800 dark:text-rose-200 mb-3">
+                  Skip it if
+                </h3>
+                <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  {deviceSeoRecommendation.skip.map((item) => (
+                    <li class="flex gap-2">
+                      <span class="mt-1 h-1.5 w-1.5 rounded-full bg-rose-500 flex-shrink-0"></span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="rounded-xl bg-white/80 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 p-4">
+                <h3 class="text-base font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                  Closest alternatives
+                </h3>
+                <div class="space-y-3">
+                  {deviceSeoRecommendation.alternatives.map((alternative) => (
+                    <a
+                      href={alternative.href}
+                      class="block rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/70 p-3 hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+                    >
+                      <span class="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {alternative.label}
+                      </span>
+                      <span class="block text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {alternative.reason}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <p class="rounded-xl bg-gray-900 text-white dark:bg-gray-950 px-4 py-3 text-sm sm:text-base leading-relaxed">
+              <span class="font-semibold text-amber-300">Bottom line:</span>{" "}
+              {deviceSeoRecommendation.bottomLine}
+            </p>
           </div>
         </section>
       )
@@ -2761,6 +3238,39 @@ const breadcrumbSchema = {
     <div class="mb-6 sm:mb-8">
       <FAQSection faqs={faqs} title="Frequently Asked Questions" compact />
     </div>
+
+    <!-- Device SEO Link Hub -->
+    <section class="mb-6 sm:mb-8 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
+      <div class="mb-5">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          More About {device.name} and Similar Screen Sizes
+        </h2>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          Continue from this device page into the most relevant size guides,
+          calculators, and nearby {CATEGORY_NAMES[device.category]?.toLowerCase() || "devices"}.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {seoLinkSections.map((section) => (
+          <div class="rounded-xl bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700 p-4">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
+              {section.title}
+            </h3>
+            <div class="space-y-2">
+              {section.links.map((link) => (
+                <a
+                  href={link.href}
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
 
     <!-- Related Comparisons -->
     {indexedRelatedComparisons.length > 0 && (

@@ -1,5 +1,5 @@
 ---
-title: "Monitor Viewing Distance Chart: Best Distance for 24, 27, 32, 34, 38, and 49-Inch Screens"
+title: "Monitor Viewing Distance Chart for 24 to 49 Inch Screens"
 description: "Use this monitor viewing distance chart to find the best distance for 24, 27, 32, 34, 38, and 49 inch screens. Includes desk-depth guidance and resolution trade-offs."
 pubDate: "2026-03-31"
 updatedDate: "2026-03-31"

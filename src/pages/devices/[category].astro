@@ -15,6 +15,11 @@ const categoryConfig: Record<string, {
   color: string;
   description: string;
   keywords: string;
+  guide: {
+    intro: string[];
+    keyPoints: Array<{ title: string; text: string }>;
+    links: Array<{ href: string; label: string }>;
+  };
   faq: Array<{ question: string; answer: string }>;
 }> = {
   phones: {
@@ -24,6 +29,31 @@ const categoryConfig: Record<string, {
     color: 'green',
     description: 'iPhone, Samsung Galaxy, Google Pixel, and other smartphones',
     keywords: 'phone screen size, iphone screen size, samsung galaxy screen, pixel screen size, smartphone dimensions',
+    guide: {
+      intro: [
+        'Phone screen size is a trade-off between reach, pocket comfort, typing space, video immersion, and battery headroom. A small difference on paper can feel much larger in daily use because weight, width, and aspect ratio change how far your thumb has to travel.',
+        'Most current phones cluster around 6.1 to 6.9 inches. Compact models are easier to handle one-handed, standard models fit most users, and large Pro Max or Ultra phones are best when the phone is also your main reading, navigation, gaming, or video device.',
+      ],
+      keyPoints: [
+        {
+          title: '6.1 to 6.3 inches',
+          text: 'Best for easier pockets, one-handed messaging, and users moving from older compact phones.',
+        },
+        {
+          title: '6.5 to 6.7 inches',
+          text: 'A balanced large-phone range for media, maps, and battery life without going fully oversized.',
+        },
+        {
+          title: '6.8 inches and above',
+          text: 'Best for people who value screen area and battery over pocket comfort or one-handed reach.',
+        },
+      ],
+      links: [
+        { href: '/blog/choosing-right-phone-size', label: 'How to choose the right phone size' },
+        { href: '/blog/6-1-vs-6-7-phone-size-real-life', label: '6.1 vs 6.7 inch phone size' },
+        { href: '/phone-screen-size-calculator', label: 'Phone screen size calculator' },
+      ],
+    },
     faq: [
       {
         question: 'What is the most common phone screen size?',
@@ -50,6 +80,31 @@ const categoryConfig: Record<string, {
     color: 'indigo',
     description: 'iPad Pro, iPad Air, Samsung Galaxy Tab, Surface Pro, and other tablets',
     keywords: 'tablet screen size, ipad screen size, galaxy tab screen, surface pro dimensions, tablet dimensions',
+    guide: {
+      intro: [
+        'Tablet screen size should be chosen around the job it needs to do. Reading and travel favor smaller tablets, while drawing, note-taking, split-screen work, and keyboard use benefit from larger displays.',
+        'Aspect ratio matters as much as diagonal size. iPads use a squarer shape that feels strong for documents and drawing, while many Android tablets use wider ratios that feel better for video and side-by-side windows.',
+      ],
+      keyPoints: [
+        {
+          title: '8 to 9 inches',
+          text: 'Best for reading, travel, field work, and handheld use where weight matters more than workspace.',
+        },
+        {
+          title: '10 to 11 inches',
+          text: 'The safest all-around size for students, streaming, notes, and casual productivity.',
+        },
+        {
+          title: '12 to 14 inches',
+          text: 'Best for artists, keyboard users, split-screen workflows, and people replacing a laptop part-time.',
+        },
+      ],
+      links: [
+        { href: '/blog/best-tablet-size-guide', label: 'Best tablet size guide' },
+        { href: '/tablet-screen-size-calculator', label: 'Tablet screen size calculator' },
+        { href: '/resources/common-screen-sizes', label: 'Common screen sizes reference' },
+      ],
+    },
     faq: [
       {
         question: 'What tablet screen size is best for reading?',
@@ -76,6 +131,31 @@ const categoryConfig: Record<string, {
     color: 'blue',
     description: '43", 55", 65", 75", 85" and other television sizes',
     keywords: 'tv screen size, television dimensions, 55 inch tv size, 65 inch tv dimensions, tv comparison',
+    guide: {
+      intro: [
+        'TV size depends mainly on seating distance, room width, mounting space, and how immersive you want movies or sports to feel. The same 65-inch TV can feel perfect in one room and too dominant in another.',
+        'For most living rooms, 55 and 65 inches are the practical sweet spots. Larger sizes like 75, 85, and 98 inches work best when the room has enough viewing distance and the wall can visually support the screen.',
+      ],
+      keyPoints: [
+        {
+          title: '43 to 55 inches',
+          text: 'Best for bedrooms, apartments, secondary rooms, or shorter seating distances.',
+        },
+        {
+          title: '65 to 75 inches',
+          text: 'The main living-room range for movies, sports, and console gaming at common seating distances.',
+        },
+        {
+          title: '85 inches and above',
+          text: 'Best for large rooms, dedicated media walls, and users who want a near-projector experience.',
+        },
+      ],
+      links: [
+        { href: '/blog/tv-size-by-viewing-distance-chart', label: 'TV size by viewing distance chart' },
+        { href: '/blog/55-vs-65-vs-75-tv-size-at-8-10-feet', label: '55 vs 65 vs 75 at 8-10 feet' },
+        { href: '/tv-screen-size-calculator', label: 'TV screen size calculator' },
+      ],
+    },
     faq: [
       {
         question: 'What TV size should I get for my room?',
@@ -102,6 +182,31 @@ const categoryConfig: Record<string, {
     color: 'purple',
     description: '24", 27", 32" and ultrawide desktop displays',
     keywords: 'monitor screen size, computer monitor dimensions, 27 inch monitor, ultrawide monitor size',
+    guide: {
+      intro: [
+        'Monitor size is constrained by desk depth, resolution, font scaling, and how much head movement you can tolerate. Bigger is not automatically better if the screen sits too close or text scaling wastes the extra space.',
+        'The strongest general-purpose setup is still 27 inches at 1440p. Go smaller for competitive gaming, larger for 4K work, and ultrawide when horizontal workspace is more valuable than vertical height.',
+      ],
+      keyPoints: [
+        {
+          title: '24 inches',
+          text: 'Best for esports, small desks, budget setups, and secondary monitors.',
+        },
+        {
+          title: '27 to 32 inches',
+          text: 'Best for office work, coding, 1440p or 4K productivity, and general daily use.',
+        },
+        {
+          title: '34 inches and above',
+          text: 'Best for timelines, spreadsheets, coding layouts, trading dashboards, and replacing dual monitors.',
+        },
+      ],
+      links: [
+        { href: '/blog/monitor-viewing-distance-chart', label: 'Monitor viewing distance chart' },
+        { href: '/blog/27-vs-32-monitor-for-office-work', label: '27 vs 32 inch monitor for work' },
+        { href: '/monitor-screen-size-calculator', label: 'Monitor screen size calculator' },
+      ],
+    },
     faq: [
       {
         question: 'What monitor size is best for productivity?',
@@ -128,6 +233,31 @@ const categoryConfig: Record<string, {
     color: 'amber',
     description: '100", 120", 150" projection screens for home theater',
     keywords: 'projector screen size, projection screen dimensions, home theater screen, projector screen calculator',
+    guide: {
+      intro: [
+        'Projector screen size is more sensitive to room conditions than TV size. Throw distance, wall width, seating distance, projector brightness, and light control all affect whether a larger screen actually looks better.',
+        'A 100-inch screen is the safest starting point, 120 inches is the common home-theater target, and 150 inches needs a larger room with stronger brightness and better light control.',
+      ],
+      keyPoints: [
+        {
+          title: '100 inches',
+          text: 'Best for mixed-use rooms, smaller theaters, and setups where brightness or throw distance is limited.',
+        },
+        {
+          title: '120 inches',
+          text: 'The most common home-theater sweet spot when the room has enough throw distance and seating depth.',
+        },
+        {
+          title: '150 inches',
+          text: 'Best for dedicated dark rooms, cinematic seating distance, and brighter projector setups.',
+        },
+      ],
+      links: [
+        { href: '/blog/100-vs-120-vs-150-inch-projector-screen', label: '100 vs 120 vs 150 inch screen' },
+        { href: '/blog/understanding-projector-throw-ratios', label: 'Projector throw ratio guide' },
+        { href: '/projector-screen-size-calculator', label: 'Projector screen size calculator' },
+      ],
+    },
     faq: [
       {
         question: 'What projector screen size should I get?',
@@ -312,6 +442,56 @@ const itemListSchema = {
               <span class="text-gray-600 dark:text-gray-400">Size Range</span>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial Guide -->
+    <section class="py-12 lg:py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-start">
+          <article class="prose prose-gray dark:prose-invert max-w-none">
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary-600 dark:text-primary-400 mb-3">
+              Buying context
+            </p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              How to Choose the Right {config.name} Screen Size
+            </h2>
+            {config.guide.intro.map((paragraph) => (
+              <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+                {paragraph}
+              </p>
+            ))}
+          </article>
+
+          <aside class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+              Quick Size Decisions
+            </h3>
+            <div class="space-y-4">
+              {config.guide.keyPoints.map((point) => (
+                <div class="border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0 pb-4">
+                  <h4 class="font-semibold text-gray-900 dark:text-gray-100">
+                    {point.title}
+                  </h4>
+                  <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {point.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          {config.guide.links.map((link) => (
+            <a
+              href={link.href}
+              class="inline-flex items-center rounded-full border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 px-4 py-2 text-sm font-medium text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
       </div>
     </section>
