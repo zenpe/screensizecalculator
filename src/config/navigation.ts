@@ -1,3 +1,9 @@
+import {
+  getComparisonBrowseUrl,
+  isCompareToolGlobalNavEnabled,
+  isComparisonSeoEnabled,
+} from '../site.config';
+
 // Unified navigation configuration for Header and Footer
 // Single source of truth for all navigation links
 
@@ -31,14 +37,16 @@ export const calculatorLinks: NavLink[] = [
 ];
 
 // Comparison pages navigation
-export const comparisonLinks: NavLink[] = [
-  { href: '/comparison', label: 'All Comparisons', shortLabel: 'All', icon: 'all' },
-  { href: '/comparison/phones', label: 'Phone Comparisons', shortLabel: 'Phones', icon: 'phone' },
-  { href: '/comparison/tablets', label: 'Tablet Comparisons', shortLabel: 'Tablets', icon: 'tablet' },
-  { href: '/comparison/tvs', label: 'TV Comparisons', shortLabel: 'TVs', icon: 'tv' },
-  { href: '/comparison/monitors', label: 'Monitor Comparisons', shortLabel: 'Monitors', icon: 'monitor' },
-  { href: '/comparison/projectors', label: 'Projector Comparisons', shortLabel: 'Projectors', icon: 'projector' },
-];
+export const comparisonLinks: NavLink[] = isComparisonSeoEnabled()
+  ? [
+      { href: getComparisonBrowseUrl(), label: 'All Comparisons', shortLabel: 'All', icon: 'all' },
+      { href: getComparisonBrowseUrl('phone'), label: 'Phone Comparisons', shortLabel: 'Phones', icon: 'phone' },
+      { href: getComparisonBrowseUrl('tablet'), label: 'Tablet Comparisons', shortLabel: 'Tablets', icon: 'tablet' },
+      { href: getComparisonBrowseUrl('tv'), label: 'TV Comparisons', shortLabel: 'TVs', icon: 'tv' },
+      { href: getComparisonBrowseUrl('monitor'), label: 'Monitor Comparisons', shortLabel: 'Monitors', icon: 'monitor' },
+      { href: getComparisonBrowseUrl('projector'), label: 'Projector Comparisons', shortLabel: 'Projectors', icon: 'projector' },
+    ]
+  : [];
 
 // Device database pages
 export const deviceLinks: NavLink[] = [
@@ -66,7 +74,9 @@ export const legalLinks: NavLink[] = [
 
 // Quick links for mobile navigation
 export const quickLinks: NavLink[] = [
-  { href: '/compare', label: 'Compare Tool', shortLabel: 'Compare', icon: 'search', color: 'primary' },
+  ...(isCompareToolGlobalNavEnabled()
+    ? [{ href: '/compare', label: 'Compare Tool', shortLabel: 'Compare', icon: 'search', color: 'primary' } satisfies NavLink]
+    : []),
   { href: '/devices', label: 'Device Database', shortLabel: 'Devices', icon: 'all', color: 'violet' },
   { href: '/calculators', label: 'All Calculators', shortLabel: 'Calculators', icon: 'ppi', color: 'amber' },
   { href: '/blog', label: 'Blog', icon: 'blog', color: 'rose' },

@@ -9,8 +9,18 @@ import {
   calculateDevicePPI,
   type Device,
 } from "../data/devices";
-import { getAmazonSearchUrl, siteConfig, templateVersions, sanitizeMetaDescription } from "../site.config";
-import { getComparisonSlug, getComparisonUrl } from "../utils/url";
+import {
+  getAmazonSearchUrl,
+  getComparisonBrowseUrl,
+  isComparisonSeoEnabled,
+  sanitizeMetaDescription,
+  siteConfig,
+  templateVersions,
+} from "../site.config";
+import {
+  getComparisonLink,
+  getComparisonSlug,
+} from "../utils/url";
 import { shouldIndexComparison } from "../utils/comparison-scoring";
 import {
   getIntroVariant,
@@ -28,6 +38,7 @@ export function getStaticPaths() {
 }
 
 const { device } = Astro.props;
+const comparisonSeoEnabled = isComparisonSeoEnabled();
 
 // Calculate device specs
 // Use getDisplayDimensions for semantically correct width/height based on device orientation
@@ -129,17 +140,18 @@ const relatedDevices = devices
 
 const relatedComparisons = relatedDevices.map((related) => {
   const slug = getComparisonSlug(device.id, related.id);
+  const linkData = getComparisonLink(device.id, related.id);
   return {
     device: related,
     slug,
-    href: getComparisonUrl(device.id, related.id),
-    shouldIndex: shouldIndexComparison(slug),
+    href: linkData.href,
+    shouldIndex: comparisonSeoEnabled ? shouldIndexComparison(slug) : true,
   };
 });
 
-const indexedRelatedComparisons = relatedComparisons.filter(
-  (item) => item.shouldIndex,
-);
+const indexedRelatedComparisons = comparisonSeoEnabled
+  ? relatedComparisons.filter((item) => item.shouldIndex)
+  : [];
 
 // For display in "Browse Similar" section (limited to 6)
 const displayRelatedComparisons = relatedComparisons.slice(0, 6);
@@ -237,7 +249,7 @@ const generateFAQ = (device: Device) => {
       answer: `${device.name} (${device.diagonal}") is ${Math.abs(percentDiff) > 1 ? (percentDiff > 0 ? `${fmt(percentDiff, 1)}% larger` : `${fmt(Math.abs(percentDiff), 1)}% smaller`) : "about the same size as"} ${similar.name} (${similar.diagonal}") in screen area.`,
     };
 
-    if (similarComparison.shouldIndex) {
+    if (comparisonSeoEnabled && similarComparison.shouldIndex) {
       comparisonFaq.link = {
         url: similarComparison.href,
         text: `See full ${device.name} vs ${similar.name} comparison`,
@@ -763,7 +775,10 @@ const getPhoneScenarioDecisionCards = (
 
   const compareLinks: ScenarioDecisionLink[] = [
     { href: "/blog/choosing-right-phone-size", label: "Choose the right phone size" },
-    { href: "/comparison/phones", label: "Browse phone comparisons" },
+    {
+      href: getComparisonBrowseUrl("phone"),
+      label: comparisonSeoEnabled ? "Browse phone comparisons" : "Browse phone sizes",
+    },
   ];
 
   if (isMainstreamPhoneSize) {
@@ -793,10 +808,12 @@ const getPhoneScenarioDecisionCards = (
         {
           href: isMainstreamPhoneSize
             ? "/blog/6-1-vs-6-7-phone-size-real-life"
-            : "/comparison/phones",
+            : getComparisonBrowseUrl("phone"),
           label: isMainstreamPhoneSize
             ? "Compare smaller vs larger phone sizes"
-            : "Compare this phone with other models",
+            : comparisonSeoEnabled
+              ? "Compare this phone with other models"
+              : "Browse similar phone sizes",
         },
       ],
     },
@@ -2665,7 +2682,7 @@ const breadcrumbSchema = {
                     {related.diagonal}" display
                   </p>
                 </a>
-                {shouldIndex && (
+                {comparisonSeoEnabled && shouldIndex && (
                   <a
                     href={href}
                     class="inline-flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
@@ -2689,7 +2706,7 @@ const breadcrumbSchema = {
               </div>
             ))}
           </div>
-          <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800">
+          <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800 flex flex-wrap items-center gap-4">
             <a
               href={`/devices/${device.category}s`}
               class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"

@@ -1,6 +1,7 @@
 ---
 import BlogPost from "../../layouts/BlogPost.astro";
 import { getCollection } from "astro:content";
+import { rewriteComparisonLinksInHtml } from "../../utils/url";
 
 export async function getStaticPaths() {
   const blogs = await getCollection("blog");
@@ -43,7 +44,7 @@ export async function getStaticPaths() {
 }
 
 const { blog, prevPost, nextPost, relatedPosts } = Astro.props;
-const { Content } = await blog.render();
+const articleHtml = rewriteComparisonLinksInHtml(blog.rendered?.html ?? "");
 
 // Calculate reading time
 const wordCount = blog.body.split(/\s+/).length;
@@ -61,7 +62,7 @@ const hasNavigation = prevPost || nextPost;
   category={blog.data.category}
   readingTime={readingTime}
 >
-  <Content />
+  <Fragment set:html={articleHtml} />
 
   <!-- Article Footer Section -->
   <footer slot="footer" class="not-prose">

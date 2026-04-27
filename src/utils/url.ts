@@ -3,6 +3,8 @@
  * Ensures consistent canonical URLs by enforcing alphabetical order
  */
 
+import { getComparisonBrowseUrl, isComparisonSeoEnabled } from '../site.config';
+
 /**
  * Generate a canonical comparison slug for two device IDs
  * Always returns alphabetically sorted slug
@@ -28,6 +30,99 @@ export function getComparisonUrl(id1: string, id2: string): string {
   return `/comparison/${getComparisonSlug(id1, id2)}`;
 }
 
+export function getCompareToolUrl(id1: string, id2: string): string {
+  const [a, b] = [id1, id2].sort();
+  return `/compare?${new URLSearchParams({ a, b }).toString()}`;
+}
+
+export function getCompareDeviceUrl(id: string): string {
+  return `/compare?device=${encodeURIComponent(id)}`;
+}
+
+export function getDevicePageUrl(id: string): string {
+  return `/${encodeURIComponent(id)}-screen-size`;
+}
+
+export function getComparisonEntryUrl(id1: string, id2: string): string {
+  if (isComparisonSeoEnabled()) {
+    return getComparisonUrl(id1, id2);
+  }
+
+  return getDevicePageUrl(id1);
+}
+
+function splitHrefParts(href: string): { path: string; search: string; hash: string } {
+  const match = href.match(/^([^?#]*)(\?[^#]*)?(#.*)?$/);
+  return {
+    path: match?.[1] ?? href,
+    search: match?.[2] ?? '',
+    hash: match?.[3] ?? '',
+  };
+}
+
+function decodeHtmlAmpersands(value: string): string {
+  return value.replace(/&(amp|#38|#x26);/gi, '&');
+}
+
+export function rewriteComparisonHrefForSeo(href: string): string {
+  if (isComparisonSeoEnabled() || typeof href !== 'string') {
+    return href;
+  }
+
+  const normalizedHref = decodeHtmlAmpersands(href);
+
+  if (normalizedHref.startsWith('/compare')) {
+    const { path, search, hash } = splitHrefParts(normalizedHref);
+    if (path !== '/compare') return href;
+
+    const params = new URLSearchParams(search.replace(/^\?/, ''));
+    const deviceId = params.get('device') || params.get('a');
+
+    return deviceId ? `${getDevicePageUrl(deviceId)}${hash}` : href;
+  }
+
+  if (!normalizedHref.startsWith('/comparison')) {
+    return href;
+  }
+
+  const { path, search, hash } = splitHrefParts(normalizedHref);
+  const categoryMap = {
+    phones: 'phone',
+    tablets: 'tablet',
+    tvs: 'tv',
+    monitors: 'monitor',
+    projectors: 'projector',
+  } as const;
+
+  if (path === '/comparison' || path === '/comparison/') {
+    return `${getComparisonBrowseUrl()}${search}${hash}`;
+  }
+
+  const slug = path.replace(/^\/comparison\//, '').replace(/\/$/, '');
+
+  if (slug in categoryMap) {
+    return `${getComparisonBrowseUrl(categoryMap[slug as keyof typeof categoryMap])}${search}${hash}`;
+  }
+
+  const deviceIds = slug.split('-vs-');
+  if (deviceIds.length === 2 && deviceIds[0] && deviceIds[1]) {
+    return `${getComparisonEntryUrl(deviceIds[0], deviceIds[1])}${hash}`;
+  }
+
+  return `${getComparisonBrowseUrl()}${search}${hash}`;
+}
+
+export function rewriteComparisonLinksInHtml(html: string): string {
+  if (isComparisonSeoEnabled() || typeof html !== 'string') {
+    return html;
+  }
+
+  return html.replace(/\bhref=(["'])([^"']*)\1/g, (match, quote: string, href: string) => {
+    const rewrittenHref = rewriteComparisonHrefForSeo(href);
+    return rewrittenHref === href ? match : `href=${quote}${rewrittenHref}${quote}`;
+  });
+}
+
 /**
  * Link data for comparison pages with SEO attributes
  */
@@ -45,8 +140,9 @@ export interface ComparisonLinkData {
  * @returns Link data
  */
 export function getComparisonLink(id1: string, id2: string): ComparisonLinkData {
+  const comparisonSeoEnabled = isComparisonSeoEnabled();
   return {
-    href: getComparisonUrl(id1, id2),
-    isStatic: true,
+    href: comparisonSeoEnabled ? getComparisonUrl(id1, id2) : getDevicePageUrl(id1),
+    isStatic: comparisonSeoEnabled,
   };
 }

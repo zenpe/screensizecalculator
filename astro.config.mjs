@@ -1,16 +1,69 @@
 // @ts-check
-import { readdirSync, readFileSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { basename, extname, join, resolve } from 'node:path';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
-import { templateVersions } from './src/site.config.ts';
+import {
+  isComparisonSeoEnabled,
+  templateVersions,
+} from './src/site.config.ts';
+import { rewriteComparisonHrefForSeo } from './src/utils/url.ts';
 import { shouldIndexComparison } from './src/utils/comparison-scoring/index.ts';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import rehypeExternalLinks from 'rehype-external-links';
+
+function removeComparisonSeoOutput() {
+  return {
+    name: 'remove-comparison-seo-output',
+    hooks: {
+      'astro:build:done'() {
+        if (isComparisonSeoEnabled()) return;
+
+        const distDir = resolve(process.cwd(), 'dist');
+        const targets = [
+          resolve(distDir, 'comparison'),
+          resolve(distDir, 'comparison.html'),
+        ];
+
+        for (const target of targets) {
+          if (!existsSync(target)) continue;
+          rmSync(target, { recursive: true, force: true });
+        }
+      },
+    },
+  };
+}
+
+function rewriteComparisonLinks() {
+  return (tree) => {
+    if (isComparisonSeoEnabled()) return;
+
+    const visit = (node) => {
+      if (!node || typeof node !== 'object') return;
+
+      if (
+        node.type === 'element' &&
+        node.tagName === 'a' &&
+        node.properties &&
+        typeof node.properties.href === 'string'
+      ) {
+        node.properties.href = rewriteComparisonHrefForSeo(node.properties.href);
+      }
+
+      if (Array.isArray(node.children)) {
+        for (const child of node.children) {
+          visit(child);
+        }
+      }
+    };
+
+    visit(tree);
+  };
+}
 
 // Create a map for faster device date lookups.
 const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
@@ -120,6 +173,7 @@ export default defineConfig({
   integrations: [
     react(),
     mdx(),
+    removeComparisonSeoOutput(),
     sitemap({
       filter: (page) => {
         // Exclude utility/legal pages from sitemap
@@ -129,6 +183,9 @@ export default defineConfig({
           page.includes('/privacy') ||
           page.includes('/compare')
         ) {
+          return false;
+        }
+        if (!isComparisonSeoEnabled() && page.includes('/comparison')) {
           return false;
         }
         // Exclude noindexed comparison pages from sitemap
@@ -200,6 +257,7 @@ export default defineConfig({
   ],
   markdown: {
     rehypePlugins: [
+      rewriteComparisonLinks,
       [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
     ]
   },

@@ -5,7 +5,7 @@ import CategoryDeviceList from '../../components/CategoryDeviceList';
 import FAQSection from '../../components/FAQSection.astro';
 import { devices, calculateDimensions, calculateDevicePPI } from '../../data/devices';
 import type { Device } from '../../data/devices';
-import { siteConfig } from '../../site.config';
+import { getComparisonBrowseUrl, isComparisonSeoEnabled, siteConfig } from '../../site.config';
 
 // Category configuration
 const categoryConfig: Record<string, {
@@ -180,10 +180,15 @@ export function getStaticPaths() {
 const { category } = Astro.params;
 const config = categoryConfig[category!];
 const deviceCategory = categoryMap[category!];
+const comparisonSeoEnabled = isComparisonSeoEnabled();
 
 if (!config || !deviceCategory) {
   return Astro.redirect('/devices');
 }
+
+const compareCtaHref = comparisonSeoEnabled
+  ? getComparisonBrowseUrl(deviceCategory)
+  : '/compare';
 
 // Filter and sort devices
 const categoryDevices = devices
@@ -385,10 +390,10 @@ const itemListSchema = {
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <a
-            href={`/comparison/${category}`}
+            href={compareCtaHref}
             class="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-primary-700 font-semibold px-6 py-3 rounded-lg transition-colors"
           >
-            Compare {config.namePlural}
+            {comparisonSeoEnabled ? `Compare ${config.namePlural}` : 'Open Compare Tool'}
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>

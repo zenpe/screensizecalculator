@@ -93,14 +93,23 @@ Automate URL submission to Google Search Console for faster indexing.
 
 Two distinct page types serve different purposes:
 
-| | `/comparison/a-vs-b` | `/compare?a=...&b=...` |
+| | `/comparison/a-vs-b` | query-based `/compare` tool URL |
 |--|--|--|
 | Type | Static (SSG) | Dynamic tool page |
 | SEO | Selectively indexed via scoring engine | `noindex` always |
 | Sitemap | Only indexed pairs included | Excluded |
 | Content | Rich (FAQ, specs, expert summary) | Interactive tool only |
 
-All internal links use the canonical `/comparison/a-vs-b` format with device IDs in alphabetical order. Do not add `nofollow` to internal comparison links — it blocks PageRank flow.
+`src/site.config.ts` controls whether static comparison SEO pages are live:
+
+```ts
+siteConfig.features.comparisonSeoPages
+```
+
+- `true`: internal comparison links resolve to `/comparison/*`, comparison pages remain in `dist`, and indexed pairs can enter the sitemap.
+- `false`: public comparison links resolve to single-device `/compare` entries, category browse links fall back to `/devices/*`, built `dist/comparison*` output is deleted after build, sitemap excludes all comparison URLs, and markdown/blog links are rewritten at build time so published HTML does not keep pointing at removed comparison pages.
+
+Use `getComparisonLink()`, `getCompareToolUrl()`, and `getComparisonBrowseUrl()` for internal routing instead of hardcoding `/comparison/*`.
 
 ### Sitemap Rules
 

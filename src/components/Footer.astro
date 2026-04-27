@@ -5,6 +5,11 @@ import { devices } from '../data/devices';
 import CategoryIcon from './icons/CategoryIcon.astro';
 import { shouldIndexComparison } from '../utils/comparison-scoring';
 import {
+  getComparisonBrowseUrl,
+  isCompareToolGlobalNavEnabled,
+  isComparisonSeoEnabled,
+} from '../site.config';
+import {
   calculatorLinks,
   comparisonLinks,
   resourceLinks,
@@ -13,6 +18,8 @@ import {
 } from '../config/navigation';
 
 const currentYear = new Date().getFullYear();
+const comparisonSeoEnabled = isComparisonSeoEnabled();
+const compareToolGlobalNavEnabled = isCompareToolGlobalNavEnabled();
 
 // --- Dynamic Popular Comparisons ---
 const phoneComparisons: Array<{id1: string; id2: string; text: string}> = [];
@@ -57,7 +64,7 @@ const popularComparisons = [
     slug,
   };
 })
-.filter(({ slug }) => shouldIndexComparison(slug));
+.filter(({ slug }) => comparisonSeoEnabled && shouldIndexComparison(slug));
 
 // Organization Schema for SEO
 const organizationSchema = {
@@ -130,28 +137,47 @@ const organizationSchema = {
         </ul>
       </nav>
 
-      <!-- Comparisons Column -->
-      <nav aria-label="Comparisons">
-        <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Comparisons</h3>
-        <ul class="space-y-3">
-          {comparisonLinks.slice(1).map(link => (
-            <li>
-              <a
-                href={link.href}
-                class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5"
-              >
-                {link.icon && <CategoryIcon icon={link.icon} size="sm" />}
-                <span>{link.label}</span>
+      <!-- Compare Tool Column -->
+      <nav aria-label="Compare tool">
+        <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">
+          {comparisonSeoEnabled ? 'Comparisons' : compareToolGlobalNavEnabled ? 'Compare Tool' : 'Devices'}
+        </h3>
+        {comparisonSeoEnabled ? (
+          <>
+            <ul class="space-y-3">
+              {comparisonLinks.slice(1).map(link => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5"
+                  >
+                    {link.icon && <CategoryIcon icon={link.icon} size="sm" />}
+                    <span>{link.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a href={getComparisonBrowseUrl()} class="inline-flex items-center gap-1 mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
+              All Comparisons
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </>
+        ) : (
+          <div class="space-y-3">
+            {compareToolGlobalNavEnabled && (
+              <a href="/compare" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
+                <CategoryIcon icon="search" size="sm" />
+                <span>Open Compare Tool</span>
               </a>
-            </li>
-          ))}
-        </ul>
-        <a href="/comparison" class="inline-flex items-center gap-1 mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors font-medium">
-          All Comparisons
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </a>
+            )}
+            <a href="/devices" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
+              <CategoryIcon icon="all" size="sm" />
+              <span>Browse Devices</span>
+            </a>
+          </div>
+        )}
       </nav>
 
       <!-- Resources & Legal Column -->
@@ -181,6 +207,7 @@ const organizationSchema = {
     </div>
 
     <!-- Popular Comparisons - SEO Internal Links -->
+    {comparisonSeoEnabled && popularComparisons.length > 0 && (
     <div class="mt-10 pt-8 border-t border-gray-800">
       <div class="flex items-center gap-2 mb-4">
         <span class="text-amber-400">★</span>
@@ -197,6 +224,7 @@ const organizationSchema = {
         ))}
       </div>
     </div>
+    )}
 
     <!-- Bottom Bar -->
     <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">

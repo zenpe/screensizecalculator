@@ -30,22 +30,35 @@ interface CompareClientProps {
 // Parse URL params synchronously for initial state
 function getInitialState() {
   if (typeof window === 'undefined') {
-    return { a: '', b: '', catA: '' as Category | '', catB: '' as Category | '', hasParams: false };
+    return {
+      a: '',
+      b: '',
+      device: '',
+      catA: '' as Category | '',
+      catB: '' as Category | '',
+      hasParams: false,
+    };
   }
   const params = new URLSearchParams(window.location.search);
   const a = params.get('a') || '';
   const b = params.get('b') || '';
-  const hasParams = !!(a || b);
+  const device = params.get('device') || '';
+  const hasPairParams = !!(a || b);
+  const prefilledDevice = hasPairParams ? '' : device;
+  const hasParams = !!(a || b || device);
 
   // Derive categories from device IDs
-  const deviceA = a ? getDeviceById(a) : null;
+  const deviceA = a ? getDeviceById(a) : prefilledDevice ? getDeviceById(prefilledDevice) : null;
   const deviceB = b ? getDeviceById(b) : null;
+  const categoryA = (deviceA?.category || '') as Category | '';
+  const categoryB = (deviceB?.category || categoryA) as Category | '';
 
   return {
     a,
     b,
-    catA: (deviceA?.category || '') as Category | '',
-    catB: (deviceB?.category || '') as Category | '',
+    device: prefilledDevice,
+    catA: categoryA,
+    catB: categoryB,
     hasParams,
   };
 }
@@ -67,7 +80,7 @@ export default function CompareClient({ initialA, initialB }: CompareClientProps
   const [categoryB, setCategoryB] = useState<Category | ''>(initial.catB);
 
   // Device states
-  const [deviceAId, setDeviceAId] = useState<string>(initialA || initial.a);
+  const [deviceAId, setDeviceAId] = useState<string>(initialA || initial.a || initial.device);
   const [deviceBId, setDeviceBId] = useState<string>(initialB || initial.b);
 
   const [error, setError] = useState<string | null>(null);
@@ -124,9 +137,19 @@ export default function CompareClient({ initialA, initialB }: CompareClientProps
   useEffect(() => {
     if (deviceAId && deviceBId) {
       const [sortedA, sortedB] = [deviceAId, deviceBId].sort();
-      const newUrl = `/compare?a=${sortedA}&b=${sortedB}`;
+      const params = new URLSearchParams({ a: sortedA, b: sortedB });
+      const newUrl = `/compare?${params.toString()}`;
       window.history.replaceState({}, '', newUrl);
+      return;
     }
+
+    if (deviceAId) {
+      const newUrl = `/compare?device=${encodeURIComponent(deviceAId)}`;
+      window.history.replaceState({}, '', newUrl);
+      return;
+    }
+
+    window.history.replaceState({}, '', '/compare');
   }, [deviceAId, deviceBId]);
 
   // Validate comparison

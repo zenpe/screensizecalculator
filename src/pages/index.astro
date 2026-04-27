@@ -3,9 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import ScreenSizeCalculator from "../components/ScreenSizeCalculator";
 import FAQSection from "../components/FAQSection.astro";
 import { devices } from "../data/devices";
-import { getComparisonSlug, getComparisonLink } from "../utils/url";
+import { getComparisonSlug, getComparisonEntryUrl } from "../utils/url";
 import { shouldIndexComparison } from "../utils/comparison-scoring";
-import { siteConfig } from "../site.config";
+import {
+  getComparisonBrowseUrl,
+  isComparisonSeoEnabled,
+  siteConfig,
+} from "../site.config";
 
 const title =
   "Screen Size & PPI Calculator - Display Size for TV, Monitor, Phone";
@@ -13,6 +17,8 @@ const description =
   "Free screen size and PPI calculator. Calculate TV, monitor, phone dimensions, pixel density, viewing distance & aspect ratio instantly.";
 const keywords =
   "display size calculator, display size, screen size calculator, tv size calculator, monitor size calculator, phone screen size, projector calculator, viewing distance calculator, ppi calculator, aspect ratio calculator, screen dimensions, display size comparison";
+const comparisonSeoEnabled = isComparisonSeoEnabled();
+const comparisonBrowseHref = comparisonSeoEnabled ? getComparisonBrowseUrl() : "/compare";
 
 // --- Dynamic Popular Comparisons ---
 const phoneComparisons = [];
@@ -91,11 +97,11 @@ const popularComparisons = [
   .map(({ a, b, label }) => {
     const deviceA = devices.find((d) => d.id === a);
     const deviceB = devices.find((d) => d.id === b);
-    const linkData = getComparisonLink(a, b);
-    return { slug: getComparisonSlug(a, b), href: linkData.href, label, deviceA, deviceB };
+    const href = getComparisonEntryUrl(a, b);
+    return { slug: getComparisonSlug(a, b), href, label, deviceA, deviceB };
   })
   .filter((p) => p.deviceA && p.deviceB)
-  .filter((p) => shouldIndexComparison(p.slug));
+  .filter((p) => (comparisonSeoEnabled ? shouldIndexComparison(p.slug) : true));
 
 // --- Popular Devices (for SEO internal linking) ---
 // Based on Ahrefs search volume data
@@ -287,10 +293,10 @@ const breadcrumbData = {
 
         <div class="text-center">
           <a
-            href="/comparison"
+            href={comparisonBrowseHref}
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
-            View All Comparisons
+            {comparisonSeoEnabled ? "View All Comparisons" : "Open Compare Tool"}
             <svg
               class="w-4 h-4"
               fill="none"

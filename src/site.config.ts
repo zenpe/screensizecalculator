@@ -3,6 +3,13 @@ export const siteConfig = {
   // Site URL for canonical links and structured data
   siteUrl: 'https://screensizecalculators.com',
 
+  features: {
+    // Disable comparison SEO pages without deleting their source files.
+    comparisonSeoPages: false,
+    // Keep the noindex compare tool out of global navigation by default.
+    compareToolGlobalNav: false,
+  },
+
   // Amazon Affiliate Program
   amazon: {
     enabled: true, // Set to true to enable Amazon affiliate links
@@ -17,6 +24,37 @@ export const siteConfig = {
     titleMaxLength: 60,
   },
 };
+
+export type ComparisonBrowseCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
+
+const comparisonBrowseFallbackMap: Record<ComparisonBrowseCategory, string> = {
+  phone: '/devices/phones',
+  tablet: '/devices/tablets',
+  tv: '/devices/tvs',
+  monitor: '/devices/monitors',
+  projector: '/devices/projectors',
+};
+
+export function isComparisonSeoEnabled(): boolean {
+  return siteConfig.features.comparisonSeoPages;
+}
+
+export function isCompareToolGlobalNavEnabled(): boolean {
+  return siteConfig.features.compareToolGlobalNav;
+}
+
+export function getComparisonBrowseUrl(category?: ComparisonBrowseCategory): string {
+  if (isComparisonSeoEnabled()) {
+    if (!category) return '/comparison';
+    if (category === 'phone') return '/comparison/phones';
+    if (category === 'tablet') return '/comparison/tablets';
+    if (category === 'tv') return '/comparison/tvs';
+    if (category === 'monitor') return '/comparison/monitors';
+    return '/comparison/projectors';
+  }
+
+  return category ? comparisonBrowseFallbackMap[category] : '/devices';
+}
 
 // Truncate and validate meta description for SEO
 export function sanitizeMetaDescription(description: string, pageId?: string): string {

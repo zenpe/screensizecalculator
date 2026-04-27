@@ -2,7 +2,8 @@
 /**
  * ComparisonLink - canonical internal comparison link component
  *
- * All internal comparison links should point to /comparison/{slug}.
+ * Routes to the static /comparison/{slug} page when comparison SEO is enabled,
+ * or to the first device detail page when the SEO pages are disabled.
  */
 import { getComparisonLink } from '../utils/url';
 
