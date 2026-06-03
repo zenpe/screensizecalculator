@@ -27,7 +27,24 @@ interface CompareClientProps {
   initialB?: string;
 }
 
-// Parse URL params synchronously for initial state
+function parseCompareParams(value: string) {
+  return new URLSearchParams(value.replace(/^[?#]/, ''));
+}
+
+function getCompareUrl(deviceAId: string, deviceBId: string) {
+  if (deviceAId && deviceBId) {
+    const [a, b] = [deviceAId, deviceBId].sort();
+    return `/compare#${new URLSearchParams({ a, b }).toString()}`;
+  }
+
+  if (deviceAId) {
+    return `/compare#device=${encodeURIComponent(deviceAId)}`;
+  }
+
+  return '/compare';
+}
+
+// Parse hash first, then legacy query params for initial state.
 function getInitialState() {
   if (typeof window === 'undefined') {
     return {
@@ -39,7 +56,9 @@ function getInitialState() {
       hasParams: false,
     };
   }
-  const params = new URLSearchParams(window.location.search);
+  const hashParams = parseCompareParams(window.location.hash);
+  const searchParams = parseCompareParams(window.location.search);
+  const params = window.location.hash ? hashParams : searchParams;
   const a = params.get('a') || '';
   const b = params.get('b') || '';
   const device = params.get('device') || '';
@@ -135,21 +154,7 @@ export default function CompareClient({ initialA, initialB }: CompareClientProps
 
   // Update URL when devices change
   useEffect(() => {
-    if (deviceAId && deviceBId) {
-      const [sortedA, sortedB] = [deviceAId, deviceBId].sort();
-      const params = new URLSearchParams({ a: sortedA, b: sortedB });
-      const newUrl = `/compare?${params.toString()}`;
-      window.history.replaceState({}, '', newUrl);
-      return;
-    }
-
-    if (deviceAId) {
-      const newUrl = `/compare?device=${encodeURIComponent(deviceAId)}`;
-      window.history.replaceState({}, '', newUrl);
-      return;
-    }
-
-    window.history.replaceState({}, '', '/compare');
+    window.history.replaceState({}, '', getCompareUrl(deviceAId, deviceBId));
   }, [deviceAId, deviceBId]);
 
   // Validate comparison

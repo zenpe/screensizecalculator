@@ -32,11 +32,11 @@ export function getComparisonUrl(id1: string, id2: string): string {
 
 export function getCompareToolUrl(id1: string, id2: string): string {
   const [a, b] = [id1, id2].sort();
-  return `/compare?${new URLSearchParams({ a, b }).toString()}`;
+  return `/compare#${new URLSearchParams({ a, b }).toString()}`;
 }
 
 export function getCompareDeviceUrl(id: string): string {
-  return `/compare?device=${encodeURIComponent(id)}`;
+  return `/compare#device=${encodeURIComponent(id)}`;
 }
 
 export function getDevicePageUrl(id: string): string {
@@ -48,7 +48,7 @@ export function getComparisonEntryUrl(id1: string, id2: string): string {
     return getComparisonUrl(id1, id2);
   }
 
-  return getDevicePageUrl(id1);
+  return getCompareToolUrl(id1, id2);
 }
 
 function splitHrefParts(href: string): { path: string; search: string; hash: string } {
@@ -75,10 +75,18 @@ export function rewriteComparisonHrefForSeo(href: string): string {
     const { path, search, hash } = splitHrefParts(normalizedHref);
     if (path !== '/compare') return href;
 
+    if (hash) return href;
+
     const params = new URLSearchParams(search.replace(/^\?/, ''));
     const deviceId = params.get('device') || params.get('a');
+    const a = params.get('a');
+    const b = params.get('b');
 
-    return deviceId ? `${getDevicePageUrl(deviceId)}${hash}` : href;
+    if (a && b) {
+      return getCompareToolUrl(a, b);
+    }
+
+    return deviceId ? getCompareDeviceUrl(deviceId) : href;
   }
 
   if (!normalizedHref.startsWith('/comparison')) {
@@ -142,7 +150,7 @@ export interface ComparisonLinkData {
 export function getComparisonLink(id1: string, id2: string): ComparisonLinkData {
   const comparisonSeoEnabled = isComparisonSeoEnabled();
   return {
-    href: comparisonSeoEnabled ? getComparisonUrl(id1, id2) : getDevicePageUrl(id1),
+    href: comparisonSeoEnabled ? getComparisonUrl(id1, id2) : getCompareToolUrl(id1, id2),
     isStatic: comparisonSeoEnabled,
   };
 }

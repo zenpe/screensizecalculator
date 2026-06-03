@@ -1,4 +1,3 @@
 # Deprecated comparison SEO pages are intentionally removed from the static build.
-# Hosts that support Netlify-style _redirects should return 410 Gone for these URLs.
-/comparison/* /410.html 410
-/comparison /410.html 410
+# Cloudflare Pages _redirects does not support 410 Gone.
+# The real 410 response is handled by functions/comparison/[[path]].js.

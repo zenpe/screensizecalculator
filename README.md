@@ -27,7 +27,7 @@ src/
 ├── pages/
 │   ├── index.astro                  # Homepage
 │   ├── [deviceId]-screen-size.astro # Device detail pages (68 pages)
-│   ├── compare.astro                # Interactive compare tool (noindex)
+│   ├── compare.astro                # Interactive compare tool
 │   ├── comparison/
 │   │   ├── [slug].astro             # Static comparison pages (~781 pairs)
 │   │   ├── index.astro              # Comparison hub
@@ -93,11 +93,11 @@ Automate URL submission to Google Search Console for faster indexing.
 
 Two distinct page types serve different purposes:
 
-| | `/comparison/a-vs-b` | query-based `/compare` tool URL |
+| | `/comparison/a-vs-b` | hash-based `/compare` tool URL |
 |--|--|--|
 | Type | Static (SSG) | Dynamic tool page |
-| SEO | Selectively indexed via scoring engine | `noindex` always |
-| Sitemap | Only indexed pairs included | Excluded |
+| SEO | Selectively indexed via scoring engine | Indexable canonical tool page |
+| Sitemap | Only indexed pairs included | Included as `/compare` |
 | Content | Rich (FAQ, specs, expert summary) | Interactive tool only |
 
 `src/site.config.ts` controls whether static comparison SEO pages are live:
@@ -107,14 +107,14 @@ siteConfig.features.comparisonSeoPages
 ```
 
 - `true`: internal comparison links resolve to `/comparison/*`, comparison pages remain in `dist`, and indexed pairs can enter the sitemap.
-- `false`: public comparison links resolve to single-device `/compare` entries, category browse links fall back to `/devices/*`, built `dist/comparison*` output is deleted after build, sitemap excludes all comparison URLs, and markdown/blog links are rewritten at build time so published HTML does not keep pointing at removed comparison pages.
+- `false`: public comparison links resolve to hash-based `/compare#...` entries, category browse links fall back to `/devices/*`, built `dist/comparison*` output is deleted after build, sitemap excludes all comparison URLs, and markdown/blog links are rewritten at build time so published HTML does not keep pointing at removed comparison pages.
 
 Use `getComparisonLink()`, `getCompareToolUrl()`, and `getComparisonBrowseUrl()` for internal routing instead of hardcoding `/comparison/*`.
 
 ### Sitemap Rules
 
-- All indexed `comparison` pages + core static pages are included.
-- `privacy`, `terms`, `404`, `compare` are excluded from sitemap.
+- `/compare`, device pages, blog posts, calculators, and core static pages are included.
+- `privacy`, `terms`, `404`, and deprecated `comparison` pages are excluded from sitemap.
 
 ## Comparison Scoring Engine
 

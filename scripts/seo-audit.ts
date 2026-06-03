@@ -12,6 +12,7 @@ interface Issue {
 const rootDir = process.cwd();
 const distDir = join(rootDir, 'dist');
 const blogDir = join(rootDir, 'src', 'content', 'blog');
+const comparisonGoneFunctionPath = join(rootDir, 'functions', 'comparison', '[[path]].js');
 const issues: Issue[] = [];
 
 function addIssue(level: IssueLevel, file: string, message: string) {
@@ -81,8 +82,12 @@ function auditDist() {
     addIssue('error', 'dist/comparison.html', 'Deprecated comparison index output exists.');
   }
 
+  if (!existsSync(comparisonGoneFunctionPath)) {
+    addIssue('error', 'functions/comparison/[[path]].js', 'Missing Cloudflare Pages Function for true 410 responses on deprecated comparison URLs.');
+  }
+
   if (!existsSync(join(distDir, '_redirects'))) {
-    addIssue('warning', 'dist/_redirects', 'Missing built _redirects file for comparison 410 cleanup.');
+    addIssue('warning', 'dist/_redirects', 'Missing built _redirects file.');
   }
 
   if (!existsSync(join(distDir, '410.html'))) {

@@ -6,8 +6,8 @@ export const siteConfig = {
   features: {
     // Disable comparison SEO pages without deleting their source files.
     comparisonSeoPages: false,
-    // Keep the noindex compare tool out of global navigation by default.
-    compareToolGlobalNav: false,
+    // Make the compare tool a primary product surface.
+    compareToolGlobalNav: true,
   },
 
   // Amazon Affiliate Program

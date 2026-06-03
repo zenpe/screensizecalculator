@@ -180,8 +180,7 @@ export default defineConfig({
         if (
           page.includes('/404') ||
           page.includes('/terms') ||
-          page.includes('/privacy') ||
-          page.includes('/compare')
+          page.includes('/privacy')
         ) {
           return false;
         }

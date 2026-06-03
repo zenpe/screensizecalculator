@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useLayoutEffect, useRef, lazy, Suspense, memo, useId, useCallback } from 'react';
 import type { Device } from '../data/devices';
 import { calculateDimensions } from '../data/devices';
-import { getComparisonLink, getDevicePageUrl } from '../utils/url';
+import { getComparisonLink } from '../utils/url';
 import ScreenCalibration, { getStoredCalibration, getEffectivePpi } from './ScreenCalibration';
 
 // Lazy load ComparisonVisualizer only when needed
@@ -598,10 +598,8 @@ export default function DeviceDetailVisualizer({
       {/* Full Screen Comparison Modal */}
       {isModalOpen && compareDevice && (() => {
         const comparisonLinkData = getComparisonLink(device.id, compareDevice.id);
-        const fullPageHref = comparisonLinkData.isStatic
-          ? comparisonLinkData.href
-          : getDevicePageUrl(compareDevice.id);
-        const fullPageLabel = comparisonLinkData.isStatic ? 'Full Page' : 'View Device';
+        const fullPageHref = comparisonLinkData.href;
+        const fullPageLabel = comparisonLinkData.isStatic ? 'Full Page' : 'Open Compare Tool';
         return (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md animate-fadeIn"
