@@ -9,6 +9,7 @@
  */
 import { getUpgradeInsight } from '../utils/deviceAge';
 import type { Device } from '../data/devices';
+import { getDevicePageUrl } from '../utils/url';
 
 interface Props {
   deviceA: Device;
@@ -62,7 +63,7 @@ const olderReleaseDate = formatReleaseDate(insight.olderDevice.releasedAt);
       </p>
       <div class="mt-3 sm:mt-4 flex flex-wrap gap-2">
         <a
-          href={`/${insight.newerDevice.id}-screen-size`}
+          href={getDevicePageUrl(insight.newerDevice.id)}
           class="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-white dark:bg-gray-800 px-2.5 py-1.5 rounded-full border border-amber-200 dark:border-amber-700 hover:border-amber-400 dark:hover:border-amber-500 transition-colors"
         >
           <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +73,7 @@ const olderReleaseDate = formatReleaseDate(insight.olderDevice.releasedAt);
           {newerReleaseDate && <span class="text-gray-500 dark:text-gray-400">({newerReleaseDate})</span>}
         </a>
         <a
-          href={`/${insight.olderDevice.id}-screen-size`}
+          href={getDevicePageUrl(insight.olderDevice.id)}
           class="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-white dark:bg-gray-800 px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
         >
           <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

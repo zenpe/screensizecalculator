@@ -140,41 +140,6 @@ const breadcrumbSchema = {
   ],
 };
 
-// HowTo Schema for step-by-step guide
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Find Your Perfect Monitor Size",
-  description:
-    "Learn how to choose the ideal monitor size for your desk based on resolution, PPI, and viewing distance.",
-  totalTime: "PT5M",
-  step: [
-    {
-      "@type": "HowToStep",
-      position: 1,
-      name: "Measure Your Desk Space",
-      text: "Measure how much desk space you have available for your monitor. Consider bezels and any stand dimensions.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 2,
-      name: "Enter Monitor Size",
-      text: "Input your desired monitor diagonal size in inches or cm. The calculator shows dimensions and resolution quality.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 3,
-      name: "Select Resolution",
-      text: "Choose your monitor's resolution (1080p, 1440p, 4K) to see the optimal size range and PPI.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 4,
-      name: "Review Specifications",
-      text: "Get exact width, height, area, PPI, and pixel density. Perfect for comparing different monitor sizes.",
-    },
-  ],
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -644,9 +609,5 @@ const howToSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>

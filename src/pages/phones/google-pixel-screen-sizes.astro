@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhoneSizeTable from '../../components/PhoneSizeTable.astro';
+import { devices, type Device } from '../../data/devices';
+import { getCompareToolUrl, getDevicePageUrl } from '../../utils/url';
+import { siteConfig } from '../../site.config';
+
+const phones = devices
+  .filter((device): device is Device => device.category === 'phone' && /pixel/i.test(device.name))
+  .sort((a, b) => (b.releasedAt || '').localeCompare(a.releasedAt || ''));
+
+const title = 'Google Pixel Screen Sizes - Pixel Phone Size Chart';
+const description = 'Compare Google Pixel screen sizes, including Pixel, Pixel Pro and Pixel Pro XL models with body width, weight, PPI and handling fit.';
+const keywords = 'google pixel screen sizes, pixel phone size chart, pixel pro screen size, pixel pro xl dimensions, google pixel dimensions';
+const updatedDate = '2026-06-03';
+
+const baseModels = phones.filter(phone => !/pro|xl/i.test(phone.name));
+const proModels = phones.filter(phone => /pro/i.test(phone.name) && !/xl/i.test(phone.name));
+const xlModels = phones.filter(phone => /xl/i.test(phone.name));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.siteUrl },
+    { '@type': 'ListItem', position: 2, name: 'Phones', item: `${siteConfig.siteUrl}/phones` },
+    { '@type': 'ListItem', position: 3, name: 'Google Pixel Screen Sizes', item: `${siteConfig.siteUrl}/phones/google-pixel-screen-sizes` },
+  ],
+};
+---
+
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
+  <main class="flex-1">
+    <section class="bg-gradient-to-b from-sky-50 to-white dark:from-gray-800 dark:to-gray-900 pt-8 pb-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mb-8 text-sm text-gray-500 dark:text-gray-400" aria-label="Breadcrumb">
+          <a href="/" class="hover:text-primary-600">Home</a> / <a href="/phones" class="hover:text-primary-600">Phones</a> / <span class="text-gray-900 dark:text-gray-100">Google Pixel</span>
+        </nav>
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-end">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300 mb-3">Google phone sizes</p>
+            <h1 class="text-4xl sm:text-5xl font-bold text-gray-950 dark:text-white mb-4">Google Pixel Screen Sizes</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+              Compare Pixel, Pixel Pro and Pixel Pro XL models by display size, body width, weight and pixel density.
+            </p>
+          </div>
+          <div class="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Current Pixel sizing</p>
+            <p class="text-3xl font-bold text-gray-950 dark:text-white">Standard, Pro, XL</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Use body width and weight to judge whether the XL size is worth the larger screen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PhoneSizeTable phones={phones} showBrand={false} />
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-50 dark:bg-gray-950">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-6">Pixel size tiers</h2>
+        <div class="grid lg:grid-cols-3 gap-5">
+          {[
+            { title: 'Pixel', text: 'Best fit when you want the smaller Google phone body.', phones: baseModels },
+            { title: 'Pixel Pro', text: 'Flagship display features without going to the largest XL body.', phones: proModels },
+            { title: 'Pixel Pro XL', text: 'Largest Pixel screen size and the most two-hand oriented fit.', phones: xlModels },
+          ].map(group => (
+            <section class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+              <h3 class="font-bold text-gray-950 dark:text-white mb-2">{group.title}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{group.text}</p>
+              <div class="space-y-3">
+                {group.phones.map(phone => (
+                  <a href={getDevicePageUrl(phone.id)} class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{phone.name}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{phone.diagonal}"</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-950 text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-3">Compare Pixel with iPhone and Galaxy</h2>
+        <p class="text-gray-300 mb-6">Pixel XL phones compete with Pro Max and Ultra models, but the body width and weight can change the daily feel.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href={getCompareToolUrl('google-pixel-10-pro', 'google-pixel-10-pro-xl')} class="rounded-lg bg-white text-gray-950 px-5 py-3 text-sm font-semibold hover:bg-gray-100">Pixel 10 Pro vs Pro XL</a>
+          <a href={getCompareToolUrl('google-pixel-10-pro-xl', 'iphone-17-pro-max')} class="rounded-lg border border-white/20 px-5 py-3 text-sm font-semibold hover:bg-white/10">Pixel Pro XL vs iPhone Pro Max</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</Layout>

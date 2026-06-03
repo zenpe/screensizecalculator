@@ -5,45 +5,6 @@ const title = 'PPI Explained - Understanding Pixels Per Inch and Screen Sharpnes
 const description = 'Complete guide to PPI (pixels per inch) including calculations, quality levels, and how it affects display sharpness on TVs, monitors, and phones.';
 const keywords = 'ppi explained, pixels per inch, display sharpness, screen resolution guide, ppi calculator, pixel density, screen quality guide';
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is PPI and why does it matter?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PPI (Pixels Per Inch) measures the pixel density of a display. It indicates how many pixels fit into one inch of screen space. Higher PPI results in sharper images with less visible pixels. For phones held close to the eye, 300+ PPI is needed to prevent visible pixels. For TVs viewed from distance, 50-100 PPI is sufficient for a sharp image."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How is PPI calculated?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PPI is calculated by dividing the total number of pixels along the diagonal by the diagonal screen size in inches. The formula is: PPI = √(width² + height²) ÷ diagonal size. For example, a 1080p (1920x1080) 24-inch monitor has a PPI of √(1920² + 1080²) ÷ 24 = 92 PPI. For TVs, 4K resolution at the same size doubles the PPI compared to 1080p."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What PPI is considered high resolution?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PPI quality levels are relative to viewing distance: Standard Definition (100-150 PPI) is acceptable for TVs viewed from distance. High Definition (150-250 PPI) is good for monitors. Retina/High Resolution (300+ PPI) is needed for phones and close-viewing devices to prevent visible pixels. Ultra High Resolution (400+ PPI) offers exceptional sharpness even at close distances."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does higher PPI always mean better image quality?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Not always. Higher PPI beyond the eye's ability to distinguish pixels at your typical viewing distance provides no visible benefit. It increases power consumption on mobile devices, requires more GPU power for gaming, and increases manufacturing costs. The optimal PPI depends on screen size and viewing distance to balance quality with efficiency."
-      }
-    }
-  ]
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -581,5 +542,4 @@ const faqData = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>

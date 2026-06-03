@@ -139,41 +139,6 @@ const breadcrumbSchema = {
   ],
 };
 
-// HowTo Schema for step-by-step guide
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Find Your Perfect TV Size",
-  description:
-    "Learn how to calculate the optimal TV size for your room based on viewing distance using THX and SMPTE standards.",
-  totalTime: "PT5M",
-  step: [
-    {
-      "@type": "HowToStep",
-      position: 1,
-      name: "Measure Your Viewing Distance",
-      text: "Measure from where you'll sit to where the TV will be mounted. This is the most critical measurement for determining optimal TV size.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 2,
-      name: "Enter TV Size",
-      text: "Input your desired TV diagonal size in inches or cm. The calculator shows if it fits your viewing distance based on industry standards.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 3,
-      name: "Check Viewing Distance Recommendations",
-      text: "See the optimal, minimum, and maximum viewing distances based on THX (immersive) and SMPTE (balanced) standards.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 4,
-      name: "Review Specifications",
-      text: "Get exact width, height, area, PPI, and pixel density. Perfect for comparing different TV sizes before purchase.",
-    },
-  ],
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -727,9 +692,5 @@ const howToSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>

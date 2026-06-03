@@ -4,6 +4,7 @@ import CategoryIcon from '../../components/icons/CategoryIcon.astro';
 import DeviceSearch from '../../components/DeviceSearch';
 import { devices } from '../../data/devices';
 import { getComparisonBrowseUrl, siteConfig } from '../../site.config';
+import { getDevicePageUrl } from '../../utils/url';
 
 // Group devices by category
 const devicesByCategory = {
@@ -31,7 +32,7 @@ const popularDevices = [
 
 // Category cards data
 const categories = [
-  { name: 'Phones', category: 'phone' as const, href: '/devices/phones', count: devicesByCategory.phone.length, description: 'iPhone, Samsung, Google Pixel', color: 'green' },
+  { name: 'Phones', category: 'phone' as const, href: '/phones', count: devicesByCategory.phone.length, description: 'iPhone, Samsung, Google Pixel', color: 'green' },
   { name: 'Tablets', category: 'tablet' as const, href: '/devices/tablets', count: devicesByCategory.tablet.length, description: 'iPad, Galaxy Tab, Surface Pro', color: 'indigo' },
   { name: 'TVs', category: 'tv' as const, href: '/devices/tvs', count: devicesByCategory.tv.length, description: '43", 55", 65", 75", 85" televisions', color: 'blue' },
   { name: 'Monitors', category: 'monitor' as const, href: '/devices/monitors', count: devicesByCategory.monitor.length, description: '24", 27", 32" and ultrawide displays', color: 'purple' },
@@ -47,45 +48,24 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
   amber: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', border: 'hover:border-amber-400 dark:hover:border-amber-600' },
 };
 
-// FAQ data
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I find my device's screen size?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Use our search feature or browse by category (Phones, Tablets, TVs, Monitors, Projectors). Each device page shows diagonal size, width, height, resolution, and PPI."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What information is available for each device?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Each device listing includes diagonal screen size, width and height dimensions (in inches and cm), resolution, aspect ratio, PPI (pixels per inch), and total megapixels."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I compare multiple devices?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes! Visit our compare tool to select multiple devices and see them side by side. You can compare phones, tablets, TVs, monitors, and projectors."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How often is the device database updated?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We regularly update our database with new device releases. Latest phones like iPhone and Samsung Galaxy are added shortly after their official announcements."
-      }
-    }
-  ]
-};
+const faqs = [
+  {
+    question: "How do I find my device's screen size?",
+    answer: "Use our search feature or browse by category (Phones, Tablets, TVs, Monitors, Projectors). Each device page shows diagonal size, width, height, resolution, and PPI.",
+  },
+  {
+    question: "What information is available for each device?",
+    answer: "Each device listing includes diagonal screen size, width and height dimensions (in inches and cm), resolution, aspect ratio, PPI (pixels per inch), and total megapixels.",
+  },
+  {
+    question: "Can I compare multiple devices?",
+    answer: "Yes! Visit our compare tool to select multiple devices and see them side by side. You can compare phones, tablets, TVs, monitors, and projectors.",
+  },
+  {
+    question: "How often is the device database updated?",
+    answer: "We regularly update our database with new device releases. Latest phones like iPhone and Samsung Galaxy are added shortly after their official announcements.",
+  },
+];
 
 // CollectionPage Schema
 const collectionSchema = {
@@ -238,7 +218,7 @@ const itemListSchema = {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {popularDevices.map(device => (
             <a
-              href={`/${device.id}-screen-size`}
+              href={getDevicePageUrl(device.id)}
               class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
             >
               <div class="flex items-center justify-between mb-2">
@@ -279,7 +259,7 @@ const itemListSchema = {
               </h3>
               <div class="space-y-2">
                 {devicesByCategory[cat.category].slice(0, 5).map(device => (
-                  <a href={`/${device.id}-screen-size`} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 truncate">
+                  <a href={getDevicePageUrl(device.id)} class="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 truncate">
                     {device.name} {device.category !== 'phone' && device.category !== 'tablet' ? '' : `(${device.diagonal}")`}
                   </a>
                 ))}
@@ -300,13 +280,13 @@ const itemListSchema = {
           Frequently Asked Questions
         </h2>
         <div class="space-y-4">
-          {faqData.mainEntity.map((faq) => (
+          {faqs.map((faq) => (
             <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
               <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
-                {faq.name}
+                {faq.question}
               </summary>
               <p class="mt-3 text-gray-600 dark:text-gray-300">
-                {faq.acceptedAnswer.text}
+                {faq.answer}
               </p>
             </details>
           ))}
@@ -347,5 +327,4 @@ const itemListSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>

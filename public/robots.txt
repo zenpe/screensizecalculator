@@ -4,6 +4,3 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://screensizecalculators.com/sitemap-index.xml
-
-# Crawl rate (0 = no delay, faster crawling)
-Crawl-delay: 0

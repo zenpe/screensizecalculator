@@ -2,7 +2,7 @@
 title: "6.1 vs 6.7 Phone Size: Which Feels Better Daily?"
 description: "Compare 6.1-inch and 6.7-inch phones in real life. See how one-handed reach, pocket comfort, typing, weight, and battery trade-offs feel day to day."
 pubDate: "2026-04-16"
-updatedDate: "2026-04-16"
+updatedDate: "2026-06-03"
 category: "Phone Guide"
 author: "Screen Size Calculator Team"
 keywords: "6.1 vs 6.7 phone size, 6.1 inch vs 6.7 inch phone, one handed phone size, phone pocket comfort, small phone vs big phone"
@@ -152,7 +152,7 @@ People compare diagonal size and forget carry weight. The extra **28-29 g** betw
 
 Before deciding, compare real devices with the same screen-size split:
 
-- [Phone comparison hub](/comparison/phones)
+- [Phone screen size hub](/phones)
 - [iPhone 16 vs iPhone 16 Plus](/comparison/iphone-16-vs-iphone-16-plus)
 - [iPhone 16 Pro vs iPhone 16 Pro Max](/comparison/iphone-16-pro-vs-iphone-16-pro-max)
 - [iPhone 17 Pro vs iPhone 17 Pro Max](/comparison/iphone-17-pro-vs-iphone-17-pro-max)

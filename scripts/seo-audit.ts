@@ -72,6 +72,10 @@ function auditDist() {
     if (/\/comparison\/|\/comparison\.html/.test(text)) {
       addIssue('error', rel, 'Found deprecated comparison URL in built HTML/XML.');
     }
+
+    if (/\/[a-z0-9-]+-projector-screen-screen-size\b/i.test(text)) {
+      addIssue('error', rel, 'Found legacy double screen-size projector URL in built HTML/XML.');
+    }
   }
 
   if (existsSync(join(distDir, 'comparison'))) {

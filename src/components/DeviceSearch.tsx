@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import type { Device } from '../data/devices';
+import { getDevicePageUrl } from '../utils/url';
 
 interface DeviceSearchProps {
   devices: Device[];
@@ -55,7 +56,7 @@ export default function DeviceSearch({
       case 'Enter':
         e.preventDefault();
         if (filteredResults[selectedIndex]) {
-          window.location.href = `/${filteredResults[selectedIndex].id}-screen-size`;
+          window.location.href = getDevicePageUrl(filteredResults[selectedIndex].id);
         }
         break;
       case 'Escape':
@@ -159,7 +160,7 @@ export default function DeviceSearch({
               {filteredResults.map((device, index) => (
                 <li key={device.id}>
                   <a
-                    href={`/${device.id}-screen-size`}
+                    href={getDevicePageUrl(device.id)}
                     className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                       index === selectedIndex
                         ? 'bg-primary-50 dark:bg-primary-900/30'

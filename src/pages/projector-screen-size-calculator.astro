@@ -170,41 +170,6 @@ const breadcrumbSchema = {
   ],
 };
 
-// HowTo Schema for step-by-step guide
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Calculate Projector Throw Distance",
-  description:
-    "Learn how to calculate the optimal projector placement distance based on screen size and throw ratio.",
-  totalTime: "PT5M",
-  step: [
-    {
-      "@type": "HowToStep",
-      position: 1,
-      name: "Enter Screen Size",
-      text: "Input your desired projection screen size (diagonal measurement in inches or cm). The calculator will show the screen width.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 2,
-      name: "Select Throw Ratio",
-      text: "Choose your projector's throw ratio from the dropdown (0.5 for ultra short throw, 1.5 for standard, 2.0+ for long throw).",
-    },
-    {
-      "@type": "HowToStep",
-      position: 3,
-      name: "Get Throw Distance",
-      text: "The calculator instantly shows the exact distance to place your projector from the screen or wall.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 4,
-      name: "Check Wall Width",
-      text: "See minimum wall width required (includes 10% margin) to ensure the projection fits your space.",
-    },
-  ],
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
@@ -837,10 +802,6 @@ const howToSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>
 

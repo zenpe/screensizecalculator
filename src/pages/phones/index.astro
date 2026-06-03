@@ -1,0 +1,214 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DeviceSearch from '../../components/DeviceSearch';
+import PhoneSizeTable from '../../components/PhoneSizeTable.astro';
+import { devices, type Device } from '../../data/devices';
+import { getCompareToolUrl, getDevicePageUrl } from '../../utils/url';
+import { siteConfig } from '../../site.config';
+
+const phones = devices
+  .filter((device): device is Device => device.category === 'phone')
+  .sort((a, b) => (b.releasedAt || '').localeCompare(a.releasedAt || ''));
+
+const iphonePhones = phones.filter(phone => /iphone/i.test(phone.name));
+const samsungPhones = phones.filter(phone => /galaxy/i.test(phone.name));
+const pixelPhones = phones.filter(phone => /pixel/i.test(phone.name));
+const compactPhones = phones.filter(phone => (phone.phone?.dimensions?.width ?? 999) <= 72).slice(0, 6);
+const largePhones = phones.filter(phone => phone.diagonal >= 6.7).slice(0, 6);
+const popularPhones = [
+  'iphone-17-pro-max',
+  'iphone-16-pro-max',
+  'samsung-galaxy-s26-ultra',
+  'samsung-galaxy-s25-ultra',
+  'google-pixel-10-pro-xl',
+  'google-pixel-9-pro-xl',
+]
+  .map(id => phones.find(phone => phone.id === id))
+  .filter(Boolean) as Device[];
+
+const title = 'Phone Screen Sizes - iPhone, Samsung Galaxy and Pixel Size Chart';
+const description = 'Compare phone screen sizes, body widths, PPI, weight, one-hand comfort and pocket fit for iPhone, Samsung Galaxy, Google Pixel and other smartphones.';
+const keywords = 'phone screen sizes, phone screen size chart, iphone screen size, samsung galaxy screen size, pixel screen size, smartphone dimensions';
+const updatedDate = '2026-06-03';
+
+const faqData = [
+  {
+    question: 'What is the most common phone screen size?',
+    answer: 'Most current phones sit between 6.1 and 6.9 inches. Standard phones usually fall around 6.1 to 6.3 inches, while Plus, Pro Max, Ultra and XL models often land between 6.7 and 6.9 inches.',
+  },
+  {
+    question: 'Is screen size enough to judge phone comfort?',
+    answer: 'No. Diagonal screen size misses body width, weight, thickness and aspect ratio. A narrow 6.7-inch phone can feel easier to hold than a wider phone with a similar diagonal.',
+  },
+  {
+    question: 'Which phones are easiest to use one-handed?',
+    answer: 'Phones with body widths around 72mm or less are usually easier for one-handed use. Compact iPhones, base Galaxy S models and non-XL Pixel models tend to be more manageable than Pro Max, Ultra and XL phones.',
+  },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.siteUrl },
+    { '@type': 'ListItem', position: 2, name: 'Phone Screen Sizes', item: `${siteConfig.siteUrl}/phones` },
+  ],
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  url: `${siteConfig.siteUrl}/phones`,
+};
+---
+
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
+  <main class="flex-1">
+    <section class="bg-gradient-to-b from-emerald-50 via-white to-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-900 pt-8 pb-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mb-8" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <li><a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a></li>
+            <li>/</li>
+            <li class="font-medium text-gray-900 dark:text-gray-100">Phones</li>
+          </ol>
+        </nav>
+
+        <div class="grid lg:grid-cols-[1fr_420px] gap-8 items-center">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300 mb-3">Phone size database</p>
+            <h1 class="text-4xl sm:text-5xl font-bold text-gray-950 dark:text-white leading-tight mb-4">
+              Phone Screen Sizes
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mb-6">
+              Find the real screen size, body width, weight, PPI and everyday handling feel of current iPhone, Samsung Galaxy and Google Pixel models.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <a href="/phones/phone-screen-size-chart" class="inline-flex items-center rounded-lg bg-gray-950 dark:bg-white px-5 py-3 text-sm font-semibold text-white dark:text-gray-950 hover:opacity-90">
+                View phone size chart
+              </a>
+              <a href="/compare" class="inline-flex items-center rounded-lg border border-gray-300 dark:border-gray-700 px-5 py-3 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800">
+                Open compare tool
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 p-4 shadow-sm">
+            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Search a phone model</p>
+            <DeviceSearch
+              client:load
+              devices={phones}
+              placeholder="Search iPhone, Galaxy, Pixel..."
+              searchHint="Open a model page for exact screen dimensions and handling notes"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-4">
+          <a href="/phones/iphone-screen-sizes" class="rounded-xl border border-gray-200 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-800/70 hover:border-emerald-400 transition-colors">
+            <h2 class="text-lg font-bold text-gray-950 dark:text-white mb-2">iPhone screen sizes</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{iphonePhones.length} iPhone models from Mini to Pro Max.</p>
+            <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Browse iPhones -></span>
+          </a>
+          <a href="/phones/samsung-galaxy-screen-sizes" class="rounded-xl border border-gray-200 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-800/70 hover:border-emerald-400 transition-colors">
+            <h2 class="text-lg font-bold text-gray-950 dark:text-white mb-2">Samsung Galaxy sizes</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{samsungPhones.length} Galaxy S models including Ultra and Plus.</p>
+            <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Browse Galaxy -></span>
+          </a>
+          <a href="/phones/google-pixel-screen-sizes" class="rounded-xl border border-gray-200 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-800/70 hover:border-emerald-400 transition-colors">
+            <h2 class="text-lg font-bold text-gray-950 dark:text-white mb-2">Google Pixel sizes</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{pixelPhones.length} Pixel models including Pro and Pro XL.</p>
+            <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Browse Pixel -></span>
+          </a>
+          <a href="/phones/phone-screen-size-chart" class="rounded-xl border border-gray-200 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-800/70 hover:border-emerald-400 transition-colors">
+            <h2 class="text-lg font-bold text-gray-950 dark:text-white mb-2">Full phone size chart</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Sort the full database by screen size and body width.</p>
+            <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Open chart -></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-50 dark:bg-gray-950">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">Popular models</p>
+            <h2 class="text-2xl font-bold text-gray-950 dark:text-white">Current phone screen sizes</h2>
+          </div>
+          <a href="/phones/phone-screen-size-chart" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">View all phones</a>
+        </div>
+        <PhoneSizeTable phones={popularPhones} />
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-4">Best for one-hand use</h2>
+            <div class="grid gap-3">
+              {compactPhones.map(phone => (
+                <a href={getDevicePageUrl(phone.id)} class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <span class="font-medium text-gray-900 dark:text-gray-100">{phone.name}</span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">{phone.phone?.dimensions?.width ?? '-'}mm wide</span>
+                </a>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-4">Largest phone screens</h2>
+            <div class="grid gap-3">
+              {largePhones.map(phone => (
+                <a href={getDevicePageUrl(phone.id)} class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <span class="font-medium text-gray-900 dark:text-gray-100">{phone.name}</span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">{phone.diagonal}" screen</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-950 text-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-center">
+          <div>
+            <h2 class="text-3xl font-bold mb-3">Compare two phones visually</h2>
+            <p class="text-gray-300 max-w-2xl">
+              Diagonal size is not enough. Compare the actual screen area and physical proportions before choosing a Pro Max, Ultra, XL or compact model.
+            </p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <a href={getCompareToolUrl('iphone-17-pro', 'iphone-17-pro-max')} class="rounded-lg bg-white text-gray-950 px-5 py-3 text-sm font-semibold text-center hover:bg-gray-100">iPhone 17 Pro vs Pro Max</a>
+            <a href={getCompareToolUrl('iphone-17-pro-max', 'samsung-galaxy-s26-ultra')} class="rounded-lg border border-white/20 px-5 py-3 text-sm font-semibold text-center hover:bg-white/10">iPhone Pro Max vs Galaxy Ultra</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-6">Phone screen size FAQ</h2>
+        <div class="space-y-4">
+          {faqData.map(item => (
+            <details class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+              <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">{item.question}</summary>
+              <p class="mt-3 text-gray-600 dark:text-gray-300">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+</Layout>

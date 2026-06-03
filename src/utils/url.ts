@@ -39,8 +39,25 @@ export function getCompareDeviceUrl(id: string): string {
   return `/compare#device=${encodeURIComponent(id)}`;
 }
 
+export function getDevicePageRouteParam(id: string): string {
+  return id.endsWith('-projector-screen') ? id.replace(/-screen$/, '') : id;
+}
+
+export function getDevicePageSlug(id: string): string {
+  return `${encodeURIComponent(getDevicePageRouteParam(id))}-screen-size`;
+}
+
 export function getDevicePageUrl(id: string): string {
-  return `/${encodeURIComponent(id)}-screen-size`;
+  return `/${getDevicePageSlug(id)}`;
+}
+
+export function normalizeLegacyProjectorScreenUrls(value: string): string {
+  if (typeof value !== 'string') return value;
+
+  return value.replace(
+    /\/([a-z0-9-]+-projector-screen)-screen-size(?=\/|[?#."' <]|$)/gi,
+    '/$1-size',
+  );
 }
 
 export function getComparisonEntryUrl(id1: string, id2: string): string {
@@ -73,9 +90,9 @@ export function rewriteComparisonHrefForSeo(href: string): string {
 
   if (normalizedHref.startsWith('/compare')) {
     const { path, search, hash } = splitHrefParts(normalizedHref);
-    if (path !== '/compare') return href;
+    if (path !== '/compare') return normalizeLegacyProjectorScreenUrls(href);
 
-    if (hash) return href;
+    if (hash) return normalizeLegacyProjectorScreenUrls(href);
 
     const params = new URLSearchParams(search.replace(/^\?/, ''));
     const deviceId = params.get('device') || params.get('a');
@@ -86,11 +103,11 @@ export function rewriteComparisonHrefForSeo(href: string): string {
       return getCompareToolUrl(a, b);
     }
 
-    return deviceId ? getCompareDeviceUrl(deviceId) : href;
+    return normalizeLegacyProjectorScreenUrls(deviceId ? getCompareDeviceUrl(deviceId) : href);
   }
 
   if (!normalizedHref.startsWith('/comparison')) {
-    return href;
+    return normalizeLegacyProjectorScreenUrls(href);
   }
 
   const { path, search, hash } = splitHrefParts(normalizedHref);
@@ -103,21 +120,21 @@ export function rewriteComparisonHrefForSeo(href: string): string {
   } as const;
 
   if (path === '/comparison' || path === '/comparison/') {
-    return `${getComparisonBrowseUrl()}${search}${hash}`;
+    return normalizeLegacyProjectorScreenUrls(`${getComparisonBrowseUrl()}${search}${hash}`);
   }
 
   const slug = path.replace(/^\/comparison\//, '').replace(/\/$/, '');
 
   if (slug in categoryMap) {
-    return `${getComparisonBrowseUrl(categoryMap[slug as keyof typeof categoryMap])}${search}${hash}`;
+    return normalizeLegacyProjectorScreenUrls(`${getComparisonBrowseUrl(categoryMap[slug as keyof typeof categoryMap])}${search}${hash}`);
   }
 
   const deviceIds = slug.split('-vs-');
   if (deviceIds.length === 2 && deviceIds[0] && deviceIds[1]) {
-    return `${getComparisonEntryUrl(deviceIds[0], deviceIds[1])}${hash}`;
+    return normalizeLegacyProjectorScreenUrls(`${getComparisonEntryUrl(deviceIds[0], deviceIds[1])}${hash}`);
   }
 
-  return `${getComparisonBrowseUrl()}${search}${hash}`;
+  return normalizeLegacyProjectorScreenUrls(`${getComparisonBrowseUrl()}${search}${hash}`);
 }
 
 export function rewriteComparisonLinksInHtml(html: string): string {
@@ -125,10 +142,12 @@ export function rewriteComparisonLinksInHtml(html: string): string {
     return html;
   }
 
-  return html.replace(/\bhref=(["'])([^"']*)\1/g, (match, quote: string, href: string) => {
-    const rewrittenHref = rewriteComparisonHrefForSeo(href);
-    return rewrittenHref === href ? match : `href=${quote}${rewrittenHref}${quote}`;
-  });
+  return normalizeLegacyProjectorScreenUrls(
+    html.replace(/\bhref=(["'])([^"']*)\1/g, (match, quote: string, href: string) => {
+      const rewrittenHref = rewriteComparisonHrefForSeo(href);
+      return rewrittenHref === href ? match : `href=${quote}${rewrittenHref}${quote}`;
+    }),
+  );
 }
 
 /**

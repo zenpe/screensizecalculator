@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhoneSizeTable from '../../components/PhoneSizeTable.astro';
+import { devices, type Device } from '../../data/devices';
+import { getCompareToolUrl, getDevicePageUrl } from '../../utils/url';
+import { siteConfig } from '../../site.config';
+
+const phones = devices
+  .filter((device): device is Device => device.category === 'phone' && /iphone/i.test(device.name))
+  .sort((a, b) => (b.releasedAt || '').localeCompare(a.releasedAt || ''));
+
+const title = 'iPhone Screen Sizes - Complete iPhone Size Chart';
+const description = 'Compare iPhone screen sizes from Mini to Pro Max, including display size, body width, weight, PPI, one-hand comfort and current iPhone size differences.';
+const keywords = 'iphone screen sizes, iphone screen size chart, iphone dimensions, iphone pro max screen size, iphone size comparison';
+const updatedDate = '2026-06-03';
+
+const seriesGroups = [
+  { title: 'iPhone 17 series', phones: phones.filter(phone => phone.id.startsWith('iphone-17')) },
+  { title: 'iPhone 16 series', phones: phones.filter(phone => phone.id.startsWith('iphone-16')) },
+  { title: 'iPhone 15 series', phones: phones.filter(phone => phone.id.startsWith('iphone-15')) },
+  { title: 'iPhone 14 series', phones: phones.filter(phone => phone.id.startsWith('iphone-14')) },
+  { title: 'iPhone 13 series', phones: phones.filter(phone => phone.id.startsWith('iphone-13')) },
+].filter(group => group.phones.length > 0);
+
+const compact = phones.filter(phone => (phone.phone?.dimensions?.width ?? 999) <= 72);
+const proMax = phones.filter(phone => /pro max/i.test(phone.name));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.siteUrl },
+    { '@type': 'ListItem', position: 2, name: 'Phones', item: `${siteConfig.siteUrl}/phones` },
+    { '@type': 'ListItem', position: 3, name: 'iPhone Screen Sizes', item: `${siteConfig.siteUrl}/phones/iphone-screen-sizes` },
+  ],
+};
+---
+
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
+  <main class="flex-1">
+    <section class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 pt-8 pb-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mb-8 text-sm text-gray-500 dark:text-gray-400" aria-label="Breadcrumb">
+          <a href="/" class="hover:text-primary-600">Home</a> / <a href="/phones" class="hover:text-primary-600">Phones</a> / <span class="text-gray-900 dark:text-gray-100">iPhone</span>
+        </nav>
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-end">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-300 mb-3">Apple phone sizes</p>
+            <h1 class="text-4xl sm:text-5xl font-bold text-gray-950 dark:text-white mb-4">iPhone Screen Sizes</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+              Compare iPhone display sizes, body widths and one-hand comfort across Mini, standard, Plus, Pro and Pro Max models.
+            </p>
+          </div>
+          <div class="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Current range</p>
+            <p class="text-3xl font-bold text-gray-950 dark:text-white">5.4" to 6.9"</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Mini models are the easiest to carry; Pro Max models give the largest canvas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PhoneSizeTable phones={phones} showBrand={false} />
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-50 dark:bg-gray-950">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-6">iPhone size by series</h2>
+        <div class="grid lg:grid-cols-2 gap-5">
+          {seriesGroups.map(group => (
+            <section class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+              <h3 class="font-bold text-gray-950 dark:text-white mb-4">{group.title}</h3>
+              <div class="space-y-3">
+                {group.phones.map(phone => (
+                  <a href={getDevicePageUrl(phone.id)} class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-gray-100">{phone.name}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{phone.diagonal}" / {phone.phone?.dimensions?.width ?? '-'}mm</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-xl font-bold text-gray-950 dark:text-white mb-4">Best iPhones for one-hand use</h2>
+            <ul class="space-y-3">
+              {compact.map(phone => (
+                <li class="flex justify-between text-sm text-gray-700 dark:text-gray-300">
+                  <a href={getDevicePageUrl(phone.id)} class="hover:text-primary-600">{phone.name}</a>
+                  <span>{phone.phone?.dimensions?.width ?? '-'}mm wide</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-xl font-bold text-gray-950 dark:text-white mb-4">Pro Max iPhone sizes</h2>
+            <ul class="space-y-3">
+              {proMax.map(phone => (
+                <li class="flex justify-between text-sm text-gray-700 dark:text-gray-300">
+                  <a href={getDevicePageUrl(phone.id)} class="hover:text-primary-600">{phone.name}</a>
+                  <span>{phone.diagonal}" / {phone.phone?.weight ?? '-'}g</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-950 text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-3">Compare iPhone sizes visually</h2>
+        <p class="text-gray-300 mb-6">See how much bigger a Pro Max actually is than the regular Pro or standard iPhone.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href={getCompareToolUrl('iphone-17-pro', 'iphone-17-pro-max')} class="rounded-lg bg-white text-gray-950 px-5 py-3 text-sm font-semibold hover:bg-gray-100">17 Pro vs 17 Pro Max</a>
+          <a href={getCompareToolUrl('iphone-16', 'iphone-16-plus')} class="rounded-lg border border-white/20 px-5 py-3 text-sm font-semibold hover:bg-white/10">16 vs 16 Plus</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</Layout>

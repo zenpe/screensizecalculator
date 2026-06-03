@@ -1,3 +1,15 @@
 # Deprecated comparison SEO pages are intentionally removed from the static build.
 # Cloudflare Pages _redirects does not support 410 Gone.
 # The real 410 response is handled by functions/comparison/[[path]].js.
+
+# Consolidate the old phone category hub into the stronger phone SEO cluster.
+/devices/phones /phones 301
+/devices/phones/ /phones 301
+
+# Clean duplicate "screen-screen-size" projector detail URLs.
+/100-inch-projector-screen-screen-size /100-inch-projector-screen-size 301
+/100-inch-projector-screen-screen-size/ /100-inch-projector-screen-size 301
+/120-inch-projector-screen-screen-size /120-inch-projector-screen-size 301
+/120-inch-projector-screen-screen-size/ /120-inch-projector-screen-size 301
+/150-inch-projector-screen-screen-size /150-inch-projector-screen-size 301
+/150-inch-projector-screen-screen-size/ /150-inch-projector-screen-size 301

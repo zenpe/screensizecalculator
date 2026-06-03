@@ -8,36 +8,11 @@ interface FAQ {
 interface Props {
   faqs: FAQ[];
   title?: string;
-  showSchema?: boolean;
   compact?: boolean;
   class?: string;
 }
 
-const { faqs, title = "Frequently Asked Questions", showSchema = true, compact = false, class: className = "" } = Astro.props;
-
-const stripHtml = (html: string) => {
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .trim();
-};
-
-const faqSchema = showSchema && faqs.length > 0 ? {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: stripHtml(faq.answer),
-    },
-  })),
-} : null;
+const { faqs, title = "Frequently Asked Questions", compact = false, class: className = "" } = Astro.props;
 ---
 
 {faqs.length > 0 && (
@@ -86,6 +61,3 @@ const faqSchema = showSchema && faqs.length > 0 ? {
   </section>
 )}
 
-{faqSchema && (
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-)}

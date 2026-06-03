@@ -1,5 +1,5 @@
 // @ts-check
-import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
@@ -8,7 +8,11 @@ import {
   isComparisonSeoEnabled,
   templateVersions,
 } from './src/site.config.ts';
-import { rewriteComparisonHrefForSeo } from './src/utils/url.ts';
+import {
+  getDevicePageUrl,
+  normalizeLegacyProjectorScreenUrls,
+  rewriteComparisonHrefForSeo,
+} from './src/utils/url.ts';
 import { shouldIndexComparison } from './src/utils/comparison-scoring/index.ts';
 
 import react from '@astrojs/react';
@@ -33,6 +37,41 @@ function removeComparisonSeoOutput() {
           if (!existsSync(target)) continue;
           rmSync(target, { recursive: true, force: true });
         }
+      },
+    },
+  };
+}
+
+function normalizeLegacyProjectorScreenOutput() {
+  return {
+    name: 'normalize-legacy-projector-screen-output',
+    hooks: {
+      'astro:build:done'() {
+        const distDir = resolve(process.cwd(), 'dist');
+        if (!existsSync(distDir)) return;
+
+        const walk = (dir) => {
+          for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            const fullPath = join(dir, entry.name);
+
+            if (entry.isDirectory()) {
+              walk(fullPath);
+              continue;
+            }
+
+            if (!entry.isFile() || !['.html', '.xml'].includes(extname(entry.name).toLowerCase())) {
+              continue;
+            }
+
+            const original = readFileSync(fullPath, 'utf8');
+            const normalized = normalizeLegacyProjectorScreenUrls(original);
+            if (normalized !== original) {
+              writeFileSync(fullPath, normalized);
+            }
+          }
+        };
+
+        walk(distDir);
       },
     },
   };
@@ -67,6 +106,7 @@ function rewriteComparisonLinks() {
 
 // Create a map for faster device date lookups.
 const deviceDateMap = new Map(devices.filter(d => d.updatedAt).map(d => [d.id, d.updatedAt]));
+const devicePathMap = new Map(devices.map(d => [getDevicePageUrl(d.id), d.id]));
 const blogContentDir = join(process.cwd(), 'src', 'content', 'blog');
 const staticPagesDir = join(process.cwd(), 'src', 'pages');
 
@@ -174,6 +214,7 @@ export default defineConfig({
     react(),
     mdx(),
     removeComparisonSeoOutput(),
+    normalizeLegacyProjectorScreenOutput(),
     sitemap({
       filter: (page) => {
         // Exclude utility/legal pages from sitemap
@@ -228,8 +269,9 @@ export default defineConfig({
         }
         // Rule 3: Device Detail Pages
         else if (page.url.match(/\/([a-zA-Z0-9-]+)-screen-size\/?$/)) {
+          const pagePath = getPagePath(page.url);
           const match = page.url.match(/\/([a-zA-Z0-9-]+)-screen-size\/?$/);
-          const deviceId = match ? match[1] : null;
+          const deviceId = devicePathMap.get(pagePath) || (match ? match[1] : null);
           const deviceDate = deviceId ? deviceDateMap.get(deviceId) : null;
           lastmod = getLatestDate(deviceDate, templateVersions.deviceTemplate);
         }

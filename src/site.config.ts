@@ -28,7 +28,7 @@ export const siteConfig = {
 export type ComparisonBrowseCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
 
 const comparisonBrowseFallbackMap: Record<ComparisonBrowseCategory, string> = {
-  phone: '/devices/phones',
+  phone: '/phones',
   tablet: '/devices/tablets',
   tv: '/devices/tvs',
   monitor: '/devices/monitors',

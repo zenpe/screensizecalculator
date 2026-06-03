@@ -139,41 +139,6 @@ const breadcrumbSchema = {
   ],
 };
 
-// HowTo Schema for step-by-step guide
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Choose the Right Tablet Size",
-  description:
-    "Learn how to calculate and compare tablet screen dimensions, PPI, and resolution for iPad, Samsung Galaxy Tab, and Surface Pro.",
-  totalTime: "PT5M",
-  step: [
-    {
-      "@type": "HowToStep",
-      position: 1,
-      name: "Determine Your Primary Use Case",
-      text: "Identify how you'll primarily use the tablet: portability and reading (8-9 inches), general use (10-11 inches), or productivity (12+ inches).",
-    },
-    {
-      "@type": "HowToStep",
-      position: 2,
-      name: "Enter Tablet Screen Size",
-      text: "Input your desired tablet diagonal size in inches or cm. The calculator shows exact width and height dimensions.",
-    },
-    {
-      "@type": "HowToStep",
-      position: 3,
-      name: "Select Aspect Ratio",
-      text: "Choose your tablet's aspect ratio (4:3 for iPad, 16:10 for Samsung Galaxy Tab, 3:2 for Surface Pro).",
-    },
-    {
-      "@type": "HowToStep",
-      position: 4,
-      name: "Compare Specifications",
-      text: "Review PPI, screen area, and resolution to compare different tablet sizes and find the best fit for your needs.",
-    },
-  ],
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -545,9 +510,5 @@ const howToSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
 </Layout>

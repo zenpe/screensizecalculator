@@ -2,7 +2,7 @@
 title: "How to Measure Screen Size (TV Monitor Phone) - 2026 Guide"
 description: "Learn how to measure screen size correctly for TVs, monitors, and phones. Includes diagonal measurement rules, inch-to-cm conversion, and common mistakes."
 pubDate: "2026-03-11"
-updatedDate: "2026-03-11"
+updatedDate: "2026-06-03"
 category: "Screen Size Guide"
 author: "Screen Size Calculator Team"
 keywords: "how to measure screen size, screen size measurement, tv screen size, monitor dimensions, phone screen size, inch to cm"
@@ -86,7 +86,7 @@ Use the [Monitor Screen Size Calculator](/monitor-screen-size-calculator) to com
 
 Phone screen size is diagonal display size, not body dimensions. Two phones with 6.7" screens can have different widths because aspect ratio differs.  
 Use the [Phone Screen Size Calculator](/phone-screen-size-calculator) for display vs body context.
-See how different models compare: [phone screen size comparisons](/comparison/phones).
+See how different models compare: [phone screen size hub](/phones).
 
 ## Quick Conversion Table (Inch ↔ Cm)
 

@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhoneSizeTable from '../../components/PhoneSizeTable.astro';
+import { devices, type Device } from '../../data/devices';
+import { getCompareToolUrl, getDevicePageUrl } from '../../utils/url';
+import { siteConfig } from '../../site.config';
+
+const phones = devices
+  .filter((device): device is Device => device.category === 'phone' && /galaxy/i.test(device.name))
+  .sort((a, b) => (b.releasedAt || '').localeCompare(a.releasedAt || ''));
+
+const title = 'Samsung Galaxy Screen Sizes - Galaxy S Size Chart';
+const description = 'Compare Samsung Galaxy screen sizes, including Galaxy S, Plus and Ultra models with body width, weight, PPI and one-hand comfort notes.';
+const keywords = 'samsung galaxy screen sizes, galaxy s screen size chart, samsung phone dimensions, galaxy ultra screen size';
+const updatedDate = '2026-06-03';
+
+const baseModels = phones.filter(phone => !/plus|\+|ultra/i.test(phone.name));
+const plusModels = phones.filter(phone => /plus|\+/i.test(phone.name));
+const ultraModels = phones.filter(phone => /ultra/i.test(phone.name));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.siteUrl },
+    { '@type': 'ListItem', position: 2, name: 'Phones', item: `${siteConfig.siteUrl}/phones` },
+    { '@type': 'ListItem', position: 3, name: 'Samsung Galaxy Screen Sizes', item: `${siteConfig.siteUrl}/phones/samsung-galaxy-screen-sizes` },
+  ],
+};
+---
+
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
+  <main class="flex-1">
+    <section class="bg-gradient-to-b from-emerald-50 to-white dark:from-gray-800 dark:to-gray-900 pt-8 pb-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mb-8 text-sm text-gray-500 dark:text-gray-400" aria-label="Breadcrumb">
+          <a href="/" class="hover:text-primary-600">Home</a> / <a href="/phones" class="hover:text-primary-600">Phones</a> / <span class="text-gray-900 dark:text-gray-100">Samsung Galaxy</span>
+        </nav>
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300 mb-3">Samsung phone sizes</p>
+          <h1 class="text-4xl sm:text-5xl font-bold text-gray-950 dark:text-white mb-4">Samsung Galaxy Screen Sizes</h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300">
+            Compare Galaxy S base, Plus and Ultra models by screen diagonal, body width, weight and display sharpness.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PhoneSizeTable phones={phones} showBrand={false} />
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-50 dark:bg-gray-950">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-gray-950 dark:text-white mb-6">Galaxy size tiers</h2>
+        <div class="grid lg:grid-cols-3 gap-5">
+          {[
+            { title: 'Base Galaxy S', text: 'Best for easier hand fit and lighter pockets.', phones: baseModels },
+            { title: 'Galaxy Plus', text: 'Large screen without the full Ultra width and weight.', phones: plusModels },
+            { title: 'Galaxy Ultra', text: 'Maximum screen area, S Pen workflow and two-hand productivity.', phones: ultraModels },
+          ].map(group => (
+            <section class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+              <h3 class="font-bold text-gray-950 dark:text-white mb-2">{group.title}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{group.text}</p>
+              <div class="space-y-3">
+                {group.phones.map(phone => (
+                  <a href={getDevicePageUrl(phone.id)} class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{phone.name}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{phone.diagonal}"</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-gray-950 text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-3">Compare Galaxy and iPhone size</h2>
+        <p class="text-gray-300 mb-6">Ultra phones are large, but the shape and body width matter as much as the diagonal screen size.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href={getCompareToolUrl('samsung-galaxy-s26', 'samsung-galaxy-s26-ultra')} class="rounded-lg bg-white text-gray-950 px-5 py-3 text-sm font-semibold hover:bg-gray-100">S26 vs S26 Ultra</a>
+          <a href={getCompareToolUrl('iphone-17-pro-max', 'samsung-galaxy-s26-ultra')} class="rounded-lg border border-white/20 px-5 py-3 text-sm font-semibold hover:bg-white/10">iPhone Pro Max vs Ultra</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</Layout>

@@ -156,45 +156,24 @@ const itemListSchema = {
   }))
 };
 
-// FAQ Schema
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What calculators are available on this site?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI & DPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Are these calculators free to use?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, all calculators on this site are completely free with no registration required. Results are calculated instantly in your browser."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Which calculator should I use to compare screen sizes?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Use the device-specific calculators: TV Calculator for televisions, Monitor Calculator for computer displays, Phone Calculator for smartphones, Tablet Calculator for iPads and tablets, or Projector Calculator for projection screens. Each is optimized for its device category."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How accurate are the screen size calculations?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Our calculations use manufacturer specifications and industry-standard formulas. Screen dimensions are calculated from diagonal size and aspect ratio using the Pythagorean theorem, ensuring high accuracy for all supported devices."
-      }
-    }
-  ]
-};
+const faqs = [
+  {
+    question: "What calculators are available on this site?",
+    answer: "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI & DPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions.",
+  },
+  {
+    question: "Are these calculators free to use?",
+    answer: "Yes, all calculators on this site are completely free with no registration required. Results are calculated instantly in your browser.",
+  },
+  {
+    question: "Which calculator should I use to compare screen sizes?",
+    answer: "Use the device-specific calculators: TV Calculator for televisions, Monitor Calculator for computer displays, Phone Calculator for smartphones, Tablet Calculator for iPads and tablets, or Projector Calculator for projection screens. Each is optimized for its device category.",
+  },
+  {
+    question: "How accurate are the screen size calculations?",
+    answer: "Our calculations use manufacturer specifications and industry-standard formulas. Screen dimensions are calculated from diagonal size and aspect ratio using the Pythagorean theorem, ensuring high accuracy for all supported devices.",
+  },
+];
 
 // Color classes for icon backgrounds and text
 const colorClasses: Record<string, { bg: string; text: string; border: string }> = {
@@ -450,13 +429,13 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
           Frequently Asked Questions
         </h2>
         <div class="space-y-4">
-          {faqSchema.mainEntity.map((faq) => (
+          {faqs.map((faq) => (
             <details class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
               <summary class="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer">
-                {faq.name}
+                {faq.question}
               </summary>
               <p class="mt-3 text-gray-600 dark:text-gray-300">
-                {faq.acceptedAnswer.text}
+                {faq.answer}
               </p>
             </details>
           ))}
@@ -466,5 +445,4 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 </Layout>

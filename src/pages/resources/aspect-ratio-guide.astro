@@ -5,45 +5,6 @@ const title = 'Aspect Ratio Guide - Understanding Screen Dimensions & Proportion
 const description = 'Complete guide to aspect ratios including 16:9, 21:9, 4:3, and more. Learn how aspect ratios affect viewing experience and choose the right one.';
 const keywords = 'aspect ratio guide, screen aspect ratios, 16:9 aspect ratio, ultrawide aspect ratio, 4:3 ratio, display proportions, screen dimensions guide';
 
-// FAQ Schema
-const faqData = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is the most common aspect ratio for TVs?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "The most common aspect ratio for TVs is 16:9 (1.78:1), which is the standard for HDTV and UHDTV content. This ratio provides a good balance between letterboxing movies and maintaining compatibility with most content. It's also the native aspect ratio for most streaming services and broadcast content."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the difference between 16:9 and 21:9 aspect ratios?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "16:9 (1.78:1) is the standard HDTV ratio and works well for most content including TV shows, movies, and games. 21:9 (2.37:1) is an ultrawide format popular for gaming and productivity, offering more horizontal screen space. However, native 21:9 content is limited, and most content will have black bars on the sides or be stretched."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why do movies have black bars on TV?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Movies often have black bars (letterboxing) on TV because they're shot in different aspect ratios than the TV screen. Common cinema ratios include 1.85:1 (widescreen) and 2.39:1 (anamorphic). When these don't match your TV's 16:9 ratio, bars appear to preserve the original artistic composition."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What aspect ratio should I use for productivity?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "For productivity, 16:9 is the most versatile aspect ratio as it's compatible with most software and content. For multitasking, ultrawide ratios like 21:9 (32:9 for super ultrawide) are excellent as they provide more horizontal space for multiple applications. However, ensure your software is compatible with ultrawide resolutions."
-      }
-    }
-  ]
-};
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
@@ -478,5 +439,4 @@ const faqData = {
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqData)} />
 </Layout>

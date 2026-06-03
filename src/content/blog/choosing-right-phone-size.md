@@ -2,7 +2,7 @@
 title: "How to Choose the Right Phone Size in 2026"
 description: "Choose the right phone size by lifestyle. Compare compact, standard, large, and max-size phones for pockets, one-handed use, media, and battery life."
 pubDate: "2025-12-03"
-updatedDate: "2026-04-16"
+updatedDate: "2026-06-03"
 category: "Phone Guide"
 author: "Screen Size Calculator Team"
 keywords: "choosing phone size, best phone size, compact vs large phone, standard phone size, best phone size for one handed use, best phone size for media"
@@ -30,7 +30,7 @@ This page is the broad overview. If your decision is already narrower than that,
 
 - For the real-world trade-off between mainstream small and large phones, read [6.1 vs 6.7 Phone Size in Real Life](/blog/6-1-vs-6-7-phone-size-real-life)
 - For the Apple flagship decision, read [Is the iPhone Pro Max Worth the Upgrade?](/blog/is-iphone-pro-max-worth-upgrade)
-- For side-by-side model dimensions, browse the [Phone comparison hub](/comparison/phones)
+- For side-by-side model dimensions, browse the [Phone screen size hub](/phones)
 - For exact dimensions and viewable size, use the [Phone Screen Size Calculator](/phone-screen-size-calculator)
 
 That separation matters. This page helps you choose a category. The other two help you close a specific purchase decision.
@@ -165,5 +165,5 @@ If you are considering a very specific trade-off, use the more focused guides:
 
 - [6.1 vs 6.7 Phone Size in Real Life](/blog/6-1-vs-6-7-phone-size-real-life)
 - [Is the iPhone Pro Max Worth the Upgrade?](/blog/is-iphone-pro-max-worth-upgrade)
-- [Phone comparison hub](/comparison/phones)
+- [Phone screen size hub](/phones)
 - [Phone Screen Size Calculator](/phone-screen-size-calculator)

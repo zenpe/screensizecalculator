@@ -2,7 +2,7 @@
 title: "Is the iPhone Pro Max Worth the Upgrade?"
 description: "Should you pay more and carry a bigger iPhone Pro Max? Compare Pro vs Pro Max size, weight, battery, and pocket comfort before upgrading."
 pubDate: "2026-04-16"
-updatedDate: "2026-04-16"
+updatedDate: "2026-06-03"
 category: "Phone Guide"
 author: "Screen Size Calculator Team"
 keywords: "iphone pro vs pro max, iphone pro max worth it, iphone pro max upgrade, pro vs pro max size, pro max battery weight"
@@ -128,7 +128,7 @@ They are not. The 16 Pro Max jump is much larger than the 17 Pro Max jump by bat
 
 If you want to see the size jump visually, start here:
 
-- [Phone comparison hub](/comparison/phones)
+- [Phone screen size hub](/phones)
 - [iPhone 16 Pro vs iPhone 16 Pro Max](/comparison/iphone-16-pro-vs-iphone-16-pro-max)
 - [iPhone 17 Pro vs iPhone 17 Pro Max](/comparison/iphone-17-pro-vs-iphone-17-pro-max)
 - [iPhone 16 vs iPhone 16 Plus](/comparison/iphone-16-vs-iphone-16-plus)

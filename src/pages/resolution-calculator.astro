@@ -46,37 +46,6 @@ const softwareSchema = {
   },
 };
 
-// HowTo Schema for step-by-step instructions
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Scale and Compare Screen Resolutions",
-  description:
-    "Learn how to scale image and video resolutions proportionally and compare pixel counts between different displays.",
-  step: [
-    {
-      "@type": "HowToStep",
-      name: "Enter Your Original Resolution",
-      text: "Input your source resolution width and height in pixels. You can also select from common presets like 1080p, 4K, or 8K.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "Choose Your Scaling Method",
-      text: "Select how you want to scale: by percentage (e.g., 50%, 200%), by target width, or by target height. Enable 'Lock aspect ratio' to maintain proportions.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "View Scaled Results",
-      text: "Get the new resolution dimensions instantly. Compare total pixel counts and megapixels between original and scaled resolutions.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "Compare Resolutions",
-      text: "Use the comparison feature to see how different resolutions stack up. Understand the pixel difference between 1080p, 1440p, 4K, and 8K.",
-    },
-  ],
-};
-
 // Breadcrumb Schema
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -442,10 +411,6 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
   <script
     type="application/ld+json"

@@ -12,11 +12,12 @@ import {
 } from "../../data/devices";
 import {
   getAmazonSearchUrl,
+  isComparisonSeoEnabled,
   siteConfig,
   templateVersions,
   sanitizeMetaDescription,
 } from "../../site.config";
-import { getComparisonSlug, getComparisonUrl } from "../../utils/url";
+import { getComparisonSlug, getComparisonUrl, getDevicePageUrl } from "../../utils/url";
 import {
   generateComparisonDescription,
   generateUseCaseScenarios,
@@ -28,6 +29,8 @@ import { shouldIndexComparison } from "../../utils/comparison-scoring";
 
 // Generate all valid comparison pages with canonical alphabetical ordering.
 export function getStaticPaths() {
+  if (!isComparisonSeoEnabled()) return [];
+
   const paths = [];
   const seen = new Set();
 
@@ -350,71 +353,36 @@ const breadcrumbSchema = {
 // OG Image URL - use primary device's image
 const ogImageUrl = `${siteConfig.siteUrl}/og/${primaryDevice.id}.png`;
 
-// Conditional Schema: Product (with price) or SoftwareApplication (utility tool)
-const isToolSchema = !primaryDevice.price && !secondaryDevice.price;
-
-const productSchema = {
+const pageSchema = {
   "@context": "https://schema.org",
-  "@type": "Product",
-  name: primaryDevice.name,
+  "@type": "WebPage",
+  name: `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`,
   description: description,
-  image: {
+  url: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
+  dateModified: lastUpdated,
+  primaryImageOfPage: {
     "@type": "ImageObject",
     url: ogImageUrl,
     width: 1200,
     height: 630,
   },
-  brand: {
-    "@type": "Brand",
-    name: primaryDevice.name.split(" ")[0],
-  },
-  sku: primaryDevice.id,
-  ...(primaryDevice.price
-    ? {
-        offers: {
-          "@type": "Offer",
-          price: primaryDevice.price,
-          priceCurrency: "USD",
-          availability: "https://schema.org/InStock",
-          url: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
-          priceValidUntil: "2026-12-31",
-        },
-      }
-    : {}),
-  isRelatedTo: {
-    "@type": "Product",
-    name: secondaryDevice.name,
-    description: `Comparison device: ${secondaryDevice.name}`,
-    sku: secondaryDevice.id,
-    ...(secondaryDevice.price
-      ? {
-          offers: {
-            "@type": "Offer",
-            price: secondaryDevice.price,
-            priceCurrency: "USD",
-          },
-        }
-      : {}),
-  },
-};
-
-const toolSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: `${primaryDevice.name} vs ${secondaryDevice.name} Screen Size Comparison`,
-  description: description,
-  dateModified: lastUpdated,
-  applicationCategory: "UtilityApplication",
-  operatingSystem: "All",
-  url: `${siteConfig.siteUrl}/comparison/${deviceA.id}-vs-${deviceB.id}`,
-  image: ogImageUrl,
-  author: {
+  publisher: {
     "@type": "Organization",
     name: "Screen Size Calculator",
   },
+  about: [
+    {
+      "@type": "Thing",
+      name: primaryDevice.name,
+      description: `Primary comparison device: ${primaryDevice.name}`,
+    },
+    {
+      "@type": "Thing",
+      name: secondaryDevice.name,
+      description: `Secondary comparison device: ${secondaryDevice.name}`,
+    },
+  ],
 };
-
-const finalSchema = isToolSchema ? toolSchema : productSchema;
 ---
 
 <Layout
@@ -596,7 +564,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
     <!-- View Individual Device Pages -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
       <a
-        href={`/${primaryDevice.id}-screen-size`}
+        href={getDevicePageUrl(primaryDevice.id)}
         class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all group"
       >
         <div>
@@ -623,7 +591,7 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
         </svg>
       </a>
       <a
-        href={`/${secondaryDevice.id}-screen-size`}
+        href={getDevicePageUrl(secondaryDevice.id)}
         class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all group"
       >
         <div>
@@ -1791,6 +1759,5 @@ const finalSchema = isToolSchema ? toolSchema : productSchema;
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
   />
-  <!-- Primary Schema (Product or SoftwareApplication) -->
-  <script type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
 </Layout>

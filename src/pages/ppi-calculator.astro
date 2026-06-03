@@ -90,32 +90,6 @@ const softwareSchema = {
   ],
 };
 
-// HowTo Schema for step-by-step instructions
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Calculate PPI (Pixels Per Inch)",
-  description:
-    "Learn how to calculate pixel density (PPI/DPI) for any screen or find the required resolution for a target PPI.",
-  step: [
-    {
-      "@type": "HowToStep",
-      name: "Choose Your Mode",
-      text: "Select 'Calculate PPI/DPI' to find pixel density from resolution and screen size, or 'Find Resolution' to calculate the required resolution for a target PPI.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "Enter Your Display Details",
-      text: "Input your screen resolution (width × height in pixels) and diagonal screen size in inches or centimeters. Use device presets for quick calculations.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "View Results and Compare",
-      text: "Get instant PPI calculation with quality rating, pixel pitch, and optimal viewing distance. Compare your display against popular devices like iPhones and MacBooks.",
-    },
-  ],
-};
-
 // Breadcrumb Schema
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -701,10 +675,6 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
   <script
     type="application/ld+json"

@@ -332,7 +332,7 @@ const recommendations: Record<string, DeviceSeoRecommendation> = {
     alternatives: [
       { href: '/55-inch-tv-screen-size', label: '55-inch TV', reason: 'safer fit for apartments and closer seating' },
       { href: '/75-inch-tv-screen-size', label: '75-inch TV', reason: 'bigger jump for cinematic living rooms' },
-      { href: '/120-inch-projector-screen-screen-size', label: '120-inch projector screen', reason: 'dedicated-theater alternative when room control is possible' },
+      { href: '/120-inch-projector-screen-size', label: '120-inch projector screen', reason: 'dedicated-theater alternative when room control is possible' },
     ],
     bottomLine: 'Choose a 65-inch TV if you want the most reliable big-TV upgrade for a normal living room.',
   },
@@ -348,8 +348,8 @@ const recommendations: Record<string, DeviceSeoRecommendation> = {
       'Your projector brightness, throw ratio, or seating distance cannot support the size comfortably.',
     ],
     alternatives: [
-      { href: '/100-inch-projector-screen-screen-size', label: '100-inch projector screen', reason: 'safer first projector size for mixed-use rooms' },
-      { href: '/150-inch-projector-screen-screen-size', label: '150-inch projector screen', reason: 'larger dedicated-theater option' },
+      { href: '/100-inch-projector-screen-size', label: '100-inch projector screen', reason: 'safer first projector size for mixed-use rooms' },
+      { href: '/150-inch-projector-screen-size', label: '150-inch projector screen', reason: 'larger dedicated-theater option' },
       { href: '/85-inch-tv-screen-size', label: '85-inch TV', reason: 'brighter, simpler alternative for normal living rooms' },
     ],
     bottomLine: 'Choose a 120-inch projector screen when the room is built around movie nights, not casual daytime TV.',

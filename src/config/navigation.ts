@@ -51,7 +51,7 @@ export const comparisonLinks: NavLink[] = isComparisonSeoEnabled()
 // Device database pages
 export const deviceLinks: NavLink[] = [
   { href: '/devices', label: 'All Devices', shortLabel: 'All', icon: 'all' },
-  { href: '/devices/phones', label: 'Phones', icon: 'phone' },
+  { href: '/phones', label: 'Phones', icon: 'phone' },
   { href: '/devices/tablets', label: 'Tablets', icon: 'tablet' },
   { href: '/devices/tvs', label: 'TVs', icon: 'tv' },
   { href: '/devices/monitors', label: 'Monitors', icon: 'monitor' },

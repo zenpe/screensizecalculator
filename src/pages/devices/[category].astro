@@ -6,6 +6,7 @@ import FAQSection from '../../components/FAQSection.astro';
 import { devices, calculateDimensions, calculateDevicePPI } from '../../data/devices';
 import type { Device } from '../../data/devices';
 import { getComparisonBrowseUrl, isComparisonSeoEnabled, siteConfig } from '../../site.config';
+import { getDevicePageUrl } from '../../utils/url';
 
 // Category configuration
 const categoryConfig: Record<string, {
@@ -299,7 +300,6 @@ const relatedCategories: Record<string, string[]> = {
 
 export function getStaticPaths() {
   return [
-    { params: { category: 'phones' } },
     { params: { category: 'tablets' } },
     { params: { category: 'tvs' } },
     { params: { category: 'monitors' } },
@@ -347,6 +347,8 @@ const relatedCategoryInfo = related.map(cat => ({
   count: devices.filter(d => d.category === categoryMap[cat]).length,
 }));
 
+const getCategoryHref = (slug: string) => slug === 'phones' ? '/phones' : `/devices/${slug}`;
+
 // Schema.org structured data
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -383,7 +385,7 @@ const itemListSchema = {
     "@type": "ListItem",
     "position": index + 1,
     "name": device.name,
-    "url": `${siteConfig.siteUrl}/${device.id}-screen-size`
+    "url": `${siteConfig.siteUrl}${getDevicePageUrl(device.id)}`
   }))
 };
 
@@ -511,7 +513,7 @@ const itemListSchema = {
         <!-- Static links for SEO crawlers -->
         <nav class="sr-only" aria-label="All devices list">
           {categoryDevices.map(d => (
-            <a href={`/${d.id}-screen-size`}>{d.name}</a>
+            <a href={getDevicePageUrl(d.id)}>{d.name}</a>
           ))}
         </nav>
       </div>
@@ -532,7 +534,7 @@ const itemListSchema = {
               const relatedColors = colorClasses[related.color];
               return (
                 <a
-                  href={`/devices/${related.slug}`}
+                  href={getCategoryHref(related.slug)}
                   class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all"
                 >
                   <div class="flex items-center gap-4">

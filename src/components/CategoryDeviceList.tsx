@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { Device } from '../data/devices';
 import { calculateDimensions, getDisplayDimensions, calculateDevicePPI } from '../data/devices';
+import { getDevicePageUrl } from '../utils/url';
 
 interface CategoryDeviceListProps {
   devices: Device[];
@@ -427,7 +428,7 @@ export default function CategoryDeviceList({
           return (
             <a
               key={device.id}
-              href={`/${device.id}-screen-size`}
+              href={getDevicePageUrl(device.id)}
               className={`group relative bg-white dark:bg-gray-800 rounded-xl border-2 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${config.border}`}
             >
               {/* Popular Badge */}

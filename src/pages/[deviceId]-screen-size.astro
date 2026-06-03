@@ -20,6 +20,8 @@ import {
 import {
   getComparisonLink,
   getComparisonSlug,
+  getDevicePageRouteParam,
+  getDevicePageUrl,
 } from "../utils/url";
 import { shouldIndexComparison } from "../utils/comparison-scoring";
 import {
@@ -32,7 +34,7 @@ import { getDeviceSeoRecommendation } from "../data/deviceSeoRecommendations";
 // Generate pages for all devices
 export function getStaticPaths() {
   return devices.map((device) => ({
-    params: { deviceId: device.id },
+    params: { deviceId: getDevicePageRouteParam(device.id) },
     props: { device },
   }));
 }
@@ -1110,67 +1112,34 @@ const getScenarioDecisionIntro = (device: Device): string => {
 const scenarioDecisionCards = getScenarioDecisionCards(device);
 const scenarioDecisionIntro = getScenarioDecisionIntro(device);
 const deviceSeoRecommendation = getDeviceSeoRecommendation(device.id);
+const devicePageUrl = getDevicePageUrl(device.id);
 
 // OG Image URL for this device
 const ogImageUrl = `${siteConfig.siteUrl}/og/${device.id}.png`;
 
-// Conditional Schema: Product (with price) or SoftwareApplication (utility tool)
-// This ensures 100% clean SEO reports by avoiding "missing offers" warnings for unpriced items.
-const isToolSchema = !device.price;
-
-const productSchema = {
+const pageSchema = {
   "@context": "https://schema.org",
-  "@type": "Product",
+  "@type": "WebPage",
   name: device.name,
   description: description,
-  image: {
+  url: `${siteConfig.siteUrl}${devicePageUrl}`,
+  dateModified: lastUpdated,
+  primaryImageOfPage: {
     "@type": "ImageObject",
     url: ogImageUrl,
     width: 1200,
     height: 630,
   },
-  brand: {
-    "@type": "Brand",
-    name: brand || "Universal",
-  },
-  sku: device.id,
-  mpn: device.id,
-  ...(device.price
-    ? {
-        offers: {
-          "@type": "Offer",
-          price: device.price,
-          priceCurrency: "USD",
-          availability: "https://schema.org/InStock",
-          url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
-          priceValidUntil: "2026-12-31",
-        },
-      }
-    : {}),
-};
-
-const toolSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: `${pageHeading} Calculator`,
-  description: description,
-  dateModified: lastUpdated,
-  applicationCategory: "UtilityApplication",
-  operatingSystem: "All",
-  url: `${siteConfig.siteUrl}/${device.id}-screen-size`,
-  image: ogImageUrl,
-  author: {
+  publisher: {
     "@type": "Organization",
     name: "Screen Size Calculator",
   },
   about: {
     "@type": "Thing",
     name: device.name,
-    description: `Specifications and screen dimensions for ${device.name}.`,
+    description: `Screen dimensions, resolution, pixel density and practical size notes for ${device.name}.`,
   },
 };
-
-const finalSchema = isToolSchema ? toolSchema : productSchema;
 
 // Amazon URL
 const getAmazonUrl = () => {
@@ -1191,7 +1160,7 @@ const CATEGORY_NAMES: Record<string, string> = {
 };
 
 const CATEGORY_PATHS: Record<Device["category"], string> = {
-  phone: "/devices/phones",
+  phone: "/phones",
   tv: "/devices/tvs",
   monitor: "/devices/monitors",
   tablet: "/devices/tablets",
@@ -1307,7 +1276,7 @@ const seoLinkSections = [
   {
     title: "Nearby devices",
     links: relatedDevices.slice(0, 6).map((related) => ({
-      href: `/${related.id}-screen-size`,
+      href: getDevicePageUrl(related.id),
       label: `${related.name} (${related.diagonal}")`,
     })),
   },
@@ -1334,13 +1303,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       position: 3,
       name: CATEGORY_NAMES[device.category] || "Devices",
-      item: `${siteConfig.siteUrl}/devices/${device.category}s`,
+      item: `${siteConfig.siteUrl}${CATEGORY_PATHS[device.category]}`,
     },
     {
       "@type": "ListItem",
       position: 4,
       name: device.name,
-      item: `${siteConfig.siteUrl}/${device.id}-screen-size`,
+      item: `${siteConfig.siteUrl}${devicePageUrl}`,
     },
   ],
 };
@@ -1402,7 +1371,7 @@ const breadcrumbSchema = {
         </li>
         <li>
           <a
-            href={`/devices/${device.category}s`}
+            href={CATEGORY_PATHS[device.category]}
             class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors capitalize"
             >{device.category}s</a
           >
@@ -3092,7 +3061,7 @@ const breadcrumbSchema = {
               <div class="flex flex-wrap gap-2">
                 {relatedDevices.slice(0, 4).map((d) => (
                   <a
-                    href={`/${d.id}-screen-size`}
+                    href={getDevicePageUrl(d.id)}
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors max-w-full"
                   >
                     <span class="truncate max-w-[140px] sm:max-w-[200px]">
@@ -3157,7 +3126,7 @@ const breadcrumbSchema = {
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
             {displayRelatedComparisons.map(({ device: related, href, shouldIndex }) => (
               <div class="group bg-white dark:bg-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 transition-all border border-gray-200 dark:border-gray-600">
-                <a href={`/${related.id}-screen-size`} class="block mb-2">
+                <a href={getDevicePageUrl(related.id)} class="block mb-2">
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                     {related.name}
                   </p>
@@ -3191,7 +3160,7 @@ const breadcrumbSchema = {
           </div>
           <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800 flex flex-wrap items-center gap-4">
             <a
-              href={`/devices/${device.category}s`}
+              href={CATEGORY_PATHS[device.category]}
               class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
             >
               View all {device.category}s
@@ -3324,7 +3293,7 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
   <script
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}

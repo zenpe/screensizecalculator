@@ -1,0 +1,82 @@
+---
+import type { Device } from '../data/devices';
+import { calculateDevicePPI } from '../data/devices';
+import { getCompareDeviceUrl, getDevicePageUrl } from '../utils/url';
+
+interface Props {
+  phones: Device[];
+  showBrand?: boolean;
+}
+
+const { phones, showBrand = true } = Astro.props;
+
+const getBrand = (phone: Device): string => {
+  if (/iphone/i.test(phone.name)) return 'Apple';
+  if (/galaxy/i.test(phone.name)) return 'Samsung';
+  if (/pixel/i.test(phone.name)) return 'Google';
+  return 'Other';
+};
+
+const getBodyWidth = (phone: Device): number | null => phone.phone?.dimensions?.width ?? null;
+
+const getHandlingLabel = (phone: Device): string => {
+  const width = getBodyWidth(phone);
+  const weight = phone.phone?.weight ?? 0;
+
+  if (width && width <= 72 && phone.diagonal <= 6.3 && weight <= 200) return 'One-hand friendly';
+  if (width && width >= 77) return 'Two-hand phone';
+  if (phone.diagonal >= 6.7 || weight >= 215) return 'Large feel';
+  return 'Balanced';
+};
+
+const formatMaybe = (value: number | null, suffix: string, decimals = 1): string =>
+  value === null ? '-' : `${value.toFixed(decimals)}${suffix}`;
+---
+
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
+      <thead class="bg-gray-50 dark:bg-gray-800/80">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Phone</th>
+          {showBrand && <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Brand</th>}
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Screen</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Body width</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Weight</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">PPI</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Fit</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Links</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+        {phones.map((phone) => {
+          const ppi = calculateDevicePPI(phone);
+          const width = getBodyWidth(phone);
+          const weight = phone.phone?.weight ?? null;
+
+          return (
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                <a href={getDevicePageUrl(phone.id)} class="hover:text-primary-600 dark:hover:text-primary-400">
+                  {phone.name}
+                </a>
+              </td>
+              {showBrand && <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{getBrand(phone)}</td>}
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">{phone.diagonal}"</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">{formatMaybe(width, 'mm')}</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">{formatMaybe(weight, 'g', 0)}</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">{ppi ? Math.round(ppi) : '-'}</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">{getHandlingLabel(phone)}</td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="flex items-center gap-3">
+                  <a href={getDevicePageUrl(phone.id)} class="text-primary-600 dark:text-primary-400 hover:underline">Specs</a>
+                  <a href={getCompareDeviceUrl(phone.id)} class="text-cyan-700 dark:text-cyan-300 hover:underline">Compare</a>
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>

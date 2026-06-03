@@ -126,32 +126,6 @@ const softwareSchema = {
   },
 };
 
-// HowTo Schema for step-by-step instructions
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How to Calculate Aspect Ratio",
-  description:
-    "Learn how to calculate aspect ratio from pixel dimensions or find missing dimensions using a known aspect ratio.",
-  step: [
-    {
-      "@type": "HowToStep",
-      name: "Choose Your Mode",
-      text: "Select 'Find Ratio' to discover the aspect ratio from pixel dimensions, or 'New Dimension' to calculate missing width/height from a known ratio.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "Enter Dimensions",
-      text: "Input your width and height in pixels, or use quick presets like 16:9, 21:9, or 9:16 for common screen ratios.",
-    },
-    {
-      "@type": "HowToStep",
-      name: "Get Instant Results",
-      text: "View your aspect ratio, decimal value, and visual preview. Optionally add screen diagonal for physical size calculations.",
-    },
-  ],
-};
-
 // Breadcrumb Schema
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -523,10 +497,6 @@ const breadcrumbSchema = {
   <script
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
-  />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(howToSchema)}
   />
   <script
     type="application/ld+json"
