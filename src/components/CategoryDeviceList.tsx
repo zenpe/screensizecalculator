@@ -223,10 +223,7 @@ function AspectRatioBadge({ ratio }: { ratio: number }) {
 
 export default function CategoryDeviceList({
   devices,
-  category,
   categoryName,
-  colorText,
-  colorBg,
   defaultSort = 'size-desc',
 }: CategoryDeviceListProps) {
   const [searchQuery, setSearchQuery] = useState('');

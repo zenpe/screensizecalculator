@@ -142,7 +142,7 @@ const breadcrumbSchema = {
 
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description} keywords={keywords} modifiedTime={updatedDate}>
 
   <main class="flex-1">
     <!-- Hero Section -->
@@ -602,11 +602,11 @@ const breadcrumbSchema = {
     </section>
   </main>
 
-  <script
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
   />
-  <script
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
   />

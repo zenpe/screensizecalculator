@@ -1755,9 +1755,9 @@ const pageSchema = {
   </main>
 
   <!-- Breadcrumb Schema -->
-  <script
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
   />
-  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
 </Layout>

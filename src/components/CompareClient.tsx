@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { devices, getDeviceById, isValidComparison, calculateDimensions, calculateArea, getDisplayDimensions, type Device } from '../data/devices';
+import { devices, getDeviceById, isValidComparison, calculateArea, getDisplayDimensions, type Device } from '../data/devices';
 import ComparisonVisualizer from './ComparisonVisualizer';
 
 // Group devices by category

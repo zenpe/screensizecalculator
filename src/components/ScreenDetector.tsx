@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { getBreakpointProgress } from '../utils/viewport';
 
 interface ScreenInfo {
   screenWidth: number;
@@ -7,6 +8,8 @@ interface ScreenInfo {
   windowHeight: number;
   dpr: number;
   deviceType: string;
+  breakpoint: string;
+  pxToNext: number | null;
 }
 
 export default function ScreenDetector() {
@@ -22,6 +25,8 @@ export default function ScreenDetector() {
     if (isMobile && !isTablet) deviceType = 'Mobile';
     else if (isTablet) deviceType = 'Tablet';
 
+    const breakpoint = getBreakpointProgress(window.innerWidth, 'tailwind');
+
     setInfo({
       screenWidth: window.screen.width,
       screenHeight: window.screen.height,
@@ -29,6 +34,8 @@ export default function ScreenDetector() {
       windowHeight: window.innerHeight,
       dpr: Math.round(window.devicePixelRatio * 100) / 100,
       deviceType,
+      breakpoint: breakpoint.active.label,
+      pxToNext: breakpoint.pxToNext,
     });
     setIsOpen(true);
   };
@@ -39,7 +46,14 @@ export default function ScreenDetector() {
     };
     const handleResize = () => {
       if (isOpen) {
-        setInfo(prev => prev ? { ...prev, windowWidth: window.innerWidth, windowHeight: window.innerHeight } : null);
+        const breakpoint = getBreakpointProgress(window.innerWidth, 'tailwind');
+        setInfo(prev => prev ? {
+          ...prev,
+          windowWidth: window.innerWidth,
+          windowHeight: window.innerHeight,
+          breakpoint: breakpoint.active.label,
+          pxToNext: breakpoint.pxToNext,
+        } : null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -97,14 +111,23 @@ export default function ScreenDetector() {
               <span className="font-semibold text-gray-900 dark:text-gray-100">{info.dpr}x</span>
             </div>
             <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2.5">
+              <span className="text-gray-500 dark:text-gray-400">Tailwind Breakpoint</span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">
+                {info.breakpoint}{info.pxToNext !== null ? ` · ${info.pxToNext}px` : ''}
+              </span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2.5">
               <span className="text-gray-500 dark:text-gray-400">Device Type</span>
               <span className="font-semibold text-gray-900 dark:text-gray-100">{info.deviceType}</span>
             </div>
           </div>
 
           <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <a href="/#calculator" className="block text-center text-xs text-primary-600 dark:text-primary-400 hover:underline">
-              Calculate PPI & dimensions →
+            <a href="/viewport-checker" className="block rounded-lg bg-primary-600 px-3 py-2 text-center text-xs font-semibold text-white hover:bg-primary-700">
+              Open Viewport Checker
+            </a>
+            <a href="/#calculator" className="mt-2 block text-center text-xs text-primary-600 dark:text-primary-400 hover:underline">
+              Calculate PPI & dimensions
             </a>
           </div>
         </div>

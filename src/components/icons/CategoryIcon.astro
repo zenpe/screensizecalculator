@@ -5,7 +5,7 @@
 // Device categories
 type DeviceCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
 // Tool types
-type ToolType = 'ppi' | 'aspect-ratio' | 'ratio' | 'resolution' | 'all' | 'search' | 'blog';
+type ToolType = 'ppi' | 'aspect-ratio' | 'ratio' | 'resolution' | 'viewport' | 'compare' | 'all' | 'search' | 'blog';
 // Combined type
 type IconType = DeviceCategory | ToolType;
 
@@ -50,6 +50,8 @@ const icons: Record<IconType, IconDef> = {
   'aspect-ratio': { type: 'svg', svgType: 'ratio', defaultColor: 'text-cyan-600' },
   ratio: { type: 'svg', svgType: 'ratio', defaultColor: 'text-cyan-600' },
   resolution: { type: 'svg', svgType: 'resolution', defaultColor: 'text-rose-500' },
+  viewport: { type: 'svg', svgType: 'viewport', defaultColor: 'text-primary-600' },
+  compare: { type: 'svg', svgType: 'compare', defaultColor: 'text-primary-600' },
   all: { type: 'svg', svgType: 'grid', defaultColor: 'text-gray-500' },
   search: { type: 'svg', svgType: 'search', defaultColor: 'text-gray-500' },
   blog: { type: 'svg', svgType: 'blog', defaultColor: 'text-gray-500' },
@@ -157,6 +159,32 @@ const wrapperClasses = needsWrapper ? [sizeConfig.wrapper, 'inline-flex items-ce
       <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/>
       <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/>
       <path d="M21 3l-9 9M14 3h7v7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  )
+) : svgType === 'viewport' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="12" rx="2" stroke-width="2"/>
+        <path d="M8 20h8M10 16v4M14 16v4M7 8h4M7 11h7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="12" rx="2" stroke-width="2"/>
+      <path d="M8 20h8M10 16v4M14 16v4M7 8h4M7 11h7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  )
+) : svgType === 'compare' ? (
+  needsWrapper ? (
+    <span class:list={wrapperClasses}>
+      <svg class={`${sizeConfig.svg} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4" />
+      </svg>
+    </span>
+  ) : (
+    <svg class={`${sizeConfig.svg} ${iconColor} ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4" />
     </svg>
   )
 ) : svgType === 'grid' ? (

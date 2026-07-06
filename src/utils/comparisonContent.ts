@@ -1,7 +1,7 @@
 // Utility functions for generating unique comparison content
 
 import type { Device } from '../data/devices';
-import { hashString, selectVariant } from './contentVariants';
+import { hashString } from './contentVariants';
 
 // Pocket fit thresholds (in mm for body height, inches for screen diagonal)
 const POCKET_FIT_THRESHOLDS = {

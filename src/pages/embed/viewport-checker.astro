@@ -1,0 +1,29 @@
+---
+import "../../styles/global.css";
+import ViewportInspector from "../../components/ViewportInspector";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Viewport Checker Embed</title>
+    <script is:inline>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const theme = params.get("theme") || "auto";
+        if (
+          theme === "dark" ||
+          (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-transparent p-2 text-gray-950 dark:text-white">
+    <ViewportInspector client:load mode="embed" compact={true} />
+  </body>
+</html>

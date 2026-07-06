@@ -1,0 +1,154 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ViewportInspector from "../components/ViewportInspector";
+import FAQSection from "../components/FAQSection.astro";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
+import { siteConfig } from "../site.config";
+
+const title = "Viewport Checker & Responsive Breakpoint Tool";
+const description =
+  "Free viewport checker for responsive design. Detect browser size, DPR, Tailwind and Bootstrap breakpoints, and generate srcset image sizes.";
+const keywords =
+  "viewport checker, responsive breakpoint tool, tailwind breakpoint checker, bootstrap breakpoint checker, dpr checker, device pixel ratio, srcset generator, responsive design tester";
+
+const faqs = [
+  {
+    question: "What is a viewport checker?",
+    answer:
+      "A viewport checker shows the live browser viewport in CSS pixels, screen resolution, device pixel ratio, orientation, and the active responsive breakpoint.",
+  },
+  {
+    question: "Why can viewport size differ from screen resolution?",
+    answer:
+      "Screen resolution describes the device screen, while viewport size is the space available to the web page after browser UI, zoom, sidebars, and responsive layout constraints.",
+  },
+  {
+    question: "Does this tool support Tailwind and Bootstrap breakpoints?",
+    answer:
+      "Yes. The tool includes Tailwind's default breakpoints and Bootstrap's default breakpoints, with a live rail showing the active range and distance to the next breakpoint.",
+  },
+  {
+    question: "How should I use DPR for responsive images?",
+    answer:
+      "Multiply the CSS display width by the device pixel ratio. For example, a 360px-wide image slot on a 3x device needs roughly a 1080px source image for crisp rendering.",
+  },
+];
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: title,
+  description,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web Browser",
+  url: `${siteConfig.siteUrl}/viewport-checker`,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  featureList: [
+    "Live viewport size detection",
+    "Device pixel ratio checker",
+    "Tailwind breakpoint checker",
+    "Bootstrap breakpoint checker",
+    "Responsive image srcset advice",
+    "Embeddable viewport checker widget",
+  ],
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.siteUrl },
+    { "@type": "ListItem", position: 2, name: "Calculators", item: `${siteConfig.siteUrl}/calculators` },
+    { "@type": "ListItem", position: 3, name: "Viewport Checker", item: `${siteConfig.siteUrl}/viewport-checker` },
+  ],
+};
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <main class="flex-1">
+    <section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-primary-950 to-slate-900 py-12 text-white lg:py-16">
+      <div class="absolute inset-0 opacity-30" aria-hidden="true">
+        <div class="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-400 blur-3xl"></div>
+        <div class="absolute bottom-0 right-8 h-60 w-60 rounded-full bg-primary-400 blur-3xl"></div>
+      </div>
+      <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <nav class="mb-6 overflow-x-auto" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 whitespace-nowrap text-sm text-gray-300">
+            <li><a href="/" class="hover:text-white">Home</a></li>
+            <li>/</li>
+            <li><a href="/calculators" class="hover:text-white">Calculators</a></li>
+            <li>/</li>
+            <li class="font-medium text-white">Viewport Checker</li>
+          </ol>
+        </nav>
+        <div class="max-w-3xl">
+          <p class="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-cyan-200">
+            Responsive Design Tool
+          </p>
+          <h1 class="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
+            Viewport Checker & Breakpoint Inspector
+          </h1>
+          <p class="mt-5 text-lg leading-8 text-gray-200">
+            Detect your browser viewport, DPR, Tailwind or Bootstrap breakpoint, and responsive image sizes while testing real layout scenarios.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a href="#tool" class="rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-950 hover:bg-gray-100">
+              Open live checker
+            </a>
+            <a href="#embed" class="rounded-xl border border-white/30 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">
+              Get embed code
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tool" class="scroll-mt-24 py-12 lg:py-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <ViewportInspector client:load />
+      </div>
+    </section>
+
+    <section class="bg-white py-12 dark:bg-gray-800 lg:py-16">
+      <div class="mx-auto grid max-w-6xl gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
+        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900/60">
+          <h2 class="text-lg font-bold text-gray-950 dark:text-white">Current breakpoint</h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            See exactly when Tailwind or Bootstrap switches layout ranges, including pixels until the next breakpoint.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900/60">
+          <h2 class="text-lg font-bold text-gray-950 dark:text-white">DPR-aware images</h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            Translate CSS image slots into physical pixel assets for 1x, 2x, and 3x displays.
+          </p>
+        </div>
+        <div id="embed" class="scroll-mt-24 rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900/60">
+          <h2 class="text-lg font-bold text-gray-950 dark:text-white">Embeddable widget</h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            Add a compact viewport checker to documentation, QA guides, or design-system pages.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 lg:py-16">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <RelatedCalculators
+          exclude={["viewport-checker"]}
+          highlight="resolution-calculator"
+          subtitle="Need adjacent display calculations? Try these tools next:"
+        />
+      </div>
+    </section>
+
+    <FAQSection faqs={faqs} title="Viewport Checker FAQ" />
+  </main>
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</Layout>

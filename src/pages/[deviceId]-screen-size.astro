@@ -68,57 +68,6 @@ const rawDescription = `${device.name} has a ${device.diagonal}" display with ${
 const description = sanitizeMetaDescription(rawDescription);
 const keywords = `${primaryKeyword}, ${device.name} dimensions, ${device.name} display size, ${device.name} specs, ${device.name} resolution${device.category === "phone" ? `, ${device.name} size comparison` : ""}`;
 
-// Brand detection patterns - ordered by specificity (product names before brand names)
-const BRAND_PATTERNS: Array<{ pattern: RegExp; brand: string }> = [
-  // Product-specific patterns (check first)
-  {
-    pattern: /iphone|ipad|macbook|imac|mac\s?(pro|mini|studio)/i,
-    brand: "Apple",
-  },
-  { pattern: /galaxy|samsung/i, brand: "Samsung" },
-  { pattern: /pixel/i, brand: "Google" },
-  { pattern: /surface/i, brand: "Microsoft" },
-  { pattern: /thinkpad|ideapad|legion/i, brand: "Lenovo" },
-  { pattern: /xps|alienware|inspiron/i, brand: "Dell" },
-  { pattern: /rog|zenbook|vivobook/i, brand: "ASUS" },
-  { pattern: /redmi|poco/i, brand: "Xiaomi" },
-  // Direct brand name matches
-  { pattern: /\bapple\b/i, brand: "Apple" },
-  { pattern: /\bgoogle\b/i, brand: "Google" },
-  { pattern: /\boneplus\b/i, brand: "OnePlus" },
-  { pattern: /\bxiaomi\b/i, brand: "Xiaomi" },
-  { pattern: /\bsony\b/i, brand: "Sony" },
-  { pattern: /\blg\b/i, brand: "LG" },
-  { pattern: /\btcl\b/i, brand: "TCL" },
-  { pattern: /\bhisense\b/i, brand: "Hisense" },
-  { pattern: /\bdell\b/i, brand: "Dell" },
-  { pattern: /\basus\b/i, brand: "ASUS" },
-  { pattern: /\bacer\b/i, brand: "Acer" },
-  { pattern: /\bbenq\b/i, brand: "BenQ" },
-  { pattern: /\bviewsonic\b/i, brand: "ViewSonic" },
-  { pattern: /\bmsi\b/i, brand: "MSI" },
-  { pattern: /\blenovo\b/i, brand: "Lenovo" },
-  { pattern: /\bhp\b/i, brand: "HP" },
-  { pattern: /\bmicrosoft\b/i, brand: "Microsoft" },
-  { pattern: /\bhuawei\b/i, brand: "Huawei" },
-  { pattern: /\boppo\b/i, brand: "Oppo" },
-  { pattern: /\bvivo\b/i, brand: "Vivo" },
-  { pattern: /\bmotorola\b/i, brand: "Motorola" },
-  { pattern: /\bnothing\b/i, brand: "Nothing" },
-];
-
-// Extract brand from device name using pattern matching
-const extractBrand = (name: string): string => {
-  for (const { pattern, brand } of BRAND_PATTERNS) {
-    if (pattern.test(name)) {
-      return brand;
-    }
-  }
-  return "";
-};
-
-const brand = extractBrand(device.name);
-
 // Convert date to ISO 8601 format with timezone (for structured data)
 const toISO8601 = (date: string): string => {
   // If already in ISO 8601 format with time, return as-is
@@ -3293,8 +3242,8 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
-  <script
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
   />

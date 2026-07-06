@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { devices, parseResolution, getLatestIphone, getLatestSamsung, getLatestIphoneWithPPI, getLatestSamsungWithPPI } from '../../data/devices';
+import { parseResolution, getLatestIphone, getLatestSamsung, getLatestIphoneWithPPI } from '../../data/devices';
 
 type CalculatorMode = 'calculatePPI' | 'findResolution';
 
@@ -28,8 +28,6 @@ const DEVICE_PRESETS = [...phonePresets, ...monitorPresets];
 
 // Get latest phone PPI for reference
 const latestIphonePPI = getLatestIphoneWithPPI();
-const latestSamsungPPI = getLatestSamsungWithPPI();
-
 // Reference devices for comparison (in visualizer)
 const REFERENCE_DEVICES = [
   latestIphonePPI ? { label: latestIphonePPI.device.name, ppi: latestIphonePPI.ppi } : { label: 'iPhone', ppi: 460 },

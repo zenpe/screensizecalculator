@@ -8,11 +8,6 @@ const KEY_FILE = path.join(process.cwd(), 'scripts', 'screencalc-indexing-481706
 const STATE_FILE = path.join(process.cwd(), 'scripts', 'indexing-state.json');
 const MAX_URLS = 200;
 
-interface SitemapUrl {
-    loc: string[];
-    lastmod: string[];
-}
-
 async function pushToGoogle() {
     try {
         // 1. Check if key file exists
@@ -126,7 +121,7 @@ async function pushToGoogle() {
 
         for (const entry of urlsToPush) {
             try {
-                const res = await indexing.urlNotifications.publish({
+                await indexing.urlNotifications.publish({
                     requestBody: {
                         url: entry.url,
                         type: 'URL_UPDATED',

@@ -649,14 +649,7 @@ export default function DeviceDetailVisualizer({
 
             {/* Modal Content - ComparisonVisualizer */}
             <div className="flex-1 overflow-auto">
-              <Suspense fallback={
-                <div className="flex items-center justify-center h-full">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                    <div className="text-slate-400 text-sm">Loading comparison...</div>
-                  </div>
-                </div>
-              }>
+              <Suspense fallback={<DeviceVisualizerSkeleton isMobile={isMobile} />}>
                 <ComparisonVisualizer deviceA={device} deviceB={compareDevice} />
               </Suspense>
             </div>

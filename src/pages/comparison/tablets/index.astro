@@ -9,7 +9,6 @@ const title = 'Tablet Screen Size Comparison - iPad vs Samsung vs Surface';
 const description = 'Compare tablet screen sizes with interactive visual overlay. See iPad Pro, iPad Air, Samsung Galaxy Tab, and Surface Pro side-by-side.';
 const keywords = 'tablet screen size comparison, iPad vs Samsung, iPad Pro vs iPad Air, tablet display comparison, tablet size compare';
 
-const tabletDevices = devices.filter(d => d.category === 'tablet');
 const comparisonPairs = generateCategoryPairs(devices, 'tablet');
 const indexedPairs = comparisonPairs.filter(p => shouldIndexComparison(p.slug));
 const searchItems = toSearchItems(comparisonPairs);

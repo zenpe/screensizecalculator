@@ -50,6 +50,7 @@ function normalizeLegacyProjectorScreenOutput() {
         const distDir = resolve(process.cwd(), 'dist');
         if (!existsSync(distDir)) return;
 
+        /** @param {string} dir */
         const walk = (dir) => {
           for (const entry of readdirSync(dir, { withFileTypes: true })) {
             const fullPath = join(dir, entry.name);
@@ -78,9 +79,18 @@ function normalizeLegacyProjectorScreenOutput() {
 }
 
 function rewriteComparisonLinks() {
+  /**
+   * @typedef {{ type?: string, tagName?: string, properties?: Record<string, unknown>, children?: RewriteNode[] }} RewriteNode
+   */
+  /**
+   * @param {RewriteNode} tree
+   */
   return (tree) => {
     if (isComparisonSeoEnabled()) return;
 
+    /**
+     * @param {RewriteNode} node
+     */
     const visit = (node) => {
       if (!node || typeof node !== 'object') return;
 
@@ -110,11 +120,19 @@ const devicePathMap = new Map(devices.map(d => [getDevicePageUrl(d.id), d.id]));
 const blogContentDir = join(process.cwd(), 'src', 'content', 'blog');
 const staticPagesDir = join(process.cwd(), 'src', 'pages');
 
+/**
+ * @param {string} frontmatter
+ * @param {string} field
+ */
 function getFrontmatterDate(frontmatter, field) {
   const match = frontmatter.match(new RegExp(`^\\s*${field}:\\s*["']?([0-9]{4}-[0-9]{2}-[0-9]{2})["']?\\s*$`, 'm'));
   return match ? match[1] : null;
 }
 
+/**
+ * @param {string} fileContent
+ * @param {string} field
+ */
 function getConstDate(fileContent, field) {
   const match = fileContent.match(new RegExp(`(?:^|\\n)\\s*const\\s+${field}\\s*=\\s*["']([0-9]{4}-[0-9]{2}-[0-9]{2})["']\\s*;?`, 'm'));
   return match ? match[1] : null;
@@ -146,20 +164,23 @@ function getBlogDateMap() {
   return map;
 }
 
-const blogDateMap = getBlogDateMap();
-const staticPageDateMap = getStaticPageDateMap();
-const latestBlogDate = getLatestDate(...blogDateMap.values());
-
 // Helper: get the latest date from multiple date strings
+/** @param {...(string | null | undefined)} dates */
 function getLatestDate(...dates) {
-  const validDates = dates.filter(d => d).map(d => new Date(d).getTime());
+  const validDates = dates
+    .flatMap((date) => (typeof date === 'string' && date.length > 0 ? [new Date(date).getTime()] : []));
   if (validDates.length === 0) return null;
   return new Date(Math.max(...validDates)).toISOString();
 }
 
+const blogDateMap = getBlogDateMap();
+const staticPageDateMap = getStaticPageDateMap();
+const latestBlogDate = getLatestDate(...blogDateMap.values());
+
 function getStaticPageDateMap() {
   const map = new Map();
 
+  /** @param {string} dir */
   function walk(dir) {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const fullPath = join(dir, entry.name);
@@ -186,6 +207,7 @@ function getStaticPageDateMap() {
   return map;
 }
 
+/** @param {string} relativePath */
 function getStaticPageRoute(relativePath) {
   const normalized = relativePath.replace(/\\/g, '/').replace(/\.astro$/, '');
   if (normalized === 'index') return '/';
@@ -193,6 +215,7 @@ function getStaticPageRoute(relativePath) {
   return `/${normalized}`;
 }
 
+/** @param {string} url */
 function getPagePath(url) {
   try {
     const pathname = new URL(url).pathname.replace(/\/$/, '');
@@ -303,6 +326,22 @@ export default defineConfig({
     ]
   },
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        onwarn(warning, defaultHandler) {
+          const message = warning.message || '';
+          if (
+            warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
+            message.includes('@astrojs/internal-helpers/remote') &&
+            message.includes('remotePattern.js')
+          ) {
+            // Astro 5 currently emits this false-positive from its own bundled helper.
+            return;
+          }
+          defaultHandler(warning);
+        },
+      },
+    },
   }
 });

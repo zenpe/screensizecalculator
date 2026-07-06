@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { DeviceMode, DeviceModeConfig } from '../config';
+import type { DeviceMode } from '../config';
 import {
   DEVICE_CONFIGS,
   ASPECT_RATIOS_BY_MODE,

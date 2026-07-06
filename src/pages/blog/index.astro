@@ -67,7 +67,9 @@ const guideClusters = [
 const blogBySlug = new Map(sortedBlogs.map((post) => [post.slug, post]));
 const clustersWithPosts = guideClusters.map((cluster) => ({
   ...cluster,
-  posts: cluster.slugs.map((slug) => blogBySlug.get(slug)).filter(Boolean),
+  posts: cluster.slugs
+    .map((slug) => blogBySlug.get(slug))
+    .filter((post): post is (typeof sortedBlogs)[number] => Boolean(post)),
 }));
 
 // Calculate read time estimate

@@ -672,11 +672,11 @@ const breadcrumbSchema = {
     <FAQSection faqs={faqs} title="PPI & DPI FAQ: Pixel Density Questions" />
   </main>
 
-  <script
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(softwareSchema)}
   />
-  <script
+  <script is:inline
     type="application/ld+json"
     set:html={JSON.stringify(breadcrumbSchema)}
   />

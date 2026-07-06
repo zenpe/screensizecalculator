@@ -12,10 +12,6 @@ const description =
 const keywords =
   'projector screen size comparison, 100 vs 120 inch projector, projector vs TV size, projection screen comparison';
 
-// Get all projector and TV devices
-const projectorDevices = devices.filter(d => d.category === 'projector');
-const tvDevices = devices.filter(d => d.category === 'tv');
-
 // Generate comparison pairs using shared utilities
 const projectorPairs = generateCategoryPairs(devices, 'projector');
 const tvVsProjectorPairs = generateCrossCategoryPairs(devices, 'tv', 'projector');

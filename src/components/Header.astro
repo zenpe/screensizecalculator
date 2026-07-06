@@ -1,6 +1,6 @@
 ---
 // Header component
-import { calculatorLinks, comparisonLinks, deviceLinks, resourceLinks, quickLinks, quickLinkIconMap, siteInfo } from '../config/navigation';
+import { calculatorLinks, comparisonLinks, deviceLinks, resourceLinks, quickLinks, quickLinkIconMap } from '../config/navigation';
 import {
   getComparisonBrowseUrl,
   isCompareToolGlobalNavEnabled,
@@ -20,7 +20,7 @@ const screenCalculators = calculatorLinks.filter(link =>
   ['tv', 'monitor', 'phone', 'tablet', 'projector'].includes(link.icon || '')
 );
 const utilityTools = calculatorLinks.filter(link =>
-  ['ppi', 'aspect-ratio', 'resolution'].includes(link.icon || '')
+  ['ppi', 'aspect-ratio', 'resolution', 'viewport'].includes(link.icon || '')
 );
 const comparisonCategories = comparisonLinks.filter(link => link.icon !== 'all');
 const comparisonSeoEnabled = isComparisonSeoEnabled();

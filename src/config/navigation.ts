@@ -8,7 +8,7 @@ import {
 // Single source of truth for all navigation links
 
 export type DeviceCategory = 'phone' | 'tablet' | 'tv' | 'monitor' | 'projector';
-export type ToolType = 'ppi' | 'aspect-ratio' | 'resolution' | 'all' | 'search' | 'blog';
+export type ToolType = 'ppi' | 'aspect-ratio' | 'resolution' | 'viewport' | 'all' | 'search' | 'blog';
 export type IconType = DeviceCategory | ToolType;
 
 export interface NavLink {
@@ -34,6 +34,7 @@ export const calculatorLinks: NavLink[] = [
   { href: '/ppi-calculator', label: 'PPI & DPI Calculator', shortLabel: 'PPI & DPI', icon: 'ppi' },
   { href: '/aspect-ratio-calculator', label: 'Aspect Ratio Calculator', shortLabel: 'Aspect Ratio', icon: 'aspect-ratio' },
   { href: '/resolution-calculator', label: 'Resolution Calculator', shortLabel: 'Resolution', icon: 'resolution' },
+  { href: '/viewport-checker', label: 'Viewport Checker', shortLabel: 'Viewport', icon: 'viewport' },
 ];
 
 // Comparison pages navigation
@@ -79,6 +80,7 @@ export const quickLinks: NavLink[] = [
     : []),
   { href: '/devices', label: 'Device Database', shortLabel: 'Devices', icon: 'all', color: 'violet' },
   { href: '/calculators', label: 'All Calculators', shortLabel: 'Calculators', icon: 'ppi', color: 'amber' },
+  { href: '/viewport-checker', label: 'Viewport Checker', shortLabel: 'Viewport', icon: 'viewport', color: 'primary' },
   { href: '/blog', label: 'Blog', icon: 'blog', color: 'rose' },
 ];
 
@@ -87,6 +89,7 @@ export const quickLinkIconMap: Record<string, string> = {
   '/compare': 'compare',
   '/devices': 'devices',
   '/calculators': 'calculator',
+  '/viewport-checker': 'viewport',
   '/blog': 'blog',
 };
 

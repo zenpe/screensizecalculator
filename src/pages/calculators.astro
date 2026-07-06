@@ -14,10 +14,6 @@ const keywords = 'screen calculator, ppi calculator, resolution calculator, aspe
 
 // Stats for hero section
 const totalDevices = devices.length;
-const phoneCount = devices.filter(d => d.category === 'phone').length;
-const tabletCount = devices.filter(d => d.category === 'tablet').length;
-const tvCount = devices.filter(d => d.category === 'tv').length;
-const monitorCount = devices.filter(d => d.category === 'monitor').length;
 const comparisonSeoEnabled = isComparisonSeoEnabled();
 const comparisonBrowseHref = comparisonSeoEnabled ? getComparisonBrowseUrl() : '/compare';
 
@@ -66,6 +62,14 @@ const screenCalculators = [
 ];
 
 const toolCalculators = [
+  {
+    title: 'Viewport Checker',
+    description: 'Detect live viewport size, DPR, and Tailwind or Bootstrap responsive breakpoints for frontend testing.',
+    href: '/viewport-checker',
+    icon: 'viewport' as const,
+    color: 'teal',
+    features: ['Viewport detection', 'Breakpoints', 'DPR images'],
+  },
   {
     title: 'PPI & DPI Calculator',
     description: 'Calculate pixel density (PPI/DPI) for any display. Find if your screen is Retina-quality and compare sharpness.',
@@ -159,7 +163,7 @@ const itemListSchema = {
 const faqs = [
   {
     question: "What calculators are available on this site?",
-    answer: "We offer 8 free calculators: TV, Monitor, Phone, Tablet, and Projector screen size calculators for comparing displays, plus PPI & DPI Calculator for pixel density, Resolution Calculator for scaling, and Aspect Ratio Calculator for dimension conversions.",
+    answer: "We offer free calculators for TV, monitor, phone, tablet, and projector screen sizes, plus viewport, PPI/DPI, resolution, and aspect ratio tools.",
   },
   {
     question: "Are these calculators free to use?",
@@ -185,6 +189,7 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
   rose: { bg: 'bg-rose-100 dark:bg-rose-900/30', text: 'text-rose-600 dark:text-rose-400', border: 'hover:border-rose-300 dark:hover:border-rose-700' },
   cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-600 dark:text-cyan-400', border: 'hover:border-cyan-300 dark:hover:border-cyan-700' },
   orange: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400', border: 'hover:border-orange-300 dark:hover:border-orange-700' },
+  teal: { bg: 'bg-primary-100 dark:bg-primary-900/30', text: 'text-primary-600 dark:text-primary-400', border: 'hover:border-primary-300 dark:hover:border-primary-700' },
 };
 ---
 
@@ -444,5 +449,5 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
     </section>
   </main>
 
-  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
 </Layout>
