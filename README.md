@@ -52,8 +52,7 @@ src/
 └── styles/
     └── global.css         # Tailwind base styles
 scripts/
-├── generate-og-images.ts  # OG image generation via Satori + Sharp
-└── push-to-google.ts      # Google Indexing API submission
+└── generate-og-images.ts  # OG image generation via Satori + Sharp
 ```
 
 ## Commands
@@ -67,27 +66,6 @@ scripts/
 | `npm run astro ...` | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI |
 | `npm run generate:og` | Generate OG images for all pages |
-| `npm run push:google` | Push URLs to Google Indexing API |
-
-### Google Indexing (`push:google`)
-
-Automate URL submission to Google Search Console for faster indexing.
-
-- **Default (Sitemap)**: Parses `dist/` for sitemaps and pushes the top 200 most recently updated URLs.
-  ```sh
-  npm run push:google
-  ```
-- **Manual URLs**: Submit specific comma-separated URLs.
-  ```sh
-  npm run push:google -- --urls "https://example.com/p1,https://example.com/p2"
-  ```
-- **File Input**: Submit URLs listed in a text file (one per line).
-  ```sh
-  npm run push:google -- --file urls.txt
-  ```
-
-> [!NOTE]
-> Authentication requires the Service Account JSON key located in `scripts/`.
 
 ## Comparison / Compare
 
@@ -204,9 +182,9 @@ Update template version dates in `src/site.config.ts` only when you modify the a
 
 ## Tech Stack
 
-- **Framework**: Astro 5 (static SSG)
+- **Framework**: Astro 7 (static SSG)
 - **UI**: React 19 (interactive islands), Tailwind CSS 4
 - **Content**: MDX blog posts
 - **Build tools**: Satori + Sharp (OG images), tsx (scripts)
 - **Testing**: Vitest (unit), CJS post-build scripts (regression)
-- **APIs**: Google Indexing API, Amazon Associates
+- **APIs**: Amazon Associates

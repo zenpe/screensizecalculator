@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'no
 import { basename, extname, join, resolve } from 'node:path';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { satteri } from '@astrojs/markdown-satteri';
 import { devices } from './src/data/devices.ts';
 import {
   isComparisonSeoEnabled,
@@ -19,7 +20,6 @@ import { shouldIndexComparison } from './src/utils/comparison-scoring/index.ts';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
-import rehypeExternalLinks from 'rehype-external-links';
 
 function removeComparisonSeoOutput() {
   return {
@@ -76,42 +76,6 @@ function normalizeLegacyProjectorScreenOutput() {
         walk(distDir);
       },
     },
-  };
-}
-
-function rewriteComparisonLinks() {
-  /**
-   * @typedef {{ type?: string, tagName?: string, properties?: Record<string, unknown>, children?: RewriteNode[] }} RewriteNode
-   */
-  /**
-   * @param {RewriteNode} tree
-   */
-  return (tree) => {
-    if (isComparisonSeoEnabled()) return;
-
-    /**
-     * @param {RewriteNode} node
-     */
-    const visit = (node) => {
-      if (!node || typeof node !== 'object') return;
-
-      if (
-        node.type === 'element' &&
-        node.tagName === 'a' &&
-        node.properties &&
-        typeof node.properties.href === 'string'
-      ) {
-        node.properties.href = rewriteComparisonHrefForSeo(node.properties.href);
-      }
-
-      if (Array.isArray(node.children)) {
-        for (const child of node.children) {
-          visit(child);
-        }
-      }
-    };
-
-    visit(tree);
   };
 }
 
@@ -321,10 +285,35 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    rehypePlugins: [
-      rewriteComparisonLinks,
-      [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
-    ]
+    processor: satteri({
+      hastPlugins: [
+        {
+          name: 'rewrite-comparison-links',
+          element: {
+            filter: ['a'],
+            visit(node, context) {
+              const href = node.properties?.href;
+              if (typeof href !== 'string') return;
+
+              context.setProperty(node, 'href', rewriteComparisonHrefForSeo(href));
+            },
+          },
+        },
+        {
+          name: 'external-link-attributes',
+          element: {
+            filter: ['a'],
+            visit(node, context) {
+              const href = node.properties?.href;
+              if (typeof href !== 'string' || !/^https?:\/\//i.test(href)) return;
+
+              context.setProperty(node, 'target', '_blank');
+              context.setProperty(node, 'rel', ['noopener', 'noreferrer']);
+            },
+          },
+        },
+      ],
+    }),
   },
   vite: {
     plugins: [tailwindcss()],

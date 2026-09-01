@@ -20,7 +20,7 @@ export async function getStaticPaths() {
     // Find related posts: same category first, then other recent posts
     let relatedPosts = sortedBlogs
       .filter(
-        (b) => b.slug !== blog.slug && b.data.category === blog.data.category,
+        (b) => b.id !== blog.id && b.data.category === blog.data.category,
       )
       .slice(0, 3);
 
@@ -29,15 +29,15 @@ export async function getStaticPaths() {
       const otherPosts = sortedBlogs
         .filter(
           (b) =>
-            b.slug !== blog.slug &&
-            !relatedPosts.find((r) => r.slug === b.slug),
+            b.id !== blog.id &&
+            !relatedPosts.find((r) => r.id === b.id),
         )
         .slice(0, 3 - relatedPosts.length);
       relatedPosts = [...relatedPosts, ...otherPosts];
     }
 
     return {
-      params: { slug: blog.slug },
+      params: { slug: blog.id },
       props: { blog, prevPost, nextPost, relatedPosts },
     };
   });
@@ -47,7 +47,7 @@ const { blog, prevPost, nextPost, relatedPosts } = Astro.props;
 const articleHtml = rewriteComparisonLinksInHtml(blog.rendered?.html ?? "");
 
 // Calculate reading time
-const wordCount = blog.body.split(/\s+/).length;
+const wordCount = (blog.body ?? "").split(/\s+/).length;
 const readingTime = Math.ceil(wordCount / 200);
 
 // Determine if we have navigation
@@ -75,7 +75,7 @@ const hasNavigation = prevPost || nextPost;
             <div>
               {prevPost ? (
                 <a
-                  href={`/blog/${prevPost.slug}`}
+                  href={`/blog/${prevPost.id}`}
                   class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
                 >
                   <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
@@ -110,7 +110,7 @@ const hasNavigation = prevPost || nextPost;
             <div>
               {nextPost ? (
                 <a
-                  href={`/blog/${nextPost.slug}`}
+                  href={`/blog/${nextPost.id}`}
                   class="group block h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all text-right"
                 >
                   <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1.5">
@@ -155,7 +155,7 @@ const hasNavigation = prevPost || nextPost;
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {relatedPosts.map((post) => (
                 <a
-                  href={`/blog/${post.slug}`}
+                  href={`/blog/${post.id}`}
                   class="group p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all"
                 >
                   <div class="text-xs text-primary-600 dark:text-primary-400 font-medium mb-1.5">
