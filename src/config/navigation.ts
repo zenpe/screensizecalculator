@@ -2,6 +2,7 @@ import {
   getComparisonBrowseUrl,
   isCompareToolGlobalNavEnabled,
   isComparisonSeoEnabled,
+  siteConfig,
 } from '../site.config';
 
 // Unified navigation configuration for Header and Footer
@@ -103,7 +104,7 @@ export const footerSections: NavSection[] = [
 // Site metadata
 export const siteInfo = {
   name: 'ScreenSizeCalculator',
-  domain: 'screensizecalculators.com',
+  domain: new URL(siteConfig.siteUrl).hostname,
   description: 'Free online tools to calculate screen dimensions, viewing distances, PPI, and compare display sizes for TVs, monitors, phones, and projectors.',
   tagline: 'Made with precision for screen enthusiasts worldwide.',
 };

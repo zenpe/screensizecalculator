@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
+import { siteConfig } from '../src/site.config';
 
 type IssueLevel = 'error' | 'warning';
 
@@ -111,7 +112,8 @@ function auditRobots() {
   }
 
   const robots = readFileSync(robotsPath, 'utf8');
-  if (!/Sitemap:\s*https:\/\/screensizecalculators\.com\/sitemap-index\.xml/i.test(robots)) {
+  const expectedSitemap = `Sitemap: ${siteConfig.siteUrl}/sitemap-index.xml`;
+  if (!robots.includes(expectedSitemap)) {
     addIssue('warning', 'public/robots.txt', 'robots.txt should point to the production sitemap-index.xml.');
   }
 }

@@ -8,11 +8,13 @@ import sharp from 'sharp';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { siteConfig } from '../src/site.config.js';
 
 // Get directory paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
+const siteDomain = new URL(siteConfig.siteUrl).hostname;
 
 // Import devices data
 import { devices, calculateDimensions, calculateArea, calculateDevicePPI } from '../src/data/devices.js';
@@ -755,7 +757,7 @@ async function generateOGImage(device: typeof devices[0]) {
                       fontSize: '20px',
                       color: '#6B7280',
                     },
-                    children: 'screensizecalculators.com',
+                    children: siteDomain,
                   },
                 },
               ],

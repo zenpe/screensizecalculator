@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://screensizecalculators.com/sitemap-index.xml
+Sitemap: https://calc.screensize.net/sitemap-index.xml

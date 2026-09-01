@@ -1,7 +1,7 @@
 // Site configuration
 export const siteConfig = {
   // Site URL for canonical links and structured data
-  siteUrl: 'https://screensizecalculators.com',
+  siteUrl: 'https://calc.screensize.net',
 
   features: {
     // Disable comparison SEO pages without deleting their source files.

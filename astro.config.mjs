@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import { devices } from './src/data/devices.ts';
 import {
   isComparisonSeoEnabled,
+  siteConfig,
   templateVersions,
 } from './src/site.config.ts';
 import {
@@ -228,7 +229,7 @@ function getPagePath(url) {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://screensizecalculators.com',
+  site: siteConfig.siteUrl,
   trailingSlash: 'never',
   build: {
     format: 'file'

@@ -2,7 +2,7 @@
 
 A static site for visual screen size comparison and calculation tools, built with Astro + React + Tailwind CSS.
 
-**Live**: https://screensizecalculators.com
+**Live**: https://calc.screensize.net
 
 ## Project Structure
 

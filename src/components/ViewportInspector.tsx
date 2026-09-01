@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { siteConfig } from '../site.config';
 import {
   BREAKPOINT_SYSTEMS,
   getBreakpointProgress,
@@ -164,7 +165,7 @@ export default function ViewportInspector({
   const mediaQuery = progress.next
     ? `@media (min-width: ${progress.next.minWidth}px) { /* ${progress.next.label}+ styles */ }`
     : `@media (min-width: ${progress.active.minWidth}px) { /* ${progress.active.label} styles */ }`;
-  const embedCode = `<iframe src="https://screensizecalculators.com/embed/viewport-checker?framework=${framework}&theme=auto&compact=1" width="360" height="260" loading="lazy" title="Viewport Checker"></iframe>`;
+  const embedCode = `<iframe src="${siteConfig.siteUrl}/embed/viewport-checker?framework=${framework}&theme=auto&compact=1" width="360" height="260" loading="lazy" title="Viewport Checker"></iframe>`;
 
   const copyText = async (key: string, value: string) => {
     try {
